@@ -1,0 +1,81 @@
+{
+  "schema_version": "staged_training_pipeline_v1",
+  "stage_id": 1,
+  "stage_name": "supervised_controller_training",
+  "run_id": "medium_signal_no_ablation_v1",
+  "status": "completed",
+  "started_at": "2026-03-26T17:57:45Z",
+  "finished_at": "2026-03-26T17:57:48Z",
+  "inputs": {
+    "controller_examples_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/train_runs/medium_signal_no_ablation_v1/stage0_bootstrap_collect_data/controller_training_data/controller_training_examples.jsonl",
+    "dataset_filter": "",
+    "split_json": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/fixed_split.json",
+    "epochs": 6,
+    "seed": 42
+  },
+  "outputs": {
+    "checkpoint_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/train_runs/medium_signal_no_ablation_v1/stage1_supervised_controller_training/checkpoints/controller_planner_scorer__candidate__medium_signal_no_ablation_v1.pt",
+    "metrics_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/train_runs/medium_signal_no_ablation_v1/stage1_supervised_controller_training/checkpoints/controller_planner_scorer__candidate__medium_signal_no_ablation_v1_metrics.json",
+    "version": "controller_planner_scorer_v0.1.0+medium_signal_no_ablation_v1",
+    "stdout_tail": "e1_supervised_controller_training/checkpoints/controller_planner_scorer__candidate__medium_signal_no_ablation_v1.pt\",\n  \"report_path\": \"/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/train_runs/medium_signal_no_ablation_v1/stage1_supervised_controller_training/checkpoints/controller_planner_scorer__candidate__medium_signal_no_ablation_v1_metrics.json\",\n  \"num_examples\": 96,\n  \"num_labels\": 16,\n  \"num_features\": 132,\n  \"label_source\": \"selected\",\n  \"metrics\": {\n    \"train\": {\n      \"micro_precision\": 0.903623,\n      \"micro_recall\": 1.0,\n      \"micro_f1\": 0.949372,\n      \"exact_match_ratio\": 0.0,\n      \"topk_hit_rate\": 1.0,\n      \"avg_predicted_labels\": 15.239583,\n      \"avg_true_labels\": 13.770833\n    },\n    \"val\": {\n      \"micro_precision\": null,\n      \"micro_recall\": null,\n      \"micro_f1\": null,\n      \"exact_match_ratio\": null,\n      \"topk_hit_rate\": null,\n      \"avg_predicted_labels\": null,\n      \"avg_true_labels\": null\n    },\n    \"test\": {\n      \"micro_precision\": null,\n      \"micro_recall\": null,\n      \"micro_f1\": null,\n      \"exact_match_ratio\": null,\n      \"topk_hit_rate\": null,\n      \"avg_predicted_labels\": null,\n      \"avg_true_labels\": null\n    }\n  }\n}\n"
+  },
+  "checkpoint": {
+    "component": "controller_planner_scorer",
+    "version": "controller_planner_scorer_v0.1.0+medium_signal_no_ablation_v1",
+    "path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/train_runs/medium_signal_no_ablation_v1/stage1_supervised_controller_training/checkpoints/controller_planner_scorer__candidate__medium_signal_no_ablation_v1.pt"
+  },
+  "command": [
+    "/root/miniconda3/bin/python",
+    "/root/DermAgent/scripts/train_controller.py",
+    "--output-dir",
+    "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/train_runs/medium_signal_no_ablation_v1/stage1_supervised_controller_training/checkpoints",
+    "--epochs",
+    "6",
+    "--checkpoint-name",
+    "controller_planner_scorer__candidate__medium_signal_no_ablation_v1.pt",
+    "--seed",
+    "42",
+    "--examples-path",
+    "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/train_runs/medium_signal_no_ablation_v1/stage0_bootstrap_collect_data/controller_training_data/controller_training_examples.jsonl",
+    "--split-json",
+    "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/fixed_split.json"
+  ],
+  "dry_run": false,
+  "metrics": {
+    "checkpoint_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/train_runs/medium_signal_no_ablation_v1/stage1_supervised_controller_training/checkpoints/controller_planner_scorer__candidate__medium_signal_no_ablation_v1.pt",
+    "report_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/train_runs/medium_signal_no_ablation_v1/stage1_supervised_controller_training/checkpoints/controller_planner_scorer__candidate__medium_signal_no_ablation_v1_metrics.json",
+    "num_examples": 96,
+    "num_labels": 16,
+    "num_features": 132,
+    "label_source": "selected",
+    "metrics": {
+      "train": {
+        "micro_precision": 0.903623,
+        "micro_recall": 1.0,
+        "micro_f1": 0.949372,
+        "exact_match_ratio": 0.0,
+        "topk_hit_rate": 1.0,
+        "avg_predicted_labels": 15.239583,
+        "avg_true_labels": 13.770833
+      },
+      "val": {
+        "micro_precision": null,
+        "micro_recall": null,
+        "micro_f1": null,
+        "exact_match_ratio": null,
+        "topk_hit_rate": null,
+        "avg_predicted_labels": null,
+        "avg_true_labels": null
+      },
+      "test": {
+        "micro_precision": null,
+        "micro_recall": null,
+        "micro_f1": null,
+        "exact_match_ratio": null,
+        "topk_hit_rate": null,
+        "avg_predicted_labels": null,
+        "avg_true_labels": null
+      }
+    }
+  }
+}

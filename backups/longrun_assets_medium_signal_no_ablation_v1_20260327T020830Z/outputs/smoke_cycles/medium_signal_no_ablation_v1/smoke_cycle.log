@@ -1,0 +1,103 @@
+
+===== mine_hard_cases =====
+COMMAND: /root/miniconda3/bin/python /root/DermAgent/scripts/mine_hard_cases.py --records-root /root/DermAgent/outputs --output-dir /root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/hard_case_mining
+
+[stdout]
+{
+  "records_scanned": 96,
+  "hard_case_count": 91,
+  "hard_cases_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/hard_case_mining/hard_cases.jsonl",
+  "summary_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/hard_case_mining/summary.json"
+}
+
+
+[returncode] 0
+
+===== analyze_skill_helpfulness =====
+COMMAND: /root/miniconda3/bin/python /root/DermAgent/scripts/analyze_skill_helpfulness.py --records-root /root/DermAgent/outputs --output-dir /root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/skill_helpfulness
+
+[stdout]
+{
+  "records_scanned": 96,
+  "skill_report_count": 16,
+  "reports_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/skill_helpfulness/skill_helpfulness_reports.jsonl",
+  "summary_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/skill_helpfulness/skill_helpfulness_summary.json"
+}
+
+
+[returncode] 0
+
+===== run_batch_reflection =====
+COMMAND: /root/miniconda3/bin/python /root/DermAgent/scripts/run_batch_reflection.py --records-root /root/DermAgent/outputs --hard-cases-path /root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/hard_case_mining/hard_cases.jsonl --output-dir /root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/batch_reflection
+
+[stdout]
+{
+  "batch_id": "batch_283cce9c5067",
+  "source_summary": {
+    "execution_record_count": 96,
+    "hard_case_count": 91,
+    "success_case_count": 23,
+    "failure_case_count": 73,
+    "dataset_counts": {
+      "pad_ufes_20": 96
+    },
+    "policy_counts": {
+      "stable_default_policy": 96
+    }
+  },
+  "success_cluster_count": 3,
+  "failure_cluster_count": 13,
+  "rule_candidate_count": 2,
+  "composite_skill_seed_candidate_count": 3,
+  "critique_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/batch_reflection/batch_critique.json",
+  "summary_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/batch_reflection/summary.json"
+}
+
+
+[returncode] 0
+
+===== consolidate_experiences =====
+COMMAND: /root/miniconda3/bin/python /root/DermAgent/scripts/consolidate_experiences.py --experience-root /root/DermAgent/state/experience --hard-cases-path /root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/hard_case_mining/hard_cases.jsonl --output-dir /root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/consolidation
+
+[stdout]
+{
+  "consolidated_count": 26,
+  "records_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/consolidation/consolidated_abstract_experiences.jsonl",
+  "summary_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/consolidation/summary.json",
+  "write_to_store": true
+}
+
+
+[returncode] 0
+
+===== generate_skill_refinement_candidates =====
+COMMAND: /root/miniconda3/bin/python /root/DermAgent/scripts/generate_skill_refinement_candidates.py --records-root /root/DermAgent/outputs --hard-cases-path /root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/hard_case_mining/hard_cases.jsonl --skill-helpfulness-dir /root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/skill_helpfulness --experience-root /root/DermAgent/state/experience --output-dir /root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/skill_refinement_candidates
+
+[stdout]
+{
+  "candidate_count": 44,
+  "candidates_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/skill_refinement_candidates/skill_refinement_candidates.jsonl",
+  "summary_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/skill_refinement_candidates/summary.json"
+}
+
+
+[returncode] 0
+
+===== generate_composite_skill_proposals =====
+COMMAND: /root/miniconda3/bin/python /root/DermAgent/scripts/generate_composite_skill_proposals.py --batch-critique-path /root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/batch_reflection/batch_critique.json --refinement-candidates-path /root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/skill_refinement_candidates/skill_refinement_candidates.jsonl --experience-root /root/DermAgent/state/experience --output-dir /root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/composite_skill_proposals
+
+[stdout]
+{
+  "proposal_count": 3,
+  "proposal_ids": [
+    "proposal_15309c19248b",
+    "proposal_ba87b26b1a55",
+    "proposal_cf9ac8d3dd33"
+  ],
+  "proposals_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/composite_skill_proposals/composite_skill_proposals.jsonl",
+  "summary_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/composite_skill_proposals/summary.json",
+  "output_dir": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/composite_skill_proposals"
+}
+
+
+[returncode] 0

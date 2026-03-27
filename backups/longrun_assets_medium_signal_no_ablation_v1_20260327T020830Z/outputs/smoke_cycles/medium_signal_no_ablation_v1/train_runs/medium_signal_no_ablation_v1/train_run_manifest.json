@@ -1,0 +1,77 @@
+{
+  "schema_version": "staged_training_pipeline_v1",
+  "run_id": "medium_signal_no_ablation_v1",
+  "created_at": "2026-03-26T17:57:45Z",
+  "status": "running",
+  "selected_stages": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "stage_names": {
+    "0": "bootstrap_collect_data",
+    "1": "supervised_controller_training",
+    "2": "retrieval_scorer_training",
+    "3": "policy_candidate_evaluation",
+    "4": "stable_checkpoint_export"
+  },
+  "train_eval_separation": {
+    "formal_eval_scripts_not_called": true,
+    "policy_candidate_eval_output_under_train_run": true
+  },
+  "config": {
+    "records_root": "/root/DermAgent/outputs",
+    "data_root": "/root/DermAgent/data",
+    "stable_policy_config": "/root/DermAgent/state/policy/current_stable_policy.json",
+    "dataset_filter": "",
+    "training_split": "train",
+    "limit": 96,
+    "epochs": 6,
+    "split_json": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/fixed_split.json",
+    "seed": 42,
+    "case_offset": 1608,
+    "stage3_data_split": "val",
+    "controller_examples_path": "",
+    "controller_checkpoint_in": "",
+    "retrieval_checkpoint_in": "",
+    "checkpoint_out_dir": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/checkpoints",
+    "dry_run": false
+  },
+  "paths": {
+    "run_root": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/train_runs/medium_signal_no_ablation_v1",
+    "run_manifest_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/train_runs/medium_signal_no_ablation_v1/train_run_manifest.json"
+  },
+  "stages": {
+    "0": {
+      "stage_name": "bootstrap_collect_data",
+      "manifest_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/train_runs/medium_signal_no_ablation_v1/stage0_bootstrap_collect_data/manifest.json",
+      "status": "completed",
+      "checkpoint": {
+        "component": "bootstrap_data_snapshot",
+        "version": "bootstrap_data_medium_signal_no_ablation_v1_0b65704a6dff"
+      }
+    },
+    "1": {
+      "stage_name": "supervised_controller_training",
+      "manifest_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/train_runs/medium_signal_no_ablation_v1/stage1_supervised_controller_training/manifest.json",
+      "status": "completed",
+      "checkpoint": {
+        "component": "controller_planner_scorer",
+        "version": "controller_planner_scorer_v0.1.0+medium_signal_no_ablation_v1",
+        "path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/train_runs/medium_signal_no_ablation_v1/stage1_supervised_controller_training/checkpoints/controller_planner_scorer__candidate__medium_signal_no_ablation_v1.pt"
+      }
+    },
+    "2": {
+      "stage_name": "retrieval_scorer_training",
+      "manifest_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/train_runs/medium_signal_no_ablation_v1/stage2_retrieval_scorer_training/manifest.json",
+      "status": "completed",
+      "checkpoint": {
+        "component": "retrieval_reranker",
+        "version": "retrieval_reranker_v0.1.0+medium_signal_no_ablation_v1",
+        "path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_v1/train_runs/medium_signal_no_ablation_v1/stage2_retrieval_scorer_training/checkpoints/retrieval_reranker__candidate__medium_signal_no_ablation_v1.pt"
+      }
+    }
+  }
+}

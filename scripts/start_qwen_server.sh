@@ -24,8 +24,8 @@ PID_FILE="${PID_FILE:-${PROJECT_ROOT}/state/qwen_server.pid}"
 FORCE_RESTART="${FORCE_RESTART:-0}"
 
 GPU_MEMORY_UTILIZATION="${GPU_MEMORY_UTILIZATION:-0.92}"
-MAX_MODEL_LEN="${MAX_MODEL_LEN:-12288}"
-MAX_NUM_SEQS="${MAX_NUM_SEQS:-2}"
+MAX_MODEL_LEN="${MAX_MODEL_LEN:-24576}"
+MAX_NUM_SEQS="${MAX_NUM_SEQS:-}"
 CPU_OFFLOAD_GB="${CPU_OFFLOAD_GB:-0}"
 ENFORCE_EAGER="${ENFORCE_EAGER:-0}"
 COMPILATION_CONFIG="${COMPILATION_CONFIG:-{\"mode\":0,\"cudagraph_mode\":0}}"
@@ -47,6 +47,18 @@ resolve_vllm_bin() {
   fi
 
   echo ""
+}
+
+resolve_default_max_num_seqs() {
+  if [[ -n "${MAX_NUM_SEQS}" ]]; then
+    echo "${MAX_NUM_SEQS}"
+    return 0
+  fi
+  if [[ "${MAX_MODEL_LEN}" -gt 12288 ]]; then
+    echo "1"
+    return 0
+  fi
+  echo "2"
 }
 
 detect_model_path() {
@@ -117,9 +129,13 @@ fi
 
 SERVED_MODEL_NAME="${SERVED_MODEL_NAME:-$(basename "${RESOLVED_MODEL_PATH}")}"
 SERVICE_URL="http://${HOST}:${PORT}/v1/models"
+MAX_NUM_SEQS="$(resolve_default_max_num_seqs)"
 
 if service_ready && [[ "${FORCE_RESTART}" != "1" ]]; then
   echo "[ok] Qwen service is already ready."
+  echo "[info] desired max model len : ${MAX_MODEL_LEN}"
+  echo "[info] desired max num seqs  : ${MAX_NUM_SEQS}"
+  echo "[info] if the running service still shows a lower max_model_len, restart with FORCE_RESTART=1 to apply the new context limit."
   cat /tmp/qwen_models.json
   exit 0
 fi

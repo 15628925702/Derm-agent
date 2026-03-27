@@ -1,0 +1,1004 @@
+{
+  "perception": {
+    "image_summary": "The image shows a close-up of skin with multiple small, slightly raised, pinkish lesions scattered across the surface.",
+    "ddx_candidates": [
+      "Actinic keratosis",
+      "Seborrheic keratosis",
+      "Solar lentigo"
+    ],
+    "uncertainty": {
+      "level": "low",
+      "reasons": [
+        "Lesions are small and not sharply defined.",
+        "No significant changes in size or appearance over time."
+      ]
+    },
+    "notes": [
+      "Lesions appear to be on the chest area.",
+      "Patient reports itching but no bleeding or pain."
+    ]
+  },
+  "retrieved_experience": [
+    {
+      "case_id": "PAT_1516_1765",
+      "source_layer": "abstract_experience",
+      "source_subtype": "rule",
+      "experience_type": "rule",
+      "perception_summary": "{'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "confusion_pair": null,
+      "learning_points": [
+        "Preserve Qwen as the only final diagnostic decision maker.",
+        "risk_then_uncertainty_audit"
+      ],
+      "source_id": "abs_rule_903518803931",
+      "retrieval_score": 3
+    },
+    {
+      "case_id": "PAT_1516_1765",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "A well-circumscribed, slightly irregular brown lesion on the arm.",
+      "confusion_pair": "Atypical Nevus->NEV",
+      "learning_points": [
+        "Imported legacy confusion memory.",
+        "observe_then_structure"
+      ],
+      "source_id": "abs_confusion_96013d69cef6",
+      "retrieval_score": 3
+    },
+    {
+      "case_id": "PAT_1516_1765",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "{'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "confusion_pair": "Atypical Mole->NEV",
+      "learning_points": [
+        "Imported legacy confusion memory.",
+        "risk_then_uncertainty_audit"
+      ],
+      "source_id": "abs_confusion_01d077299876",
+      "retrieval_score": 3
+    }
+  ],
+  "skill_outputs": {
+    "morphology_analysis_skill": {
+      "lesion_type": "papule",
+      "size_range": "small",
+      "elevation": "raised",
+      "count": "multiple",
+      "referenced_experiences": [
+        "PAT_1516_1765"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "color_pattern_analysis_skill": {
+      "primary_color": "Pink",
+      "color_variation": "Marked",
+      "pigmentation_pattern": "Patchy",
+      "asymmetry_color": "Present",
+      "referenced_experiences": [
+        "PAT_1516_1765"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "border_surface_analysis_skill": {
+      "border_clarity": "poorly defined",
+      "border_irregularity": "irregular",
+      "surface_texture": "smooth",
+      "scaling_presence": "absent",
+      "referenced_experiences": [
+        "PAT_1516_1765"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "distribution_analysis_skill": {
+      "body_location": "chest",
+      "symmetry": "asymmetric",
+      "localized_vs_generalized": "generalized",
+      "clustering_pattern": "scattered",
+      "referenced_experiences": [
+        "PAT_1516_1765",
+        "abs_rule_903518803931",
+        "abs_confusion_01d077299876",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "lesion_description_structuring_skill": {
+      "primary_lesion_morphology": "Multiple small papules",
+      "color": [
+        "Pink"
+      ],
+      "border": [
+        "Poorly defined, irregular"
+      ],
+      "surface": [
+        "Smooth"
+      ],
+      "size_count": [
+        "size_range: small, count: multiple"
+      ],
+      "distribution": [
+        "body_location: chest, symmetry: asymmetric, localized_vs_generalized: generalized, clustering_pattern: scattered"
+      ],
+      "associated_context": [
+        "age: 39, itch: True, grew: False, hurt: False, changed: False, bleed: False, elevation: False"
+      ],
+      "referenced_experiences": [
+        "PAT_1516_1765",
+        "abs_rule_903518803931",
+        "abs_confusion_01d077299876",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "metadata_consistency_skill": {
+      "consistency_score": "medium",
+      "conflicts": [],
+      "suspicious_points": [
+        "The patient's age (39) does not match the typical presentation of Actinic Keratosis, which is more common in older individuals."
+      ],
+      "referenced_experiences": [
+        "PAT_1516_1765",
+        "abs_rule_903518803931",
+        "abs_confusion_01d077299876",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "temporal_evolution_skill": {
+      "onset_type": "chronic",
+      "progression_speed": "stable",
+      "recurrence": "no",
+      "stability": "stable",
+      "referenced_experiences": [
+        "PAT_1516_1765",
+        "abs_rule_903518803931",
+        "abs_confusion_01d077299876",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "malignancy_risk_assessment_skill": {
+      "risk_level": "medium",
+      "risk_evidence": [
+        "{'type': 'morphology', 'description': 'Multiple small papules with poor-defined borders suggest irregularity.', 'strength': 'medium'}",
+        "{'type': 'color', 'description': 'Pinkish lesions with marked color variation and patchy pigmentation indicate potential for malignancy.', 'strength': 'medium'}",
+        "{'type': 'border', 'description': 'Poorly defined and irregular borders are concerning for malignancy.', 'strength': 'medium'}",
+        "{'type': 'symptoms', 'description': 'Itching without bleeding or pain could be indicative of actinic keratosis, but further evaluation is necessary.', 'strength': 'low'}"
+      ],
+      "alarm_signals": [
+        "Poorly defined borders",
+        "Marked color variation",
+        "Patchy pigmentation"
+      ],
+      "referenced_experiences": [
+        "abs_rule_903518803931",
+        "abs_confusion_01d077299876"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "risk_signal"
+    },
+    "differential_compare_skill": {
+      "candidate_pairs": [
+        "Actinic keratosis vs Seborrheic keratosis",
+        "Actinic keratosis vs Solar lentigo",
+        "Seborrheic keratosis vs Solar lentigo"
+      ],
+      "supporting_evidence": [
+        {
+          "type": "morphology",
+          "description": "Multiple small papules with poor-defined borders suggest irregularity.",
+          "strength": "medium"
+        },
+        {
+          "type": "color",
+          "description": "Pinkish lesions with marked color variation and patchy pigmentation indicate potential for malignancy.",
+          "strength": "medium"
+        },
+        {
+          "type": "border",
+          "description": "Poorly defined and irregular borders are concerning for malignancy.",
+          "strength": "medium"
+        }
+      ],
+      "conflicting_evidence": [
+        {
+          "type": "morphology",
+          "description": "Lesions are small and not sharply defined.",
+          "strength": "low"
+        },
+        {
+          "type": "temporal_evolution",
+          "description": "No significant changes in size or appearance over time.",
+          "strength": "low"
+        }
+      ],
+      "referenced_experiences": [
+        "PAT_1516_1765",
+        "abs_rule_903518803931",
+        "abs_confusion_01d077299876",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "comparative_support"
+    },
+    "exclusion_reasoning_skill": {
+      "unlikely_candidates": [
+        "Actinic keratosis"
+      ],
+      "exclusion_evidence": [
+        "Lesions are small and not sharply defined.",
+        "No significant changes in size or appearance over time."
+      ],
+      "required_missing_evidence": [
+        "More detailed temporal evolution data",
+        "Additional clinical history"
+      ],
+      "exclusion_confidence": "medium",
+      "referenced_experiences": [
+        "PAT_1516_1765",
+        "abs_rule_903518803931",
+        "abs_confusion_01d077299876",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "information_gap_detection_skill": {
+      "missing_information": [
+        "Detailed temporal evolution",
+        "Additional clinical history"
+      ],
+      "why_it_matters": [
+        "Temporal evolution helps in assessing the behavior of the lesions over time, which is crucial for differentiating between benign and potentially malignant conditions.",
+        "Clinical history provides context about the patient's health status, symptoms, and medical history, which can influence the differential diagnosis."
+      ],
+      "impact_on_differential": [
+        "Without detailed temporal evolution, it is challenging to determine if the lesions are static or evolving, which can affect the differential diagnosis.",
+        "Lack of additional clinical history limits the ability to rule out or confirm certain conditions based on known risk factors or comorbidities."
+      ],
+      "uncertainty_if_missing": "high",
+      "referenced_experiences": [
+        "PAT_1516_1765",
+        "abs_rule_903518803931",
+        "abs_confusion_01d077299876",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "uncertainty_assessment_skill": {
+      "uncertainty_level": "medium",
+      "reasons": [
+        "Lesions are small and not sharply defined.",
+        "No significant changes in size or appearance over time.",
+        "The patient's history includes itching but no bleeding or pain, which can be associated with various conditions."
+      ],
+      "missing_information": [
+        "Detailed temporal evolution of lesion characteristics.",
+        "Presence or absence of bleeding or pain.",
+        "Complete medical history including past skin conditions and treatments."
+      ],
+      "referenced_experiences": [
+        "PAT_1516_1765",
+        "abs_rule_903518803931",
+        "abs_confusion_01d077299876",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "uncertainty_signal"
+    },
+    "contradiction_check_skill": {
+      "contradictions": [
+        {
+          "source": "morphology_analysis_skill",
+          "reason": "The lesion type described as 'papule' contradicts the image summary stating 'small, slightly raised, pinkish lesions'."
+        }
+      ],
+      "missing_links": [
+        {
+          "description": "The presence or absence of bleeding or pain should be confirmed.",
+          "reason": "This information is crucial for differentiating between Actinic Keratosis and Seborrheic Keratosis."
+        },
+        {
+          "description": "Detailed temporal evolution of lesion characteristics is needed.",
+          "reason": "This would help in assessing the stability of the lesions and their potential for malignancy."
+        }
+      ],
+      "reasoning_gaps": [
+        {
+          "description": "The impact of the patient's history (itching) on the differential diagnosis needs to be considered more deeply.",
+          "reason": "While itching is mentioned, it does not provide enough specific information to rule out certain conditions."
+        }
+      ],
+      "referenced_experiences": [
+        "PAT_1516_1765",
+        "abs_rule_903518803931",
+        "abs_confusion_01d077299876",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "conflict_signal"
+    },
+    "escalation_recommendation_skill": {
+      "whether_escalation_needed": "consider",
+      "escalation_reason": [
+        "The morphology suggests irregularity, and there is a need for more detailed temporal evolution and additional clinical history to better assess the risk."
+      ],
+      "suggested_next_check_type": "biopsy",
+      "caution_flags": [
+        "Poorly defined borders",
+        "Marked color variation",
+        "Patchy pigmentation"
+      ],
+      "referenced_experiences": [
+        "PAT_1516_1765"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "risk_signal"
+    }
+  },
+  "risk_flags": [
+    "malignancy_risk:medium"
+  ],
+  "uncertainty": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "Lesions are small and not sharply defined.",
+      "No significant changes in size or appearance over time.",
+      "The patient's history includes itching but no bleeding or pain, which can be associated with various conditions."
+    ],
+    "missing_information": [
+      "Detailed temporal evolution of lesion characteristics.",
+      "Presence or absence of bleeding or pain.",
+      "Complete medical history including past skin conditions and treatments."
+    ],
+    "referenced_experiences": [
+      "PAT_1516_1765",
+      "abs_rule_903518803931",
+      "abs_confusion_01d077299876",
+      "abs_rule_c93aa7bc54f6"
+    ],
+    "evidence_strength": "medium",
+    "recommendation_type": "uncertainty_signal"
+  },
+  "notes": [
+    "Agent generated structured evidence only.",
+    "Qwen remains the sole final diagnostic decision maker.",
+    "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, temporal_evolution_skill, malignancy_risk_assessment_skill, differential_compare_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill.",
+    "Policy in use: stable_default_policy.",
+    "Skill retrieval candidates: lesion_description_structuring_skill, metadata_consistency_skill, morphology_analysis_skill, malignancy_risk_assessment_skill, distribution_analysis_skill, color_pattern_analysis_skill, temporal_evolution_skill, border_surface_analysis_skill, uncertainty_assessment_skill, contradiction_check_skill, differential_compare_skill, escalation_recommendation_skill, information_gap_detection_skill, exclusion_reasoning_skill.",
+    "Lesions appear to be on the chest area.",
+    "Patient reports itching but no bleeding or pain.",
+    "Retrieved prior reasoning experience for context."
+  ],
+  "initial_perception_summary": {
+    "image_summary": "The image shows a close-up of skin with multiple small, slightly raised, pinkish lesions scattered across the surface.",
+    "ddx_candidates": [
+      "Actinic keratosis",
+      "Seborrheic keratosis",
+      "Solar lentigo"
+    ],
+    "uncertainty_level": "low",
+    "uncertainty_reasons": [
+      "Lesions are small and not sharply defined.",
+      "No significant changes in size or appearance over time."
+    ],
+    "observation_notes": [
+      "Lesions appear to be on the chest area.",
+      "Patient reports itching but no bleeding or pain."
+    ]
+  },
+  "retrieved_raw_cases_summary": [
+    {
+      "source_id": "PAT_1516_1765",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "None",
+      "perception_summary": "",
+      "learning_points": [
+        "Final decision: None",
+        "Correctness: None"
+      ],
+      "retrieval_score": 2.0,
+      "base_retrieval_score": 2.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_tactical_experiences_summary": [
+    {
+      "source_id": "tac_PAT_1516_1765_a0a91034ab1a",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Mole->NEV",
+      "perception_summary": "risk=malignancy_risk:medium; uncertainty=low; {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "learning_points": [
+        "Preserve Qwen as the only final diagnostic decision maker.",
+        "Use evidence package to surface structured morphology, risk, and uncertainty clues.",
+        "Action pattern: risk_then_uncertainty_audit"
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_PAT_1516_1765_6c7d6a323fec",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Nevus->NEV",
+      "perception_summary": "risk=malignancy_risk:medium; uncertainty=low; A well-circumscribed, slightly irregular brown lesion on the arm.",
+      "learning_points": [
+        "Keep Qwen as the only final diagnostic decision maker.",
+        "Use structured skill evidence to support, not replace, final diagnosis.",
+        "Track confusion pattern: Atypical Nevus->NEV."
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_PAT_1516_1765_510e192d29fd",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Mole->NEV",
+      "perception_summary": "risk=malignancy_risk:medium; uncertainty=low; morphology=Irregular; color=Brown; border=Irregular; surface=Smooth; body_location=Arm",
+      "learning_points": [
+        "Keep Qwen as the only final diagnostic decision maker.",
+        "Use structured skill evidence to support, not replace, final diagnosis.",
+        "Track confusion pattern: Atypical Mole->NEV."
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_abstract_experiences_summary": [
+    {
+      "source_id": "abs_rule_903518803931",
+      "source_layer": "abstract_experience",
+      "experience_type": "rule",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "None",
+      "perception_summary": "{'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "learning_points": [
+        "Preserve Qwen as the only final diagnostic decision maker.",
+        "risk_then_uncertainty_audit"
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_confusion_96013d69cef6",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Nevus->NEV",
+      "perception_summary": "A well-circumscribed, slightly irregular brown lesion on the arm.",
+      "learning_points": [
+        "Imported legacy confusion memory.",
+        "observe_then_structure"
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_confusion_01d077299876",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Mole->NEV",
+      "perception_summary": "{'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "learning_points": [
+        "Imported legacy confusion memory.",
+        "risk_then_uncertainty_audit"
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "uncertainty_summary": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "Lesions are small and not sharply defined.",
+      "No significant changes in size or appearance over time.",
+      "The patient's history includes itching but no bleeding or pain, which can be associated with various conditions."
+    ],
+    "missing_information": [
+      "Detailed temporal evolution of lesion characteristics.",
+      "Presence or absence of bleeding or pain.",
+      "Complete medical history including past skin conditions and treatments."
+    ],
+    "referenced_experiences": [
+      "PAT_1516_1765",
+      "abs_rule_903518803931",
+      "abs_confusion_01d077299876",
+      "abs_rule_c93aa7bc54f6"
+    ]
+  },
+  "contradiction_summary": {
+    "contradictions": [
+      "{'source': 'morphology_analysis_skill', 'reason': \"The lesion type described as 'papule' contradicts the image summary stating 'small, slightly raised, pinkish lesions'.\"}"
+    ],
+    "missing_links": [
+      "{'description': 'The presence or absence of bleeding or pain should be confirmed.', 'reason': 'This information is crucial for differentiating between Actinic Keratosis and Seborrheic Keratosis.'}",
+      "{'description': 'Detailed temporal evolution of lesion characteristics is needed.', 'reason': 'This would help in assessing the stability of the lesions and their potential for malignancy.'}"
+    ],
+    "reasoning_gaps": [
+      "{'description': \"The impact of the patient's history (itching) on the differential diagnosis needs to be considered more deeply.\", 'reason': 'While itching is mentioned, it does not provide enough specific information to rule out certain conditions.'}"
+    ],
+    "metadata_conflicts": [],
+    "suspicious_points": [
+      "The patient's age (39) does not match the typical presentation of Actinic Keratosis, which is more common in older individuals."
+    ]
+  },
+  "information_gap_summary": {
+    "missing_information": [
+      "Detailed temporal evolution",
+      "Additional clinical history"
+    ],
+    "why_it_matters": [
+      "Temporal evolution helps in assessing the behavior of the lesions over time, which is crucial for differentiating between benign and potentially malignant conditions.",
+      "Clinical history provides context about the patient's health status, symptoms, and medical history, which can influence the differential diagnosis."
+    ],
+    "impact_on_differential": [
+      "Without detailed temporal evolution, it is challenging to determine if the lesions are static or evolving, which can affect the differential diagnosis.",
+      "Lack of additional clinical history limits the ability to rule out or confirm certain conditions based on known risk factors or comorbidities."
+    ],
+    "uncertainty_if_missing": "high"
+  },
+  "escalation_summary": {
+    "whether_escalation_needed": "consider",
+    "escalation_reason": [
+      "The morphology suggests irregularity, and there is a need for more detailed temporal evolution and additional clinical history to better assess the risk."
+    ],
+    "suggested_next_check_type": "biopsy",
+    "caution_flags": [
+      "Poorly defined borders",
+      "Marked color variation",
+      "Patchy pigmentation"
+    ]
+  },
+  "planner_rationale": {
+    "planner_type": "rule_based",
+    "planner_version": "v1",
+    "selected_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "border_surface_analysis_skill",
+      "distribution_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "temporal_evolution_skill",
+      "malignancy_risk_assessment_skill",
+      "differential_compare_skill",
+      "exclusion_reasoning_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill",
+      "escalation_recommendation_skill"
+    ],
+    "selection_reasons": {
+      "morphology_analysis_skill": [
+        "Boosted by skill retrieval score=13.50.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "color_pattern_analysis_skill": [
+        "Boosted by skill retrieval score=12.00.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "border_surface_analysis_skill": [
+        "Boosted by skill retrieval score=10.50.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "distribution_analysis_skill": [
+        "Boosted by skill retrieval score=12.50.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "lesion_description_structuring_skill": [
+        "Boosted by skill retrieval score=15.50.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `temporal_metadata`."
+      ],
+      "metadata_consistency_skill": [
+        "Boosted by skill retrieval score=14.50.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "temporal_evolution_skill": [
+        "Boosted by skill retrieval score=11.50.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `temporal_metadata`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ],
+      "malignancy_risk_assessment_skill": [
+        "Boosted by skill retrieval score=13.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `temporal_metadata`."
+      ],
+      "differential_compare_skill": [
+        "Boosted by skill retrieval score=5.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched 2 morphology clues from the current perception."
+      ],
+      "exclusion_reasoning_skill": [
+        "Boosted by skill retrieval score=2.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active signal `multiple_ddx` via skill trigger metadata.",
+        "Boosted by retrieved experience summary favoring compare/uncertainty style control."
+      ],
+      "information_gap_detection_skill": [
+        "Boosted by skill retrieval score=4.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `malignancy_possible`.",
+        "Matched active signal `multiple_ddx` via skill trigger metadata."
+      ],
+      "uncertainty_assessment_skill": [
+        "Boosted by skill retrieval score=9.50.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `location_or_size_metadata`.",
+        "Matched active trigger profile `malignancy_possible`."
+      ],
+      "contradiction_check_skill": [
+        "Boosted by skill retrieval score=8.50.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `location_or_size_metadata`.",
+        "Matched 3 metadata clues from the current case."
+      ],
+      "escalation_recommendation_skill": [
+        "Boosted by skill retrieval score=4.50.",
+        "Matched active trigger profile `malignancy_possible`.",
+        "Matched active trigger profile `escalation_needed`.",
+        "Matched 1 morphology clues from the current perception."
+      ]
+    }
+  },
+  "serialized_evidence_text": "[Observation Evidence]\n- Initial image summary: The image shows a close-up of skin with multiple small, slightly raised, pinkish lesions scattered across the surface.\n- Early differential candidates: Actinic keratosis, Seborrheic keratosis, Solar lentigo\n- structured lesion observation: lesion_description_structuring_skill: primary_lesion_morphology=Multiple small papules | color=Pink | border=Poorly defined, irregular | surface=Smooth | size_count=size_range: small, count: multiple | distribution=body_location: chest, symmetry: asymmetric, localized_vs_generalized: generalized, clustering_pattern: scattered || morphology_analysis_skill: lesion_type=papule | size_range=small | elevation=raised | count=multiple | evidence_strength=medium | recommendation_type=descriptive_evidence || color_pattern_analysis_skill: primary_color=Pink | color_variation=Marked | pigmentation_pattern=Patchy | asymmetry_color=Present | evidence_strength=medium | recommendation_type=descriptive_evidence\n- border_surface_analysis_skill: border_clarity=poorly defined | border_irregularity=irregular | surface_texture=smooth | scaling_presence=absent | evidence_strength=medium | recommendation_type=descriptive_evidence\n\n[Exclusion And Comparison Evidence]\n- differential and exclusion reasoning: differential_compare_skill: candidate_pairs=Actinic keratosis vs Seborrheic keratosis; Actinic keratosis vs Solar lentigo; Seborrheic keratosis vs Solar lentigo | supporting_evidence={'type': 'morphology', 'description': 'Multiple small papules with poor-defined borders suggest irregularity.', 'strength': 'medium'}; {'type': 'color', 'des... | conflicting_evidence={'type': 'morphology', 'description': 'Lesions are small and not sharply defined.', 'strength': 'low'}; {'type': 'temporal_evolution', 'description': 'No sig... | evidence_strength=medium | recommendation_type=comparative_support || exclusion_reasoning_skill: unlikely_candidates=Actinic keratosis | exclusion_evidence=Lesions are small and not sharply defined.; No significant changes in size or appearance over time. | required_missing_evidence=More detailed temporal evolution data; Additional clinical history | exclusion_confidence=medium | evidence_strength=medium | recommendation_type=descriptive_evidence\n- metadata_consistency_skill: consistency_score=medium | suspicious_points=The patient's age (39) does not match the typical presentation of Actinic Keratosis, which is more common in older individuals. | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Tactical experience tac_PAT_1516_1765_a0a91034ab1a: risk=malignancy_risk:medium; uncertainty=low; {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}; Preserve Qwen as the only final diagnostic decision maker.; Use evidence package to surface structured morphology, risk, and uncertainty clues.; Action pattern: risk_then_uncertainty_audit\n- Tactical experience tac_PAT_1516_1765_6c7d6a323fec: risk=malignancy_risk:medium; uncertainty=low; A well-circumscribed, slightly irregular brown lesion on the arm.; Keep Qwen as the only final diagnostic decision maker.; Use structured skill evidence to support, not replace, final diagnosis.; Track confusion pattern: Atypical Nevus->NEV.\n\n[Risk Evidence]\n- Risk flags: malignancy_risk:medium\n- malignancy_risk_assessment_skill: risk_level=medium | risk_evidence={'type': 'morphology', 'description': 'Multiple small papules with poor-defined borders suggest irregularity.', 'strength': 'medium'}; {'type': 'color', 'des... | alarm_signals=Poorly defined borders; Marked color variation; Patchy pigmentation | evidence_strength=medium | recommendation_type=risk_signal\n- Abstract experience abs_rule_903518803931: {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}; Preserve Qwen as the only final diagnostic decision maker.; risk_then_uncertainty_audit\n- Abstract experience abs_confusion_01d077299876: {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}; Imported legacy confusion memory.; risk_then_uncertainty_audit\n\n[Conflict And Uncertainty]\n- Uncertainty level: medium\n- Uncertainty reasons: Lesions are small and not sharply defined.; No significant changes in size or appearance over time.; The patient's history includes itching but no bleeding or pain, which can be associated with various conditions.\n- Missing information: Detailed temporal evolution of lesion characteristics.; Presence or absence of bleeding or pain.; Complete medical history including past skin conditions and treatments.\n- contradictions: {'source': 'morphology_analysis_skill', 'reason': \"The lesion type described as 'papule' contradicts the image summary stating 'small, slightly raised, pinkish lesions'.\"}\n- missing links: {'description': 'The presence or absence of bleeding or pain should be confirmed.', 'reason': 'This information is crucial for differentiating between Actinic Keratosis and Seborrheic Keratosis.'}; {'description': 'Detailed temporal evolution of lesion characteristics is needed.', 'reason': 'This would help in assessing the stability of the lesions and their potential for malignancy.'}\n- reasoning gaps: {'description': \"The impact of the patient's history (itching) on the differential diagnosis needs to be considered more deeply.\", 'reason': 'While itching is mentioned, it does not provide enough specific information to rule out certain conditions.'}\n- suspicious points: The patient's age (39) does not match the typical presentation of Actinic Keratosis, which is more common in older individuals.\n- contradiction_check_skill: contradictions={'source': 'morphology_analysis_skill', 'reason': \"The lesion type described as 'papule' contradicts the image summary stating 'small, slightly raised, pinki... | missing_links={'description': 'The presence or absence of bleeding or pain should be confirmed.', 'reason': 'This information is crucial for differentiating between Actini... | reasoning_gaps={'description': \"The impact of the patient's history (itching) on the differential diagnosis needs to be considered more deeply.\", 'reason': 'While itching i... | evidence_strength=medium | recommendation_type=conflict_signal\n- information_gap_detection_skill: missing_information=Detailed temporal evolution; Additional clinical history | why_it_matters=Temporal evolution helps in assessing the behavior of the lesions over time, which is crucial for differentiating between benign and potentially malignant co... | impact_on_differential=Without detailed temporal evolution, it is challenging to determine if the lesions are static or evolving, which can affect the differential diagnosis.; Lack... | uncertainty_if_missing=high | evidence_strength=medium | recommendation_type=descriptive_evidence\n- explicit information gaps: Detailed temporal evolution; Additional clinical history\n- why gaps matter: Temporal evolution helps in assessing the behavior of the lesions over time, which is crucial for differentiating between benign and potentially malignant conditions.; Clinical history provides context about the patient's health status, symptoms, and medical history, which can influence the differential diagnosis.\n- impact on differential: Without detailed temporal evolution, it is challenging to determine if the lesions are static or evolving, which can affect the differential diagnosis.; Lack of additional clinical history limits the ability to rule out or confirm certain conditions based on known risk factors or comorbidities.\n- residual uncertainty if still missing: high\n- escalation_recommendation_skill: whether_escalation_needed=consider | escalation_reason=The morphology suggests irregularity, and there is a need for more detailed temporal evolution and additional clinical history to better assess the risk. | suggested_next_check_type=biopsy | caution_flags=Poorly defined borders; Marked color variation; Patchy pigmentation | evidence_strength=medium | recommendation_type=risk_signal\n- escalation needed: consider\n- escalation reasons: The morphology suggests irregularity, and there is a need for more detailed temporal evolution and additional clinical history to better assess the risk.\n- suggested next check type: biopsy\n- caution flags: Poorly defined borders; Marked color variation; Patchy pigmentation\n\n[Planner Rationale]\n- Selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, temporal_evolution_skill, malignancy_risk_assessment_skill, differential_compare_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill\n- morphology_analysis_skill: Boosted by skill retrieval score=13.50.; Included as part of the core structured observation layer.; Matched active trigger profile `foundational_observation`.; Matched active trigger profile `multiple_ddx`.\n- color_pattern_analysis_skill: Boosted by skill retrieval score=12.00.; Included as part of the core structured observation layer.; Matched active trigger profile `foundational_observation`.; Matched active trigger profile `multiple_ddx`.\n- border_surface_analysis_skill: Boosted by skill retrieval score=10.50.; Included as part of the core structured observation layer.; Matched active trigger profile `foundational_observation`.; Matched active trigger profile `multiple_ddx`.",
+  "evidence_calibration_debug": {
+    "calibrator_type": "heuristic",
+    "calibrator_version": "v1",
+    "section_plan": {
+      "observation": {
+        "skill_names": [
+          "lesion_description_structuring_skill",
+          "morphology_analysis_skill",
+          "color_pattern_analysis_skill",
+          "border_surface_analysis_skill"
+        ],
+        "merged_groups": [
+          {
+            "label": "structured_lesion_observation",
+            "skills": [
+              "lesion_description_structuring_skill",
+              "morphology_analysis_skill",
+              "color_pattern_analysis_skill",
+              "border_surface_analysis_skill"
+            ],
+            "max_members": 3
+          }
+        ],
+        "raw_case_source_ids": [
+          "PAT_1516_1765"
+        ]
+      },
+      "comparison": {
+        "skill_names": [
+          "exclusion_reasoning_skill",
+          "metadata_consistency_skill",
+          "differential_compare_skill"
+        ],
+        "merged_groups": [
+          {
+            "label": "differential_and_exclusion_reasoning",
+            "skills": [
+              "differential_compare_skill",
+              "exclusion_reasoning_skill"
+            ],
+            "max_members": 2
+          }
+        ],
+        "tactical_source_ids": [
+          "tac_PAT_1516_1765_a0a91034ab1a",
+          "tac_PAT_1516_1765_6c7d6a323fec"
+        ]
+      },
+      "risk": {
+        "skill_names": [
+          "malignancy_risk_assessment_skill"
+        ],
+        "abstract_source_ids": [
+          "abs_confusion_01d077299876",
+          "abs_rule_903518803931"
+        ]
+      },
+      "conflict_uncertainty": {
+        "skill_names": [
+          "escalation_recommendation_skill",
+          "information_gap_detection_skill",
+          "contradiction_check_skill"
+        ]
+      },
+      "planner": {
+        "max_reason_skills": 3
+      },
+      "section_order": [
+        "observation",
+        "comparison",
+        "risk",
+        "conflict_uncertainty",
+        "planner"
+      ]
+    },
+    "item_scores": [
+      {
+        "item_id": "malignancy_risk_assessment_skill",
+        "item_type": "skill_output",
+        "section": "risk",
+        "heuristic_score": 9.54,
+        "learned_score": 0.0,
+        "final_score": 9.54,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "lesion_description_structuring_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 9.04,
+        "learned_score": 0.0,
+        "final_score": 9.04,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "escalation_recommendation_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 7.96,
+        "learned_score": 0.0,
+        "final_score": 7.96,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "morphology_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.88,
+        "learned_score": 0.0,
+        "final_score": 7.88,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "exclusion_reasoning_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 7.76,
+        "learned_score": 0.0,
+        "final_score": 7.76,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.66,
+        "learned_score": 0.0,
+        "final_score": 7.66,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "information_gap_detection_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 7.62,
+        "learned_score": 0.0,
+        "final_score": 7.62,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "contradiction_check_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 7.58,
+        "learned_score": 0.0,
+        "final_score": 7.58,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "metadata_consistency_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 7.46,
+        "learned_score": 0.0,
+        "final_score": 7.46,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "uncertainty_assessment_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 7.46,
+        "learned_score": 0.0,
+        "final_score": 7.46,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "border_surface_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.44,
+        "learned_score": 0.0,
+        "final_score": 7.44,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.3,
+        "learned_score": 0.0,
+        "final_score": 7.3,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "differential_compare_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 6.9,
+        "learned_score": 0.0,
+        "final_score": 6.9,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "temporal_evolution_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 6.42,
+        "learned_score": 0.0,
+        "final_score": 6.42,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "abs_confusion_01d077299876",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 5.0,
+        "learned_score": 0.0,
+        "final_score": 5.0,
+        "selected": true,
+        "reason": "selected"
+      },
+      {
+        "item_id": "abs_rule_903518803931",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 4.8,
+        "learned_score": 0.0,
+        "final_score": 4.8,
+        "selected": true,
+        "reason": "selected"
+      },
+      {
+        "item_id": "abs_confusion_96013d69cef6",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 4.1,
+        "learned_score": 0.0,
+        "final_score": 4.1,
+        "selected": false,
+        "reason": "dropped_by_rank"
+      },
+      {
+        "item_id": "tac_PAT_1516_1765_a0a91034ab1a",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 3.6,
+        "learned_score": 0.0,
+        "final_score": 3.6,
+        "selected": true,
+        "reason": "selected"
+      },
+      {
+        "item_id": "tac_PAT_1516_1765_6c7d6a323fec",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 3.6,
+        "learned_score": 0.0,
+        "final_score": 3.6,
+        "selected": true,
+        "reason": "selected"
+      },
+      {
+        "item_id": "tac_PAT_1516_1765_510e192d29fd",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 3.6,
+        "learned_score": 0.0,
+        "final_score": 3.6,
+        "selected": false,
+        "reason": "dropped_by_rank"
+      },
+      {
+        "item_id": "PAT_1516_1765",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 1.7,
+        "learned_score": 0.0,
+        "final_score": 1.7,
+        "selected": true,
+        "reason": "selected"
+      }
+    ],
+    "omitted_items": [],
+    "debug": {
+      "policy": {
+        "enable_evidence_calibrator": true,
+        "calibrator_mode": "heuristic",
+        "calibrator_checkpoint_path": "",
+        "learned_calibration_weight": 1.2,
+        "max_observation_skills": 4,
+        "max_comparison_skills": 3,
+        "max_risk_skills": 2,
+        "max_uncertainty_skills": 3,
+        "max_raw_cases": 1,
+        "max_tactical": 2,
+        "max_abstract": 2,
+        "max_planner_reasons": 3,
+        "omit_low_value_evidence": true,
+        "min_effective_score": 2.4,
+        "debug_output": true
+      },
+      "learned_scorer_loaded": false,
+      "contradiction_count": 5,
+      "uncertainty_level": "medium",
+      "risk_flag_count": 1
+    }
+  }
+}

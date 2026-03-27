@@ -1,0 +1,93 @@
+{
+  "policy_id": "candidate_stage4_step6_stage4_step6_stage3_real",
+  "version": 2,
+  "status": "candidate",
+  "created_at": "2026-03-26T10:04:58Z",
+  "parent_policy_id": "stable_default_policy",
+  "description": "Auto-generated candidate policy from staged training pipeline.",
+  "change_summary": {
+    "planner": [
+      "Baseline rule-based planner with structured evidence support."
+    ],
+    "skill_overrides": [],
+    "retrieval": [
+      "Use cognition-guided retrieval with conservative top-k defaults."
+    ],
+    "cognition_defaults": [],
+    "pipeline": [
+      "staged_training_run:stage4_step6_stage3_real"
+    ]
+  },
+  "planner_policy": {
+    "controller_family": "learned_supervised",
+    "controller_checkpoint_path": "/root/DermAgent/outputs/train_runs/stage4_step6_smoke/stage1_supervised_controller_training/checkpoints/controller_planner_scorer__candidate__stage4_step6_smoke.pt",
+    "learned_controller_weight": 4.0,
+    "learned_controller_select_threshold": 0.4,
+    "learned_controller_top_k": 0,
+    "learned_controller_force_top_k": 0,
+    "score_threshold_default": 4,
+    "retrieval_score_cap": 3,
+    "foundational_bonus": 6,
+    "preferred_skill_bonus": 3,
+    "helpful_rate_bonus": 2,
+    "failure_rate_penalty": 2,
+    "signal_match_bonus": 2,
+    "known_confusion_bonus": 2,
+    "experience_compare_bonus": 2,
+    "experience_risk_bonus": 2,
+    "experience_gap_bonus": 2,
+    "experience_conflict_bonus": 2,
+    "experience_escalation_bonus": 2,
+    "enable_signals": {
+      "experience_compare_pattern": true,
+      "experience_risk_pattern": true,
+      "experience_gap_pattern": true,
+      "experience_conflict_pattern": true,
+      "experience_escalation_pattern": true
+    },
+    "force_select_skills": [],
+    "force_disable_skills": [],
+    "skill_overrides": {}
+  },
+  "retrieval_policy": {
+    "top_k_experience": 3,
+    "top_k_tactical": 3,
+    "top_k_abstract": 3,
+    "top_k_skill_candidates": 14,
+    "prioritize_confusion_cases": true,
+    "enable_learned_retrieval_reranker": true,
+    "retrieval_reranker_checkpoint_path": "/root/DermAgent/outputs/train_runs/stage4_step6_smoke/stage2_retrieval_scorer_training/checkpoints/retrieval_reranker__candidate__stage4_step6_smoke.pt",
+    "retrieval_reranker_blend_weight": 2.5,
+    "retrieval_reranker_fail_open": true
+  },
+  "evidence_policy": {
+    "enable_evidence_calibrator": true,
+    "calibrator_mode": "heuristic",
+    "calibrator_checkpoint_path": "",
+    "learned_calibration_weight": 1.2,
+    "max_observation_skills": 4,
+    "max_comparison_skills": 3,
+    "max_risk_skills": 2,
+    "max_uncertainty_skills": 3,
+    "max_raw_cases": 1,
+    "max_tactical": 2,
+    "max_abstract": 2,
+    "max_planner_reasons": 3,
+    "omit_low_value_evidence": true,
+    "min_effective_score": 2.4,
+    "debug_output": true
+  },
+  "skill_config_refs": [],
+  "evidence_refs": {},
+  "evaluation_gate": {
+    "minimum_cases": 10,
+    "max_top1_drop": 0.0,
+    "max_topk_drop": 0.02,
+    "max_error_rate_increase": 0.02,
+    "max_key_confusion_drop": 0.0,
+    "require_non_decreasing_malignant_recall": true
+  },
+  "last_evaluation": {},
+  "rollback_history": [],
+  "source_path": "/root/DermAgent/state/policy/versions/candidate_stage4_step6_stage4_step6_stage3_real.json"
+}

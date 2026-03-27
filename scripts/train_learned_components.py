@@ -105,6 +105,10 @@ def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
             handle.write(json.dumps(row, ensure_ascii=False) + "\n")
 
 
+def read_json(path: Path) -> dict[str, Any]:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 def load_case_id_split(path: Path | None) -> set[str]:
     if path is None:
         return set()
@@ -171,6 +175,113 @@ def resolve_retrieval_checkpoint(stage_context: dict[str, Any], args: argparse.N
     if args.retrieval_checkpoint_in:
         return str(args.retrieval_checkpoint_in.expanduser())
     return ""
+
+
+def hydrate_stage_context_from_existing_run(
+    run_root: Path,
+    *,
+    selected_stages: list[int],
+    stage_context: dict[str, Any],
+) -> None:
+    for stage_id in sorted(STAGE_NAMES):
+        if stage_id in selected_stages:
+            continue
+        manifest_path = build_stage_dir(run_root, stage_id) / "manifest.json"
+        if not manifest_path.exists():
+            continue
+        manifest = read_json(manifest_path)
+        outputs = dict(manifest.get("outputs", {}) or {})
+        checkpoint = dict(manifest.get("checkpoint", {}) or {})
+        if stage_id == 0:
+            stage_context["stage0_records_root"] = str(outputs.get("records_snapshot_root", "")).strip()
+            stage_context["stage0_controller_examples_path"] = str(outputs.get("controller_examples_path", "")).strip()
+            stage_context["stage0_data_version"] = str(outputs.get("data_version", "")).strip()
+        elif stage_id == 1:
+            stage_context["stage1_controller_checkpoint_path"] = str(outputs.get("checkpoint_path", "")).strip()
+            stage_context["stage1_controller_metrics_path"] = str(outputs.get("metrics_path", "")).strip()
+            stage_context["stage1_controller_version"] = str(outputs.get("version", "")).strip() or str(
+                checkpoint.get("version", "")
+            ).strip()
+        elif stage_id == 2:
+            stage_context["stage2_retrieval_checkpoint_path"] = str(outputs.get("checkpoint_path", "")).strip()
+            stage_context["stage2_retrieval_metrics_path"] = str(outputs.get("metrics_path", "")).strip()
+            stage_context["stage2_retrieval_version"] = str(outputs.get("version", "")).strip() or str(
+                checkpoint.get("version", "")
+            ).strip()
+        elif stage_id == 3:
+            candidate_policy_path = str(outputs.get("candidate_policy_path", "")).strip()
+            if not candidate_policy_path:
+                candidate_policy_path = str(manifest.get("inputs", {}).get("candidate_policy_path", "")).strip()
+            if not candidate_policy_path:
+                fallback = build_stage_dir(run_root, 3) / "candidate_policy.json"
+                if fallback.exists():
+                    candidate_policy_path = str(fallback)
+            stage_context["stage3_candidate_policy_path"] = candidate_policy_path
+            checkpoint_version = str(checkpoint.get("version", "")).strip()
+            if checkpoint_version and "@v" in checkpoint_version:
+                policy_id, version = checkpoint_version.split("@v", 1)
+                stage_context["stage3_candidate_policy_id"] = policy_id.strip()
+                stage_context["stage3_candidate_policy_version"] = version.strip()
+            elif candidate_policy_path and Path(candidate_policy_path).exists():
+                candidate_policy = read_json(Path(candidate_policy_path))
+                stage_context["stage3_candidate_policy_id"] = str(candidate_policy.get("policy_id", "")).strip()
+                stage_context["stage3_candidate_policy_version"] = str(candidate_policy.get("version", "")).strip()
+
+
+def build_initial_run_manifest(
+    *,
+    run_manifest_path: Path,
+    run_id: str,
+    args: argparse.Namespace,
+    selected_stages: list[int],
+) -> dict[str, Any]:
+    if run_manifest_path.exists():
+        existing = read_json(run_manifest_path)
+        existing["selected_stages"] = selected_stages
+        existing["stage_names"] = {str(stage_id): STAGE_NAMES[stage_id] for stage_id in selected_stages}
+        existing.setdefault("paths", {})
+        existing["paths"]["run_root"] = str(run_manifest_path.parent)
+        existing["paths"]["run_manifest_path"] = str(run_manifest_path)
+        existing["status"] = "running"
+        existing.pop("error", None)
+        existing.pop("failed_at", None)
+        return existing
+
+    return {
+        "schema_version": PIPELINE_SCHEMA_VERSION,
+        "run_id": run_id,
+        "created_at": utc_now(),
+        "status": "running",
+        "selected_stages": selected_stages,
+        "stage_names": {str(stage_id): STAGE_NAMES[stage_id] for stage_id in selected_stages},
+        "train_eval_separation": {
+            "formal_eval_scripts_not_called": True,
+            "policy_candidate_eval_output_under_train_run": True,
+        },
+        "config": {
+            "records_root": str(args.records_root),
+            "data_root": str(args.data_root),
+            "stable_policy_config": str(args.stable_policy_config),
+            "dataset_filter": args.dataset_filter.strip(),
+            "training_split": str(args.training_split),
+            "limit": int(args.limit),
+            "epochs": int(args.epochs),
+            "split_json": str(args.split_json) if args.split_json else "",
+            "seed": int(args.seed),
+            "case_offset": int(args.case_offset),
+            "stage3_data_split": str(args.stage3_data_split),
+            "controller_examples_path": str(args.controller_examples_path) if args.controller_examples_path else "",
+            "controller_checkpoint_in": str(args.controller_checkpoint_in) if args.controller_checkpoint_in else "",
+            "retrieval_checkpoint_in": str(args.retrieval_checkpoint_in) if args.retrieval_checkpoint_in else "",
+            "checkpoint_out_dir": str(args.checkpoint_out_dir),
+            "dry_run": bool(args.dry_run),
+        },
+        "paths": {
+            "run_root": str(run_manifest_path.parent),
+            "run_manifest_path": str(run_manifest_path),
+        },
+        "stages": {},
+    }
 
 
 def run_command(command: list[str], *, dry_run: bool) -> dict[str, Any]:
@@ -469,6 +580,8 @@ def run_stage3_policy_evaluation(args: argparse.Namespace, *, run_id: str, run_r
     stage_id = 3
     stage_dir = build_stage_dir(run_root, stage_id)
     eval_output_dir = stage_dir / "evaluation"
+    if eval_output_dir.exists() and not args.dry_run:
+        shutil.rmtree(eval_output_dir)
     eval_output_dir.mkdir(parents=True, exist_ok=True)
     started_at = utc_now()
 
@@ -539,6 +652,7 @@ def run_stage3_policy_evaluation(args: argparse.Namespace, *, run_id: str, run_r
             "data_split": str(args.stage3_data_split),
         },
         "outputs": {
+            "candidate_policy_path": str(candidate_policy_path),
             "evaluation_output_dir": str(eval_output_dir),
             "evaluation_record_path": eval_record_path,
             "gate_decision": gate_decision,
@@ -635,7 +749,11 @@ def run_stage4_export(args: argparse.Namespace, *, run_id: str, run_root: Path, 
 
     controller_checkpoint_path = resolve_controller_checkpoint(stage_context, args)
     retrieval_checkpoint_path = resolve_retrieval_checkpoint(stage_context, args)
-    candidate_policy_path = str(stage_context.get("stage3_candidate_policy_path", ""))
+    candidate_policy_path = str(stage_context.get("stage3_candidate_policy_path", "")).strip()
+    if not candidate_policy_path:
+        fallback_candidate = build_stage_dir(run_root, 3) / "candidate_policy.json"
+        if fallback_candidate.exists():
+            candidate_policy_path = str(fallback_candidate)
 
     bundle_manifest = export_stable_checkpoints(
         run_id=run_id,
@@ -701,44 +819,16 @@ def main(argv: list[str] | None = None) -> int:
     run_root.mkdir(parents=True, exist_ok=True)
 
     run_manifest_path = run_root / RUN_MANIFEST_NAME
-    run_manifest: dict[str, Any] = {
-        "schema_version": PIPELINE_SCHEMA_VERSION,
-        "run_id": run_id,
-        "created_at": utc_now(),
-        "status": "running",
-        "selected_stages": selected_stages,
-        "stage_names": {str(stage_id): STAGE_NAMES[stage_id] for stage_id in selected_stages},
-        "train_eval_separation": {
-            "formal_eval_scripts_not_called": True,
-            "policy_candidate_eval_output_under_train_run": True,
-        },
-        "config": {
-            "records_root": str(args.records_root),
-            "data_root": str(args.data_root),
-            "stable_policy_config": str(args.stable_policy_config),
-            "dataset_filter": args.dataset_filter.strip(),
-            "training_split": str(args.training_split),
-            "limit": int(args.limit),
-            "epochs": int(args.epochs),
-            "split_json": str(args.split_json) if args.split_json else "",
-            "seed": int(args.seed),
-            "case_offset": int(args.case_offset),
-            "stage3_data_split": str(args.stage3_data_split),
-            "controller_examples_path": str(args.controller_examples_path) if args.controller_examples_path else "",
-            "controller_checkpoint_in": str(args.controller_checkpoint_in) if args.controller_checkpoint_in else "",
-            "retrieval_checkpoint_in": str(args.retrieval_checkpoint_in) if args.retrieval_checkpoint_in else "",
-            "checkpoint_out_dir": str(args.checkpoint_out_dir),
-            "dry_run": bool(args.dry_run),
-        },
-        "paths": {
-            "run_root": str(run_root),
-            "run_manifest_path": str(run_manifest_path),
-        },
-        "stages": {},
-    }
+    run_manifest = build_initial_run_manifest(
+        run_manifest_path=run_manifest_path,
+        run_id=run_id,
+        args=args,
+        selected_stages=selected_stages,
+    )
     write_json(run_manifest_path, run_manifest)
 
     stage_context: dict[str, Any] = {}
+    hydrate_stage_context_from_existing_run(run_root, selected_stages=selected_stages, stage_context=stage_context)
     try:
         for stage_id in selected_stages:
             result = run_stage(stage_id, args, run_id=run_id, run_root=run_root, stage_context=stage_context)
