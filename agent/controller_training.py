@@ -7,6 +7,8 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
+from agent.skill_helpfulness_analyzer import normalize_skill_assessments_for_record
+
 
 DEFAULT_OUTPUT_DIR = Path("/root/DermAgent/outputs/controller_training_data")
 
@@ -47,7 +49,7 @@ def build_controller_training_example_from_record(
     evidence_bundle = record.get("evidence_bundle", {})
     evaluation = record.get("evaluation", {})
     reflection = record.get("reflection_summary", {})
-    skill_assessments = reflection.get("skill_assessments", [])
+    skill_assessments = normalize_skill_assessments_for_record(record)
     uncertainty_summary = evidence_bundle.get("uncertainty_summary", {})
     contradiction_summary = evidence_bundle.get("contradiction_summary", {})
     planner_rationale = evidence_bundle.get("planner_rationale", {})
@@ -102,6 +104,14 @@ def build_controller_training_example_from_record(
         or skill_retrieval.get("candidate_skill_names", [])
     )
     selected_skills = [str(item).strip() for item in planner.get("selected_skills", []) if str(item).strip()]
+    sparse_targets = build_sparse_controller_targets(
+        available_skill_candidates=available_skill_candidates,
+        selected_skills=selected_skills,
+        helpful_skills=helpful_skills,
+        partially_helpful_skills=partially_helpful_skills,
+        harmful_skills=harmful_skills,
+        evaluation=evaluation,
+    )
 
     reward = _bandit_reward(evaluation, helpful_skills, harmful_skills)
     example = ControllerTrainingExample(
@@ -140,6 +150,11 @@ def build_controller_training_example_from_record(
             "helpful_skills": helpful_skills,
             "partially_helpful_skills": partially_helpful_skills,
             "harmful_skills": harmful_skills,
+            "primary_positive_skills": list(sparse_targets["primary_positive_skills"]),
+            "weak_positive_skills": list(sparse_targets["weak_positive_skills"]),
+            "explicit_negative_skills": list(sparse_targets["explicit_negative_skills"]),
+            "target_skill_scores": dict(sparse_targets["target_skill_scores"]),
+            "target_k": int(sparse_targets["target_k"]),
             "case_status": reflection.get("case_outcome", {}).get("status"),
             "reward": reward,
         },
@@ -147,6 +162,11 @@ def build_controller_training_example_from_record(
             "supervised_controller": {
                 "target_selected_skills": selected_skills,
                 "target_helpful_skills": helpful_skills,
+                "primary_positive_skills": list(sparse_targets["primary_positive_skills"]),
+                "weak_positive_skills": list(sparse_targets["weak_positive_skills"]),
+                "explicit_negative_skills": list(sparse_targets["explicit_negative_skills"]),
+                "target_skill_scores": dict(sparse_targets["target_skill_scores"]),
+                "target_k": int(sparse_targets["target_k"]),
             },
             "contextual_bandit": {
                 "action_skills": selected_skills,
@@ -184,11 +204,39 @@ def export_controller_training_data(
         "planner_type_counts": dict(Counter(str(item.get("planner_type", "unknown")) for item in examples)),
         "controller_family_counts": dict(Counter(str(item.get("controller_family", "unknown")) for item in examples)),
         "correct_count": sum(1 for item in examples if item.get("outcome", {}).get("final_correct") is True),
+        "avg_target_k": round(
+            sum(int(item.get("outcome", {}).get("target_k", 0) or 0) for item in examples) / max(len(examples), 1),
+            4,
+        ),
+        "avg_selected_count": round(
+            sum(len(item.get("selected_skills", [])) for item in examples) / max(len(examples), 1),
+            4,
+        ),
+        "avg_primary_positive_count": round(
+            sum(len(item.get("outcome", {}).get("primary_positive_skills", [])) for item in examples) / max(len(examples), 1),
+            4,
+        ),
         "helpful_skill_frequency": dict(
             Counter(
                 skill_name
                 for item in examples
                 for skill_name in item.get("outcome", {}).get("helpful_skills", [])
+                if str(skill_name).strip()
+            )
+        ),
+        "partially_helpful_skill_frequency": dict(
+            Counter(
+                skill_name
+                for item in examples
+                for skill_name in item.get("outcome", {}).get("partially_helpful_skills", [])
+                if str(skill_name).strip()
+            )
+        ),
+        "harmful_skill_frequency": dict(
+            Counter(
+                skill_name
+                for item in examples
+                for skill_name in item.get("outcome", {}).get("harmful_skills", [])
                 if str(skill_name).strip()
             )
         ),
@@ -275,3 +323,83 @@ def _contradiction_count(summary: dict[str, Any]) -> int:
     for field_name in ("contradictions", "missing_links", "reasoning_gaps", "metadata_conflicts"):
         total += len(summary.get(field_name, []) or [])
     return total
+
+
+def build_sparse_controller_targets(
+    *,
+    available_skill_candidates: list[str],
+    selected_skills: list[str],
+    helpful_skills: list[str],
+    partially_helpful_skills: list[str],
+    harmful_skills: list[str],
+    evaluation: dict[str, Any],
+) -> dict[str, Any]:
+    available = [str(item).strip() for item in available_skill_candidates if str(item).strip()]
+    selected = [str(item).strip() for item in selected_skills if str(item).strip()]
+    helpful = [str(item).strip() for item in helpful_skills if str(item).strip() and str(item).strip() in set(available)]
+    partial = [
+        str(item).strip()
+        for item in partially_helpful_skills
+        if str(item).strip() and str(item).strip() in set(available)
+    ]
+    harmful = [str(item).strip() for item in harmful_skills if str(item).strip() and str(item).strip() in set(available)]
+
+    delta = dict(evaluation.get("agent_vs_baseline_delta", {}) or {})
+    case_improved = any(float(delta.get(field, 0) or 0) > 0 for field in ("correct_delta", "topk_hit_delta", "malignant_recall_delta"))
+    case_not_worse = all(float(delta.get(field, 0) or 0) >= 0 for field in ("correct_delta", "topk_hit_delta", "malignant_recall_delta"))
+    final_correct = evaluation.get("correct") is True
+
+    harmful_set = set(harmful)
+    helpful_set = set(helpful)
+    partial_set = set(partial)
+    selected_neutral = [
+        skill_name
+        for skill_name in selected
+        if skill_name in set(available) and skill_name not in harmful_set and skill_name not in helpful_set and skill_name not in partial_set
+    ]
+
+    partial_primary_budget = 2 if (final_correct or case_improved) else 1
+    partial_weak_budget = 2 if case_not_worse else 1
+    partial_primary = partial[:partial_primary_budget]
+    remaining_partial = [skill_name for skill_name in partial if skill_name not in set(partial_primary)]
+    weak_positive = remaining_partial[:partial_weak_budget]
+    if not weak_positive and (final_correct or case_improved):
+        weak_positive = selected_neutral[:1]
+
+    primary_positive = list(dict.fromkeys(helpful + partial_primary))
+    if not primary_positive:
+        primary_positive = list(dict.fromkeys(partial[: min(2, len(partial))]))
+    if not primary_positive:
+        primary_positive = selected_neutral[: min(2, len(selected_neutral))]
+    if not primary_positive and selected:
+        primary_positive = [skill_name for skill_name in selected[:1] if skill_name in set(available) and skill_name not in harmful_set]
+
+    target_skill_scores: dict[str, float] = {skill_name: 0.0 for skill_name in available}
+    for skill_name in helpful:
+        target_skill_scores[skill_name] = 1.0
+    for skill_name in partial_primary:
+        target_skill_scores[skill_name] = max(target_skill_scores.get(skill_name, 0.0), 0.7)
+    for skill_name in weak_positive:
+        target_skill_scores[skill_name] = max(target_skill_scores.get(skill_name, 0.0), 0.35)
+    min_target_k = min(max(len(available), 1), 4)
+    max_target_k = min(max(len(available), 1), 8)
+    target_k = len(primary_positive) + (1 if weak_positive else 0)
+    target_k = max(min_target_k, target_k)
+    target_k = min(max_target_k, target_k)
+    overflow_selected = [
+        skill_name
+        for skill_name in selected[target_k:]
+        if skill_name in set(available)
+        and skill_name not in helpful_set
+        and skill_name not in set(primary_positive)
+        and skill_name not in set(weak_positive)
+    ]
+    explicit_negative = list(dict.fromkeys(harmful + overflow_selected))
+
+    return {
+        "primary_positive_skills": list(dict.fromkeys(skill_name for skill_name in primary_positive if skill_name not in harmful_set)),
+        "weak_positive_skills": list(dict.fromkeys(skill_name for skill_name in weak_positive if skill_name not in harmful_set)),
+        "explicit_negative_skills": explicit_negative,
+        "target_skill_scores": {key: round(float(value), 4) for key, value in target_skill_scores.items()},
+        "target_k": int(target_k),
+    }

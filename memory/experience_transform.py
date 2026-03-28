@@ -44,6 +44,7 @@ SKILL_KEY_STEP_MAP: dict[str, list[str]] = {
     "mel_nev_specialist_skill": ["focus the confusion pair", "contrast differentiating clues without forcing closure"],
     "ack_scc_specialist_skill": ["focus the confusion pair", "contrast malignant versus keratotic clues"],
 }
+SKILL_JUDGEMENT_VERSION = "skill_helpfulness_judgement_v3"
 
 
 def build_writeback_bundle(
@@ -92,7 +93,8 @@ def build_case_outcome(
     if has_ground_truth and is_correct is True:
         status = "success"
     elif has_ground_truth and is_correct is False:
-        status = "partially_helpful" if state.skill_outputs else "failure"
+        # Ground-truth mismatch is treated as case-level failure to avoid optimistic bias.
+        status = "failure"
     elif detected_errors:
         status = "failure"
     elif uncertainty_level == "high" or confidence_level in {"low", "moderate"}:
@@ -129,15 +131,40 @@ def build_skill_assessments(state: CaseState, case_outcome: dict[str, Any]) -> l
         "uncertainty_level": case_outcome.get("uncertainty_level", "unknown"),
         "region": state.case_input.metadata.get("region", ""),
     }
-    for skill_name, output in state.skill_outputs.items():
+    skill_items = list(state.skill_outputs.items())
+    total_selected = len(skill_items)
+    for skill_rank, (skill_name, output) in enumerate(skill_items):
         output_present = _has_meaningful_output(output)
         evidence_strength = _normalize_evidence_strength(output)
         evidence_strength_score = _evidence_strength_score(evidence_strength)
-        impact = _skill_impact(skill_name, output, output_present, case_outcome, evidence_strength_score)
-        helpfulness = _skill_helpfulness(skill_name, output, case_outcome)
+        recommendation_type = str(output.get("recommendation_type", "unknown")).strip().lower() or "unknown"
         contradiction_detected = _detect_contradiction_signal(skill_name, output)
         malignant_flag_support = _detect_malignant_flag_support(skill_name, output, case_outcome)
-        uncertainty_reduction = _detect_uncertainty_reduction(skill_name, output, case_outcome, impact)
+        uncertainty_reduction = _detect_uncertainty_reduction(skill_name, output, case_outcome, impact="partially_helpful")
+        evidence_usage_score = _estimate_evidence_usage_score(
+            skill_name=skill_name,
+            output=output,
+            recommendation_type=recommendation_type,
+            case_outcome=case_outcome,
+            contradiction_detected=contradiction_detected,
+            uncertainty_reduction=uncertainty_reduction,
+            malignant_flag_support=malignant_flag_support,
+            state=state,
+        )
+        judgement = _skill_judgement(
+            output_present=output_present,
+            evidence_strength_score=evidence_strength_score,
+            case_outcome=case_outcome,
+            contradiction_detected=contradiction_detected,
+            uncertainty_reduction=uncertainty_reduction,
+            malignant_flag_support=malignant_flag_support,
+            evidence_usage_score=evidence_usage_score,
+            recommendation_type=recommendation_type,
+            skill_rank=skill_rank,
+            total_selected=total_selected,
+        )
+        impact = str(judgement.get("impact", "partially_helpful"))
+        helpfulness = str(judgement.get("helpfulness", "partially_helpful"))
         helped_aspects = list(SKILL_HELP_MAP.get(skill_name, [])) if impact != "harmful" else []
         failed_aspects = _skill_failed_aspects(skill_name, output_present, case_outcome, impact, evidence_strength)
         key_steps = list(SKILL_KEY_STEP_MAP.get(skill_name, ["produce structured evidence", "support downstream reasoning"]))
@@ -149,6 +176,7 @@ def build_skill_assessments(state: CaseState, case_outcome: dict[str, Any]) -> l
             evidence_strength=evidence_strength,
             impact=impact,
             contradiction_detected=contradiction_detected,
+            harmful_reasons=judgement.get("harmful_reasons", []),
         )
         assessments.append(
             {
@@ -165,10 +193,14 @@ def build_skill_assessments(state: CaseState, case_outcome: dict[str, Any]) -> l
                 "referenced_experiences": _referenced_experiences(output),
                 "evidence_strength": evidence_strength,
                 "evidence_strength_score": evidence_strength_score,
-                "recommendation_type": str(output.get("recommendation_type", "unknown")).strip().lower() or "unknown",
+                "recommendation_type": recommendation_type,
                 "uncertainty_reduction": uncertainty_reduction,
                 "contradiction_detected": contradiction_detected,
                 "malignant_flag_support": malignant_flag_support,
+                "evidence_usage_score": evidence_usage_score,
+                "judgement_version": SKILL_JUDGEMENT_VERSION,
+                "judgement_reasons": list(judgement.get("reasons", [])),
+                "harmful_reasons": list(judgement.get("harmful_reasons", [])),
                 "applicable_scenarios": _skill_applicable_scenarios(skill_name, case_outcome, trigger_context_base),
                 "failure_modes": failure_modes,
                 "reusable": reusable,
@@ -222,6 +254,12 @@ def build_skill_stats_update(skill_assessments: list[dict[str, Any]]) -> list[di
                 "uncertainty_reduction_increment": 1 if assessment.get("uncertainty_reduction") else 0,
                 "contradiction_detection_increment": 1 if assessment.get("contradiction_detected") else 0,
                 "malignant_flag_support_increment": 1 if assessment.get("malignant_flag_support") else 0,
+                "evidence_usage_increment": 1 if float(assessment.get("evidence_usage_score", 0.0) or 0.0) > 0.0 else 0,
+                "harmful_regression_increment": 1 if "baseline_regression_low_support" in set(assessment.get("harmful_reasons", [])) else 0,
+                "harmful_bias_increment": 1
+                if bool({"misleading_risk_or_escalation", "false_conflict_signal"} & set(assessment.get("harmful_reasons", [])))
+                else 0,
+                "harmful_redundancy_increment": 1 if "excess_redundancy_low_usage" in set(assessment.get("harmful_reasons", [])) else 0,
                 "evidence_strength_sum": evidence_strength_score,
                 "evidence_strength_count": 1 if assessment.get("output_present") else 0,
             }
@@ -871,6 +909,15 @@ def _flatten_output_text(value: Any) -> list[str]:
     return texts
 
 
+def _has_explicit_conflict_content(output: dict[str, Any]) -> bool:
+    if not isinstance(output, dict):
+        return False
+    for field_name in ("contradictions", "missing_links", "reasoning_gaps", "conflicts", "suspicious_points"):
+        if _value_has_meaningful_content(output.get(field_name)):
+            return True
+    return False
+
+
 def _skill_impact(
     skill_name: str,
     output: dict[str, Any],
@@ -878,41 +925,26 @@ def _skill_impact(
     case_outcome: dict[str, Any],
     evidence_strength_score: float,
 ) -> str:
-    if not output_present:
-        return "harmful"
-    case_status = str(case_outcome.get("status", "unknown")).lower()
     contradiction_detected = _detect_contradiction_signal(skill_name, output)
     uncertainty_reduction = _detect_uncertainty_reduction(skill_name, output, case_outcome, impact="partially_helpful")
     malignant_flag_support = _detect_malignant_flag_support(skill_name, output, case_outcome)
-    support_score = 0
-    if evidence_strength_score >= 0.6:
-        support_score += 2
-    elif evidence_strength_score > 0.0:
-        support_score += 1
-    if contradiction_detected:
-        support_score += 1
-    if uncertainty_reduction:
-        support_score += 1
-    if malignant_flag_support:
-        support_score += 1
-
-    if case_status == "success" and support_score >= 1:
-        return "helpful"
-    if case_status == "success":
-        return "partially_helpful"
-    if case_status == "failure" and support_score == 0:
-        return "harmful"
-    if support_score >= 2:
-        return "partially_helpful"
-    if case_outcome.get("confusion_pair") or case_outcome.get("uncertainty_level") == "high":
-        return "partially_helpful"
-    return "harmful" if evidence_strength_score == 0.0 else "partially_helpful"
+    judgement = _skill_judgement(
+        output_present=output_present,
+        evidence_strength_score=evidence_strength_score,
+        case_outcome=case_outcome,
+        contradiction_detected=contradiction_detected,
+        uncertainty_reduction=uncertainty_reduction,
+        malignant_flag_support=malignant_flag_support,
+        evidence_usage_score=0.0,
+        recommendation_type=str(output.get("recommendation_type", "unknown")).strip().lower(),
+        skill_rank=0,
+        total_selected=1,
+    )
+    return str(judgement.get("impact", "partially_helpful"))
 
 
 def _skill_helpfulness(skill_name: str, output: dict[str, Any], case_outcome: dict[str, Any]) -> str:
     output_present = _has_meaningful_output(output)
-    if not output_present:
-        return "failure"
     impact = _skill_impact(
         skill_name=skill_name,
         output=output,
@@ -920,27 +952,191 @@ def _skill_helpfulness(skill_name: str, output: dict[str, Any], case_outcome: di
         case_outcome=case_outcome,
         evidence_strength_score=_evidence_strength_score(_normalize_evidence_strength(output)),
     )
-    case_status = str(case_outcome.get("status", "unknown"))
-    if case_status == "success":
-        return "success"
-    if impact == "harmful":
+    if not output_present or impact == "harmful":
         return "failure"
-    if case_outcome.get("confusion_pair") and skill_name in {
+    case_status = str(case_outcome.get("status", "unknown")).lower()
+    return "success" if case_status == "success" else "partially_helpful"
+
+
+def _estimate_evidence_usage_score(
+    *,
+    skill_name: str,
+    output: dict[str, Any],
+    recommendation_type: str,
+    case_outcome: dict[str, Any],
+    contradiction_detected: bool,
+    uncertainty_reduction: bool,
+    malignant_flag_support: bool,
+    state: CaseState,
+) -> float:
+    score = 0.0
+    if _referenced_experiences(output):
+        score += 0.3
+    if recommendation_type == "risk_signal" and state.risk_flags:
+        score += 1.0
+    if recommendation_type in {"uncertainty_signal", "gap_signal"} and state.uncertainty.get("missing_information"):
+        score += 1.0
+    if recommendation_type == "conflict_signal" and contradiction_detected and _has_explicit_conflict_content(output):
+        score += 1.0
+    if malignant_flag_support and case_outcome.get("malignant_flag", {}).get("ground_truth") is True:
+        score += 1.0
+    if uncertainty_reduction and case_outcome.get("uncertainty_level") in {"high", "medium"}:
+        score += 1.0
+    if skill_name in {
+        "lesion_description_structuring_skill",
         "differential_compare_skill",
-        "uncertainty_assessment_skill",
-        "mel_nev_specialist_skill",
-        "ack_scc_specialist_skill",
-    }:
-        return "partially_helpful"
-    if case_outcome.get("uncertainty_level") == "high" and skill_name in {
-        "uncertainty_assessment_skill",
-        "contradiction_check_skill",
-        "metadata_consistency_skill",
-    }:
-        return "partially_helpful"
-    if case_outcome.get("risk_flags") and skill_name == "malignancy_risk_assessment_skill":
-        return "partially_helpful"
-    return "partially_helpful"
+        "exclusion_reasoning_skill",
+    } and _has_meaningful_output(output):
+        score += 0.25
+    return min(3.0, score)
+
+
+def _skill_judgement(
+    *,
+    output_present: bool,
+    evidence_strength_score: float,
+    case_outcome: dict[str, Any],
+    contradiction_detected: bool,
+    uncertainty_reduction: bool,
+    malignant_flag_support: bool,
+    evidence_usage_score: float,
+    recommendation_type: str,
+    skill_rank: int,
+    total_selected: int,
+) -> dict[str, Any]:
+    reasons: list[str] = []
+    harmful_reasons: list[str] = []
+    positive = 0.0
+    negative = 0.0
+
+    case_status = str(case_outcome.get("status", "unknown")).lower()
+    uncertainty_level = str(case_outcome.get("uncertainty_level", "unknown")).lower()
+    case_failed = case_status == "failure" or case_outcome.get("is_correct") is False
+    risk_flags = list(case_outcome.get("risk_flags", []))
+
+    if output_present:
+        positive += 0.8
+        reasons.append("structured_output_present")
+    else:
+        negative += 2.5
+        harmful_reasons.append("no_structured_output")
+
+    if evidence_strength_score >= 0.95:
+        positive += 1.2
+        reasons.append("evidence_strength_high")
+    elif evidence_strength_score >= 0.6:
+        positive += 0.7
+        reasons.append("evidence_strength_medium")
+    elif evidence_strength_score > 0.0:
+        positive += 0.2
+        negative += 0.6
+        harmful_reasons.append("weak_evidence_strength")
+    else:
+        negative += 1.5
+        harmful_reasons.append("weak_or_unknown_evidence")
+
+    if evidence_usage_score >= 1.5:
+        positive += min(1.6, float(evidence_usage_score))
+        reasons.append("evidence_used_in_bundle")
+    elif evidence_usage_score > 0.0:
+        positive += 0.4
+    else:
+        negative += 1.2
+        harmful_reasons.append("evidence_not_used")
+
+    if contradiction_detected:
+        if recommendation_type == "conflict_signal":
+            if evidence_usage_score >= 1.0:
+                positive += 0.8
+                reasons.append("contradiction_signal_supported")
+            else:
+                negative += 1.2
+                harmful_reasons.append("false_conflict_signal")
+        else:
+            negative += 0.4
+
+    if uncertainty_reduction:
+        if uncertainty_level in {"high", "medium"}:
+            positive += 0.9
+            reasons.append("uncertainty_reduction_claim_supported")
+        else:
+            negative += 0.8
+            harmful_reasons.append("uncertainty_reduction_not_needed")
+
+    if malignant_flag_support:
+        if case_outcome.get("malignant_flag", {}).get("ground_truth") is True:
+            positive += 0.8
+            reasons.append("malignant_support_relevant")
+        else:
+            negative += 0.4
+
+    if recommendation_type in {"risk_signal", "escalation_signal"}:
+        if not risk_flags:
+            negative += 1.2
+            harmful_reasons.append("misleading_risk_or_escalation")
+        if case_failed and evidence_usage_score < 1.0:
+            negative += 0.6
+
+    if (
+        case_failed
+        and recommendation_type in {"descriptive_evidence", "comparative_support"}
+        and evidence_usage_score < 0.3
+        and not uncertainty_reduction
+        and not malignant_flag_support
+        and evidence_strength_score <= 0.6
+    ):
+        negative += 1.1
+        harmful_reasons.append("low_signal_on_failed_case")
+
+    if total_selected >= 10 and skill_rank >= max(7, int(total_selected * 0.6)) and evidence_usage_score <= 0.5:
+        negative += 1.2
+        harmful_reasons.append("excess_redundancy_low_usage")
+    if total_selected >= 10 and case_failed and evidence_usage_score <= 0.3:
+        negative += 0.8
+        harmful_reasons.append("selection_tail_low_value")
+
+    if case_failed:
+        negative += 0.9
+    elif case_status == "success":
+        positive += 0.8
+
+    critical_harm = bool(
+        "false_conflict_signal" in harmful_reasons
+        or ("misleading_risk_or_escalation" in harmful_reasons and case_failed)
+        or (
+            case_failed
+            and evidence_usage_score <= 0.3
+            and {"excess_redundancy_low_usage", "selection_tail_low_value"} <= set(harmful_reasons)
+        )
+    )
+
+    if critical_harm or (negative - positive) >= 1.2 or (case_failed and evidence_usage_score <= 0.2 and positive < 1.6):
+        impact = "harmful"
+        helpfulness = "failure"
+    elif (positive - negative) >= 1.8 and (
+            case_status == "success"
+            or (
+                case_outcome.get("is_correct") is True
+                and evidence_usage_score >= 1.5
+                and not case_failed
+            )
+    ):
+        impact = "helpful"
+        helpfulness = "success" if case_status == "success" else "partially_helpful"
+    else:
+        impact = "partially_helpful"
+        helpfulness = "partially_helpful"
+
+    if impact != "harmful":
+        harmful_reasons = []
+    return {
+        "impact": impact,
+        "helpfulness": helpfulness,
+        "reasons": dedupe_strings(reasons),
+        "harmful_reasons": dedupe_strings(harmful_reasons),
+        "positive_score": round(positive, 3),
+        "negative_score": round(negative, 3),
+    }
 
 
 def _detect_contradiction_signal(skill_name: str, output: dict[str, Any]) -> bool:
@@ -1023,6 +1219,7 @@ def _skill_failure_modes(
     evidence_strength: str,
     impact: str,
     contradiction_detected: bool,
+    harmful_reasons: list[str] | None = None,
 ) -> list[str]:
     failure_modes: list[str] = []
     if not output_present:
@@ -1039,6 +1236,8 @@ def _skill_failure_modes(
         failure_modes.append("weak_evidence_strength")
     if skill_name == "contradiction_check_skill" and not contradiction_detected:
         failure_modes.append("missed_contradiction_signal")
+    for reason in harmful_reasons or []:
+        failure_modes.append(str(reason))
     return dedupe_strings(failure_modes)
 
 

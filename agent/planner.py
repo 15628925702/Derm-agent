@@ -53,6 +53,7 @@ SIGNAL_KEYWORD_MAP = {
     "location_or_size_metadata": ("location", "distribution", "site", "diameter", "metadata", "consistency"),
     "mel_nev_confusion": ("mel", "nev", "specialist", "compare", "confusion"),
     "ack_scc_confusion": ("ack", "scc", "specialist", "compare", "confusion"),
+    "keratinocyte_bcc_confusion": ("bcc", "basal cell", "scc", "ack", "actinic", "seborrheic", "keratin"),
     "experience_compare_pattern": ("compare", "differential", "confusion", "specialist"),
     "experience_risk_pattern": ("risk", "alarm", "uncertainty"),
     "experience_gap_pattern": ("missing", "gap", "underdetermined", "what information", "uncertainty"),
@@ -147,12 +148,27 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
                 available_skill_names=[skill.name for skill in planner_input.available_skills],
                 cognition=planner_input.cognition,
             )
+        learned_selected_set = set(learned_prediction.selected_skills) if learned_prediction is not None else set()
+        learned_rank_map = {
+            skill_name: rank
+            for rank, skill_name in enumerate(learned_prediction.ranked_skills)
+        } if learned_prediction is not None else {}
         decisions: list[SkillSelectionDecision] = []
         for skill in planner_input.available_skills:
             probability = None
             if learned_prediction is not None:
                 probability = float(learned_prediction.skill_probabilities.get(skill.name, 0.0))
-            decisions.append(self._evaluate_skill(skill, planner_input, signals, policy, learned_probability=probability))
+            decisions.append(
+                self._evaluate_skill(
+                    skill,
+                    planner_input,
+                    signals,
+                    policy,
+                    learned_probability=probability,
+                    learned_selected=skill.name in learned_selected_set,
+                    learned_rank=learned_rank_map.get(skill.name),
+                )
+            )
 
         selected = [decision for decision in decisions if decision.selected]
         force_top_k = int(policy.get("learned_controller_force_top_k", 0) or 0)
@@ -222,6 +238,8 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
         policy: dict[str, Any],
         *,
         learned_probability: float | None = None,
+        learned_selected: bool = False,
+        learned_rank: int | None = None,
     ) -> SkillSelectionDecision:
         score = 0
         reasons: list[str] = []
@@ -364,20 +382,22 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
                 score += learned_bonus
                 reasons.append(f"Boosted by learned controller probability={learned_probability:.3f}.")
                 matched_fields.append("learned_controller.probability")
+        if learned_rank is not None:
+            rank_bonus = max(0, int(policy.get("learned_controller_rank_bonus", 3)) - int(learned_rank))
+            if rank_bonus > 0:
+                score += rank_bonus
+                reasons.append(f"Boosted by learned controller rank={learned_rank + 1}.")
+                matched_fields.append("learned_controller.rank")
 
         min_score = int(skill_overrides.get("min_score", policy.get("score_threshold_default", 4)))
         selected = self._should_select(skill.name, score, signals, min_score=min_score)
-        learned_threshold = float(policy.get("learned_controller_select_threshold", 0.4))
         if (
-            learned_probability is not None
+            learned_selected
             and str(policy.get("controller_family", "")).strip() == "learned_supervised"
-            and learned_probability >= learned_threshold
         ):
             selected = True
-            reasons.append(
-                f"Selected by learned controller threshold (p={learned_probability:.3f} >= {learned_threshold:.3f})."
-            )
-            matched_fields.append("learned_controller.threshold")
+            reasons.append("Selected by learned controller sparse top-k policy.")
+            matched_fields.append("learned_controller.sparse_selection")
         if skill.name in force_select:
             selected = True
             reasons.append("Forced selected by current planner policy.")
@@ -417,7 +437,11 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
         if skill_name == "mel_nev_specialist_skill":
             return signals["mel_nev_confusion"]
         if skill_name == "ack_scc_specialist_skill":
-            return signals["ack_scc_confusion"]
+            return (
+                signals["ack_scc_confusion"]
+                or signals.get("keratinocyte_bcc_confusion", False)
+                or (signals.get("known_confusion_match", False) and score >= max(2, min_score - 1))
+            )
         if skill_name == "uncertainty_assessment_skill":
             return signals["high_uncertainty"] or score >= min_score
         if skill_name == "contradiction_check_skill":
@@ -456,7 +480,38 @@ def _build_signal_profile(planner_input: PlannerInput) -> dict[str, Any]:
     retrieved_text = " ".join(retrieved_chunks).lower()
     current_confusion_pair = detect_confusion_pair(ddx_candidates)
     known_confusion_patterns = planner_input.cognition.known_confusion_patterns
-    known_confusion_match = bool(current_confusion_pair and current_confusion_pair in known_confusion_patterns)
+    known_confusion_text = " ".join(str(key).strip().lower() for key in known_confusion_patterns.keys())
+    known_confusion_match = bool(
+        current_confusion_pair
+        and (
+            current_confusion_pair in known_confusion_patterns
+            or current_confusion_pair.lower() in known_confusion_text
+        )
+    )
+    keratinocyte_precursor_present = any(
+        any(term in candidate for term in ("ack", "actinic keratos", "scc", "squamous", "seborrheic", "sek"))
+        for candidate in ddx_candidates
+    )
+    keratinocyte_bcc_confusion = (
+        has_confusion_pair(ddx_candidates, ("scc", "squamous cell", "squamous"), ("bcc", "basal cell"))
+        or has_confusion_pair(ddx_candidates, ("ack", "actinic keratosis", "actinic keratos"), ("bcc", "basal cell"))
+        or has_confusion_pair(ddx_candidates, ("seborrheic keratosis", "sek"), ("bcc", "basal cell"))
+        or (
+            keratinocyte_precursor_present
+            and any(
+                pattern in known_confusion_text
+                for pattern in (
+                    "squamous cell carcinoma->bcc",
+                    "scc->bcc",
+                    "actinic keratosis->bcc",
+                    "ack->bcc",
+                    "seborrheic keratosis->bcc",
+                    "sek->bcc",
+                )
+            )
+            and (uncertainty_level in {"high", "medium"} or has_malignancy_possibility(ddx_candidates))
+        )
+    )
 
     return {
         "high_uncertainty": uncertainty_level == "high",
@@ -472,6 +527,7 @@ def _build_signal_profile(planner_input: PlannerInput) -> dict[str, Any]:
             ("ack", "actinic keratosis", "actinic keratos"),
             ("scc", "squamous cell", "squamous"),
         ),
+        "keratinocyte_bcc_confusion": keratinocyte_bcc_confusion,
         "experience_compare_pattern": any(
             pattern in retrieved_text for pattern in ("compare_then_audit_uncertainty", "confusion_memory", "differential")
         ),
@@ -494,6 +550,18 @@ def _build_signal_profile(planner_input: PlannerInput) -> dict[str, Any]:
 def detect_confusion_pair(ddx_candidates: list[str]) -> str | None:
     if has_confusion_pair(ddx_candidates, ("mel", "melanoma"), ("nev", "nevus", "naevus", "mole")):
         return "melanoma->nev"
+    if has_confusion_pair(ddx_candidates, ("scc", "squamous cell", "squamous"), ("bcc", "basal cell")):
+        return "scc->bcc"
+    if has_confusion_pair(ddx_candidates, ("ack", "actinic keratosis", "actinic keratos"), ("bcc", "basal cell")):
+        return "ack->bcc"
+    if has_confusion_pair(ddx_candidates, ("seborrheic keratosis", "sek"), ("bcc", "basal cell")):
+        return "sek->bcc"
+    if has_confusion_pair(
+        ddx_candidates,
+        ("lichen simplex", "lichen planus", "psoriasis", "dermatitis", "eczema"),
+        ("ack", "actinic keratosis", "actinic keratos"),
+    ):
+        return "inflammatory->ack"
     if has_confusion_pair(
         ddx_candidates,
         ("ack", "actinic keratosis", "actinic keratos"),
@@ -552,6 +620,7 @@ def _normalize_planner_policy(policy: dict[str, Any] | None) -> dict[str, Any]:
         "controller_family": "heuristic",
         "controller_checkpoint_path": "",
         "learned_controller_weight": 4.0,
+        "learned_controller_rank_bonus": 3,
         "learned_controller_select_threshold": 0.4,
         "learned_controller_top_k": 0,
         "learned_controller_force_top_k": 0,

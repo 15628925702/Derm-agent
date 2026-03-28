@@ -133,6 +133,10 @@ class CognitionState:
             current["uncertainty_reduction_count"] += int(update.get("uncertainty_reduction_increment", 0))
             current["contradiction_detection_count"] += int(update.get("contradiction_detection_increment", 0))
             current["malignant_flag_support_count"] += int(update.get("malignant_flag_support_increment", 0))
+            current["evidence_usage_count"] += int(update.get("evidence_usage_increment", 0))
+            current["harmful_regression_count"] += int(update.get("harmful_regression_increment", 0))
+            current["harmful_bias_count"] += int(update.get("harmful_bias_increment", 0))
+            current["harmful_redundancy_count"] += int(update.get("harmful_redundancy_increment", 0))
             current["evidence_strength_sum"] += float(update.get("evidence_strength_sum", 0.0))
             current["evidence_strength_observation_count"] += int(update.get("evidence_strength_count", 0))
             current["helpful_count"] = current["success_count"] + current["partially_helpful_count"]
@@ -163,6 +167,10 @@ class CognitionState:
         uncertainty_reduction_count = int(source.get("uncertainty_reduction_count", 0))
         contradiction_detection_count = int(source.get("contradiction_detection_count", 0))
         malignant_flag_support_count = int(source.get("malignant_flag_support_count", 0))
+        evidence_usage_count = int(source.get("evidence_usage_count", 0))
+        harmful_regression_count = int(source.get("harmful_regression_count", 0))
+        harmful_bias_count = int(source.get("harmful_bias_count", 0))
+        harmful_redundancy_count = int(source.get("harmful_redundancy_count", 0))
         evidence_strength_sum = float(source.get("evidence_strength_sum", 0.0))
         evidence_strength_observation_count = int(source.get("evidence_strength_observation_count", 0))
         average_evidence_strength = float(source.get("average_evidence_strength", 0.0))
@@ -191,6 +199,10 @@ class CognitionState:
             "uncertainty_reduction_count": uncertainty_reduction_count,
             "contradiction_detection_count": contradiction_detection_count,
             "malignant_flag_support_count": malignant_flag_support_count,
+            "evidence_usage_count": evidence_usage_count,
+            "harmful_regression_count": harmful_regression_count,
+            "harmful_bias_count": harmful_bias_count,
+            "harmful_redundancy_count": harmful_redundancy_count,
             "evidence_strength_sum": evidence_strength_sum,
             "evidence_strength_observation_count": evidence_strength_observation_count,
             "average_evidence_strength": average_evidence_strength,

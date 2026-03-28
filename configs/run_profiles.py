@@ -59,6 +59,24 @@ RUN_PROFILES: dict[str, SmokeRunProfile] = {
         include_paper_exports=True,
         estimated_runtime="about_6_to_10_hours",
     ),
+    "medium_signal_no_ablation_10h_v1": SmokeRunProfile(
+        profile_id="medium_signal_no_ablation_10h_v1",
+        description=(
+            "Slightly heavier no-ablation medium profile tuned for a fuller overnight signal check. "
+            "It increases seeded training cases, controller/retrieval training exposure, and frozen "
+            "validation/test coverage without paying the ablation cost."
+        ),
+        train_seed_cases=120,
+        stage_training_limit=120,
+        training_epochs=8,
+        val_compare_cases=40,
+        test_eval_cases=40,
+        ablation_cases=0,
+        include_ablations=False,
+        include_batch_reflection=True,
+        include_paper_exports=True,
+        estimated_runtime="about_9_to_11_hours",
+    ),
     "micro_validation_v1": SmokeRunProfile(
         profile_id="micro_validation_v1",
         description=(

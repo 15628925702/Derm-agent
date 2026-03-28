@@ -51,6 +51,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--case-offset", type=int, default=0, help="Start from this case index.")
     parser.add_argument("--seed", type=int, default=0, help="Reserved for traceability; selection remains deterministic.")
     parser.add_argument("--data-split", type=str, default="test", choices=("val", "test"), help="Evaluation split label for contamination guard and manifests.")
+    parser.add_argument("--split-json", type=Path, default=None, help="Optional fixed split JSON. If omitted, the built-in deterministic split is used.")
+    parser.add_argument("--non-strict-frozen-eval", action="store_true", help="Allow snapshotting from resolved split state paths even if some files are missing.")
     parser.add_argument("--policy-config", type=Path, default=None, help="Optional policy JSON path; default is current stable policy.")
     parser.add_argument("--ablations", type=str, default="", help="Comma-separated target_ids to run. Baseline and full anchor are auto-included.")
     parser.add_argument("--include-optional", action="store_true", help="Include optional ablations (retrieval scorer / evidence calibrator pairs).")
@@ -106,6 +108,8 @@ def main() -> int:
         seed=int(args.seed),
         suite_label="ablations",
         data_split=args.data_split,
+        split_json=args.split_json,
+        strict_frozen_eval=not args.non_strict_frozen_eval,
     )
     table_rows = build_ablation_result_rows(
         result_manifest=dict(result.get("result_manifest", {})),
@@ -124,6 +128,8 @@ def main() -> int:
         "case_offset": int(args.case_offset),
         "seed": int(args.seed),
         "data_split": args.data_split,
+        "split_json": str(args.split_json) if args.split_json else "",
+        "strict_frozen_eval": not args.non_strict_frozen_eval,
         "include_optional": bool(args.include_optional),
         "checkpoint_catalog": checkpoint_catalog,
         "selected_target_ids": [spec.target_id for spec in target_specs],

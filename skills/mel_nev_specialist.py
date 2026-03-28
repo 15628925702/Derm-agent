@@ -28,14 +28,15 @@ class MelNevSpecialistSkill(BaseSkill):
         skill_type="specialist",
         triggers=[
             SkillTrigger(
-                condition="Trigger only when melanoma-like and nevus-like candidates are both active in the current differential.",
-                rationale="This specialist routine addresses a specific high-value confusion pair rather than general reasoning.",
+                condition="Trigger when melanoma-like and nevus-like candidates are both active, or when retrieved confusion memory indicates recurrent MEL↔NEV ambiguity.",
+                rationale="This specialist routine addresses a high-value pigmented-lesion confusion pair and should surface explicit negative evidence.",
             )
         ],
         workflow_text=(
             "Focus narrowly on the MEL-versus-NEV confusion pair. Inspect the lesion for features that would help an expert "
             "separate melanoma-like concern from nevus-like reassurance, list evidence for and against the more concerning side, "
-            "and recommend what additional observation would most efficiently resolve the ambiguity. Do not make the final call."
+            "state what critical evidence is still missing, and recommend what additional observation would most efficiently resolve the ambiguity. "
+            "Do not make the final call."
         ),
         steps=[
             SkillStep("pair_focus", "Focus the Pair", "Restrict reasoning to the MEL vs NEV comparison only.", ["active ddx pair"]),
@@ -66,8 +67,8 @@ class MelNevSpecialistSkill(BaseSkill):
     ) -> list[dict[str, object]]:
         return self.filter_related_abstract_experiences(
             abstract_experiences,
-            confusion_pairs=("melanoma->nev",),
-            keywords=("mel", "nev"),
+            confusion_pairs=("melanoma->nev", "malignant melanoma->nev", "malignant melanoma_vs_nev"),
+            keywords=("mel", "melanoma", "nev", "naevus", "pigmented"),
             allowed_types=("confusion_memory", "prototype", "rule"),
             top_k=3,
         )
@@ -79,7 +80,7 @@ class MelNevSpecialistSkill(BaseSkill):
             "When to use: only when MEL and NEV are both active confusion candidates.\n"
             "What evidence to inspect: asymmetry, border irregularity, pigment complexity, size/evolution context.\n"
             "If related abstract experiences are provided, explicitly use confusion_memory, prototype, and rule patterns as auxiliary comparison references.\n"
-            "Common pitfalls: turning pairwise analysis into a final verdict.\n"
+            "Common pitfalls: turning pairwise analysis into a final verdict and omitting opposing evidence that favors benign nevus patterning.\n"
             "Do NOT output a final diagnosis, final winner, or definitive disease label.\n"
             "Return JSON only with the following fields:\n"
             f"{self.output_schema_text()}\n"

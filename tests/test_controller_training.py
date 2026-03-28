@@ -8,7 +8,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from agent.controller_training import build_controller_training_example_from_record, export_controller_training_data
+from agent.controller_training import build_controller_training_example_from_record, build_sparse_controller_targets, export_controller_training_data
 from agent.hard_case_miner import load_execution_records
 
 
@@ -106,6 +106,8 @@ def test_build_controller_training_example_from_record_captures_state_and_outcom
     assert example["outcome"]["final_correct"] is True
     assert example["outcome"]["helpful_skills"] == ["morphology_analysis_skill"]
     assert example["outcome"]["partially_helpful_skills"] == ["mel_nev_specialist_skill"]
+    assert example["outcome"]["primary_positive_skills"] == ["morphology_analysis_skill", "mel_nev_specialist_skill"]
+    assert example["outcome"]["target_k"] >= 1
     assert example["future_training_views"]["contextual_bandit"]["reward"] > 0
     assert example["source_record_path"] == "/tmp/record.json"
 
@@ -129,6 +131,33 @@ def test_export_controller_training_data_summarizes_dataset_counts() -> None:
     assert len(examples) == 2
     assert summary["dataset_counts"] == {"dataset_a": 1, "dataset_b": 1}
     assert summary["planner_type_counts"] == {"rule_based": 2}
+    assert "avg_target_k" in summary
+
+
+def test_build_sparse_controller_targets_does_not_treat_all_selected_skills_as_positive() -> None:
+    targets = build_sparse_controller_targets(
+        available_skill_candidates=[
+            "morphology_analysis_skill",
+            "differential_compare_skill",
+            "uncertainty_assessment_skill",
+            "contradiction_check_skill",
+        ],
+        selected_skills=[
+            "morphology_analysis_skill",
+            "differential_compare_skill",
+            "uncertainty_assessment_skill",
+        ],
+        helpful_skills=["morphology_analysis_skill"],
+        partially_helpful_skills=["differential_compare_skill"],
+        harmful_skills=["uncertainty_assessment_skill"],
+        evaluation={"correct": True, "agent_vs_baseline_delta": {"correct_delta": 1}},
+    )
+
+    assert targets["primary_positive_skills"] == ["morphology_analysis_skill", "differential_compare_skill"]
+    assert "uncertainty_assessment_skill" in targets["explicit_negative_skills"]
+    assert targets["target_skill_scores"]["morphology_analysis_skill"] == 1.0
+    assert targets["target_skill_scores"]["differential_compare_skill"] >= 0.7
+    assert targets["target_skill_scores"]["uncertainty_assessment_skill"] == 0.0
 
 
 def test_load_execution_records_prefers_richer_v2_record_for_same_case(tmp_path) -> None:

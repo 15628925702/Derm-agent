@@ -62,9 +62,9 @@ SKILL_BASE_WEIGHT = {
     "temporal_evolution_skill": 2.8,
     "metadata_consistency_skill": 3.0,
     "differential_compare_skill": 3.6,
-    "exclusion_reasoning_skill": 4.1,
+    "exclusion_reasoning_skill": 4.3,
     "mel_nev_specialist_skill": 3.2,
-    "ack_scc_specialist_skill": 3.2,
+    "ack_scc_specialist_skill": 3.8,
     "malignancy_risk_assessment_skill": 4.5,
     "contradiction_check_skill": 4.0,
     "uncertainty_assessment_skill": 3.8,
@@ -529,6 +529,13 @@ def _score_skill_output(
         "information_gap_detection_skill",
     }:
         score += 0.8
+    if skill_name in {"ack_scc_specialist_skill", "mel_nev_specialist_skill", "exclusion_reasoning_skill"}:
+        if _output_contains_terms(output, ("confusion", "opposing", "counterexample", "unlikely", "exclude")):
+            score += 0.7
+        if contradiction_count > 0 and _output_contains_terms(output, ("opposing_evidence", "exclusion_evidence", "counterexample")):
+            score += 0.4
+        if risk_flags and _output_contains_terms(output, ("bcc", "scc", "mel", "nev", "actinic", "seborrheic")):
+            score += 0.3
     if risk_flags and skill_name in {"malignancy_risk_assessment_skill", "escalation_recommendation_skill"}:
         score += 0.9
     return float(score)
@@ -632,6 +639,15 @@ def _count_non_control_fields(output: dict[str, Any]) -> int:
     return count
 
 
+def _output_contains_terms(output: dict[str, Any], terms: tuple[str, ...]) -> bool:
+    blob = " ".join(
+        f"{key} {value}"
+        for key, value in output.items()
+        if key not in {"referenced_experiences", "evidence_strength", "recommendation_type"}
+    ).lower()
+    return any(term in blob for term in terms)
+
+
 def _has_meaningful_skill_output(output: dict[str, Any]) -> bool:
     return _count_non_control_fields(output) > 0 or bool(output.get("evidence_strength"))
 
@@ -678,4 +694,3 @@ def _comparison_merged_groups(skill_names: list[str]) -> list[dict[str, Any]]:
             }
         ]
     return []
-

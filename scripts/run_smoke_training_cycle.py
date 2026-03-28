@@ -14,6 +14,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+from agent.experiment_state import ensure_split_state_paths
 from configs.dataset_splits import DEFAULT_SPLIT_ID, build_fixed_split_payload, resolve_split_range, write_fixed_split_json
 from configs.run_profiles import available_profile_ids, get_run_profile
 
@@ -162,6 +163,8 @@ def main() -> int:
     split_payload = build_fixed_split_payload(args.split_id, data_root=args.data_root)
     if not args.dry_run:
         write_fixed_split_json(split_json_path, split_id=args.split_id, data_root=args.data_root)
+        for split_name in ("train", "val", "test"):
+            ensure_split_state_paths(data_split=split_name)
 
     train_offset, train_count = resolve_split_range(
         split_payload,
@@ -395,6 +398,8 @@ def main() -> int:
                     str(val_offset),
                     "--data-split",
                     "val",
+                    "--split-json",
+                    str(split_json_path),
                     "--output-dir",
                     str(run_root / "comparison"),
                     "--policy-config",
@@ -420,6 +425,8 @@ def main() -> int:
                     str(test_offset),
                     "--data-split",
                     "test",
+                    "--split-json",
+                    str(split_json_path),
                     "--output-dir",
                     str(run_root / "evaluation_protocol"),
                     "--policy-config",
@@ -452,6 +459,8 @@ def main() -> int:
                     str(test_offset),
                     "--data-split",
                     "test",
+                    "--split-json",
+                    str(split_json_path),
                     "--client-timeout",
                     str(args.client_timeout),
                     "--client-max-retries",

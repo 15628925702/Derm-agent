@@ -383,7 +383,8 @@ class DermOpenAIClient:
         request_name: str,
     ) -> dict[str, Any]:
         token_budget = max_tokens
-        for parse_attempt in range(2):
+        max_parse_attempts = 3 if request_name.startswith("skill:") else 2
+        for parse_attempt in range(max_parse_attempts):
             response = self._create_json_completion(
                 messages=messages,
                 max_tokens=token_budget,
@@ -394,9 +395,9 @@ class DermOpenAIClient:
             try:
                 payload = self._parse_json_response(content)
             except json.JSONDecodeError:
-                if parse_attempt >= 1:
+                if parse_attempt >= max_parse_attempts - 1:
                     raise
-                token_budget += max(160, max_tokens // 2)
+                token_budget += max(160, max_tokens // 2, token_budget // 3)
                 LOGGER.warning(
                     "Retrying %s after malformed JSON response; increasing max_tokens to %s.",
                     request_name,
@@ -404,8 +405,8 @@ class DermOpenAIClient:
                 )
                 continue
 
-            if finish_reason == "length" and parse_attempt < 1:
-                token_budget += max(160, max_tokens // 2)
+            if finish_reason == "length" and parse_attempt < max_parse_attempts - 1:
+                token_budget += max(160, max_tokens // 2, token_budget // 3)
                 LOGGER.warning(
                     "Retrying %s because the model hit the max token budget; increasing max_tokens to %s.",
                     request_name,

@@ -10,7 +10,7 @@ from skills.schema import SkillSchemaField, SkillStep, SkillTrigger
 
 class AckSccSpecialistSkill(BaseSkill):
     name = "ack_scc_specialist_skill"
-    description = "Analyze ACK vs SCC differentiation clues without making the final call."
+    description = "Analyze keratinocyte confusion clues (ACK/SCC/BCC) without making the final call."
     output_fields = (
         "differentiation_features",
         "supporting_evidence",
@@ -28,26 +28,28 @@ class AckSccSpecialistSkill(BaseSkill):
         skill_type="specialist",
         triggers=[
             SkillTrigger(
-                condition="Trigger only when ACK and SCC are both live confusion candidates.",
-                rationale="This specialist routine addresses a narrow but clinically important confusion pair.",
+                condition="Trigger when ACK/SCC/BCC keratinocyte-line confusion is active, especially SCC↔BCC or ACK↔BCC in high-uncertainty/high-risk cases.",
+                rationale="These clusters are repeatedly hard and require explicit pairwise specialist distinction rather than generic comparison.",
             )
         ],
         workflow_text=(
-            "Focus narrowly on the ACK-versus-SCC confusion pair. Inspect keratinization, scale, invasiveness cues, and "
-            "surface disruption patterns that would help distinguish actinic keratosis-like from squamous cell carcinoma-like "
-            "behavior. Separate supporting and opposing evidence and recommend the next most useful observation without making "
-            "the final diagnosis."
+            "Focus narrowly on keratinocyte-line confusion (ACK/SCC/BCC). First define the active pair (e.g., SCC-vs-BCC or ACK-vs-BCC), "
+            "then compare scale/keratinization versus pearly-translucent morphology, ulceration, and invasive-looking surface disruption. "
+            "Explicitly list negative evidence that argues against over-calling SCC, and what missing evidence still prevents strong exclusion. "
+            "Produce pairwise differentiation clues only; do not make the final diagnosis."
         ),
         steps=[
-            SkillStep("pair_focus", "Focus the Pair", "Restrict reasoning to ACK vs SCC only.", ["active ddx pair"]),
-            SkillStep("differentiate", "Differentiate", "List the most relevant distinction clues.", ["keratinization", "scale", "surface disruption", "invasive-looking features"]),
-            SkillStep("balance_evidence", "Balance Evidence", "Separate evidence for and against the more concerning side.", ["supporting vs opposing clues"]),
-            SkillStep("next_observation", "Next Observation", "State what additional observation would best resolve the pair.", ["closer surface inspection", "history", "dermoscopy"]),
+            SkillStep("pair_focus", "Focus the Pair", "Restrict reasoning to one active keratinocyte confusion pair at a time (ACK/SCC/BCC family).", ["active ddx pair"]),
+            SkillStep("differentiate", "Differentiate", "List distinction clues with explicit positive and negative evidence.", ["keratinization", "scale", "pearly/translucent cues", "ulceration", "surface disruption"]),
+            SkillStep("balance_evidence", "Balance Evidence", "Separate support, opposition, and missing evidence that blocks overconfident narrowing.", ["supporting vs opposing clues", "required missing evidence"]),
+            SkillStep("next_observation", "Next Observation", "State what additional observation would most efficiently resolve the pair.", ["closer border/surface inspection", "vascular pattern clues", "history", "dermoscopy"]),
         ],
         watch_outs=[
             "Do not collapse ACK-vs-SCC analysis into a final label.",
             "Do not introduce unrelated candidate diseases.",
             "Surface roughness alone is not equivalent to invasive carcinoma.",
+            "Do not equate hyperkeratosis by itself with SCC when BCC-like cues are present.",
+            "If BCC is in play, list at least one opposing clue before escalating concern.",
         ],
         output_schema=[
             SkillSchemaField("differentiation_features", "list[str]", "Features that help distinguish ACK from SCC."),
@@ -67,25 +69,33 @@ class AckSccSpecialistSkill(BaseSkill):
     ) -> list[dict[str, object]]:
         return self.filter_related_abstract_experiences(
             abstract_experiences,
-            confusion_pairs=("ack->scc",),
-            keywords=("ack", "scc"),
+            confusion_pairs=(
+                "ack->scc",
+                "scc->bcc",
+                "squamous cell carcinoma->bcc",
+                "ack->bcc",
+                "actinic keratosis->bcc",
+                "seborrheic keratosis->bcc",
+            ),
+            keywords=("ack", "scc", "bcc", "actinic", "keratin", "seborrheic"),
             allowed_types=("confusion_memory", "prototype", "rule"),
-            top_k=3,
+            top_k=2,
         )
 
     def build_prompt(self, state: CaseState) -> str:
         return (
             f"{self.workflow_text()}\n"
-            "You are executing the ACK-vs-SCC specialist routine.\n"
-            "When to use: only when ACK and SCC are both active confusion candidates.\n"
-            "What evidence to inspect: scale, keratinization, surface disruption, invasive-looking change.\n"
+            "You are executing the keratinocyte confusion specialist routine (ACK/SCC/BCC family).\n"
+            "When to use: when ACK/SCC/BCC confusion is active or strongly suspected from retrieved confusion memory.\n"
+            "What evidence to inspect: scale/keratinization, pearly-translucent cues, ulceration, vascular hints, and invasive-looking surface change.\n"
             "If related abstract experiences are provided, explicitly use confusion_memory, prototype, and rule patterns as auxiliary comparison references.\n"
-            "Common pitfalls: equating roughness or keratin alone with SCC.\n"
+            "Common pitfalls: equating roughness or keratin alone with SCC, and ignoring BCC-like counter-clues.\n"
+            "Keep the response compact: use at most 3 short items per list field, and keep each item as a short phrase.\n"
             "Do NOT output a final diagnosis, final winner, or definitive disease label.\n"
             "Return JSON only with the following fields:\n"
             f"{self.output_schema_text()}\n"
             f"Initial perception: {self.perception_snapshot(state)}\n"
-            f"Current skill outputs: {self.skill_outputs_snapshot(state, preferred_skills=('morphology_analysis_skill', 'color_pattern_analysis_skill', 'border_surface_analysis_skill', 'temporal_evolution_skill', 'malignancy_risk_assessment_skill', 'differential_compare_skill'), max_skills=6)}\n"
+            f"Current skill outputs: {self.skill_outputs_snapshot(state, preferred_skills=('morphology_analysis_skill', 'border_surface_analysis_skill', 'temporal_evolution_skill', 'malignancy_risk_assessment_skill'), max_skills=4)}\n"
             f"Metadata: {self.metadata_snapshot(state)}\n"
         )
 

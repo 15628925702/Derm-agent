@@ -39,7 +39,7 @@ def main() -> int:
     execution_records = load_execution_records(args.records_root)
     split_map = load_split_map(args.split_json) if args.split_json else {}
     record_checks = audit_execution_records(execution_records, split_map=split_map)
-    eval_checks = audit_evaluation_manifests(args.eval_root)
+    eval_checks = audit_evaluation_manifests(args.eval_root, split_map=split_map)
     script_checks = audit_script_writeback_explicitness(PROJECT_ROOT / "scripts")
 
     issues = record_checks["issues"] + eval_checks["issues"] + script_checks["issues"]
@@ -234,7 +234,7 @@ def expected_split_for_case(case_id: str, split_map: dict[str, set[str]]) -> str
     return ""
 
 
-def audit_evaluation_manifests(eval_root: Path) -> dict[str, Any]:
+def audit_evaluation_manifests(eval_root: Path, *, split_map: dict[str, set[str]]) -> dict[str, Any]:
     issues: list[dict[str, Any]] = []
     manifests = sorted(eval_root.rglob("evaluation_manifest.json")) if eval_root.exists() else []
     for manifest_path in manifests:
@@ -242,7 +242,13 @@ def audit_evaluation_manifests(eval_root: Path) -> dict[str, Any]:
         fairness = dict(payload.get("fairness_constraints", {}))
         execution_config = dict(payload.get("execution_config", {}))
         frozen_state = dict(payload.get("frozen_state", {}))
-        data_split = normalize_split_name(str(payload.get("dataset", {}).get("data_split", "")).strip(), default="unknown")
+        dataset_payload = dict(payload.get("dataset", {}))
+        experiment_state = dict(payload.get("experiment_state", {}))
+        case_selection = dict(experiment_state.get("case_selection", {}))
+        state_paths = dict(experiment_state.get("state_paths", {}))
+        data_split = normalize_split_name(str(dataset_payload.get("data_split", "")).strip(), default="unknown")
+        dataset_case_ids = [str(item).strip() for item in dataset_payload.get("case_ids", []) if str(item).strip()]
+        selection_case_ids = [str(item).strip() for item in case_selection.get("case_ids", []) if str(item).strip()]
 
         if fairness.get("frozen_evaluation_mode") is not True:
             issues.append(
@@ -271,6 +277,53 @@ def audit_evaluation_manifests(eval_root: Path) -> dict[str, Any]:
                     {"manifest_path": str(manifest_path), "data_split": data_split},
                 )
             )
+        if experiment_state.get("strict_frozen_eval") is not True:
+            issues.append(
+                _issue(
+                    "error",
+                    "manifest_not_strict_frozen_eval",
+                    f"Evaluation manifest `{manifest_path}` missing strict_frozen_eval=true in experiment_state.",
+                    {"manifest_path": str(manifest_path)},
+                )
+            )
+        if experiment_state.get("writeback_enabled") is not False:
+            issues.append(
+                _issue(
+                    "error",
+                    "manifest_experiment_state_writeback_enabled",
+                    f"Evaluation manifest `{manifest_path}` experiment_state.writeback_enabled must be false.",
+                    {"manifest_path": str(manifest_path)},
+                )
+            )
+        if dataset_case_ids != selection_case_ids:
+            issues.append(
+                _issue(
+                    "error",
+                    "manifest_case_selection_mismatch",
+                    f"Evaluation manifest `{manifest_path}` dataset.case_ids does not match experiment_state.case_selection.case_ids.",
+                    {
+                        "manifest_path": str(manifest_path),
+                        "dataset_case_count": len(dataset_case_ids),
+                        "selection_case_count": len(selection_case_ids),
+                    },
+                )
+            )
+        if split_map and dataset_case_ids:
+            wrong_case_ids = [case_id for case_id in dataset_case_ids if expected_split_for_case(case_id, split_map) not in {"", data_split}]
+            if wrong_case_ids:
+                issues.append(
+                    _issue(
+                        "error",
+                        "manifest_case_ids_not_in_declared_split",
+                        f"Evaluation manifest `{manifest_path}` contains case ids outside declared split `{data_split}`.",
+                        {
+                            "manifest_path": str(manifest_path),
+                            "data_split": data_split,
+                            "wrong_case_ids": wrong_case_ids[:10],
+                            "wrong_case_count": len(wrong_case_ids),
+                        },
+                    )
+                )
         for field_name in (
             "experience_split_aware_version",
             "cognition_split_aware_version",
@@ -283,6 +336,28 @@ def audit_evaluation_manifests(eval_root: Path) -> dict[str, Any]:
                         "missing_frozen_split_aware_field",
                         f"Evaluation manifest `{manifest_path}` missing frozen_state.{field_name}.",
                         {"manifest_path": str(manifest_path), "field_name": field_name},
+                )
+            )
+        for field_name in ("experience_state_split", "cognition_state_split"):
+            value = normalize_split_name(str(frozen_state.get(field_name, "")).strip(), default="unknown")
+            if value != data_split:
+                issues.append(
+                    _issue(
+                        "error",
+                        "frozen_state_split_mismatch_manifest_split",
+                        f"Evaluation manifest `{manifest_path}` has frozen_state.{field_name}=`{value}` but dataset split is `{data_split}`.",
+                        {"manifest_path": str(manifest_path), "field_name": field_name, "field_value": value, "data_split": data_split},
+                    )
+                )
+        for field_name in ("experience_root", "cognition_path"):
+            path_value = str(state_paths.get(field_name, "")).strip()
+            if f"/split_states/{data_split}/" not in path_value:
+                issues.append(
+                    _issue(
+                        "error",
+                        "manifest_state_path_not_split_aware",
+                        f"Evaluation manifest `{manifest_path}` state path `{field_name}` is not under split `{data_split}`.",
+                        {"manifest_path": str(manifest_path), "field_name": field_name, "path": path_value, "data_split": data_split},
                     )
                 )
 

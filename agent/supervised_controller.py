@@ -184,6 +184,24 @@ class ControllerPrediction:
         }
 
 
+@dataclass
+class ControllerSelectionPolicy:
+    threshold: float
+    target_top_k: int
+    min_select: int
+    max_select: int
+    top_k_buffer: int = 1
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "threshold": float(self.threshold),
+            "target_top_k": int(self.target_top_k),
+            "min_select": int(self.min_select),
+            "max_select": int(self.max_select),
+            "top_k_buffer": int(self.top_k_buffer),
+        }
+
+
 class LearnedControllerScorer:
     def __init__(
         self,
@@ -205,10 +223,22 @@ class LearnedControllerScorer:
         self.model = ControllerMLP(input_dim=input_dim, hidden_dim=hidden_dim, output_dim=output_dim, dropout=dropout)
         self.model.load_state_dict(checkpoint.get("model_state_dict", {}))
         self.model.eval()
-        saved_threshold = float(checkpoint.get("threshold", 0.4))
-        self.threshold = float(threshold) if threshold is not None else saved_threshold
-        saved_top_k = int(checkpoint.get("top_k", 0) or 0)
-        self.top_k = int(top_k) if top_k is not None else saved_top_k
+        selection_policy_payload = dict(checkpoint.get("selection_policy", {}))
+        saved_threshold = float(selection_policy_payload.get("threshold", checkpoint.get("threshold", 0.5)))
+        saved_top_k = int(selection_policy_payload.get("target_top_k", checkpoint.get("top_k", 5)) or 5)
+        saved_min_select = int(selection_policy_payload.get("min_select", min(saved_top_k, 4)) or 1)
+        saved_max_select = int(selection_policy_payload.get("max_select", max(saved_top_k + 1, saved_min_select)) or max(saved_top_k + 1, saved_min_select))
+        saved_buffer = int(selection_policy_payload.get("top_k_buffer", 1) or 1)
+        resolved_top_k = int(top_k) if top_k is not None else saved_top_k
+        self.selection_policy = ControllerSelectionPolicy(
+            threshold=float(threshold) if threshold is not None else saved_threshold,
+            target_top_k=max(1, resolved_top_k),
+            min_select=max(1, saved_min_select),
+            max_select=max(max(1, saved_min_select), saved_max_select),
+            top_k_buffer=max(0, saved_buffer),
+        )
+        self.threshold = self.selection_policy.threshold
+        self.top_k = self.selection_policy.target_top_k
         self.feature_schema_version = str(checkpoint.get("feature_schema_version", "unknown"))
 
     def predict_from_feature_map(
@@ -228,10 +258,11 @@ class LearnedControllerScorer:
                 score_map.setdefault(skill_name, 0.0)
             score_map = {key: value for key, value in score_map.items() if key in set(available)}
         ranked = [item[0] for item in sorted(score_map.items(), key=lambda kv: kv[1], reverse=True)]
-        selected = [skill_name for skill_name in ranked if score_map.get(skill_name, 0.0) >= self.threshold]
-        if not selected and ranked:
-            top_k = self.top_k if self.top_k > 0 else 1
-            selected = ranked[:top_k]
+        selected = select_skills_with_policy(
+            ranked_skills=ranked,
+            score_map=score_map,
+            policy=self.selection_policy,
+        )
         return ControllerPrediction(
             skill_probabilities={key: round(value, 6) for key, value in score_map.items()},
             ranked_skills=ranked,
@@ -265,6 +296,11 @@ def multilabel_metrics(
     *,
     threshold: float,
     top_k: int,
+    target_k: list[int] | None = None,
+    y_harmful: torch.Tensor | None = None,
+    min_select: int = 1,
+    max_select: int = 5,
+    top_k_buffer: int = 1,
 ) -> dict[str, float | None]:
     if y_true.numel() == 0:
         return {
@@ -275,9 +311,30 @@ def multilabel_metrics(
             "topk_hit_rate": None,
             "avg_predicted_labels": None,
             "avg_true_labels": None,
+            "harmful_skill_over_selection_rate": None,
         }
     y_true_i = (y_true > 0.5).int()
-    y_pred_i = (y_prob >= threshold).int()
+    y_pred_i = torch.zeros_like(y_true_i)
+    for idx in range(y_prob.shape[0]):
+        probs = y_prob[idx]
+        ranked_indices = torch.argsort(probs, descending=True).tolist()
+        score_map = {index: float(probs[index].item()) for index in ranked_indices}
+        policy = ControllerSelectionPolicy(
+            threshold=float(threshold),
+            target_top_k=max(1, int(target_k[idx] if target_k and idx < len(target_k) else top_k)),
+            min_select=max(1, int(min_select)),
+            max_select=max(max(1, int(min_select)), int(max_select)),
+            top_k_buffer=max(0, int(top_k_buffer)),
+        )
+        ranked_names = [str(index) for index in ranked_indices]
+        selected_names = select_skills_with_policy(
+            ranked_skills=ranked_names,
+            score_map={str(index): value for index, value in score_map.items()},
+            policy=policy,
+        )
+        selected_indices = {int(name) for name in selected_names}
+        for column_index in selected_indices:
+            y_pred_i[idx, column_index] = 1
     tp = int(((y_true_i == 1) & (y_pred_i == 1)).sum().item())
     fp = int(((y_true_i == 0) & (y_pred_i == 1)).sum().item())
     fn = int(((y_true_i == 1) & (y_pred_i == 0)).sum().item())
@@ -303,6 +360,11 @@ def multilabel_metrics(
 
     avg_predicted_labels = float(y_pred_i.sum(dim=1).float().mean().item())
     avg_true_labels = float(y_true_i.sum(dim=1).float().mean().item())
+    harmful_rate = None
+    if y_harmful is not None and y_harmful.numel() == y_pred_i.numel():
+        harmful_mask = (y_harmful > 0.5).int()
+        harmful_selected = ((harmful_mask == 1) & (y_pred_i == 1)).any(dim=1).float()
+        harmful_rate = float(harmful_selected.mean().item())
     return {
         "micro_precision": round(micro_precision, 6),
         "micro_recall": round(micro_recall, 6),
@@ -311,6 +373,7 @@ def multilabel_metrics(
         "topk_hit_rate": round(topk_hit_rate, 6) if topk_hit_rate is not None else None,
         "avg_predicted_labels": round(avg_predicted_labels, 6),
         "avg_true_labels": round(avg_true_labels, 6),
+        "harmful_skill_over_selection_rate": round(harmful_rate, 6) if harmful_rate is not None else None,
     }
 
 
@@ -333,3 +396,23 @@ def _is_number(value: str) -> bool:
         return True
     except ValueError:
         return False
+
+
+def select_skills_with_policy(
+    *,
+    ranked_skills: list[str],
+    score_map: dict[str, float],
+    policy: ControllerSelectionPolicy,
+) -> list[str]:
+    if not ranked_skills:
+        return []
+    selected = [skill_name for skill_name in ranked_skills if float(score_map.get(skill_name, 0.0)) >= float(policy.threshold)]
+    desired_k = max(int(policy.min_select), int(policy.target_top_k) + int(policy.top_k_buffer))
+    desired_k = min(max(1, desired_k), max(1, int(policy.max_select)))
+    if len(selected) < int(policy.min_select):
+        selected = ranked_skills[: min(len(ranked_skills), desired_k)]
+    elif len(selected) > int(policy.max_select):
+        selected = selected[: int(policy.max_select)]
+    else:
+        selected = selected[: min(len(selected), desired_k)]
+    return list(dict.fromkeys(selected))

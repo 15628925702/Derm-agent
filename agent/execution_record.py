@@ -67,6 +67,7 @@ def build_case_execution_record(
         planned_writeback_bundle if writeback_enabled and state.reflection.get("write_experience") else {}
     )
     reflection_extract = state.reflection.get("reflection_extract", {}) if isinstance(state.reflection, dict) else {}
+    skill_assessments = state.reflection.get("skill_assessments", []) if isinstance(state.reflection, dict) else []
 
     record = CaseExecutionRecord(
         record_version=EXECUTION_RECORD_VERSION,
@@ -109,7 +110,10 @@ def build_case_execution_record(
             "experience_type": state.reflection.get("experience_type"),
             "detected_errors": deepcopy(state.reflection.get("detected_errors", [])),
             "case_outcome": deepcopy(state.reflection.get("case_outcome", {})),
-            "skill_assessments": deepcopy(state.reflection.get("skill_assessments", [])),
+            "skill_assessments": deepcopy(skill_assessments),
+            "skill_judgement_version": _infer_skill_judgement_version(skill_assessments),
+            "skill_outcome_counts": _summarize_skill_outcomes(skill_assessments),
+            "harmful_skills": _collect_skill_names_by_impact(skill_assessments, impact="harmful"),
             "reflection_extract": deepcopy(reflection_extract),
         },
         writeback_ops=_build_writeback_ops(
@@ -338,3 +342,54 @@ def _infer_dataset_name(case_input: CaseInput) -> str:
         if metadata_parent:
             return metadata_parent
     return path.parent.name.strip() or "unknown_dataset"
+
+
+def _infer_skill_judgement_version(skill_assessments: Any) -> str:
+    if not isinstance(skill_assessments, list):
+        return "unknown"
+    for item in skill_assessments:
+        if not isinstance(item, dict):
+            continue
+        version = str(item.get("judgement_version", "")).strip()
+        if version:
+            return version
+    return "legacy_or_unspecified"
+
+
+def _summarize_skill_outcomes(skill_assessments: Any) -> dict[str, int]:
+    counts = {
+        "helpful": 0,
+        "partially_helpful": 0,
+        "harmful": 0,
+        "unknown": 0,
+    }
+    if not isinstance(skill_assessments, list):
+        return counts
+    for item in skill_assessments:
+        if not isinstance(item, dict):
+            counts["unknown"] += 1
+            continue
+        impact = str(item.get("impact", "")).strip().lower()
+        if impact in counts:
+            counts[impact] += 1
+        else:
+            counts["unknown"] += 1
+    return counts
+
+
+def _collect_skill_names_by_impact(skill_assessments: Any, *, impact: str) -> list[str]:
+    target = str(impact).strip().lower()
+    if not target or not isinstance(skill_assessments, list):
+        return []
+    results: list[str] = []
+    seen: set[str] = set()
+    for item in skill_assessments:
+        if not isinstance(item, dict):
+            continue
+        skill_name = str(item.get("skill_name", "")).strip()
+        skill_impact = str(item.get("impact", "")).strip().lower()
+        if not skill_name or skill_impact != target or skill_name in seen:
+            continue
+        seen.add(skill_name)
+        results.append(skill_name)
+    return results

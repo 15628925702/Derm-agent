@@ -11,6 +11,13 @@ from typing import Any
 
 from agent.contamination_guard import build_split_state_version, infer_split_from_path, normalize_split_name
 from agent.execution_record import build_baseline_case_execution_record, enrich_execution_record_with_baseline, save_case_execution_record
+from agent.experiment_state import (
+    build_experiment_state_manifest,
+    load_split_payload,
+    resolve_case_selection,
+    resolve_split_state_paths,
+    validate_selected_case_ids,
+)
 from agent.policy_evaluation import build_policy_summary, compare_policy_summaries
 from agent.run_agent import run_agent
 from cognition.cognition_state import CognitionState
@@ -163,16 +170,46 @@ def run_evaluation_suite(
     seed: int,
     suite_label: str,
     data_split: str = "test",
+    split_json: Path | None = None,
+    strict_frozen_eval: bool = True,
 ) -> dict[str, Any]:
     eval_id = f"{suite_label}_{compact_timestamp()}"
     run_root = output_root / eval_id
     run_root.mkdir(parents=True, exist_ok=True)
 
-    case_entries, cases, case_source = collect_cases(data_root=data_root, limit=limit, case_offset=case_offset)
+    split_payload, resolved_split_json = load_split_payload(split_json=split_json, data_root=data_root)
+    case_selection = resolve_case_selection(
+        data_split=data_split,
+        split_payload=split_payload,
+        split_json_path=resolved_split_json,
+        limit=limit,
+        case_offset=case_offset,
+        strict=True,
+    )
+    policy_source_path = Path(str(policy_config.get("source_path", DEFAULT_POLICY_PATH) or DEFAULT_POLICY_PATH))
+    state_paths = resolve_split_state_paths(
+        data_split=case_selection.data_split,
+        strict_frozen_eval=bool(strict_frozen_eval),
+        policy_path=policy_source_path,
+    )
+    experiment_state_manifest = build_experiment_state_manifest(
+        case_selection=case_selection,
+        state_paths=state_paths,
+        writeback_enabled=False,
+        strict_frozen_eval=bool(strict_frozen_eval),
+    )
+    case_entries, cases, case_source = collect_cases(data_root=data_root, case_indices=case_selection.case_indices)
+    validate_selected_case_ids(
+        actual_case_ids=[case_input.case_id for case_input in cases],
+        expected_case_ids=case_selection.case_ids,
+        context=f"evaluation suite `{eval_id}`",
+    )
     frozen_state = snapshot_frozen_state(
         run_root=run_root,
         client=client,
         policy_config=policy_config,
+        state_paths=state_paths,
+        strict_frozen_eval=bool(strict_frozen_eval),
     )
     evaluation_manifest = build_evaluation_manifest(
         eval_id=eval_id,
@@ -186,7 +223,9 @@ def run_evaluation_suite(
         limit=limit,
         case_offset=case_offset,
         seed=seed,
-        data_split=data_split,
+        data_split=case_selection.data_split,
+        case_selection=case_selection.to_dict(),
+        experiment_state_manifest=experiment_state_manifest,
     )
     manifest_path = run_root / "evaluation_manifest.json"
     manifest_path.write_text(json.dumps(evaluation_manifest, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -261,6 +300,7 @@ def run_evaluation_suite(
     contamination_check = build_contamination_check(
         frozen_state=frozen_state,
         target_specs=target_specs,
+        experiment_state_manifest=experiment_state_manifest,
     )
 
     result_manifest = {
@@ -293,11 +333,11 @@ def run_evaluation_suite(
     }
 
 
-def collect_cases(*, data_root: Path, limit: int, case_offset: int) -> tuple[list[dict[str, Any]], list[Any], Any]:
+def collect_cases(*, data_root: Path, case_indices: list[int]) -> tuple[list[dict[str, Any]], list[Any], Any]:
     case_source = discover_case_source(data_root)
     case_entries: list[dict[str, Any]] = []
     cases: list[Any] = []
-    for case_index in range(case_offset, case_offset + limit):
+    for case_index in case_indices:
         case_input = load_case_by_index(case_index=case_index, data_root=data_root)
         cases.append(case_input)
         case_entries.append(
@@ -326,6 +366,8 @@ def build_evaluation_manifest(
     case_offset: int,
     seed: int,
     data_split: str,
+    case_selection: dict[str, Any],
+    experiment_state_manifest: dict[str, Any],
 ) -> dict[str, Any]:
     dataset_name = case_entries[0].get("dataset_name") if case_entries else ""
     return {
@@ -346,14 +388,18 @@ def build_evaluation_manifest(
             "dataset_name": dataset_name,
             "metadata_path": str(case_source.metadata_path),
             "image_root": str(case_source.image_root),
-            "case_selection": "sequential_by_index",
+            "case_selection": case_selection.get("selection_mode", "split_offset"),
             "case_indices": [entry["case_index"] for entry in case_entries],
             "case_ids": [entry["case_id"] for entry in case_entries],
             "case_offset": case_offset,
             "limit": limit,
             "seed": seed,
             "data_split": normalize_split_name(data_split, default="test"),
+            "split_id": case_selection.get("split_id", ""),
+            "split_json_path": case_selection.get("split_json_path", ""),
+            "offset_within_split": case_selection.get("offset_within_split", 0),
         },
+        "experiment_state": experiment_state_manifest,
         "run_targets": [spec.to_dict() for spec in target_specs],
         "frozen_state": frozen_state,
         "execution_config": {
@@ -379,6 +425,8 @@ def snapshot_frozen_state(
     run_root: Path,
     client: DermOpenAIClient,
     policy_config: dict[str, Any],
+    state_paths: Any,
+    strict_frozen_eval: bool,
 ) -> dict[str, Any]:
     frozen_root = run_root / "frozen_state"
     frozen_root.mkdir(parents=True, exist_ok=True)
@@ -387,15 +435,19 @@ def snapshot_frozen_state(
     prompt_manifest_path = frozen_root / "prompt_manifest.json"
     prompt_manifest_path.write_text(json.dumps(prompt_manifest, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    experience_snapshot = snapshot_experience_bank(frozen_root / "experience")
+    experience_source_root = Path(str(state_paths.experience_root))
+    cognition_source_path = Path(str(state_paths.cognition_path))
+    policy_source_path = Path(str(state_paths.policy_path))
+
+    experience_snapshot = snapshot_experience_bank(
+        source_root=experience_source_root,
+        target_root=frozen_root / "experience",
+    )
     cognition_snapshot = snapshot_single_file(
-        source_path=DEFAULT_COGNITION_PATH,
+        source_path=cognition_source_path,
         target_path=frozen_root / "cognition_state.json",
         component_id="cognition_state",
     )
-    policy_source_path = Path(str(policy_config.get("source_path", DEFAULT_POLICY_PATH)))
-    if not policy_source_path.exists():
-        policy_source_path = DEFAULT_POLICY_PATH
     policy_path = frozen_root / "policy.json"
     policy_path.write_text(json.dumps(policy_config, ensure_ascii=False, indent=2), encoding="utf-8")
     policy_hash = file_sha256(policy_path)
@@ -421,6 +473,12 @@ def snapshot_frozen_state(
         "policy_snapshot_path": str(policy_path),
         "policy_source_path": str(policy_source_path),
         "registry_version": skill_bank_snapshot["registry_version"],
+        "strict_frozen_eval": bool(strict_frozen_eval),
+        "requested_state_paths": {
+            "experience_root": str(experience_source_root),
+            "cognition_path": str(cognition_source_path),
+            "policy_path": str(policy_source_path),
+        },
         "state_snapshot_paths": {
             "experience_root": experience_snapshot["snapshot_root"],
             "cognition_path": cognition_snapshot["snapshot_path"],
@@ -440,16 +498,17 @@ def snapshot_frozen_state(
     return frozen_state_manifest
 
 
-def snapshot_experience_bank(target_root: Path) -> dict[str, Any]:
+def snapshot_experience_bank(*, source_root: Path, target_root: Path) -> dict[str, Any]:
     if target_root.exists():
         shutil.rmtree(target_root)
-    shutil.copytree(DEFAULT_EXPERIENCE_ROOT, target_root)
+    shutil.copytree(source_root, target_root)
     manifest_path = target_root / "manifest.json"
     manifest_payload = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else {}
     hashes = gather_file_hashes(target_root)
     combined_hash = combined_hash_from_pairs(hashes)
     return {
         "snapshot_root": str(target_root),
+        "source_root": str(source_root),
         "manifest_path": str(manifest_path),
         "experience_bank_version": f"experience_bank_{combined_hash[:12]}",
         "split_name": normalize_split_name(
@@ -770,12 +829,17 @@ def build_contamination_check(
     *,
     frozen_state: dict[str, Any],
     target_specs: list[EvaluationTargetSpec],
+    experiment_state_manifest: dict[str, Any],
 ) -> dict[str, Any]:
     return {
         "used_snapshot_isolation": True,
         "writeback_disabled": True,
         "state_reads_from_snapshot": True,
         "live_state_mutation_allowed_to_affect_eval": False,
+        "strict_frozen_eval": bool(experiment_state_manifest.get("strict_frozen_eval", False)),
+        "expected_data_split": experiment_state_manifest.get("data_split", ""),
+        "case_selection": dict(experiment_state_manifest.get("case_selection", {})),
+        "resolved_state_paths": dict(experiment_state_manifest.get("state_paths", {})),
         "split_aware_versions_present": bool(
             frozen_state.get("experience_split_aware_version")
             and frozen_state.get("cognition_split_aware_version")

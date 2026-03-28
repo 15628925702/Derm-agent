@@ -229,8 +229,13 @@ class ExperienceRetriever:
         if uncertainty_level and uncertainty_level != "unknown" and observed_state.get("uncertainty_level") == uncertainty_level:
             score += 1
 
-        if query.confusion_pair and str(condition.get("confusion_pair", "")).lower() == query.confusion_pair.lower():
-            score += 4
+        if query.confusion_pair:
+            query_pair = _normalize_confusion_pair(query.confusion_pair)
+            record_pair = _normalize_confusion_pair(str(condition.get("confusion_pair", "")))
+            if query_pair and record_pair and query_pair == record_pair:
+                score += 6
+            elif query_pair and record_pair and _is_same_confusion_family(query_pair, record_pair):
+                score += 3
 
         if condition.get("trigger_type") == "confusion_pair":
             score += 2
@@ -265,12 +270,24 @@ class ExperienceRetriever:
         if uncertainty_level and uncertainty_level != "unknown" and uncertainty_level in text:
             score += 1
 
-        if query.confusion_pair and query.confusion_pair.lower() in text:
-            score += 4
+        if query.confusion_pair:
+            query_pair = _normalize_confusion_pair(query.confusion_pair)
+            record_pair = _normalize_confusion_pair(str(record.get("pattern_summary", {}).get("confusion_pair", "")))
+            if query_pair and record_pair and query_pair == record_pair:
+                score += 6
+            elif query_pair and record_pair and _is_same_confusion_family(query_pair, record_pair):
+                score += 3
+            elif query_pair and query_pair in text:
+                score += 3
 
         record_type = str(record.get("type", "")).strip()
         if record_type == "confusion_memory":
             score += 3
+            if query.confusion_pair:
+                query_tags = _confusion_family_tags(str(query.confusion_pair))
+                record_tags = _confusion_family_tags(text)
+                if len(query_tags.intersection(record_tags)) >= 2:
+                    score += 2
         elif record_type in {"rule", "rule_candidate", "composite_skill_seed"}:
             score += 2
         elif record_type == "prototype":
@@ -456,6 +473,26 @@ class ExperienceRetriever:
     def _detect_confusion_pair(ddx_candidates: list[str]) -> str | None:
         if ExperienceRetriever._has_confusion_pair(ddx_candidates, ("mel", "melanoma"), ("nev", "nevus", "naevus", "mole")):
             return "melanoma->nev"
+        if ExperienceRetriever._has_confusion_pair(ddx_candidates, ("scc", "squamous cell", "squamous"), ("bcc", "basal cell")):
+            return "scc->bcc"
+        if ExperienceRetriever._has_confusion_pair(
+            ddx_candidates,
+            ("ack", "actinic keratosis", "actinic keratos"),
+            ("bcc", "basal cell"),
+        ):
+            return "ack->bcc"
+        if ExperienceRetriever._has_confusion_pair(
+            ddx_candidates,
+            ("seborrheic keratosis", "sek"),
+            ("bcc", "basal cell"),
+        ):
+            return "sek->bcc"
+        if ExperienceRetriever._has_confusion_pair(
+            ddx_candidates,
+            ("lichen simplex", "lichen planus", "psoriasis", "dermatitis", "eczema"),
+            ("ack", "actinic keratosis", "actinic keratos"),
+        ):
+            return "inflammatory->ack"
         if ExperienceRetriever._has_confusion_pair(
             ddx_candidates,
             ("ack", "actinic keratosis", "actinic keratos"),
@@ -484,6 +521,48 @@ def _layer_priority(packet: dict[str, Any]) -> int:
     if layer == "raw_case_memory":
         return 1
     return 0
+
+
+def _normalize_confusion_pair(value: str) -> str:
+    text = str(value).strip().lower()
+    if not text:
+        return ""
+    text = text.replace(" vs ", "->").replace("_vs_", "->").replace(" vs.", "->")
+    text = text.replace("→", "->")
+    while "-->" in text:
+        text = text.replace("-->", "->")
+    if "->" not in text:
+        return text
+    left, right = [part.strip() for part in text.split("->", 1)]
+    return f"{left}->{right}"
+
+
+def _confusion_family_tags(value: str) -> set[str]:
+    text = str(value).strip().lower()
+    tags: set[str] = set()
+    if any(term in text for term in ("mel", "melanoma")):
+        tags.add("mel")
+    if any(term in text for term in ("nev", "naevus", "mole")):
+        tags.add("nev")
+    if any(term in text for term in ("ack", "actinic keratos")):
+        tags.add("ack")
+    if any(term in text for term in ("scc", "squamous")):
+        tags.add("scc")
+    if any(term in text for term in ("bcc", "basal cell")):
+        tags.add("bcc")
+    if any(term in text for term in ("seborrheic keratos", "sek")):
+        tags.add("sek")
+    if any(term in text for term in ("lichen", "psoriasis", "dermatitis", "eczema", "rosacea")):
+        tags.add("inflammatory")
+    return tags
+
+
+def _is_same_confusion_family(left: str, right: str) -> bool:
+    left_tags = _confusion_family_tags(left)
+    right_tags = _confusion_family_tags(right)
+    if not left_tags or not right_tags:
+        return False
+    return len(left_tags.intersection(right_tags)) >= 2
 
 
 def dedupe_strings(values: list[Any]) -> list[str]:

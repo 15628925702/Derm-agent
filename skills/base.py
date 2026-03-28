@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 import json
+import logging
 from typing import Any, Iterable
 
 from agent.state import CaseState
@@ -28,6 +29,7 @@ class BaseSkill(ABC):
     skill_object: SkillObject | None = None
     _active_execution_context: SkillExecutionContext | None = None
     _active_reference_ids: list[str] = []
+    _logger = logging.getLogger(__name__)
 
     def execute(self, state: CaseState, client: DermOpenAIClient) -> dict[str, Any]:
         self.get_skill_object().stats.call_count += 1
@@ -46,6 +48,19 @@ class BaseSkill(ABC):
             state.skill_outputs[self.name] = normalized_output
             self.after_execute(state, normalized_output)
             return normalized_output
+        except json.JSONDecodeError as exc:
+            self.get_skill_object().stats.failure_count += 1
+            fallback_output = self.build_fallback_output(state, error=exc)
+            state.skill_outputs[self.name] = fallback_output
+            state.notes.append(
+                f"{self.name} degraded to fallback output after malformed JSON during skill execution."
+            )
+            self._logger.warning(
+                "Skill %s degraded to fallback output after JSON parsing failure: %s",
+                self.name,
+                exc,
+            )
+            return fallback_output
         except Exception:
             self.get_skill_object().stats.failure_count += 1
             raise
@@ -118,6 +133,15 @@ class BaseSkill(ABC):
 
     def after_execute(self, state: CaseState, output: dict[str, Any]) -> None:
         """Optional state updates after skill execution."""
+
+    def build_fallback_output(self, state: CaseState, *, error: Exception) -> dict[str, Any]:
+        fallback = self.normalize_output({})
+        fallback["execution_status"] = "fallback_json_parse_error"
+        fallback["execution_error"] = error.__class__.__name__
+        fallback["referenced_experiences"] = list(self._active_reference_ids)
+        fallback["evidence_strength"] = "low"
+        fallback["recommendation_type"] = self._default_recommendation_type()
+        return fallback
 
     def output_schema_text(self) -> str:
         output_schema = self.get_skill_object().output_schema
@@ -216,6 +240,7 @@ class BaseSkill(ABC):
         matches: list[dict[str, Any]] = []
         seen_ids: set[str] = set()
         lowered_pairs = {item.lower() for item in confusion_pairs if item}
+        target_pair_tags = [BaseSkill._confusion_family_tags(item) for item in lowered_pairs]
         lowered_keywords = tuple(item.lower() for item in keywords if item)
         for packet in abstract_experiences:
             experience_type = str(packet.get("experience_type", "")).strip().lower()
@@ -233,8 +258,11 @@ class BaseSkill(ABC):
                     str(packet.get("source_id", "")),
                 ]
             ).lower()
+            packet_tags = BaseSkill._confusion_family_tags(packet_text)
             matched = False
             if lowered_pairs and confusion_pair and confusion_pair in lowered_pairs:
+                matched = True
+            elif lowered_pairs and packet_tags and any(len(packet_tags.intersection(target_tags)) >= 2 for target_tags in target_pair_tags):
                 matched = True
             elif lowered_keywords and all(keyword in packet_text for keyword in lowered_keywords):
                 matched = True
@@ -250,6 +278,26 @@ class BaseSkill(ABC):
             if len(matches) >= top_k:
                 break
         return matches
+
+    @staticmethod
+    def _confusion_family_tags(value: str) -> set[str]:
+        text = str(value).strip().lower()
+        tags: set[str] = set()
+        if any(term in text for term in ("mel", "melanoma")):
+            tags.add("mel")
+        if any(term in text for term in ("nev", "naevus", "mole")):
+            tags.add("nev")
+        if any(term in text for term in ("ack", "actinic keratos")):
+            tags.add("ack")
+        if any(term in text for term in ("scc", "squamous")):
+            tags.add("scc")
+        if any(term in text for term in ("bcc", "basal cell")):
+            tags.add("bcc")
+        if any(term in text for term in ("seborrheic keratos", "sek")):
+            tags.add("sek")
+        if any(term in text for term in ("lichen", "psoriasis", "dermatitis", "eczema", "rosacea")):
+            tags.add("inflammatory")
+        return tags
 
     def active_related_abstract_map(self) -> dict[str, dict[str, Any]]:
         if not self._active_execution_context:

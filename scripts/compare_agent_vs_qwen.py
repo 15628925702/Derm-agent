@@ -29,6 +29,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--policy-config", type=Path, default=None, help="Optional policy config JSON. Defaults to the current stable policy.")
     parser.add_argument("--policy-label", type=str, default="", help="Optional human-readable label for this policy run.")
     parser.add_argument("--data-split", type=str, default="test", choices=("val", "test"), help="Evaluation split label for contamination guard and manifests.")
+    parser.add_argument("--split-json", type=Path, default=None, help="Optional fixed split JSON. If omitted, the built-in deterministic split is used.")
+    parser.add_argument("--non-strict-frozen-eval", action="store_true", help="Allow snapshotting from resolved split state paths even if some files are missing.")
     parser.add_argument("--client-timeout", type=float, default=None, help="Override per-request timeout in seconds.")
     parser.add_argument("--client-max-retries", type=int, default=None, help="Override automatic retries for transient local inference failures.")
     return parser.parse_args()
@@ -68,6 +70,8 @@ def main() -> int:
         seed=args.seed,
         suite_label="compare_agent_vs_qwen",
         data_split=args.data_split,
+        split_json=args.split_json,
+        strict_frozen_eval=not args.non_strict_frozen_eval,
     )
 
     result_manifest = suite["result_manifest"]
@@ -92,6 +96,8 @@ def main() -> int:
             "policy_source_path": policy.get("source_path"),
             "policy_label": args.policy_label,
             "data_split": args.data_split,
+            "split_json": str(args.split_json) if args.split_json else "",
+            "strict_frozen_eval": not args.non_strict_frozen_eval,
             "evaluation_protocol_version": result_manifest.get("protocol_version"),
         },
         "summary": {

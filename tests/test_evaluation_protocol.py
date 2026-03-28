@@ -84,6 +84,12 @@ def test_build_baseline_case_execution_record_has_zero_delta() -> None:
 def test_build_contamination_check_marks_snapshot_isolation() -> None:
     contamination = build_contamination_check(
         frozen_state={"source_hashes": {"policy_hash": "abc123"}},
+        experiment_state_manifest={
+            "strict_frozen_eval": True,
+            "data_split": "test",
+            "case_selection": {"case_ids": ["CASE_1"]},
+            "state_paths": {"experience_root": "/tmp/split_states/test/experience"},
+        },
         target_specs=[
             EvaluationTargetSpec(
                 target_id="full_dermagent",
@@ -98,4 +104,5 @@ def test_build_contamination_check_marks_snapshot_isolation() -> None:
 
     assert contamination["used_snapshot_isolation"] is True
     assert contamination["live_state_mutation_allowed_to_affect_eval"] is False
+    assert contamination["strict_frozen_eval"] is True
     assert contamination["target_execution_modes"]["full_dermagent"]["execution_overrides"]["enable_skill_retrieval"] is False

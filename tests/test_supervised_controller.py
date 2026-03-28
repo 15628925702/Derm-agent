@@ -11,10 +11,12 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from agent.planner import build_default_planner
 from agent.supervised_controller import (
+    ControllerSelectionPolicy,
     ControllerMLP,
     LearnedControllerScorer,
     build_feature_vocab,
     flatten_training_example_features,
+    select_skills_with_policy,
     vectorize_feature_maps,
 )
 
@@ -92,6 +94,23 @@ def test_learned_controller_scorer_load_and_predict(tmp_path) -> None:
     assert prediction.ranked_skills[0] == "skill_1"
     assert "skill_1" in prediction.selected_skills
     assert prediction.skill_probabilities["skill_1"] > prediction.skill_probabilities["skill_2"]
+
+
+def test_select_skills_with_policy_enforces_sparse_bounds() -> None:
+    policy = ControllerSelectionPolicy(
+        threshold=0.5,
+        target_top_k=2,
+        min_select=2,
+        max_select=3,
+        top_k_buffer=0,
+    )
+    selected = select_skills_with_policy(
+        ranked_skills=["skill_1", "skill_2", "skill_3", "skill_4"],
+        score_map={"skill_1": 0.9, "skill_2": 0.7, "skill_3": 0.6, "skill_4": 0.1},
+        policy=policy,
+    )
+
+    assert selected == ["skill_1", "skill_2"]
 
 
 def test_planner_falls_back_when_learned_checkpoint_missing() -> None:

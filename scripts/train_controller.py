@@ -18,10 +18,10 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from agent.supervised_controller import (
+    ControllerSelectionPolicy,
     FEATURE_SCHEMA_VERSION,
     ControllerMLP,
     build_feature_vocab,
-    compute_pos_weight,
     flatten_training_example_features,
     is_finite_tensor,
     multilabel_metrics,
@@ -35,11 +35,16 @@ DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "state" / "trainable_components" / "controll
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Train a supervised learnable controller (multi-label skill selector).")
+    parser = argparse.ArgumentParser(description="Train a supervised learnable controller with sparse helpfulness-driven skill selection.")
     parser.add_argument("--examples-path", type=Path, default=DEFAULT_EXAMPLES_PATH, help="Path to controller training examples JSONL.")
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR, help="Directory to save checkpoints and reports.")
     parser.add_argument("--dataset-filter", type=str, default="", help="Optional dataset filter.")
-    parser.add_argument("--label-source", type=str, default="selected", choices=("selected", "helpful", "selected_plus_helpful"))
+    parser.add_argument(
+        "--label-source",
+        type=str,
+        default="sparse_helpfulness",
+        choices=("selected", "helpful", "selected_plus_helpful", "sparse_helpfulness"),
+    )
     parser.add_argument("--train-ratio", type=float, default=0.7)
     parser.add_argument("--val-ratio", type=float, default=0.15)
     parser.add_argument("--test-ratio", type=float, default=0.15)
@@ -50,8 +55,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--weight-decay", type=float, default=1e-4)
     parser.add_argument("--hidden-dim", type=int, default=128)
     parser.add_argument("--dropout", type=float, default=0.1)
-    parser.add_argument("--threshold", type=float, default=0.4)
+    parser.add_argument("--threshold", type=float, default=0.5)
     parser.add_argument("--top-k", type=int, default=5)
+    parser.add_argument("--min-select", type=int, default=4)
+    parser.add_argument("--max-select", type=int, default=8)
+    parser.add_argument("--top-k-buffer", type=int, default=1)
+    parser.add_argument("--harmful-negative-weight", type=float, default=2.0)
+    parser.add_argument("--weak-positive-weight", type=float, default=0.75)
     parser.add_argument("--min-label-frequency", type=int, default=1)
     parser.add_argument("--checkpoint-name", type=str, default="")
     parser.add_argument(
@@ -71,12 +81,14 @@ def main() -> int:
         raise ValueError(f"No controller examples found from {examples_path} with dataset filter `{args.dataset_filter}`.")
 
     feature_maps = [flatten_training_example_features(example) for example in examples]
-    label_lists = [extract_labels(example, args.label_source) for example in examples]
     label_vocab = build_label_vocab(examples, label_source=args.label_source, min_frequency=args.min_label_frequency)
     if not label_vocab:
         raise ValueError("No label vocabulary available after filtering. Adjust `--label-source` or `--min-label-frequency`.")
 
-    y = build_label_matrix(label_lists, label_vocab)
+    y = build_target_score_matrix(examples, label_vocab, label_source=args.label_source)
+    harmful_mask = build_harmful_mask_matrix(examples, label_vocab)
+    candidate_mask = build_candidate_mask_matrix(examples, label_vocab)
+    target_k = build_target_k_list(examples)
     feature_vocab = build_feature_vocab(feature_maps, min_feature_count=1)
     X = vectorize_feature_maps(feature_maps, feature_vocab)
     if X.shape[0] != y.shape[0]:
@@ -110,6 +122,15 @@ def main() -> int:
     y_val = y[val_idx] if val_idx else torch.zeros((0, y.shape[1]), dtype=torch.float32)
     X_test = X[test_idx] if test_idx else torch.zeros((0, X.shape[1]), dtype=torch.float32)
     y_test = y[test_idx] if test_idx else torch.zeros((0, y.shape[1]), dtype=torch.float32)
+    harmful_train = harmful_mask[train_idx]
+    harmful_val = harmful_mask[val_idx] if val_idx else torch.zeros((0, y.shape[1]), dtype=torch.float32)
+    harmful_test = harmful_mask[test_idx] if test_idx else torch.zeros((0, y.shape[1]), dtype=torch.float32)
+    candidate_train = candidate_mask[train_idx]
+    candidate_val = candidate_mask[val_idx] if val_idx else torch.zeros((0, y.shape[1]), dtype=torch.float32)
+    candidate_test = candidate_mask[test_idx] if test_idx else torch.zeros((0, y.shape[1]), dtype=torch.float32)
+    target_k_train = [target_k[index] for index in train_idx]
+    target_k_val = [target_k[index] for index in val_idx]
+    target_k_test = [target_k[index] for index in test_idx]
 
     model = ControllerMLP(
         input_dim=X.shape[1],
@@ -118,10 +139,9 @@ def main() -> int:
         dropout=max(0.0, min(0.8, float(args.dropout))),
     )
     optimizer = torch.optim.AdamW(model.parameters(), lr=float(args.lr), weight_decay=float(args.weight_decay))
-    criterion = nn.BCEWithLogitsLoss(pos_weight=compute_pos_weight(y_train))
 
     train_loader = DataLoader(
-        TensorDataset(X_train, y_train),
+        TensorDataset(X_train, y_train, harmful_train, candidate_train),
         batch_size=max(1, int(args.batch_size)),
         shuffle=True,
     )
@@ -133,9 +153,16 @@ def main() -> int:
         model.train()
         train_loss = 0.0
         train_batches = 0
-        for batch_x, batch_y in train_loader:
+        for batch_x, batch_y, batch_harmful, batch_candidate in train_loader:
             logits = model(batch_x)
-            loss = criterion(logits, batch_y)
+            loss = compute_sparse_controller_loss(
+                logits=logits,
+                target_scores=batch_y,
+                harmful_mask=batch_harmful,
+                candidate_mask=batch_candidate,
+                harmful_negative_weight=float(args.harmful_negative_weight),
+                weak_positive_weight=float(args.weak_positive_weight),
+            )
             if not is_finite_tensor(loss):
                 raise RuntimeError(f"Non-finite loss detected at epoch={epoch}.")
             optimizer.zero_grad()
@@ -148,15 +175,27 @@ def main() -> int:
             model,
             X_train,
             y_train,
+            harmful_mask=harmful_train,
+            candidate_mask=candidate_train,
             threshold=float(args.threshold),
             top_k=int(args.top_k),
+            target_k=target_k_train,
+            min_select=int(args.min_select),
+            max_select=int(args.max_select),
+            top_k_buffer=int(args.top_k_buffer),
         )
         val_metrics = evaluate_model(
             model,
             X_val,
             y_val,
+            harmful_mask=harmful_val,
+            candidate_mask=candidate_val,
             threshold=float(args.threshold),
             top_k=int(args.top_k),
+            target_k=target_k_val,
+            min_select=int(args.min_select),
+            max_select=int(args.max_select),
+            top_k_buffer=int(args.top_k_buffer),
         )
         train_loss_mean = train_loss / train_batches if train_batches else 0.0
         epoch_history.append(
@@ -174,9 +213,45 @@ def main() -> int:
 
     model.load_state_dict(best_state)
     metrics = {
-        "train": evaluate_model(model, X_train, y_train, threshold=float(args.threshold), top_k=int(args.top_k)),
-        "val": evaluate_model(model, X_val, y_val, threshold=float(args.threshold), top_k=int(args.top_k)),
-        "test": evaluate_model(model, X_test, y_test, threshold=float(args.threshold), top_k=int(args.top_k)),
+        "train": evaluate_model(
+            model,
+            X_train,
+            y_train,
+            harmful_mask=harmful_train,
+            candidate_mask=candidate_train,
+            threshold=float(args.threshold),
+            top_k=int(args.top_k),
+            target_k=target_k_train,
+            min_select=int(args.min_select),
+            max_select=int(args.max_select),
+            top_k_buffer=int(args.top_k_buffer),
+        ),
+        "val": evaluate_model(
+            model,
+            X_val,
+            y_val,
+            harmful_mask=harmful_val,
+            candidate_mask=candidate_val,
+            threshold=float(args.threshold),
+            top_k=int(args.top_k),
+            target_k=target_k_val,
+            min_select=int(args.min_select),
+            max_select=int(args.max_select),
+            top_k_buffer=int(args.top_k_buffer),
+        ),
+        "test": evaluate_model(
+            model,
+            X_test,
+            y_test,
+            harmful_mask=harmful_test,
+            candidate_mask=candidate_test,
+            threshold=float(args.threshold),
+            top_k=int(args.top_k),
+            target_k=target_k_test,
+            min_select=int(args.min_select),
+            max_select=int(args.max_select),
+            top_k_buffer=int(args.top_k_buffer),
+        ),
     }
 
     checkpoint_payload = {
@@ -190,6 +265,13 @@ def main() -> int:
         "dropout": max(0.0, min(0.8, float(args.dropout))),
         "threshold": float(args.threshold),
         "top_k": int(args.top_k),
+        "selection_policy": ControllerSelectionPolicy(
+            threshold=float(args.threshold),
+            target_top_k=int(args.top_k),
+            min_select=int(args.min_select),
+            max_select=int(args.max_select),
+            top_k_buffer=int(args.top_k_buffer),
+        ).to_dict(),
         "label_source": args.label_source,
         "model_state_dict": {key: value.cpu() for key, value in model.state_dict().items()},
         "train_config": {
@@ -205,9 +287,15 @@ def main() -> int:
             "lr": args.lr,
             "weight_decay": args.weight_decay,
             "min_label_frequency": args.min_label_frequency,
+            "min_select": args.min_select,
+            "max_select": args.max_select,
+            "top_k_buffer": args.top_k_buffer,
+            "harmful_negative_weight": args.harmful_negative_weight,
+            "weak_positive_weight": args.weak_positive_weight,
         },
         "split_indices": split_indices,
         "case_ids": [str(example.get("case_id", "")) for example in examples],
+        "target_k": target_k,
         "metrics": metrics,
         "epoch_history": epoch_history,
         "created_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -309,6 +397,11 @@ def extract_labels(example: dict[str, Any], label_source: str) -> list[str]:
         return helpful
     if label_source == "selected_plus_helpful":
         return list(dict.fromkeys(selected + helpful))
+    if label_source == "sparse_helpfulness":
+        outcome = dict(example.get("outcome", {}))
+        primary = [str(item).strip() for item in outcome.get("primary_positive_skills", []) if str(item).strip()]
+        weak = [str(item).strip() for item in outcome.get("weak_positive_skills", []) if str(item).strip()]
+        return list(dict.fromkeys(primary + weak))
     return selected
 
 
@@ -343,6 +436,59 @@ def build_label_matrix(label_lists: list[list[str]], label_vocab: list[str]) -> 
                 continue
             rows[row_index, column_index] = 1.0
     return rows
+
+
+def build_target_score_matrix(
+    examples: list[dict[str, Any]],
+    label_vocab: list[str],
+    *,
+    label_source: str,
+) -> torch.Tensor:
+    if label_source != "sparse_helpfulness":
+        return build_label_matrix([extract_labels(example, label_source) for example in examples], label_vocab)
+    label_to_index = {label: idx for idx, label in enumerate(label_vocab)}
+    rows = torch.zeros((len(examples), len(label_vocab)), dtype=torch.float32)
+    for row_index, example in enumerate(examples):
+        score_map = dict(dict(example.get("outcome", {})).get("target_skill_scores", {}))
+        for skill_name, score in score_map.items():
+            column_index = label_to_index.get(str(skill_name).strip())
+            if column_index is None:
+                continue
+            rows[row_index, column_index] = float(score or 0.0)
+    return rows
+
+
+def build_harmful_mask_matrix(examples: list[dict[str, Any]], label_vocab: list[str]) -> torch.Tensor:
+    label_to_index = {label: idx for idx, label in enumerate(label_vocab)}
+    rows = torch.zeros((len(examples), len(label_vocab)), dtype=torch.float32)
+    for row_index, example in enumerate(examples):
+        for skill_name in dict(example.get("outcome", {})).get("explicit_negative_skills", []):
+            normalized = str(skill_name).strip()
+            column_index = label_to_index.get(normalized)
+            if column_index is not None:
+                rows[row_index, column_index] = 1.0
+    return rows
+
+
+def build_candidate_mask_matrix(examples: list[dict[str, Any]], label_vocab: list[str]) -> torch.Tensor:
+    label_to_index = {label: idx for idx, label in enumerate(label_vocab)}
+    rows = torch.zeros((len(examples), len(label_vocab)), dtype=torch.float32)
+    for row_index, example in enumerate(examples):
+        for skill_name in example.get("available_skill_candidates", []):
+            normalized = str(skill_name).strip()
+            column_index = label_to_index.get(normalized)
+            if column_index is not None:
+                rows[row_index, column_index] = 1.0
+    return rows
+
+
+def build_target_k_list(examples: list[dict[str, Any]]) -> list[int]:
+    values: list[int] = []
+    for example in examples:
+        available_count = len(example.get("available_skill_candidates", []))
+        raw = int(dict(example.get("outcome", {})).get("target_k", 0) or 0)
+        values.append(max(1, min(max(available_count, 1), raw if raw > 0 else 1)))
+    return values
 
 
 def build_split_indices(
@@ -390,8 +536,14 @@ def evaluate_model(
     X: torch.Tensor,
     y_true: torch.Tensor,
     *,
+    harmful_mask: torch.Tensor,
+    candidate_mask: torch.Tensor,
     threshold: float,
     top_k: int,
+    target_k: list[int],
+    min_select: int,
+    max_select: int,
+    top_k_buffer: int,
 ) -> dict[str, float | None]:
     if X.shape[0] == 0:
         return multilabel_metrics(
@@ -399,12 +551,49 @@ def evaluate_model(
             torch.zeros((0, y_true.shape[1] if y_true.ndim == 2 else 0), dtype=torch.float32),
             threshold=threshold,
             top_k=top_k,
+            target_k=[],
+            y_harmful=torch.zeros((0, y_true.shape[1] if y_true.ndim == 2 else 0), dtype=torch.float32),
+            min_select=min_select,
+            max_select=max_select,
+            top_k_buffer=top_k_buffer,
         )
     model.eval()
     with torch.no_grad():
         logits = model(X)
         y_prob = torch.sigmoid(logits)
-    return multilabel_metrics(y_true, y_prob, threshold=threshold, top_k=top_k)
+        if candidate_mask.shape == y_prob.shape:
+            y_prob = y_prob * candidate_mask
+    return multilabel_metrics(
+        (y_true >= 0.5).float(),
+        y_prob,
+        threshold=threshold,
+        top_k=top_k,
+        target_k=target_k,
+        y_harmful=harmful_mask,
+        min_select=min_select,
+        max_select=max_select,
+        top_k_buffer=top_k_buffer,
+    )
+
+
+def compute_sparse_controller_loss(
+    *,
+    logits: torch.Tensor,
+    target_scores: torch.Tensor,
+    harmful_mask: torch.Tensor,
+    candidate_mask: torch.Tensor,
+    harmful_negative_weight: float,
+    weak_positive_weight: float,
+) -> torch.Tensor:
+    binary_targets = (target_scores > 0).float()
+    per_entry_loss = nn.functional.binary_cross_entropy_with_logits(logits, binary_targets, reduction="none")
+    weights = torch.ones_like(per_entry_loss)
+    weights = torch.where((target_scores > 0) & (target_scores < 1.0), torch.full_like(weights, float(weak_positive_weight)), weights)
+    weights = torch.where(target_scores >= 1.0, torch.full_like(weights, 1.25), weights)
+    weights = torch.where(harmful_mask > 0, torch.full_like(weights, float(harmful_negative_weight)), weights)
+    masked_weights = weights * torch.clamp(candidate_mask, min=0.0, max=1.0)
+    denom = torch.clamp(masked_weights.sum(), min=1.0)
+    return (per_entry_loss * masked_weights).sum() / denom
 
 
 if __name__ == "__main__":

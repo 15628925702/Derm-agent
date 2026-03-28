@@ -619,6 +619,8 @@ def run_stage3_policy_evaluation(args: argparse.Namespace, *, run_id: str, run_r
         "--data-split",
         str(args.stage3_data_split),
     ]
+    if args.split_json:
+        command.extend(["--split-json", str(args.split_json)])
     if args.client_timeout is not None:
         command.extend(["--client-timeout", str(float(args.client_timeout))])
     if args.client_max_retries is not None:

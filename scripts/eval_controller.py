@@ -13,11 +13,14 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from agent.supervised_controller import ControllerMLP, flatten_training_example_features, multilabel_metrics, vectorize_feature_maps
+from agent.supervised_controller import ControllerMLP, ControllerSelectionPolicy, flatten_training_example_features, multilabel_metrics, select_skills_with_policy, vectorize_feature_maps
 from scripts.train_controller import (
     DEFAULT_EXAMPLES_PATH,
     FALLBACK_EXAMPLES_PATH,
+    build_candidate_mask_matrix,
+    build_harmful_mask_matrix,
     build_label_matrix,
+    build_target_k_list,
     extract_labels,
     load_examples,
     resolve_examples_path,
@@ -56,6 +59,9 @@ def main() -> int:
     feature_maps = [flatten_training_example_features(example) for example in examples]
     X = vectorize_feature_maps(feature_maps, feature_vocab)
     y_true = build_label_matrix([extract_labels(example, label_source) for example in examples], label_list)
+    harmful_mask = build_harmful_mask_matrix(examples, label_list)
+    candidate_mask = build_candidate_mask_matrix(examples, label_list)
+    target_k_values = build_target_k_list(examples)
 
     split_indices = _resolve_split_indices(
         split=args.split,
@@ -64,6 +70,9 @@ def main() -> int:
     )
     X_eval = X[split_indices] if split_indices else torch.zeros((0, X.shape[1]), dtype=torch.float32)
     y_eval = y_true[split_indices] if split_indices else torch.zeros((0, y_true.shape[1]), dtype=torch.float32)
+    harmful_eval = harmful_mask[split_indices] if split_indices else torch.zeros((0, y_true.shape[1]), dtype=torch.float32)
+    candidate_eval = candidate_mask[split_indices] if split_indices else torch.zeros((0, y_true.shape[1]), dtype=torch.float32)
+    target_k_eval = [target_k_values[index] for index in split_indices] if split_indices else []
     examples_eval = [examples[index] for index in split_indices] if split_indices else []
 
     model = ControllerMLP(
@@ -74,19 +83,40 @@ def main() -> int:
     )
     model.load_state_dict(checkpoint.get("model_state_dict", {}))
     model.eval()
-    threshold = float(args.threshold if args.threshold is not None else checkpoint.get("threshold", 0.4))
-    top_k = int(args.top_k if args.top_k is not None else checkpoint.get("top_k", 5))
+    selection_policy_payload = dict(checkpoint.get("selection_policy", {}))
+    threshold = float(args.threshold if args.threshold is not None else selection_policy_payload.get("threshold", checkpoint.get("threshold", 0.5)))
+    top_k = int(args.top_k if args.top_k is not None else selection_policy_payload.get("target_top_k", checkpoint.get("top_k", 5)))
+    selection_policy = ControllerSelectionPolicy(
+        threshold=threshold,
+        target_top_k=max(1, top_k),
+        min_select=max(1, int(selection_policy_payload.get("min_select", 4) or 1)),
+        max_select=max(1, int(selection_policy_payload.get("max_select", 8) or 1)),
+        top_k_buffer=max(0, int(selection_policy_payload.get("top_k_buffer", 1) or 0)),
+    )
 
     with torch.no_grad():
         logits = model(X_eval) if X_eval.shape[0] > 0 else torch.zeros((0, len(label_list)), dtype=torch.float32)
         probs = torch.sigmoid(logits)
-    metrics = multilabel_metrics(y_eval, probs, threshold=threshold, top_k=top_k)
+        if candidate_eval.shape == probs.shape:
+            probs = probs * candidate_eval
+    metrics = multilabel_metrics(
+        y_eval,
+        probs,
+        threshold=threshold,
+        top_k=top_k,
+        target_k=target_k_eval,
+        y_harmful=harmful_eval,
+        min_select=selection_policy.min_select,
+        max_select=selection_policy.max_select,
+        top_k_buffer=selection_policy.top_k_buffer,
+    )
 
     prediction_rows = _build_prediction_rows(
         examples=examples_eval,
         probabilities=probs,
         label_list=label_list,
-        threshold=threshold,
+        selection_policy=selection_policy,
+        target_k_eval=target_k_eval,
     )
 
     report = {
@@ -97,6 +127,7 @@ def main() -> int:
         "num_examples_eval": len(examples_eval),
         "threshold": threshold,
         "top_k": top_k,
+        "selection_policy": selection_policy.to_dict(),
         "label_source": label_source,
         "metrics": metrics,
     }
@@ -136,7 +167,8 @@ def _build_prediction_rows(
     examples: list[dict[str, Any]],
     probabilities: torch.Tensor,
     label_list: list[str],
-    threshold: float,
+    selection_policy: ControllerSelectionPolicy,
+    target_k_eval: list[int],
 ) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     if probabilities.shape[0] != len(examples):
@@ -145,15 +177,27 @@ def _build_prediction_rows(
         prob_vector = probabilities[index].tolist()
         score_map = {skill_name: float(prob) for skill_name, prob in zip(label_list, prob_vector)}
         ranked = [item[0] for item in sorted(score_map.items(), key=lambda kv: kv[1], reverse=True)]
-        selected = [skill_name for skill_name in ranked if score_map.get(skill_name, 0.0) >= threshold]
+        local_policy = ControllerSelectionPolicy(
+            threshold=selection_policy.threshold,
+            target_top_k=max(1, target_k_eval[index] if index < len(target_k_eval) else selection_policy.target_top_k),
+            min_select=selection_policy.min_select,
+            max_select=selection_policy.max_select,
+            top_k_buffer=selection_policy.top_k_buffer,
+        )
+        selected = select_skills_with_policy(ranked_skills=ranked, score_map=score_map, policy=local_policy)
+        harmful = {str(item).strip() for item in dict(example.get("outcome", {})).get("explicit_negative_skills", []) if str(item).strip()}
         rows.append(
             {
                 "case_id": str(example.get("case_id", "")),
                 "dataset_name": str(example.get("dataset_name", "")),
                 "selected_skills_pred": selected,
                 "ranked_skills_pred": ranked,
+                "predicted_skill_count": len(selected),
+                "target_k": int(target_k_eval[index] if index < len(target_k_eval) else selection_policy.target_top_k),
+                "harmful_selected_overlap": [skill_name for skill_name in selected if skill_name in harmful],
                 "skill_probabilities": {key: round(value, 6) for key, value in score_map.items()},
                 "selected_skills_true": [str(item).strip() for item in example.get("selected_skills", []) if str(item).strip()],
+                "primary_positive_skills_true": [str(item).strip() for item in dict(example.get("outcome", {})).get("primary_positive_skills", []) if str(item).strip()],
             }
         )
     return rows

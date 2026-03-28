@@ -41,6 +41,7 @@ SIGNAL_KEYWORD_MAP = {
     "location_or_size_metadata": ("location", "distribution", "site", "diameter", "metadata", "consistency"),
     "mel_nev_confusion": ("mel", "nev", "specialist", "compare", "confusion"),
     "ack_scc_confusion": ("ack", "scc", "specialist", "compare", "confusion"),
+    "keratinocyte_bcc_confusion": ("bcc", "basal cell", "scc", "ack", "actinic", "seborrheic", "keratin"),
     "contradiction_rich": ("contradiction", "conflict", "audit", "inconsisten"),
     "information_gap": ("missing", "gap", "underdetermined", "need more information"),
     "escalation_needed": ("escalat", "dermoscopy", "biopsy", "further check", "closer exam"),
@@ -229,7 +230,38 @@ def _build_signal_profile(query: SkillRetrievalQuery) -> dict[str, Any]:
     uncertainty_level = str(perception.get("uncertainty", {}).get("level", "unknown")).lower()
     morphology_clues = _extract_morphology_clues(image_summary, metadata, notes)
     confusion_pair = detect_confusion_pair(ddx_candidates)
-    known_confusion_match = bool(confusion_pair and confusion_pair in query.cognition.known_confusion_patterns)
+    known_confusion_text = " ".join(str(key).strip().lower() for key in query.cognition.known_confusion_patterns.keys())
+    known_confusion_match = bool(
+        confusion_pair
+        and (
+            confusion_pair in query.cognition.known_confusion_patterns
+            or confusion_pair.lower() in known_confusion_text
+        )
+    )
+    keratinocyte_precursor_present = any(
+        any(term in candidate for term in ("ack", "actinic keratos", "scc", "squamous", "seborrheic", "sek"))
+        for candidate in ddx_candidates
+    )
+    keratinocyte_bcc_confusion = (
+        has_confusion_pair(ddx_candidates, ("scc", "squamous cell", "squamous"), ("bcc", "basal cell"))
+        or has_confusion_pair(ddx_candidates, ("ack", "actinic keratosis", "actinic keratos"), ("bcc", "basal cell"))
+        or has_confusion_pair(ddx_candidates, ("seborrheic keratosis", "sek"), ("bcc", "basal cell"))
+        or (
+            keratinocyte_precursor_present
+            and any(
+                pattern in known_confusion_text
+                for pattern in (
+                    "squamous cell carcinoma->bcc",
+                    "scc->bcc",
+                    "actinic keratosis->bcc",
+                    "ack->bcc",
+                    "seborrheic keratosis->bcc",
+                    "sek->bcc",
+                )
+            )
+            and (uncertainty_level in {"high", "medium"} or has_malignancy_possibility(ddx_candidates))
+        )
+    )
 
     contradiction_rich = any(term in image_summary for term in ("contradict", "conflict", "irregular", "asymmetry"))
     information_gap = any(term in notes.lower() for term in ("missing", "unknown", "not available")) or uncertainty_level in {"medium", "high"}
@@ -258,6 +290,7 @@ def _build_signal_profile(query: SkillRetrievalQuery) -> dict[str, Any]:
             ("ack", "actinic keratosis", "actinic keratos"),
             ("scc", "squamous cell", "squamous"),
         ),
+        "keratinocyte_bcc_confusion": keratinocyte_bcc_confusion,
         "contradiction_rich": contradiction_rich,
         "information_gap": information_gap,
         "escalation_needed": escalation_needed,
@@ -372,7 +405,11 @@ def _should_select_skill(skill_name: str, score: float, signal_profile: dict[str
     if skill_name == "mel_nev_specialist_skill":
         return bool(signal_profile["mel_nev_confusion"] or (signal_profile["known_confusion_match"] and score >= 2.5))
     if skill_name == "ack_scc_specialist_skill":
-        return bool(signal_profile["ack_scc_confusion"] or (signal_profile["known_confusion_match"] and score >= 2.5))
+        return bool(
+            signal_profile["ack_scc_confusion"]
+            or signal_profile.get("keratinocyte_bcc_confusion", False)
+            or (signal_profile["known_confusion_match"] and score >= 2.5)
+        )
     if skill_name == "uncertainty_assessment_skill":
         return bool(signal_profile["high_uncertainty"] or signal_profile["information_gap"] or score >= 3.5)
     if skill_name == "contradiction_check_skill":
@@ -385,6 +422,18 @@ def _should_select_skill(skill_name: str, score: float, signal_profile: dict[str
 def detect_confusion_pair(ddx_candidates: list[str]) -> str | None:
     if has_confusion_pair(ddx_candidates, ("mel", "melanoma"), ("nev", "nevus", "naevus", "mole")):
         return "melanoma->nev"
+    if has_confusion_pair(ddx_candidates, ("scc", "squamous cell", "squamous"), ("bcc", "basal cell")):
+        return "scc->bcc"
+    if has_confusion_pair(ddx_candidates, ("ack", "actinic keratosis", "actinic keratos"), ("bcc", "basal cell")):
+        return "ack->bcc"
+    if has_confusion_pair(ddx_candidates, ("seborrheic keratosis", "sek"), ("bcc", "basal cell")):
+        return "sek->bcc"
+    if has_confusion_pair(
+        ddx_candidates,
+        ("lichen simplex", "lichen planus", "psoriasis", "dermatitis", "eczema"),
+        ("ack", "actinic keratosis", "actinic keratos"),
+    ):
+        return "inflammatory->ack"
     if has_confusion_pair(
         ddx_candidates,
         ("ack", "actinic keratosis", "actinic keratos"),

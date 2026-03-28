@@ -13,6 +13,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from agent.contamination_guard import build_split_state_version, normalize_split_name
+from agent.experiment_state import load_split_payload, resolve_case_selection, resolve_split_state_paths, validate_selected_case_ids
 from agent.execution_record import enrich_execution_record_with_baseline, save_case_execution_record
 from agent.policy_config import (
     CURRENT_STABLE_POLICY_PATH,
@@ -45,6 +46,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--limit", type=int, default=10, help="Number of cases to evaluate.")
     parser.add_argument("--case-offset", type=int, default=0, help="Start case index.")
     parser.add_argument("--data-split", type=str, default="val", choices=("train", "val", "test"), help="Logical data split label. Candidate evaluation should usually use `val`.")
+    parser.add_argument("--split-json", type=Path, default=None, help="Optional fixed split JSON. If omitted, the built-in deterministic split is used.")
+    parser.add_argument("--non-strict-frozen-eval", action="store_true", help="Allow snapshotting from resolved split state paths even if some files are missing.")
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR, help="Directory for evaluation outputs.")
     parser.add_argument("--client-timeout", type=float, default=None, help="Override local client timeout in seconds.")
     parser.add_argument("--client-max-retries", type=int, default=None, help="Override local client retry count.")
@@ -61,26 +64,39 @@ def main() -> int:
     candidate_policy = load_policy(args.candidate_config)
     candidate_version_path = save_policy(candidate_policy, POLICY_VERSIONS_DIR / f"{candidate_policy.policy_id}.json", register=True)
     client = DermOpenAIClient(timeout=args.client_timeout, max_retries=args.client_max_retries)
+    split_payload, resolved_split_json = load_split_payload(split_json=args.split_json, data_root=args.data_root)
+    case_selection = resolve_case_selection(
+        data_split=args.data_split,
+        split_payload=split_payload,
+        split_json_path=resolved_split_json,
+        limit=args.limit,
+        case_offset=args.case_offset,
+        strict=True,
+    )
+    state_paths = resolve_split_state_paths(
+        data_split=case_selection.data_split,
+        strict_frozen_eval=not args.non_strict_frozen_eval,
+    )
 
     stable_records = evaluate_policy_run(
         stable_policy.to_dict(),
         policy_label="stable",
         client=client,
         data_root=args.data_root,
-        limit=args.limit,
-        case_offset=args.case_offset,
+        case_selection=case_selection.to_dict(),
+        state_paths=state_paths.to_dict(),
         output_dir=args.output_dir / "stable_run",
-        data_split=args.data_split,
+        data_split=case_selection.data_split,
     )
     candidate_records = evaluate_policy_run(
         candidate_policy.to_dict(),
         policy_label="candidate",
         client=client,
         data_root=args.data_root,
-        limit=args.limit,
-        case_offset=args.case_offset,
+        case_selection=case_selection.to_dict(),
+        state_paths=state_paths.to_dict(),
         output_dir=args.output_dir / "candidate_run",
-        data_split=args.data_split,
+        data_split=case_selection.data_split,
     )
 
     stable_summary = build_policy_summary(stable_records)
@@ -103,7 +119,9 @@ def main() -> int:
             "data_root": str(args.data_root),
             "limit": args.limit,
             "case_offset": args.case_offset,
-            "data_split": args.data_split,
+            "data_split": case_selection.data_split,
+            "split_json": str(args.split_json) if args.split_json else "",
+            "strict_frozen_eval": not args.non_strict_frozen_eval,
             "client_timeout": client.timeout,
             "client_max_retries": client.max_retries,
         },
@@ -163,15 +181,17 @@ def evaluate_policy_run(
     policy_label: str,
     client: DermOpenAIClient,
     data_root: Path,
-    limit: int,
-    case_offset: int,
+    case_selection: dict[str, Any],
+    state_paths: dict[str, Any],
     output_dir: Path,
     data_split: str,
 ) -> list[dict[str, Any]]:
     output_dir.mkdir(parents=True, exist_ok=True)
     records: list[dict[str, Any]] = []
-    for case_index in range(case_offset, case_offset + limit):
+    actual_case_ids: list[str] = []
+    for case_index in case_selection.get("case_indices", []):
         case_input = load_case_by_index(case_index=case_index, data_root=data_root)
+        actual_case_ids.append(case_input.case_id)
         records.append(
             evaluate_case(
                 case_input,
@@ -180,8 +200,14 @@ def evaluate_policy_run(
                 policy_config=policy_config,
                 policy_label=policy_label,
                 data_split=data_split,
+                state_paths=state_paths,
             )
         )
+    validate_selected_case_ids(
+        actual_case_ids=actual_case_ids,
+        expected_case_ids=[str(item) for item in case_selection.get("case_ids", [])],
+        context=f"policy evaluation `{policy_label}`",
+    )
     return records
 
 
@@ -193,6 +219,7 @@ def evaluate_case(
     policy_config: dict[str, Any],
     policy_label: str,
     data_split: str,
+    state_paths: dict[str, Any],
 ) -> dict[str, Any]:
     baseline_response = client.baseline_diagnosis(case_input)
     normalized_split = normalize_split_name(data_split, default="val")
@@ -210,9 +237,9 @@ def evaluate_case(
         },
     )
 
-    split_root = DEFAULT_SPLIT_STATE_ROOT / normalized_split
-    frozen_bank = ExperienceBank(root=split_root / "experience")
-    frozen_cognition = CognitionState.load(split_root / "cognition_state.json")
+    split_root = Path(str(state_paths.get("split_state_root", DEFAULT_SPLIT_STATE_ROOT / normalized_split)))
+    frozen_bank = ExperienceBank(root=Path(str(state_paths.get("experience_root", split_root / "experience"))))
+    frozen_cognition = CognitionState.load(Path(str(state_paths.get("cognition_path", split_root / "cognition_state.json"))))
     frozen_cognition.state_split = normalized_split
     agent_state, _ = run_agent(
         case_input=case_input,

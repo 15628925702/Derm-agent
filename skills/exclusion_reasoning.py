@@ -33,12 +33,14 @@ class ExclusionReasoningSkill(BaseSkill):
             "Perform physician-style exclusion reasoning over the currently active candidate set. "
             "Identify which already-mentioned candidates look less likely, state the negative or opposing evidence "
             "that weakens them, and separate this from evidence that is simply missing. "
+            "For frequent hard clusters (AK/SCC/SEK versus BCC, inflammatory lesions versus ACK), explicitly name which classic clues are absent "
+            "and which missing checks prevent confident exclusion. "
             "This skill must narrow reasoning transparently without producing the final diagnosis."
         ),
         steps=[
             SkillStep("scope_candidates", "Scope Candidates", "Limit exclusion reasoning to candidates already present in the current differential or active pairwise comparisons.", ["current ddx", "specialist comparisons"]),
             SkillStep("collect_negative_evidence", "Collect Negative Evidence", "List features that actively argue against a candidate rather than support it.", ["absent typical clues", "opposing morphology or pattern clues"]),
-            SkillStep("separate_missing_evidence", "Separate Missing Evidence", "State what evidence is still missing and why that prevents strong exclusion.", ["needed dermoscopy", "missing history", "missing scale or evolution support"]),
+            SkillStep("separate_missing_evidence", "Separate Missing Evidence", "State what evidence is still missing and why that prevents strong exclusion.", ["needed dermoscopy", "missing history", "missing border/vascular detail", "missing evolution support"]),
             SkillStep("grade_exclusion", "Grade Exclusion", "Assign low, medium, or high exclusion confidence based on the current strength of the negative case.", ["strength of negative evidence", "dependency on missing evidence"]),
         ],
         watch_outs=[
@@ -46,6 +48,8 @@ class ExclusionReasoningSkill(BaseSkill):
             "Do not confuse missing support with true contradictory evidence.",
             "Do not convert exclusion reasoning into a final winner selection.",
             "Do not overstate exclusion confidence when critical evidence is still missing.",
+            "For BCC-related confusion, do not claim exclusion without at least one explicit opposing clue and one required missing check.",
+            "For inflammatory-versus-ACK confusion, avoid treating scale alone as sufficient evidence for actinic keratosis.",
         ],
         output_schema=[
             SkillSchemaField("unlikely_candidates", "list[str]", "Candidates already in scope that currently look less likely."),
@@ -62,6 +66,8 @@ class ExclusionReasoningSkill(BaseSkill):
             "When to use: use when the differential remains open and physician-style narrowing by exclusion would improve interpretability.\n"
             "What evidence to inspect: current ddx, structured observation outputs, pairwise comparisons, specialist comparisons, uncertainty, and missing evidence.\n"
             "Common pitfalls: introducing new diagnoses, treating missing evidence as hard contradiction, and naming a final winner.\n"
+            "Hard-cluster requirement: if BCC is in active/related differential, explicitly state at least one exclusion_evidence item and one required_missing_evidence item for BCC.\n"
+            "Hard-cluster requirement: if inflammatory descriptors are present with ACK candidate, separate inflammatory mimic clues from true actinic support.\n"
             "Do NOT output a final diagnosis, final winner, or definitive disease class.\n"
             "Only exclude or weaken candidates that are already present in the current case reasoning state.\n"
             "Return JSON only with the following fields:\n"

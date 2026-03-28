@@ -28,17 +28,20 @@ class MetadataConsistencySkill(BaseSkill):
             "Compare the visible lesion description with the structured case metadata and identify whether the two sources "
             "cohere. Flag direct contradictions as conflicts, weaker credibility concerns as suspicious points, and summarize "
             "overall reliability as a consistency score. This routine is about evidence reliability, not diagnosis."
+            " Use hard-vs-soft mismatch triage so inflammatory or irritation-like context does not get overcounted as hard contradiction."
         ),
         steps=[
             SkillStep("review_metadata", "Review Metadata", "Identify the metadata items most relevant to visible lesion assessment.", ["region", "diameter", "symptoms", "elevation"]),
             SkillStep("compare_sources", "Compare Sources", "Check whether image impression and metadata tell a coherent story.", ["image summary", "history fields"]),
-            SkillStep("flag_conflicts", "Flag Conflicts", "List direct contradictions and weaker suspicious points separately.", ["hard mismatch", "soft inconsistency"]),
+            SkillStep("flag_conflicts", "Flag Conflicts", "List direct contradictions and weaker suspicious points separately.", ["hard mismatch", "soft inconsistency", "inflammatory mimic versus true conflict"]),
             SkillStep("rate_reliability", "Rate Reliability", "Assign high, medium, or low consistency.", ["overall coherence"]),
         ],
         watch_outs=[
             "Single-image appearance cannot confirm all metadata fields.",
             "Do not mark uncertainty itself as a hard contradiction.",
             "Benign-looking images can still carry high-risk metadata and vice versa.",
+            "Chronic irritation/inflammatory texture can mimic keratotic change; do not label this as hard conflict without direct contradiction.",
+            "Soft inconsistencies should not automatically force low consistency_score.",
         ],
         output_schema=[
             SkillSchemaField("consistency_score", "str", "Overall image-metadata consistency score."),
@@ -54,6 +57,8 @@ class MetadataConsistencySkill(BaseSkill):
             "When to use: use when context credibility and image coherence affect downstream confidence.\n"
             "What evidence to inspect: image summary, lesion descriptors, metadata history, and size/site fields.\n"
             "Common pitfalls: weak visibility is not the same thing as contradiction.\n"
+            "Classify each issue as either hard conflict (direct mismatch) or soft inconsistency (context-limited ambiguity).\n"
+            "In inflammatory-versus-actinic confusion, prefer suspicious_points unless there is explicit direct mismatch.\n"
             "Do NOT output any disease diagnosis or final class.\n"
             "Return JSON only with the following fields:\n"
             f"{self.output_schema_text()}\n"
