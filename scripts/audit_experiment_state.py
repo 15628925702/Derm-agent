@@ -106,6 +106,17 @@ def load_split_map(path: Path) -> dict[str, set[str]]:
     return split_map
 
 
+def split_memberships_for_case(case_id: str, split_map: dict[str, set[str]]) -> set[str]:
+    normalized_case_id = str(case_id).strip()
+    if not normalized_case_id:
+        return set()
+    memberships: set[str] = set()
+    for split_name in ("train", "val", "test"):
+        if normalized_case_id in split_map.get(split_name, set()):
+            memberships.add(split_name)
+    return memberships
+
+
 def audit_execution_records(records: list[dict[str, Any]], *, split_map: dict[str, set[str]]) -> dict[str, Any]:
     issues: list[dict[str, Any]] = []
     split_cases: dict[str, set[str]] = {"train": set(), "val": set(), "test": set(), "unknown": set()}
@@ -228,9 +239,9 @@ def audit_execution_records(records: list[dict[str, Any]], *, split_map: dict[st
 
 
 def expected_split_for_case(case_id: str, split_map: dict[str, set[str]]) -> str:
-    for split_name in ("train", "val", "test"):
-        if case_id in split_map.get(split_name, set()):
-            return split_name
+    memberships = split_memberships_for_case(case_id, split_map)
+    if len(memberships) == 1:
+        return next(iter(memberships))
     return ""
 
 
