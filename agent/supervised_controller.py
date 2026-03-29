@@ -257,11 +257,38 @@ class LearnedControllerScorer:
         self.top_k = self.selection_policy.target_top_k
         self.feature_schema_version = str(checkpoint.get("feature_schema_version", "unknown"))
 
+    def derive_selection_policy(
+        self,
+        *,
+        top_k: int | None = None,
+        min_select: int | None = None,
+        max_select: int | None = None,
+        threshold: float | None = None,
+        top_k_buffer: int | None = None,
+        preserve_top1: bool | None = None,
+    ) -> ControllerSelectionPolicy:
+        base = self.selection_policy
+        resolved_top_k = max(1, int(top_k if top_k is not None else base.target_top_k))
+        resolved_min = max(1, int(min_select if min_select is not None else min(base.min_select, resolved_top_k)))
+        resolved_max = max(resolved_min, int(max_select if max_select is not None else max(base.max_select, resolved_top_k)))
+        resolved_buffer = max(0, int(top_k_buffer if top_k_buffer is not None else base.top_k_buffer))
+        return ControllerSelectionPolicy(
+            threshold=float(threshold if threshold is not None else base.threshold),
+            target_top_k=resolved_top_k,
+            min_select=min(resolved_min, resolved_max),
+            max_select=resolved_max,
+            top_k_buffer=resolved_buffer,
+            relative_margin=float(base.relative_margin),
+            floor_score=float(base.floor_score),
+            preserve_top1=bool(base.preserve_top1 if preserve_top1 is None else preserve_top1),
+        )
+
     def predict_from_feature_map(
         self,
         feature_map: dict[str, float],
         *,
         available_skill_names: list[str],
+        selection_policy: ControllerSelectionPolicy | None = None,
     ) -> ControllerPrediction:
         x = vectorize_feature_map(feature_map, self.feature_vocab).unsqueeze(0)
         with torch.no_grad():
@@ -274,10 +301,11 @@ class LearnedControllerScorer:
                 score_map.setdefault(skill_name, 0.0)
             score_map = {key: value for key, value in score_map.items() if key in set(available)}
         ranked = [item[0] for item in sorted(score_map.items(), key=lambda kv: kv[1], reverse=True)]
+        resolved_policy = selection_policy or self.selection_policy
         selection_details = select_skills_with_policy_details(
             ranked_skills=ranked,
             score_map=score_map,
-            policy=self.selection_policy,
+            policy=resolved_policy,
         )
         return ControllerPrediction(
             skill_probabilities={key: round(value, 6) for key, value in score_map.items()},
@@ -296,6 +324,7 @@ class LearnedControllerScorer:
         retrieved_experience_bundle: dict[str, Any],
         available_skill_names: list[str],
         cognition: CognitionState,
+        selection_policy: ControllerSelectionPolicy | None = None,
     ) -> ControllerPrediction:
         feature_map = build_runtime_controller_feature_map(
             perception=perception,
@@ -305,7 +334,11 @@ class LearnedControllerScorer:
             available_skill_names=available_skill_names,
             cognition=cognition,
         )
-        return self.predict_from_feature_map(feature_map, available_skill_names=available_skill_names)
+        return self.predict_from_feature_map(
+            feature_map,
+            available_skill_names=available_skill_names,
+            selection_policy=selection_policy,
+        )
 
 
 def multilabel_metrics(

@@ -10,9 +10,10 @@ from cognition.cognition_state import CognitionState
 from skills.schema import SkillObject
 
 try:
-    from agent.supervised_controller import LearnedControllerScorer
+    from agent.supervised_controller import ControllerSelectionPolicy, LearnedControllerScorer
 except Exception:  # pragma: no cover - fallback for minimal runtime environments without torch
     LearnedControllerScorer = None  # type: ignore[assignment]
+    ControllerSelectionPolicy = None  # type: ignore[assignment]
 
 
 LOGGER = logging.getLogger(__name__)
@@ -99,6 +100,9 @@ class SkillSelectionDecision:
     controller_probability: float | None = None
     controller_selected: bool = False
     controller_rejected: bool = False
+    helpfulness_penalty: float = 0.0
+    adaptive_budget_retain: bool = False
+    adaptive_budget_reason: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -147,7 +151,22 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
         policy = _normalize_planner_policy(planner_input.policy_config or self.policy_config)
         self._load_learned_controller_if_needed(policy)
         signals = _build_signal_profile(planner_input)
+        budget_info = _compute_case_adaptive_budget(planner_input=planner_input, signals=signals, policy=policy)
         learned_prediction = None
+        runtime_selection_policy = None
+        if (
+            self.learned_controller is not None
+            and str(policy.get("controller_family", "")).strip() == "learned_supervised"
+            and ControllerSelectionPolicy is not None
+        ):
+            runtime_selection_policy = self.learned_controller.derive_selection_policy(
+                top_k=int(budget_info["final_budget"]),
+                min_select=int(budget_info["min_select"]),
+                max_select=int(budget_info["final_budget"]),
+                threshold=float(policy.get("learned_controller_select_threshold", 0.4) or 0.4),
+                top_k_buffer=0,
+                preserve_top1=True,
+            )
         if self.learned_controller is not None and str(policy.get("controller_family", "")).strip() == "learned_supervised":
             learned_prediction = self.learned_controller.score_from_planner_input(
                 perception=planner_input.perception,
@@ -156,6 +175,7 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
                 retrieved_experience_bundle=planner_input.retrieved_experience_bundle,
                 available_skill_names=[skill.name for skill in planner_input.available_skills],
                 cognition=planner_input.cognition,
+                selection_policy=runtime_selection_policy,
             )
         learned_selected_set = set(learned_prediction.selected_skills) if learned_prediction is not None else set()
         learned_rank_map = {
@@ -185,7 +205,15 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
                 learned_prediction=learned_prediction,
                 policy=policy,
                 signals=signals,
+                budget_info=budget_info,
             )
+
+        self._apply_case_budget_gate(
+            decisions=decisions,
+            policy=policy,
+            signals=signals,
+            budget_info=budget_info,
+        )
 
         selected = [decision for decision in decisions if decision.selected]
         force_top_k = int(policy.get("learned_controller_force_top_k", 0) or 0)
@@ -222,6 +250,9 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
                 "selected": bool(decision.selected),
                 "controller_selected": bool(decision.controller_selected),
                 "controller_rejected": bool(decision.controller_rejected),
+                "helpfulness_penalty": round(float(decision.helpfulness_penalty), 6),
+                "adaptive_budget_retain": bool(decision.adaptive_budget_retain),
+                "adaptive_budget_reason": str(decision.adaptive_budget_reason),
             }
             for decision in decisions
         }
@@ -231,11 +262,19 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
             "threshold": float(policy.get("learned_controller_select_threshold", 0.4) or 0.4),
             "target_top_k": int(policy.get("learned_controller_top_k", 0) or 0),
             "force_top_k": int(policy.get("learned_controller_force_top_k", 0) or 0),
+            "final_budget": int(budget_info["final_budget"]),
+            "budget_min": int(budget_info["min_budget"]),
+            "budget_max": int(budget_info["max_budget"]),
+            "budget_tier": str(budget_info["budget_tier"]),
+            "budget_reasons": list(budget_info["budget_reasons"]),
+            "complexity_signals": dict(budget_info["complexity_signals"]),
         }
         if learned_prediction is not None:
             controller_decision_info["selection_info"] = learned_prediction.selection_info
             controller_decision_info["controller_selected_skills"] = list(learned_prediction.selected_skills)
             controller_decision_info["controller_rejected_skills"] = list(learned_prediction.rejected_skills)
+            if runtime_selection_policy is not None:
+                controller_decision_info["runtime_selection_policy"] = runtime_selection_policy.to_dict()
 
         return PlannerOutput(
             available_skill_candidates=[skill.name for skill in planner_input.available_skills],
@@ -344,6 +383,26 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
             score -= int(policy.get("failure_rate_penalty", 2))
             reasons.append(f"Penalized by cognition skill failure_rate={failure_rate:.2f}.")
             matched_fields.append("cognition.skill_statistics.failure_rate")
+        harmful_rate = float(skill_stats.get("harmful_count", 0)) / max(1, int(skill_stats.get("call_count", 0) or 0))
+        helpful_floor = float(policy.get("skill_penalty_helpful_floor", 0.2) or 0.2)
+        harmful_threshold = float(policy.get("skill_penalty_harmful_threshold", 0.08) or 0.08)
+        harmful_penalty = 0.0
+        if harmful_rate > harmful_threshold:
+            harmful_penalty += (harmful_rate - harmful_threshold) * float(
+                policy.get("skill_harmful_rate_penalty_weight", 4.0) or 4.0
+            )
+        if helpful_rate < helpful_floor:
+            harmful_penalty += (helpful_floor - helpful_rate) * float(
+                policy.get("skill_low_helpful_rate_penalty_weight", 2.0) or 2.0
+            )
+        if harmful_penalty > 0.0:
+            penalty_points = max(1, int(round(harmful_penalty)))
+            score -= penalty_points
+            reasons.append(
+                "Penalized by skill helpfulness prior "
+                f"(helpful_rate={helpful_rate:.2f}, harmful_rate={harmful_rate:.2f}, penalty={penalty_points})."
+            )
+            matched_fields.append("cognition.skill_statistics.helpfulness_penalty")
 
         active_clusters = [str(item) for item in signals.get("active_confusion_clusters", []) if str(item).strip()]
         cluster_bonus = float(cluster_priority_bonus(active_clusters, skill.name))
@@ -480,6 +539,7 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
             matched_fields=dedupe_reasons(matched_fields),
             controller_probability=learned_probability,
             controller_selected=learned_selected,
+            helpfulness_penalty=round(harmful_penalty, 6),
         )
 
     def _apply_learned_controller_sparsification(
@@ -489,6 +549,7 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
         learned_prediction: Any,
         policy: dict[str, Any],
         signals: dict[str, Any],
+        budget_info: dict[str, Any],
     ) -> None:
         mode = str(policy.get("learned_controller_mode", "union")).strip().lower()
         if mode not in {"sparse_hybrid", "strict_topk"}:
@@ -519,7 +580,11 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
                 score=decision.score,
                 signals=signals,
                 policy=policy,
+                decision=decision,
+                budget_info=budget_info,
             ):
+                decision.adaptive_budget_retain = True
+                decision.adaptive_budget_reason = "Retained by sparse hybrid safety guard within adaptive budget."
                 decision.reasons = dedupe_reasons(
                     decision.reasons + ["Retained by sparse hybrid safety guard despite controller rejection."]
                 )
@@ -543,32 +608,94 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
         score: int,
         signals: dict[str, Any],
         policy: dict[str, Any],
+        decision: SkillSelectionDecision,
+        budget_info: dict[str, Any],
     ) -> bool:
+        if int(budget_info.get("soft_bypass_remaining", 0) or 0) <= 0:
+            return False
         protected_floor = int(policy.get("learned_controller_protected_min_score", 7) or 7)
         rule_floor = int(policy.get("learned_controller_sparse_rule_floor", 9) or 9)
+        allowed = False
         if skill_name == "malignancy_risk_assessment_skill":
-            return signals["malignancy_possible"] and score >= protected_floor
-        if skill_name == "uncertainty_assessment_skill":
-            return signals["high_uncertainty"] and score >= protected_floor
-        if skill_name == "information_gap_detection_skill":
-            return signals["high_uncertainty"] and score >= protected_floor
-        if skill_name == "contradiction_check_skill":
-            return (signals["high_uncertainty"] or signals["multiple_ddx"]) and score >= protected_floor
-        if skill_name == "escalation_recommendation_skill":
-            return (signals["malignancy_possible"] or signals["high_uncertainty"]) and score >= max(protected_floor, 8)
-        if skill_name == "mel_nev_specialist_skill":
-            return signals["mel_nev_confusion"] and score >= protected_floor
-        if skill_name == "ack_scc_specialist_skill":
-            return (
+            allowed = signals["malignancy_possible"] and score >= protected_floor
+        elif skill_name == "uncertainty_assessment_skill":
+            allowed = signals["high_uncertainty"] and score >= protected_floor
+        elif skill_name == "information_gap_detection_skill":
+            allowed = signals["high_uncertainty"] and score >= protected_floor
+        elif skill_name == "contradiction_check_skill":
+            allowed = (signals["high_uncertainty"] or signals["multiple_ddx"]) and score >= protected_floor
+        elif skill_name == "escalation_recommendation_skill":
+            allowed = (signals["malignancy_possible"] or signals["high_uncertainty"]) and score >= max(protected_floor, 8)
+        elif skill_name == "mel_nev_specialist_skill":
+            allowed = signals["mel_nev_confusion"] and score >= protected_floor
+        elif skill_name == "ack_scc_specialist_skill":
+            allowed = (
                 signals["ack_scc_confusion"]
                 or signals.get("ack_sek_confusion", False)
                 or signals.get("keratinocyte_bcc_confusion", False)
             ) and score >= protected_floor
-        return score >= rule_floor and (
-            signals["malignancy_possible"]
-            or signals["high_uncertainty"]
-            or signals["multiple_ddx"]
+        else:
+            allowed = score >= rule_floor and (
+                signals["malignancy_possible"]
+                or signals["high_uncertainty"]
+                or signals["multiple_ddx"]
+            )
+        if allowed:
+            budget_info["soft_bypass_remaining"] = max(0, int(budget_info.get("soft_bypass_remaining", 0)) - 1)
+            decision.adaptive_budget_retain = True
+        return allowed
+
+    def _apply_case_budget_gate(
+        self,
+        *,
+        decisions: list[SkillSelectionDecision],
+        policy: dict[str, Any],
+        signals: dict[str, Any],
+        budget_info: dict[str, Any],
+    ) -> None:
+        final_budget = int(budget_info.get("final_budget", 0) or 0)
+        if final_budget <= 0:
+            return
+        max_foundational = int(policy.get("adaptive_budget_max_foundational", 5) or 5)
+        selected = [decision for decision in decisions if decision.selected]
+        foundational = [
+            decision for decision in selected
+            if decision.skill_name in FOUNDATIONAL_SKILLS
+        ]
+        non_foundational = [
+            decision for decision in selected
+            if decision.skill_name not in FOUNDATIONAL_SKILLS
+        ]
+        foundational.sort(key=lambda item: (item.score, -ORDERING_HINTS.get(item.skill_name, 999), item.skill_name), reverse=True)
+        non_foundational.sort(
+            key=lambda item: (
+                item.adaptive_budget_retain,
+                item.controller_selected,
+                item.score,
+                -float(item.controller_probability or 0.0),
+                -ORDERING_HINTS.get(item.skill_name, 999),
+                item.skill_name,
+            ),
+            reverse=True,
         )
+        keep: list[SkillSelectionDecision] = []
+        keep.extend(foundational[: min(max_foundational, final_budget)])
+        remaining_budget = max(0, final_budget - len(keep))
+        keep.extend(non_foundational[:remaining_budget])
+        keep_names = {decision.skill_name for decision in keep}
+        for decision in decisions:
+            if not decision.selected:
+                continue
+            if decision.skill_name in keep_names:
+                continue
+            decision.selected = False
+            decision.controller_rejected = True
+            decision.reasons = dedupe_reasons(
+                decision.reasons + [f"Rejected by adaptive controller budget (budget={final_budget})."]
+            )
+            decision.matched_fields = dedupe_reasons(
+                decision.matched_fields + ["learned_controller.adaptive_budget_prune"]
+            )
 
     @staticmethod
     def _should_select(skill_name: str, score: int, signals: dict[str, Any], *, min_score: int = 4) -> bool:
@@ -678,6 +805,8 @@ def _build_signal_profile(planner_input: PlannerInput) -> dict[str, Any]:
 
     return {
         "high_uncertainty": uncertainty_level == "high",
+        "ddx_count": len(ddx_candidates),
+        "uncertainty_level": uncertainty_level,
         "multiple_ddx": len(ddx_candidates) >= 2,
         "temporal_metadata": any(str(metadata.get(field, "")).strip() for field in ("grew", "changed", "bleed", "itch", "hurt", "elevation")),
         "location_or_size_metadata": any(
@@ -810,6 +939,25 @@ def _normalize_planner_policy(policy: dict[str, Any] | None) -> dict[str, Any]:
         "experience_gap_bonus": 2,
         "experience_conflict_bonus": 2,
         "experience_escalation_bonus": 2,
+        "skill_harmful_rate_penalty_weight": 4.0,
+        "skill_low_helpful_rate_penalty_weight": 2.0,
+        "skill_penalty_harmful_threshold": 0.08,
+        "skill_penalty_helpful_floor": 0.2,
+        "adaptive_budget_enabled": True,
+        "adaptive_budget_min": 6,
+        "adaptive_budget_max": 12,
+        "adaptive_budget_default": 8,
+        "adaptive_budget_high_uncertainty_bonus": 2,
+        "adaptive_budget_medium_uncertainty_bonus": 1,
+        "adaptive_budget_high_risk_bonus": 2,
+        "adaptive_budget_medium_risk_bonus": 1,
+        "adaptive_budget_confusion_bonus": 1,
+        "adaptive_budget_known_confusion_bonus": 1,
+        "adaptive_budget_contradiction_bonus": 1,
+        "adaptive_budget_retrieval_ambiguity_bonus": 1,
+        "adaptive_budget_ddx_bonus": 1,
+        "adaptive_budget_max_foundational": 5,
+        "adaptive_budget_max_soft_bypass": 2,
         "enable_signals": {},
         "force_select_skills": [],
         "force_disable_skills": [],
@@ -817,3 +965,117 @@ def _normalize_planner_policy(policy: dict[str, Any] | None) -> dict[str, Any]:
         "_policy_id": str(source.get("_policy_id", "")).strip(),
         **source,
     }
+
+
+def _compute_case_adaptive_budget(
+    *,
+    planner_input: PlannerInput,
+    signals: dict[str, Any],
+    policy: dict[str, Any],
+) -> dict[str, Any]:
+    min_budget = max(3, int(policy.get("adaptive_budget_min", 6) or 6))
+    max_budget = max(min_budget, int(policy.get("adaptive_budget_max", 12) or 12))
+    default_budget = int(policy.get("adaptive_budget_default", min_budget) or min_budget)
+    budget = min(max(default_budget, min_budget), max_budget)
+    reasons: list[str] = []
+    perception_uncertainty = str(planner_input.perception.get("uncertainty", {}).get("level", "unknown")).strip().lower()
+    if bool(policy.get("adaptive_budget_enabled", True)):
+        if perception_uncertainty == "high":
+            budget += int(policy.get("adaptive_budget_high_uncertainty_bonus", 2) or 2)
+            reasons.append("Expanded budget for high uncertainty.")
+        elif perception_uncertainty == "medium":
+            budget += int(policy.get("adaptive_budget_medium_uncertainty_bonus", 1) or 1)
+            reasons.append("Expanded budget for medium uncertainty.")
+        risk_level = _infer_case_risk_level(planner_input=planner_input, signals=signals)
+        if risk_level == "high":
+            budget += int(policy.get("adaptive_budget_high_risk_bonus", 2) or 2)
+            reasons.append("Expanded budget for high malignant risk.")
+        elif risk_level == "medium":
+            budget += int(policy.get("adaptive_budget_medium_risk_bonus", 1) or 1)
+            reasons.append("Expanded budget for medium malignant risk.")
+        active_clusters = list(signals.get("active_confusion_clusters", []) or [])
+        if active_clusters:
+            budget += int(policy.get("adaptive_budget_confusion_bonus", 1) or 1)
+            reasons.append(f"Expanded budget for active confusion clusters: {', '.join(active_clusters)}.")
+        if bool(signals.get("known_confusion_match", False)):
+            budget += int(policy.get("adaptive_budget_known_confusion_bonus", 1) or 1)
+            reasons.append("Expanded budget for known confusion match.")
+        contradiction_count = _estimate_contradiction_count(planner_input=planner_input, signals=signals)
+        if contradiction_count >= 2:
+            budget += int(policy.get("adaptive_budget_contradiction_bonus", 1) or 1)
+            reasons.append(f"Expanded budget for contradiction-rich case (count={contradiction_count}).")
+        retrieval_ambiguity = _estimate_retrieval_ambiguity(planner_input)
+        if retrieval_ambiguity >= 0.45:
+            budget += int(policy.get("adaptive_budget_retrieval_ambiguity_bonus", 1) or 1)
+            reasons.append(
+                f"Expanded budget for ambiguous skill retrieval spread (ambiguity={retrieval_ambiguity:.2f})."
+            )
+        ddx_count = int(signals.get("ddx_count", 0) or 0)
+        if ddx_count >= 4:
+            budget += int(policy.get("adaptive_budget_ddx_bonus", 1) or 1)
+            reasons.append(f"Expanded budget for broad differential ({ddx_count} candidates).")
+    final_budget = max(min_budget, min(max_budget, budget))
+    if not reasons:
+        reasons.append("Tightened to default budget because the case signals are relatively simple.")
+    budget_tier = "tight"
+    if final_budget >= max_budget - 1:
+        budget_tier = "wide"
+    elif final_budget >= default_budget + 1:
+        budget_tier = "medium"
+    min_select = max(2, min(final_budget, max(2, final_budget - 2)))
+    return {
+        "min_budget": min_budget,
+        "max_budget": max_budget,
+        "default_budget": default_budget,
+        "final_budget": final_budget,
+        "min_select": min_select,
+        "budget_tier": budget_tier,
+        "budget_reasons": reasons,
+        "complexity_signals": {
+            "uncertainty_level": perception_uncertainty,
+            "risk_level": _infer_case_risk_level(planner_input=planner_input, signals=signals),
+            "active_confusion_clusters": list(signals.get("active_confusion_clusters", []) or []),
+            "known_confusion_match": bool(signals.get("known_confusion_match", False)),
+            "contradiction_count": _estimate_contradiction_count(planner_input=planner_input, signals=signals),
+            "retrieval_ambiguity": round(_estimate_retrieval_ambiguity(planner_input), 6),
+            "ddx_count": int(signals.get("ddx_count", 0) or 0),
+        },
+        "soft_bypass_remaining": int(policy.get("adaptive_budget_max_soft_bypass", 2) or 2),
+    }
+
+
+def _infer_case_risk_level(*, planner_input: PlannerInput, signals: dict[str, Any]) -> str:
+    if not bool(signals.get("malignancy_possible", False)):
+        return "low"
+    ddx = " ".join(str(item).strip().lower() for item in planner_input.perception.get("ddx_candidates", []) if str(item).strip())
+    if any(term in ddx for term in ("mel", "melanoma", "bcc", "basal cell", "scc", "squamous")):
+        return "high"
+    if "ack" in ddx or "actinic keratos" in ddx or bool(signals.get("keratinocyte_bcc_confusion", False)):
+        return "medium"
+    return "medium"
+
+
+def _estimate_contradiction_count(*, planner_input: PlannerInput, signals: dict[str, Any]) -> int:
+    perception = planner_input.perception or {}
+    image_summary = str(perception.get("image_summary", "")).lower()
+    notes = " ".join(str(item).strip().lower() for item in perception.get("notes", []) if str(item).strip())
+    count = 0
+    for token in ("irregular", "asymmetry", "contradict", "conflict", "uncertain", "poorly defined"):
+        if token in image_summary or token in notes:
+            count += 1
+    if bool(signals.get("high_uncertainty", False)):
+        count += 1
+    return count
+
+
+def _estimate_retrieval_ambiguity(planner_input: PlannerInput) -> float:
+    retrieval_scores = dict((planner_input.skill_retrieval_bundle or {}).get("retrieval_scores", {}) or {})
+    if len(retrieval_scores) < 2:
+        return 0.0
+    ordered_scores = sorted((float(value or 0.0) for value in retrieval_scores.values()), reverse=True)
+    top_score = ordered_scores[0]
+    second_score = ordered_scores[1]
+    if top_score <= 0.0:
+        return 0.0
+    margin = max(0.0, top_score - second_score)
+    return max(0.0, min(1.0, 1.0 - (margin / max(top_score, 1e-6))))
