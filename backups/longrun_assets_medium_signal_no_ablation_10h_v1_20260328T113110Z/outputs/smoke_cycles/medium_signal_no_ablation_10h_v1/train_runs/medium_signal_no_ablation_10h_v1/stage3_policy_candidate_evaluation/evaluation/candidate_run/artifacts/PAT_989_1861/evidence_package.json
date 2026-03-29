@@ -1,0 +1,989 @@
+{
+  "perception": {
+    "image_summary": "A close-up view of a lip with a small, raised, erythematous lesion that appears to be scabbed over. There is some surrounding erythema and some hair growth in the area.",
+    "ddx_candidates": [
+      "Herpes simplex virus (HSV) infection",
+      "Candidiasis",
+      "Contact dermatitis",
+      "Lipoma",
+      "Seborrheic keratosis"
+    ],
+    "uncertainty": {
+      "level": "high",
+      "reasons": [
+        "The exact cause cannot be determined from this image alone.",
+        "Further clinical history and examination are needed."
+      ]
+    },
+    "notes": [
+      "The lesion is scabbed over, which could indicate a healing process or a recent injury.",
+      "There is no significant surrounding edema or lymphadenopathy noted.",
+      "The patient reports itchiness and pain, which may suggest an inflammatory process."
+    ]
+  },
+  "retrieved_experience": [
+    {
+      "case_id": "PAT_1516_1765",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "A well-circumscribed, slightly irregular brown lesion on the arm.",
+      "confusion_pair": "Atypical Nevus->NEV",
+      "learning_points": [
+        "Imported legacy confusion memory.",
+        "observe_then_structure"
+      ],
+      "source_id": "abs_confusion_96013d69cef6",
+      "retrieval_score": 3,
+      "base_retrieval_score": 3.0,
+      "rerank_probability": 0.650746,
+      "rerank_score": 4.626864
+    },
+    {
+      "case_id": "PAT_1516_1765",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "{'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "confusion_pair": "Atypical Mole->NEV",
+      "learning_points": [
+        "Imported legacy confusion memory.",
+        "risk_then_uncertainty_audit"
+      ],
+      "source_id": "abs_confusion_01d077299876",
+      "retrieval_score": 3,
+      "base_retrieval_score": 3.0,
+      "rerank_probability": 0.650746,
+      "rerank_score": 4.626864
+    },
+    {
+      "case_id": "PAT_1516_1765",
+      "source_layer": "tactical_experience",
+      "source_subtype": "confusion_experience",
+      "experience_type": "tactical_experience",
+      "perception_summary": "risk=malignancy_risk:medium; uncertainty=low; {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "confusion_pair": "Atypical Mole->NEV",
+      "learning_points": [
+        "Preserve Qwen as the only final diagnostic decision maker.",
+        "Use evidence package to surface structured morphology, risk, and uncertainty clues.",
+        "Action pattern: risk_then_uncertainty_audit"
+      ],
+      "source_id": "tac_PAT_1516_1765_a0a91034ab1a",
+      "retrieval_score": 3,
+      "base_retrieval_score": 3.0,
+      "rerank_probability": 0.586393,
+      "rerank_score": 4.465983
+    }
+  ],
+  "skill_outputs": {
+    "morphology_analysis_skill": {
+      "lesion_type": "papule",
+      "size_range": "small",
+      "elevation": "raised",
+      "count": "solitary",
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "color_pattern_analysis_skill": {
+      "primary_color": "Erythematous",
+      "color_variation": "Marked",
+      "pigmentation_pattern": "Patchy",
+      "asymmetry_color": "Present",
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "border_surface_analysis_skill": {
+      "border_clarity": "poor",
+      "border_irregularity": "irregular",
+      "surface_texture": "keratotic",
+      "scaling_presence": "present",
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "distribution_analysis_skill": {
+      "body_location": "LIP",
+      "symmetry": "Asymmetric",
+      "localized_vs_generalized": "Localized",
+      "clustering_pattern": "Solitary",
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "lesion_description_structuring_skill": {
+      "primary_lesion_morphology": "Raised papule",
+      "color": [
+        "Erythematous, scabbed"
+      ],
+      "border": [
+        "Poorly defined, irregular"
+      ],
+      "surface": [
+        "Keratotic, scaling"
+      ],
+      "size_count": [
+        "size: Small, count: Solitary"
+      ],
+      "distribution": [
+        "body_location: Lip, symmetry: Asymmetric, localized_vs_generalized: Localized"
+      ],
+      "associated_context": [
+        "itch: True, pain: True, smoke: False, drink: True, background_father: POMERANIA, background_mother: POMERANIA, age: 41, pesticide: True, gender: Male, skin_cancer_history: True, cancer_history: True, has_piped_water: False, has_sewage_system: False, fitspatrick: 2.0, region: Lip"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "metadata_consistency_skill": {
+      "consistency_score": "medium",
+      "conflicts": [],
+      "suspicious_points": [
+        "The lesion appears scabbed over, which could indicate a healing process or a recent injury, but the metadata does not specify if this is a known condition.",
+        "The patient reports itchiness and pain, which may suggest an inflammatory process, but the metadata does not confirm this."
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "temporal_evolution_skill": {
+      "onset_type": "unknown",
+      "progression_speed": "stable",
+      "recurrence": "uncertain",
+      "stability": "stable",
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "malignancy_risk_assessment_skill": {
+      "risk_level": "medium",
+      "risk_evidence": [
+        "{'morphology': 'The lesion is raised and scabbed over, indicating a possible healing process or recent injury.', 'border': 'Border irregularity is present, suggesting a lack of clear demarcation.', 'color': 'The primary color is erythematous with marked variation and patchy pigmentation.', 'symptoms': 'The patient reports itchiness and pain, which may suggest an inflammatory process.', 'evolution': 'The lesion appears stable in size and shape.'}"
+      ],
+      "alarm_signals": [
+        "Border irregularity",
+        "Marked color variation",
+        "Patchy pigmentation"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "risk_signal"
+    },
+    "differential_compare_skill": {
+      "candidate_pairs": [
+        "Herpes simplex virus (HSV) infection vs Candidiasis",
+        "Herpes simplex virus (HSV) infection vs Contact dermatitis",
+        "Herpes simplex virus (HSV) infection vs Lipoma"
+      ],
+      "supporting_evidence": [
+        "{'Herpes simplex virus (HSV) infection vs Candidiasis': ['Raised lesion with scabbing suggests a viral infection like HSV, which can present with crusting lesions.', 'No significant surrounding edema or lymphadenopathy noted, which is less common in candidiasis.'], 'Herpes simplex virus (HSV) infection vs Contact dermatitis': ['Lesion is scabbed over, indicating a healing process, which is consistent with contact dermatitis.', 'The presence of surrounding erythema and hair growth in the area is more characteristic of contact dermatitis.'], 'Herpes simplex virus (HSV) infection vs Lipoma': ['Lesion is scabbed over, which is less typical for a benign tumor like lipoma.', 'The presence of surrounding erythema and hair growth in the area is more characteristic of a skin condition.']}"
+      ],
+      "conflicting_evidence": [
+        "{'Herpes simplex virus (HSV) infection vs Candidiasis': ['The lesion is scabbed over, which could indicate a healing process or a recent injury, making it difficult to differentiate between HSV and candidiasis based on the image alone.'], 'Herpes simplex virus (HSV) infection vs Contact dermatitis': ['The lesion is scabbed over, which could indicate a healing process or a recent injury, making it difficult to differentiate between HSV and contact dermatitis based on the image alone.'], 'Herpes simplex virus (HSV) infection vs Lipoma': ['The lesion is scabbed over, which is less typical for a benign tumor like lipoma, but the image does not provide enough information to definitively rule out lipoma.']}"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "comparative_support"
+    },
+    "exclusion_reasoning_skill": {
+      "unlikely_candidates": [
+        "Herpes simplex virus (HSV) infection"
+      ],
+      "exclusion_evidence": [
+        "The lesion is scabbed over, which could indicate a healing process or a recent injury, making it difficult to differentiate between HSV infection and other conditions like contact dermatitis or candidiasis."
+      ],
+      "required_missing_evidence": [
+        "Clinical history regarding the onset and progression of the lesion, including any preceding trauma or exposure to irritants or allergens."
+      ],
+      "exclusion_confidence": "medium",
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "information_gap_detection_skill": {
+      "missing_information": [
+        "Clinical history regarding the onset and progression of the lesion, including any preceding trauma or exposure to irritants or allergens.",
+        "Detailed medical history, including past medical conditions and treatments.",
+        "Results of a physical examination, including palpation of the lesion and surrounding areas."
+      ],
+      "why_it_matters": [
+        "A detailed clinical history helps in understanding the nature and timeline of the lesion, which is crucial for differential diagnosis.",
+        "A comprehensive medical history provides insights into potential underlying conditions or predisposing factors.",
+        "A physical examination aids in assessing the lesion's characteristics more thoroughly, which is essential for accurate diagnosis."
+      ],
+      "impact_on_differential": [
+        "Without a detailed clinical history, it is challenging to rule out certain differential diagnoses based on the limited information available.",
+        "A lack of medical history may obscure important associations that could help narrow down the differential.",
+        "Insufficient physical examination findings can lead to incomplete assessment of the lesion's characteristics, affecting the differential diagnosis."
+      ],
+      "uncertainty_if_missing": "high",
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "uncertainty_assessment_skill": {
+      "uncertainty_level": "high",
+      "reasons": [
+        "The exact cause cannot be determined from this image alone.",
+        "Further clinical history and examination are needed."
+      ],
+      "missing_information": [
+        "Detailed medical history including past medical conditions, allergies, and medications.",
+        "Results of relevant laboratory tests such as blood tests and cultures.",
+        "Clinical examination findings beyond the image provided.",
+        "Patient's subjective symptoms and their duration."
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "uncertainty_signal"
+    },
+    "contradiction_check_skill": {
+      "contradictions": [
+        {
+          "description": "The lesion appears scabbed over, which could indicate a healing process or a recent injury, but the morphology analysis suggests it is a papule, which is typically a solid, rounded elevation of the skin."
+        }
+      ],
+      "missing_links": [
+        {
+          "description": "The presence of scabbing is not directly addressed in the morphology analysis, which focuses on the lesion type, size, elevation, and count. This could be a critical piece of information for differential diagnosis."
+        }
+      ],
+      "reasoning_gaps": [
+        {
+          "description": "The exact cause of the lesion cannot be determined from the image alone, and further clinical history and examination are needed. This gap prevents a definitive diagnosis."
+        }
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "conflict_signal"
+    },
+    "escalation_recommendation_skill": {
+      "whether_escalation_needed": "yes",
+      "escalation_reason": [
+        "High uncertainty and missing critical information make it necessary to escalate to a more cautious diagnostic check."
+      ],
+      "suggested_next_check_type": "Detailed clinical history and physical examination",
+      "caution_flags": [
+        "High uncertainty level",
+        "Missing detailed medical history",
+        "Need for physical examination"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "uncertainty_signal"
+    }
+  },
+  "risk_flags": [
+    "malignancy_risk:medium"
+  ],
+  "uncertainty": {
+    "uncertainty_level": "high",
+    "reasons": [
+      "The exact cause cannot be determined from this image alone.",
+      "Further clinical history and examination are needed."
+    ],
+    "missing_information": [
+      "Detailed medical history including past medical conditions, allergies, and medications.",
+      "Results of relevant laboratory tests such as blood tests and cultures.",
+      "Clinical examination findings beyond the image provided.",
+      "Patient's subjective symptoms and their duration."
+    ],
+    "referenced_experiences": [
+      "abs_confusion_96013d69cef6",
+      "abs_confusion_01d077299876",
+      "abs_rule_c93aa7bc54f6"
+    ],
+    "evidence_strength": "medium",
+    "recommendation_type": "uncertainty_signal"
+  },
+  "notes": [
+    "Agent generated structured evidence only.",
+    "Qwen remains the sole final diagnostic decision maker.",
+    "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, temporal_evolution_skill, malignancy_risk_assessment_skill, differential_compare_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill.",
+    "Policy in use: candidate_stage4_step6_medium_signal_no_ablation_10h_v1.",
+    "Skill retrieval candidates: metadata_consistency_skill, lesion_description_structuring_skill, morphology_analysis_skill, malignancy_risk_assessment_skill, distribution_analysis_skill, uncertainty_assessment_skill, contradiction_check_skill, color_pattern_analysis_skill, temporal_evolution_skill, border_surface_analysis_skill, information_gap_detection_skill, exclusion_reasoning_skill, differential_compare_skill, escalation_recommendation_skill.",
+    "Learned retrieval reranker applied (fallback-safe).",
+    "The lesion is scabbed over, which could indicate a healing process or a recent injury.",
+    "There is no significant surrounding edema or lymphadenopathy noted.",
+    "The patient reports itchiness and pain, which may suggest an inflammatory process.",
+    "Retrieved prior reasoning experience for context.",
+    "High uncertainty detected in MVP skeleton."
+  ],
+  "initial_perception_summary": {
+    "image_summary": "A close-up view of a lip with a small, raised, erythematous lesion that appears to be scabbed over. There is some surrounding erythema and some hair growth in the area.",
+    "ddx_candidates": [
+      "Herpes simplex virus (HSV) infection",
+      "Candidiasis",
+      "Contact dermatitis",
+      "Lipoma"
+    ],
+    "uncertainty_level": "high",
+    "uncertainty_reasons": [
+      "The exact cause cannot be determined from this image alone.",
+      "Further clinical history and examination are needed."
+    ],
+    "observation_notes": [
+      "The lesion is scabbed over, which could indicate a healing process or a recent injury.",
+      "There is no significant surrounding edema or lymphadenopathy noted.",
+      "The patient reports itchiness and pain, which may suggest an inflammatory process."
+    ]
+  },
+  "retrieved_raw_cases_summary": [
+    {
+      "source_id": "PAT_1516_1765",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "None",
+      "perception_summary": "",
+      "learning_points": [
+        "Final decision: None",
+        "Correctness: None"
+      ],
+      "retrieval_score": 1.0,
+      "base_retrieval_score": 1.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_tactical_experiences_summary": [
+    {
+      "source_id": "tac_PAT_1516_1765_a0a91034ab1a",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Mole->NEV",
+      "perception_summary": "risk=malignancy_risk:medium; uncertainty=low; {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "learning_points": [
+        "Preserve Qwen as the only final diagnostic decision maker.",
+        "Use evidence package to surface structured morphology, risk, and uncertainty clues.",
+        "Action pattern: risk_then_uncertainty_audit"
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 4.465983,
+      "rerank_probability": 0.586393
+    },
+    {
+      "source_id": "tac_PAT_1516_1765_6c7d6a323fec",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Nevus->NEV",
+      "perception_summary": "risk=malignancy_risk:medium; uncertainty=low; A well-circumscribed, slightly irregular brown lesion on the arm.",
+      "learning_points": [
+        "Keep Qwen as the only final diagnostic decision maker.",
+        "Use structured skill evidence to support, not replace, final diagnosis.",
+        "Track confusion pattern: Atypical Nevus->NEV."
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 4.465983,
+      "rerank_probability": 0.586393
+    },
+    {
+      "source_id": "tac_PAT_1516_1765_510e192d29fd",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Mole->NEV",
+      "perception_summary": "risk=malignancy_risk:medium; uncertainty=low; morphology=Irregular; color=Brown; border=Irregular; surface=Smooth; body_location=Arm",
+      "learning_points": [
+        "Keep Qwen as the only final diagnostic decision maker.",
+        "Use structured skill evidence to support, not replace, final diagnosis.",
+        "Track confusion pattern: Atypical Mole->NEV."
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 4.465983,
+      "rerank_probability": 0.586393
+    }
+  ],
+  "retrieved_abstract_experiences_summary": [
+    {
+      "source_id": "abs_confusion_96013d69cef6",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Nevus->NEV",
+      "perception_summary": "A well-circumscribed, slightly irregular brown lesion on the arm.",
+      "learning_points": [
+        "Imported legacy confusion memory.",
+        "observe_then_structure"
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 4.626864,
+      "rerank_probability": 0.650746
+    },
+    {
+      "source_id": "abs_confusion_01d077299876",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Mole->NEV",
+      "perception_summary": "{'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "learning_points": [
+        "Imported legacy confusion memory.",
+        "risk_then_uncertainty_audit"
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 4.626864,
+      "rerank_probability": 0.650746
+    },
+    {
+      "source_id": "abs_rule_c93aa7bc54f6",
+      "source_layer": "abstract_experience",
+      "experience_type": "rule",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "None",
+      "perception_summary": "{'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "learning_points": [
+        "Preserve Qwen as the only final diagnostic decision maker.",
+        "observe_then_structure"
+      ],
+      "retrieval_score": 2.0,
+      "base_retrieval_score": 2.0,
+      "rerank_score": 3.582708,
+      "rerank_probability": 0.633083
+    }
+  ],
+  "uncertainty_summary": {
+    "uncertainty_level": "high",
+    "reasons": [
+      "The exact cause cannot be determined from this image alone.",
+      "Further clinical history and examination are needed."
+    ],
+    "missing_information": [
+      "Detailed medical history including past medical conditions, allergies, and medications.",
+      "Results of relevant laboratory tests such as blood tests and cultures.",
+      "Clinical examination findings beyond the image provided.",
+      "Patient's subjective symptoms and their duration."
+    ],
+    "referenced_experiences": [
+      "abs_confusion_96013d69cef6",
+      "abs_confusion_01d077299876",
+      "abs_rule_c93aa7bc54f6"
+    ]
+  },
+  "contradiction_summary": {
+    "contradictions": [
+      "{'description': 'The lesion appears scabbed over, which could indicate a healing process or a recent injury, but the morphology analysis suggests it is a papule, which is typically a solid, rounded elevation of the skin.'}"
+    ],
+    "missing_links": [
+      "{'description': 'The presence of scabbing is not directly addressed in the morphology analysis, which focuses on the lesion type, size, elevation, and count. This could be a critical piece of information for differential diagnosis.'}"
+    ],
+    "reasoning_gaps": [
+      "{'description': 'The exact cause of the lesion cannot be determined from the image alone, and further clinical history and examination are needed. This gap prevents a definitive diagnosis.'}"
+    ],
+    "metadata_conflicts": [],
+    "suspicious_points": [
+      "The lesion appears scabbed over, which could indicate a healing process or a recent injury, but the metadata does not specify if this is a known condition.",
+      "The patient reports itchiness and pain, which may suggest an inflammatory process, but the metadata does not confirm this."
+    ]
+  },
+  "information_gap_summary": {
+    "missing_information": [
+      "Clinical history regarding the onset and progression of the lesion, including any preceding trauma or exposure to irritants or allergens.",
+      "Detailed medical history, including past medical conditions and treatments.",
+      "Results of a physical examination, including palpation of the lesion and surrounding areas."
+    ],
+    "why_it_matters": [
+      "A detailed clinical history helps in understanding the nature and timeline of the lesion, which is crucial for differential diagnosis.",
+      "A comprehensive medical history provides insights into potential underlying conditions or predisposing factors.",
+      "A physical examination aids in assessing the lesion's characteristics more thoroughly, which is essential for accurate diagnosis."
+    ],
+    "impact_on_differential": [
+      "Without a detailed clinical history, it is challenging to rule out certain differential diagnoses based on the limited information available.",
+      "A lack of medical history may obscure important associations that could help narrow down the differential.",
+      "Insufficient physical examination findings can lead to incomplete assessment of the lesion's characteristics, affecting the differential diagnosis."
+    ],
+    "uncertainty_if_missing": "high"
+  },
+  "escalation_summary": {
+    "whether_escalation_needed": "yes",
+    "escalation_reason": [
+      "High uncertainty and missing critical information make it necessary to escalate to a more cautious diagnostic check."
+    ],
+    "suggested_next_check_type": "Detailed clinical history and physical examination",
+    "caution_flags": [
+      "High uncertainty level",
+      "Missing detailed medical history",
+      "Need for physical examination"
+    ]
+  },
+  "planner_rationale": {
+    "planner_type": "rule_based",
+    "planner_version": "v1",
+    "selected_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "border_surface_analysis_skill",
+      "distribution_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "temporal_evolution_skill",
+      "malignancy_risk_assessment_skill",
+      "differential_compare_skill",
+      "exclusion_reasoning_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill",
+      "escalation_recommendation_skill"
+    ],
+    "selection_reasons": {
+      "morphology_analysis_skill": [
+        "Boosted by skill retrieval score=15.82.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "color_pattern_analysis_skill": [
+        "Boosted by skill retrieval score=12.23.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "border_surface_analysis_skill": [
+        "Boosted by skill retrieval score=9.16.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "distribution_analysis_skill": [
+        "Boosted by skill retrieval score=14.28.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "lesion_description_structuring_skill": [
+        "Boosted by skill retrieval score=17.27.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`."
+      ],
+      "metadata_consistency_skill": [
+        "Boosted by skill retrieval score=19.34.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`."
+      ],
+      "temporal_evolution_skill": [
+        "Boosted by skill retrieval score=11.19.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `temporal_metadata`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ],
+      "malignancy_risk_assessment_skill": [
+        "Boosted by skill retrieval score=15.27.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "differential_compare_skill": [
+        "Boosted by skill retrieval score=8.14.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "exclusion_reasoning_skill": [
+        "Boosted by skill retrieval score=8.15.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `information_gap`."
+      ],
+      "information_gap_detection_skill": [
+        "Boosted by skill retrieval score=8.17.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `information_gap`."
+      ],
+      "uncertainty_assessment_skill": [
+        "Boosted by skill retrieval score=13.24.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ],
+      "contradiction_check_skill": [
+        "Boosted by skill retrieval score=12.98.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ],
+      "escalation_recommendation_skill": [
+        "Boosted by skill retrieval score=8.13.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `information_gap`.",
+        "Matched active trigger profile `escalation_needed`."
+      ]
+    }
+  },
+  "serialized_evidence_text": "[Observation Evidence]\n- Initial image summary: A close-up view of a lip with a small, raised, erythematous lesion that appears to be scabbed over. There is some surrounding erythema and some hair growth in the area.\n- Early differential candidates: Herpes simplex virus (HSV) infection, Candidiasis, Contact dermatitis, Lipoma\n- structured lesion observation: lesion_description_structuring_skill: primary_lesion_morphology=Raised papule | color=Erythematous, scabbed | border=Poorly defined, irregular | surface=Keratotic, scaling | size_count=size: Small, count: Solitary | distribution=body_location: Lip, symmetry: Asymmetric, localized_vs_generalized: Localized || morphology_analysis_skill: lesion_type=papule | size_range=small | elevation=raised | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence || color_pattern_analysis_skill: primary_color=Erythematous | color_variation=Marked | pigmentation_pattern=Patchy | asymmetry_color=Present | evidence_strength=medium | recommendation_type=descriptive_evidence\n- distribution_analysis_skill: body_location=LIP | symmetry=Asymmetric | localized_vs_generalized=Localized | clustering_pattern=Solitary | evidence_strength=medium | recommendation_type=descriptive_evidence\n\n[Exclusion And Comparison Evidence]\n- differential and exclusion reasoning: differential_compare_skill: candidate_pairs=Herpes simplex virus (HSV) infection vs Candidiasis; Herpes simplex virus (HSV) infection vs Contact dermatitis; Herpes simplex virus (HSV) infection vs Lipoma | supporting_evidence={'Herpes simplex virus (HSV) infection vs Candidiasis': ['Raised lesion with scabbing suggests a viral infection like HSV, which can present with crusting le... | conflicting_evidence={'Herpes simplex virus (HSV) infection vs Candidiasis': ['The lesion is scabbed over, which could indicate a healing process or a recent injury, making it di... | evidence_strength=medium | recommendation_type=comparative_support || exclusion_reasoning_skill: unlikely_candidates=Herpes simplex virus (HSV) infection | exclusion_evidence=The lesion is scabbed over, which could indicate a healing process or a recent injury, making it difficult to differentiate between HSV infection and other c... | required_missing_evidence=Clinical history regarding the onset and progression of the lesion, including any preceding trauma or exposure to irritants or allergens. | exclusion_confidence=medium | evidence_strength=medium | recommendation_type=descriptive_evidence\n- metadata_consistency_skill: consistency_score=medium | suspicious_points=The lesion appears scabbed over, which could indicate a healing process or a recent injury, but the metadata does not specify if this is a known condition.; ... | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Tactical experience tac_PAT_1516_1765_a0a91034ab1a: risk=malignancy_risk:medium; uncertainty=low; {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}; Preserve Qwen as the only final diagnostic decision maker.; Use evidence package to surface structured morphology, risk, and uncertainty clues.; Action pattern: risk_then_uncertainty_audit\n- Tactical experience tac_PAT_1516_1765_6c7d6a323fec: risk=malignancy_risk:medium; uncertainty=low; A well-circumscribed, slightly irregular brown lesion on the arm.; Keep Qwen as the only final diagnostic decision maker.; Use structured skill evidence to support, not replace, final diagnosis.; Track confusion pattern: Atypical Nevus->NEV.\n\n[Risk Evidence]\n- Risk flags: malignancy_risk:medium\n- malignancy_risk_assessment_skill: risk_level=medium | risk_evidence={'morphology': 'The lesion is raised and scabbed over, indicating a possible healing process or recent injury.', 'border': 'Border irregularity is present, s... | alarm_signals=Border irregularity; Marked color variation; Patchy pigmentation | evidence_strength=medium | recommendation_type=risk_signal\n- Abstract experience abs_confusion_01d077299876: {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}; Imported legacy confusion memory.; risk_then_uncertainty_audit\n- Abstract experience abs_rule_c93aa7bc54f6: {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}; Preserve Qwen as the only final diagnostic decision maker.; observe_then_structure\n\n[Conflict And Uncertainty]\n- Uncertainty level: high\n- Uncertainty reasons: The exact cause cannot be determined from this image alone.; Further clinical history and examination are needed.\n- Missing information: Detailed medical history including past medical conditions, allergies, and medications.; Results of relevant laboratory tests such as blood tests and cultures.; Clinical examination findings beyond the image provided.; Patient's subjective symptoms and their duration.\n- contradictions: {'description': 'The lesion appears scabbed over, which could indicate a healing process or a recent injury, but the morphology analysis suggests it is a papule, which is typically a solid, rounded elevation of the skin.'}\n- missing links: {'description': 'The presence of scabbing is not directly addressed in the morphology analysis, which focuses on the lesion type, size, elevation, and count. This could be a critical piece of information for differential diagnosis.'}\n- reasoning gaps: {'description': 'The exact cause of the lesion cannot be determined from the image alone, and further clinical history and examination are needed. This gap prevents a definitive diagnosis.'}\n- suspicious points: The lesion appears scabbed over, which could indicate a healing process or a recent injury, but the metadata does not specify if this is a known condition.; The patient reports itchiness and pain, which may suggest an inflammatory process, but the metadata does not confirm this.\n- contradiction_check_skill: contradictions={'description': 'The lesion appears scabbed over, which could indicate a healing process or a recent injury, but the morphology analysis suggests it is a pap... | missing_links={'description': 'The presence of scabbing is not directly addressed in the morphology analysis, which focuses on the lesion type, size, elevation, and count.... | reasoning_gaps={'description': 'The exact cause of the lesion cannot be determined from the image alone, and further clinical history and examination are needed. This gap p... | evidence_strength=medium | recommendation_type=conflict_signal\n- information_gap_detection_skill: missing_information=Clinical history regarding the onset and progression of the lesion, including any preceding trauma or exposure to irritants or allergens.; Detailed medical h... | why_it_matters=A detailed clinical history helps in understanding the nature and timeline of the lesion, which is crucial for differential diagnosis.; A comprehensive medic... | impact_on_differential=Without a detailed clinical history, it is challenging to rule out certain differential diagnoses based on the limited information available.; A lack of medi... | uncertainty_if_missing=high | evidence_strength=medium | recommendation_type=descriptive_evidence\n- explicit information gaps: Clinical history regarding the onset and progression of the lesion, including any preceding trauma or exposure to irritants or allergens.; Detailed medical history, including past medical conditions and treatments.; Results of a physical examination, including palpation of the lesion and surrounding areas.\n- why gaps matter: A detailed clinical history helps in understanding the nature and timeline of the lesion, which is crucial for differential diagnosis.; A comprehensive medical history provides insights into potential underlying conditions or predisposing factors.; A physical examination aids in assessing the lesion's characteristics more thoroughly, which is essential for accurate diagnosis.\n- impact on differential: Without a detailed clinical history, it is challenging to rule out certain differential diagnoses based on the limited information available.; A lack of medical history may obscure important associations that could help narrow down the differential.; Insufficient physical examination findings can lead to incomplete assessment of the lesion's characteristics, affecting the differential diagnosis.\n- residual uncertainty if still missing: high\n- escalation_recommendation_skill: whether_escalation_needed=yes | escalation_reason=High uncertainty and missing critical information make it necessary to escalate to a more cautious diagnostic check. | suggested_next_check_type=Detailed clinical history and physical examination | caution_flags=High uncertainty level; Missing detailed medical history; Need for physical examination | evidence_strength=medium | recommendation_type=uncertainty_signal\n- escalation needed: yes\n- escalation reasons: High uncertainty and missing critical information make it necessary to escalate to a more cautious diagnostic check.\n- suggested next check type: Detailed clinical history and physical examination\n- caution flags: High uncertainty level; Missing detailed medical history; Need for physical examination\n\n[Planner Rationale]\n- Selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, temporal_evolution_skill, malignancy_risk_assessment_skill, differential_compare_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill\n- morphology_analysis_skill: Boosted by skill retrieval score=15.82.; Included as part of the core structured observation layer.; Matched active trigger profile `foundational_observation`.; Matched active trigger profile `multiple_ddx`.\n- color_pattern_analysis_skill: Boosted by skill retrieval score=12.23.; Included as part of the core structured observation layer.; Matched active trigger profile `foundational_observation`.; Matched active trigger profile `multiple_ddx`.\n- border_surface_analysis_skill: Boosted by skill retrieval score=9.16.; Included as part of the core structured observation layer.; Matched active trigger profile `foundational_observation`.; Matched active trigger profile `multiple_ddx`.",
+  "evidence_calibration_debug": {
+    "calibrator_type": "heuristic",
+    "calibrator_version": "v1",
+    "section_plan": {
+      "observation": {
+        "skill_names": [
+          "lesion_description_structuring_skill",
+          "morphology_analysis_skill",
+          "color_pattern_analysis_skill",
+          "distribution_analysis_skill"
+        ],
+        "merged_groups": [
+          {
+            "label": "structured_lesion_observation",
+            "skills": [
+              "lesion_description_structuring_skill",
+              "morphology_analysis_skill",
+              "color_pattern_analysis_skill"
+            ],
+            "max_members": 3
+          }
+        ],
+        "raw_case_source_ids": [
+          "PAT_1516_1765"
+        ]
+      },
+      "comparison": {
+        "skill_names": [
+          "exclusion_reasoning_skill",
+          "metadata_consistency_skill",
+          "differential_compare_skill"
+        ],
+        "merged_groups": [
+          {
+            "label": "differential_and_exclusion_reasoning",
+            "skills": [
+              "differential_compare_skill",
+              "exclusion_reasoning_skill"
+            ],
+            "max_members": 2
+          }
+        ],
+        "tactical_source_ids": [
+          "tac_PAT_1516_1765_a0a91034ab1a",
+          "tac_PAT_1516_1765_6c7d6a323fec"
+        ]
+      },
+      "risk": {
+        "skill_names": [
+          "malignancy_risk_assessment_skill"
+        ],
+        "abstract_source_ids": [
+          "abs_confusion_01d077299876",
+          "abs_rule_c93aa7bc54f6"
+        ]
+      },
+      "conflict_uncertainty": {
+        "skill_names": [
+          "escalation_recommendation_skill",
+          "information_gap_detection_skill",
+          "contradiction_check_skill"
+        ]
+      },
+      "planner": {
+        "max_reason_skills": 3
+      },
+      "section_order": [
+        "observation",
+        "comparison",
+        "risk",
+        "conflict_uncertainty",
+        "planner"
+      ]
+    },
+    "item_scores": [
+      {
+        "item_id": "malignancy_risk_assessment_skill",
+        "item_type": "skill_output",
+        "section": "risk",
+        "heuristic_score": 9.721587,
+        "learned_score": 0.0,
+        "final_score": 9.721587,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "exclusion_reasoning_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 9.551632,
+        "learned_score": 0.0,
+        "final_score": 9.551632,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "lesion_description_structuring_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 9.181795,
+        "learned_score": 0.0,
+        "final_score": 9.181795,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "escalation_recommendation_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 9.050774,
+        "learned_score": 0.0,
+        "final_score": 9.050774,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "information_gap_detection_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 8.953469,
+        "learned_score": 0.0,
+        "final_score": 8.953469,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "contradiction_check_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 8.938653,
+        "learned_score": 0.0,
+        "final_score": 8.938653,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "uncertainty_assessment_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 8.75951,
+        "learned_score": 0.0,
+        "final_score": 8.75951,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "morphology_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 8.065661,
+        "learned_score": 0.0,
+        "final_score": 8.065661,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "metadata_consistency_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 7.8,
+        "learned_score": 0.0,
+        "final_score": 7.8,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.678565,
+        "learned_score": 0.0,
+        "final_score": 7.678565,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.442068,
+        "learned_score": 0.0,
+        "final_score": 7.442068,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "border_surface_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.333198,
+        "learned_score": 0.0,
+        "final_score": 7.333198,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "differential_compare_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 7.151422,
+        "learned_score": 0.0,
+        "final_score": 7.151422,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "temporal_evolution_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 6.295557,
+        "learned_score": 0.0,
+        "final_score": 6.295557,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "abs_confusion_01d077299876",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 5.0,
+        "learned_score": 0.0,
+        "final_score": 5.0,
+        "selected": true,
+        "reason": "selected"
+      },
+      {
+        "item_id": "abs_rule_c93aa7bc54f6",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 4.2,
+        "learned_score": 0.0,
+        "final_score": 4.2,
+        "selected": true,
+        "reason": "selected"
+      },
+      {
+        "item_id": "abs_confusion_96013d69cef6",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 4.1,
+        "learned_score": 0.0,
+        "final_score": 4.1,
+        "selected": false,
+        "reason": "dropped_by_rank"
+      },
+      {
+        "item_id": "tac_PAT_1516_1765_a0a91034ab1a",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 3.6,
+        "learned_score": 0.0,
+        "final_score": 3.6,
+        "selected": true,
+        "reason": "selected"
+      },
+      {
+        "item_id": "tac_PAT_1516_1765_6c7d6a323fec",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 3.6,
+        "learned_score": 0.0,
+        "final_score": 3.6,
+        "selected": true,
+        "reason": "selected"
+      },
+      {
+        "item_id": "tac_PAT_1516_1765_510e192d29fd",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 3.6,
+        "learned_score": 0.0,
+        "final_score": 3.6,
+        "selected": false,
+        "reason": "dropped_by_rank"
+      },
+      {
+        "item_id": "PAT_1516_1765",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 1.5,
+        "learned_score": 0.0,
+        "final_score": 1.5,
+        "selected": true,
+        "reason": "selected"
+      }
+    ],
+    "omitted_items": [],
+    "debug": {
+      "policy": {
+        "enable_evidence_calibrator": true,
+        "calibrator_mode": "heuristic",
+        "calibrator_checkpoint_path": "",
+        "learned_calibration_weight": 1.2,
+        "max_observation_skills": 4,
+        "max_comparison_skills": 3,
+        "max_risk_skills": 2,
+        "max_uncertainty_skills": 3,
+        "max_raw_cases": 1,
+        "max_tactical": 2,
+        "max_abstract": 2,
+        "max_planner_reasons": 3,
+        "omit_low_value_evidence": true,
+        "min_effective_score": 2.4,
+        "debug_output": true
+      },
+      "learned_scorer_loaded": false,
+      "contradiction_count": 5,
+      "uncertainty_level": "high",
+      "risk_flag_count": 1
+    }
+  }
+}

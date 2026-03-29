@@ -1,0 +1,982 @@
+{
+  "perception": {
+    "image_summary": "A raised, irregularly shaped lesion with a central depression and surrounding erythema on the back.",
+    "ddx_candidates": [
+      "Actinic keratosis",
+      "Seborrheic keratosis",
+      "Basal cell carcinoma",
+      "Squamous cell carcinoma"
+    ],
+    "uncertainty": {
+      "level": "high",
+      "reasons": [
+        "Lesion is large and has a central depression, which can be seen in various conditions."
+      ]
+    },
+    "notes": [
+      "The lesion is located on the back, which is a common site for actinic keratoses and squamous cell carcinomas."
+    ]
+  },
+  "retrieved_experience": [
+    {
+      "case_id": "PAT_1516_1765",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "A well-circumscribed, slightly irregular brown lesion on the arm.",
+      "confusion_pair": "Atypical Nevus->NEV",
+      "learning_points": [
+        "Imported legacy confusion memory.",
+        "observe_then_structure"
+      ],
+      "source_id": "abs_confusion_96013d69cef6",
+      "retrieval_score": 3
+    },
+    {
+      "case_id": "PAT_1516_1765",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "{'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "confusion_pair": "Atypical Mole->NEV",
+      "learning_points": [
+        "Imported legacy confusion memory.",
+        "risk_then_uncertainty_audit"
+      ],
+      "source_id": "abs_confusion_01d077299876",
+      "retrieval_score": 3
+    },
+    {
+      "case_id": "PAT_1516_1765",
+      "source_layer": "abstract_experience",
+      "source_subtype": "rule",
+      "experience_type": "rule",
+      "perception_summary": "{'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "confusion_pair": null,
+      "learning_points": [
+        "Preserve Qwen as the only final diagnostic decision maker.",
+        "observe_then_structure"
+      ],
+      "source_id": "abs_rule_c93aa7bc54f6",
+      "retrieval_score": 2
+    }
+  ],
+  "skill_outputs": {
+    "morphology_analysis_skill": {
+      "lesion_type": "nodule",
+      "size_range": "large",
+      "elevation": "raised",
+      "count": "solitary",
+      "referenced_experiences": [
+        "tac_PAT_1516_1765_34c7ae80a73a"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "color_pattern_analysis_skill": {
+      "primary_color": "Pinkish-red",
+      "color_variation": "Marked",
+      "pigmentation_pattern": "Reticular",
+      "asymmetry_color": "Present",
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "distribution_analysis_skill": {
+      "body_location": "back",
+      "symmetry": "asymmetric",
+      "localized_vs_generalized": "localized",
+      "clustering_pattern": "solitary",
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "lesion_description_structuring_skill": {
+      "primary_lesion_morphology": "Nodular, irregularly shaped with a central depression",
+      "color": [
+        "Pinkish-red with erythematous border"
+      ],
+      "border": [
+        "Erythematous, slightly irregular"
+      ],
+      "surface": [
+        "Smooth with a central depression"
+      ],
+      "size_count": [
+        "size: Large (10.0 mm), count: Solitary"
+      ],
+      "distribution": [
+        "site: Back, symmetry: Asymmetric"
+      ],
+      "associated_context": [
+        "smoke: False, drink: False, background_father: POMERANIA, background_mother: POMERANIA, age: 53, pesticide: True, gender: Female, skin_cancer_history: False, cancer_history: True, has_piped_water: False, has_sewage_system: False, fitspatrick: 2.0, region: Back"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "metadata_consistency_skill": {
+      "consistency_score": "medium",
+      "conflicts": [],
+      "suspicious_points": [
+        "The lesion's central depression and surrounding erythema are noted in both the image summary and metadata, but the lesion's morphology described as 'Nodular, irregularly shaped with a central depression' might suggest a more complex structure that could be indicative of different conditions.",
+        "The presence of erythema around the lesion is mentioned in both sources, but the metadata does not specify the color variation or pigmentation pattern, which could provide additional context."
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "temporal_evolution_skill": {
+      "onset_type": "unknown",
+      "progression_speed": "unknown",
+      "recurrence": "uncertain",
+      "stability": "stable",
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "malignancy_risk_assessment_skill": {
+      "risk_level": "high",
+      "risk_evidence": [
+        "{'type': 'morphology', 'description': 'The lesion is raised and irregularly shaped with a central depression, which is concerning for malignancy.'}",
+        "{'type': 'color', 'description': 'The primary color is pinkish-red with marked color variation and reticular pigmentation pattern, suggesting atypical features.'}",
+        "{'type': 'evolution', 'description': 'The lesion appears stable in size and shape over time, but the central depression and surrounding erythema raise suspicion.'}",
+        "{'type': 'symptoms', 'description': 'The patient reports itching, which can be associated with skin lesions and may indicate an underlying issue.'}"
+      ],
+      "alarm_signals": [
+        "Central depression",
+        "Marked color variation",
+        "Reticular pigmentation pattern",
+        "Surrounding erythema",
+        "Itching"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a"
+      ],
+      "evidence_strength": "high",
+      "recommendation_type": "risk_signal"
+    },
+    "differential_compare_skill": {
+      "candidate_pairs": [
+        "Actinic keratosis vs. Squamous cell carcinoma",
+        "Seborrheic keratosis vs. Basal cell carcinoma"
+      ],
+      "supporting_evidence": [
+        {
+          "type": "morphology",
+          "description": "The lesion is raised and irregularly shaped with a central depression, which is concerning for malignancy."
+        },
+        {
+          "type": "color",
+          "description": "The primary color is pinkish-red with marked color variation and reticular pigmentation pattern, suggesting atypical features."
+        },
+        {
+          "type": "evolution",
+          "description": "The lesion appears stable in size and shape over time, but the central depression and surrounding erythema raise suspicion."
+        }
+      ],
+      "conflicting_evidence": [
+        {
+          "type": "location",
+          "description": "The lesion is located on the back, which is a common site for both actinic keratoses and squamous cell carcinomas."
+        }
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "comparative_support"
+    },
+    "ack_scc_specialist_skill": {
+      "differentiation_features": [
+        "Ulceration",
+        "Invasive-looking surface disruption"
+      ],
+      "supporting_evidence": [
+        "The lesion shows signs of ulceration, which is more characteristic of SCC.",
+        "The invasive-looking surface disruption suggests a deeper invasion, typical of SCC."
+      ],
+      "opposing_evidence": [
+        "The lesion does not show significant keratinization or scale formation, which is less common in SCC.",
+        "The lesion's morphology is not highly pearly or translucent, which is more indicative of ACK or BCC."
+      ],
+      "further_observation_suggestions": [
+        "Examine the lesion for any signs of keratinization or scale formation.",
+        "Assess the lesion for any pearly or translucent qualities."
+      ],
+      "referenced_confusion_patterns": [],
+      "critical_supporting_evidence": [
+        "Ulceration and invasive-looking surface disruption"
+      ],
+      "counterexample_watchouts": [
+        "Keratinization or scale formation should not be equated with SCC.",
+        "Pearly or translucent qualities should not be ignored in favor of ACK or BCC."
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "comparative_support"
+    },
+    "exclusion_reasoning_skill": {
+      "unlikely_candidates": [
+        "Seborrheic keratosis"
+      ],
+      "exclusion_evidence": [
+        "The lesion does not show significant keratinization or scale formation, which is less common in Seborrheic keratosis."
+      ],
+      "required_missing_evidence": [
+        "Observation of keratinization or scale formation would strengthen the exclusion of Seborrheic keratosis."
+      ],
+      "exclusion_confidence": "medium",
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "information_gap_detection_skill": {
+      "missing_information": [
+        "Observation of keratinization or scale formation",
+        "Detailed history of the lesion's evolution over time",
+        "Family history of skin cancer or other relevant medical conditions"
+      ],
+      "why_it_matters": [
+        "Keratinization or scale formation can help exclude certain benign lesions.",
+        "Detailed history of the lesion's evolution can provide insights into its nature.",
+        "Family history can influence the likelihood of certain skin cancers."
+      ],
+      "impact_on_differential": [
+        "Observation of keratinization or scale formation would strengthen the exclusion of Seborrheic keratosis.",
+        "Detailed history could help differentiate between benign and malignant lesions based on growth patterns.",
+        "Family history can increase the suspicion for hereditary skin cancers."
+      ],
+      "uncertainty_if_missing": "medium",
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "uncertainty_assessment_skill": {
+      "uncertainty_level": "high",
+      "reasons": [
+        "The lesion's central depression and surrounding erythema are concerning for malignancy.",
+        "The lesion's location on the back is a common site for both actinic keratoses and squamous cell carcinomas."
+      ],
+      "missing_information": [
+        "Detailed history of the lesion, including onset, growth rate, and any changes over time.",
+        "Family history of skin cancer or other relevant medical conditions.",
+        "Results from any dermatoscopy or biopsy performed on the lesion."
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "uncertainty_signal"
+    },
+    "contradiction_check_skill": {
+      "contradictions": [
+        {
+          "source": "morphology_analysis_skill",
+          "reason": "The lesion is described as 'raised' and 'irregularly shaped,' but the image shows a central depression."
+        },
+        {
+          "source": "color_pattern_analysis_skill",
+          "reason": "The lesion is described as having 'pinkish-red' color, but the image does not show a clear pinkish-red hue."
+        }
+      ],
+      "missing_links": [
+        {
+          "description": "The lesion's exact size in centimeters needs to be determined for a more precise size range assessment."
+        },
+        {
+          "description": "The lesion's evolution over time should be assessed to determine if it is growing or changing."
+        }
+      ],
+      "reasoning_gaps": [
+        {
+          "description": "The patient's detailed medical history, including any previous skin biopsies or treatments, is lacking."
+        },
+        {
+          "description": "The presence of any systemic symptoms or risk factors (such as smoking) could provide additional context."
+        }
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "escalation_recommendation_skill": {
+      "whether_escalation_needed": "yes",
+      "escalation_reason": [
+        "High malignancy risk and high uncertainty level suggest the need for further investigation."
+      ],
+      "suggested_next_check_type": "Dermatoscopy and biopsy",
+      "caution_flags": [
+        "High malignancy risk",
+        "High uncertainty level"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a"
+      ],
+      "evidence_strength": "high",
+      "recommendation_type": "risk_signal"
+    }
+  },
+  "risk_flags": [
+    "malignancy_risk:high"
+  ],
+  "uncertainty": {
+    "uncertainty_level": "high",
+    "reasons": [
+      "The lesion's central depression and surrounding erythema are concerning for malignancy.",
+      "The lesion's location on the back is a common site for both actinic keratoses and squamous cell carcinomas."
+    ],
+    "missing_information": [
+      "Detailed history of the lesion, including onset, growth rate, and any changes over time.",
+      "Family history of skin cancer or other relevant medical conditions.",
+      "Results from any dermatoscopy or biopsy performed on the lesion."
+    ],
+    "referenced_experiences": [
+      "abs_confusion_96013d69cef6",
+      "abs_confusion_01d077299876",
+      "tac_PAT_1516_1765_34c7ae80a73a",
+      "abs_rule_c93aa7bc54f6"
+    ],
+    "evidence_strength": "medium",
+    "recommendation_type": "uncertainty_signal"
+  },
+  "notes": [
+    "Agent generated structured evidence only.",
+    "Qwen remains the sole final diagnostic decision maker.",
+    "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, temporal_evolution_skill, malignancy_risk_assessment_skill, differential_compare_skill, ack_scc_specialist_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill.",
+    "Policy in use: stable_default_policy.",
+    "Skill retrieval candidates: metadata_consistency_skill, lesion_description_structuring_skill, contradiction_check_skill, distribution_analysis_skill, ack_scc_specialist_skill, uncertainty_assessment_skill, malignancy_risk_assessment_skill, morphology_analysis_skill, color_pattern_analysis_skill, temporal_evolution_skill, information_gap_detection_skill, exclusion_reasoning_skill, escalation_recommendation_skill, differential_compare_skill.",
+    "The lesion is located on the back, which is a common site for actinic keratoses and squamous cell carcinomas.",
+    "Retrieved prior reasoning experience for context.",
+    "High uncertainty detected in MVP skeleton."
+  ],
+  "initial_perception_summary": {
+    "image_summary": "A raised, irregularly shaped lesion with a central depression and surrounding erythema on the back.",
+    "ddx_candidates": [
+      "Actinic keratosis",
+      "Seborrheic keratosis",
+      "Basal cell carcinoma",
+      "Squamous cell carcinoma"
+    ],
+    "uncertainty_level": "high",
+    "uncertainty_reasons": [
+      "Lesion is large and has a central depression, which can be seen in various conditions."
+    ],
+    "observation_notes": [
+      "The lesion is located on the back, which is a common site for actinic keratoses and squamous cell carcinomas."
+    ]
+  },
+  "retrieved_raw_cases_summary": [],
+  "retrieved_tactical_experiences_summary": [
+    {
+      "source_id": "tac_PAT_1516_1765_34c7ae80a73a",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Mole->NEV",
+      "perception_summary": "uncertainty=high; {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "learning_points": [
+        "Preserve Qwen as the only final diagnostic decision maker.",
+        "Use evidence package to surface structured morphology, risk, and uncertainty clues.",
+        "Collect richer observation evidence before relying on narrower comparisons."
+      ],
+      "retrieval_score": 2.0,
+      "base_retrieval_score": 2.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_PAT_1516_1765_cff415b93e52",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Nevus->NEV",
+      "perception_summary": "uncertainty=unknown; A well-circumscribed, slightly irregular, brownish lesion is present on the arm.",
+      "learning_points": [
+        "Keep Qwen as the only final diagnostic decision maker.",
+        "Use structured skill evidence to support, not replace, final diagnosis.",
+        "Track confusion pattern: Atypical Nevus->NEV."
+      ],
+      "retrieval_score": 1.0,
+      "base_retrieval_score": 1.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_PAT_1516_1765_a0a91034ab1a",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Mole->NEV",
+      "perception_summary": "risk=malignancy_risk:medium; uncertainty=low; {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "learning_points": [
+        "Preserve Qwen as the only final diagnostic decision maker.",
+        "Use evidence package to surface structured morphology, risk, and uncertainty clues.",
+        "Action pattern: risk_then_uncertainty_audit"
+      ],
+      "retrieval_score": 1.0,
+      "base_retrieval_score": 1.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_abstract_experiences_summary": [
+    {
+      "source_id": "abs_confusion_96013d69cef6",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Nevus->NEV",
+      "perception_summary": "A well-circumscribed, slightly irregular brown lesion on the arm.",
+      "learning_points": [
+        "Imported legacy confusion memory.",
+        "observe_then_structure"
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_confusion_01d077299876",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Mole->NEV",
+      "perception_summary": "{'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "learning_points": [
+        "Imported legacy confusion memory.",
+        "risk_then_uncertainty_audit"
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_rule_c93aa7bc54f6",
+      "source_layer": "abstract_experience",
+      "experience_type": "rule",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "None",
+      "perception_summary": "{'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "learning_points": [
+        "Preserve Qwen as the only final diagnostic decision maker.",
+        "observe_then_structure"
+      ],
+      "retrieval_score": 2.0,
+      "base_retrieval_score": 2.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "uncertainty_summary": {
+    "uncertainty_level": "high",
+    "reasons": [
+      "The lesion's central depression and surrounding erythema are concerning for malignancy.",
+      "The lesion's location on the back is a common site for both actinic keratoses and squamous cell carcinomas."
+    ],
+    "missing_information": [
+      "Detailed history of the lesion, including onset, growth rate, and any changes over time.",
+      "Family history of skin cancer or other relevant medical conditions.",
+      "Results from any dermatoscopy or biopsy performed on the lesion."
+    ],
+    "referenced_experiences": [
+      "abs_confusion_96013d69cef6",
+      "abs_confusion_01d077299876",
+      "tac_PAT_1516_1765_34c7ae80a73a",
+      "abs_rule_c93aa7bc54f6"
+    ]
+  },
+  "contradiction_summary": {
+    "contradictions": [
+      "{'source': 'morphology_analysis_skill', 'reason': \"The lesion is described as 'raised' and 'irregularly shaped,' but the image shows a central depression.\"}",
+      "{'source': 'color_pattern_analysis_skill', 'reason': \"The lesion is described as having 'pinkish-red' color, but the image does not show a clear pinkish-red hue.\"}"
+    ],
+    "missing_links": [
+      "{'description': \"The lesion's exact size in centimeters needs to be determined for a more precise size range assessment.\"}",
+      "{'description': \"The lesion's evolution over time should be assessed to determine if it is growing or changing.\"}"
+    ],
+    "reasoning_gaps": [
+      "{'description': \"The patient's detailed medical history, including any previous skin biopsies or treatments, is lacking.\"}",
+      "{'description': 'The presence of any systemic symptoms or risk factors (such as smoking) could provide additional context.'}"
+    ],
+    "metadata_conflicts": [],
+    "suspicious_points": [
+      "The lesion's central depression and surrounding erythema are noted in both the image summary and metadata, but the lesion's morphology described as 'Nodular, irregularly shaped with a central depression' might suggest a more complex structure that could be indicative of different conditions.",
+      "The presence of erythema around the lesion is mentioned in both sources, but the metadata does not specify the color variation or pigmentation pattern, which could provide additional context."
+    ]
+  },
+  "information_gap_summary": {
+    "missing_information": [
+      "Observation of keratinization or scale formation",
+      "Detailed history of the lesion's evolution over time",
+      "Family history of skin cancer or other relevant medical conditions"
+    ],
+    "why_it_matters": [
+      "Keratinization or scale formation can help exclude certain benign lesions.",
+      "Detailed history of the lesion's evolution can provide insights into its nature.",
+      "Family history can influence the likelihood of certain skin cancers."
+    ],
+    "impact_on_differential": [
+      "Observation of keratinization or scale formation would strengthen the exclusion of Seborrheic keratosis.",
+      "Detailed history could help differentiate between benign and malignant lesions based on growth patterns.",
+      "Family history can increase the suspicion for hereditary skin cancers."
+    ],
+    "uncertainty_if_missing": "medium"
+  },
+  "escalation_summary": {
+    "whether_escalation_needed": "yes",
+    "escalation_reason": [
+      "High malignancy risk and high uncertainty level suggest the need for further investigation."
+    ],
+    "suggested_next_check_type": "Dermatoscopy and biopsy",
+    "caution_flags": [
+      "High malignancy risk",
+      "High uncertainty level"
+    ]
+  },
+  "planner_rationale": {
+    "planner_type": "rule_based",
+    "planner_version": "v1",
+    "selected_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "distribution_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "temporal_evolution_skill",
+      "malignancy_risk_assessment_skill",
+      "differential_compare_skill",
+      "ack_scc_specialist_skill",
+      "exclusion_reasoning_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill",
+      "escalation_recommendation_skill"
+    ],
+    "selection_reasons": {
+      "morphology_analysis_skill": [
+        "Boosted by skill retrieval score=13.50.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "color_pattern_analysis_skill": [
+        "Boosted by skill retrieval score=13.00.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "distribution_analysis_skill": [
+        "Boosted by skill retrieval score=16.00.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "lesion_description_structuring_skill": [
+        "Boosted by skill retrieval score=17.00.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`."
+      ],
+      "metadata_consistency_skill": [
+        "Boosted by skill retrieval score=23.00.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`."
+      ],
+      "temporal_evolution_skill": [
+        "Boosted by skill retrieval score=11.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `temporal_metadata`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ],
+      "malignancy_risk_assessment_skill": [
+        "Boosted by skill retrieval score=15.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "differential_compare_skill": [
+        "Boosted by skill retrieval score=10.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "ack_scc_specialist_skill": [
+        "Boosted by skill retrieval score=16.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "exclusion_reasoning_skill": [
+        "Boosted by skill retrieval score=10.00.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `ack_scc_confusion`."
+      ],
+      "information_gap_detection_skill": [
+        "Boosted by skill retrieval score=10.00.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `malignancy_possible`."
+      ],
+      "uncertainty_assessment_skill": [
+        "Boosted by skill retrieval score=15.00.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ],
+      "contradiction_check_skill": [
+        "Boosted by skill retrieval score=17.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ],
+      "escalation_recommendation_skill": [
+        "Boosted by skill retrieval score=10.00.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `malignancy_possible`.",
+        "Matched active trigger profile `contradiction_rich`."
+      ]
+    }
+  },
+  "serialized_evidence_text": "[Observation Evidence]\n- Initial image summary: A raised, irregularly shaped lesion with a central depression and surrounding erythema on the back.\n- Early differential candidates: Actinic keratosis, Seborrheic keratosis, Basal cell carcinoma, Squamous cell carcinoma\n- structured lesion observation: lesion_description_structuring_skill: primary_lesion_morphology=Nodular, irregularly shaped with a central depression | color=Pinkish-red with erythematous border | border=Erythematous, slightly irregular | surface=Smooth with a central depression | size_count=size: Large (10.0 mm), count: Solitary | distribution=site: Back, symmetry: Asymmetric || morphology_analysis_skill: lesion_type=nodule | size_range=large | elevation=raised | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence || color_pattern_analysis_skill: primary_color=Pinkish-red | color_variation=Marked | pigmentation_pattern=Reticular | asymmetry_color=Present | evidence_strength=medium | recommendation_type=descriptive_evidence\n- distribution_analysis_skill: body_location=back | symmetry=asymmetric | localized_vs_generalized=localized | clustering_pattern=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence\n\n[Exclusion And Comparison Evidence]\n- exclusion_reasoning_skill: unlikely_candidates=Seborrheic keratosis | exclusion_evidence=The lesion does not show significant keratinization or scale formation, which is less common in Seborrheic keratosis. | required_missing_evidence=Observation of keratinization or scale formation would strengthen the exclusion of Seborrheic keratosis. | exclusion_confidence=medium | evidence_strength=medium | recommendation_type=descriptive_evidence\n- ack_scc_specialist_skill: differentiation_features=Ulceration; Invasive-looking surface disruption | supporting_evidence=The lesion shows signs of ulceration, which is more characteristic of SCC.; The invasive-looking surface disruption suggests a deeper invasion, typical of SCC. | opposing_evidence=The lesion does not show significant keratinization or scale formation, which is less common in SCC.; The lesion's morphology is not highly pearly or translu... | further_observation_suggestions=Examine the lesion for any signs of keratinization or scale formation.; Assess the lesion for any pearly or translucent qualities. | critical_supporting_evidence=Ulceration and invasive-looking surface disruption | counterexample_watchouts=Keratinization or scale formation should not be equated with SCC.; Pearly or translucent qualities should not be ignored in favor of ACK or BCC.\n- metadata_consistency_skill: consistency_score=medium | suspicious_points=The lesion's central depression and surrounding erythema are noted in both the image summary and metadata, but the lesion's morphology described as 'Nodular,... | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Tactical experience tac_PAT_1516_1765_34c7ae80a73a: uncertainty=high; {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}; Preserve Qwen as the only final diagnostic decision maker.; Use evidence package to surface structured morphology, risk, and uncertainty clues.; Collect richer observation evidence before relying on narrower comparisons.\n- Tactical experience tac_PAT_1516_1765_a0a91034ab1a: risk=malignancy_risk:medium; uncertainty=low; {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}; Preserve Qwen as the only final diagnostic decision maker.; Use evidence package to surface structured morphology, risk, and uncertainty clues.; Action pattern: risk_then_uncertainty_audit\n\n[Risk Evidence]\n- Risk flags: malignancy_risk:high\n- malignancy_risk_assessment_skill: risk_level=high | risk_evidence={'type': 'morphology', 'description': 'The lesion is raised and irregularly shaped with a central depression, which is concerning for malignancy.'}; {'type':... | alarm_signals=Central depression; Marked color variation; Reticular pigmentation pattern | evidence_strength=high | recommendation_type=risk_signal\n- Abstract experience abs_confusion_01d077299876: {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}; Imported legacy confusion memory.; risk_then_uncertainty_audit\n- Abstract experience abs_rule_c93aa7bc54f6: {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}; Preserve Qwen as the only final diagnostic decision maker.; observe_then_structure\n\n[Conflict And Uncertainty]\n- Uncertainty level: high\n- Uncertainty reasons: The lesion's central depression and surrounding erythema are concerning for malignancy.; The lesion's location on the back is a common site for both actinic keratoses and squamous cell carcinomas.\n- Missing information: Detailed history of the lesion, including onset, growth rate, and any changes over time.; Family history of skin cancer or other relevant medical conditions.; Results from any dermatoscopy or biopsy performed on the lesion.\n- contradictions: {'source': 'morphology_analysis_skill', 'reason': \"The lesion is described as 'raised' and 'irregularly shaped,' but the image shows a central depression.\"}; {'source': 'color_pattern_analysis_skill', 'reason': \"The lesion is described as having 'pinkish-red' color, but the image does not show a clear pinkish-red hue.\"}\n- missing links: {'description': \"The lesion's exact size in centimeters needs to be determined for a more precise size range assessment.\"}; {'description': \"The lesion's evolution over time should be assessed to determine if it is growing or changing.\"}\n- reasoning gaps: {'description': \"The patient's detailed medical history, including any previous skin biopsies or treatments, is lacking.\"}; {'description': 'The presence of any systemic symptoms or risk factors (such as smoking) could provide additional context.'}\n- suspicious points: The lesion's central depression and surrounding erythema are noted in both the image summary and metadata, but the lesion's morphology described as 'Nodular, irregularly shaped with a central depression' might suggest a more complex structure that could be indicative of different conditions.; The presence of erythema around the lesion is mentioned in both sources, but the metadata does not specify the color variation or pigmentation pattern, which could provide additional context.\n- contradiction_check_skill: contradictions={'source': 'morphology_analysis_skill', 'reason': \"The lesion is described as 'raised' and 'irregularly shaped,' but the image shows a central depression.\"};... | missing_links={'description': \"The lesion's exact size in centimeters needs to be determined for a more precise size range assessment.\"}; {'description': \"The lesion's evo... | reasoning_gaps={'description': \"The patient's detailed medical history, including any previous skin biopsies or treatments, is lacking.\"}; {'description': 'The presence of ... | evidence_strength=medium | recommendation_type=descriptive_evidence\n- information_gap_detection_skill: missing_information=Observation of keratinization or scale formation; Detailed history of the lesion's evolution over time; Family history of skin cancer or other relevant medic... | why_it_matters=Keratinization or scale formation can help exclude certain benign lesions.; Detailed history of the lesion's evolution can provide insights into its nature.;... | impact_on_differential=Observation of keratinization or scale formation would strengthen the exclusion of Seborrheic keratosis.; Detailed history could help differentiate between b... | uncertainty_if_missing=medium | evidence_strength=medium | recommendation_type=descriptive_evidence\n- explicit information gaps: Observation of keratinization or scale formation; Detailed history of the lesion's evolution over time; Family history of skin cancer or other relevant medical conditions\n- why gaps matter: Keratinization or scale formation can help exclude certain benign lesions.; Detailed history of the lesion's evolution can provide insights into its nature.; Family history can influence the likelihood of certain skin cancers.\n- impact on differential: Observation of keratinization or scale formation would strengthen the exclusion of Seborrheic keratosis.; Detailed history could help differentiate between benign and malignant lesions based on growth patterns.; Family history can increase the suspicion for hereditary skin cancers.\n- residual uncertainty if still missing: medium\n- escalation_recommendation_skill: whether_escalation_needed=yes | escalation_reason=High malignancy risk and high uncertainty level suggest the need for further investigation. | suggested_next_check_type=Dermatoscopy and biopsy | caution_flags=High malignancy risk; High uncertainty level | evidence_strength=high | recommendation_type=risk_signal\n- escalation needed: yes\n- escalation reasons: High malignancy risk and high uncertainty level suggest the need for further investigation.\n- suggested next check type: Dermatoscopy and biopsy\n- caution flags: High malignancy risk; High uncertainty level\n\n[Planner Rationale]\n- Selected skills: morphology_analysis_skill, color_pattern_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, temporal_evolution_skill, malignancy_risk_assessment_skill, differential_compare_skill, ack_scc_specialist_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill\n- morphology_analysis_skill: Boosted by skill retrieval score=13.50.; Included as part of the core structured observation layer.; Matched active trigger profile `foundational_observation`.; Matched active trigger profile `multiple_ddx`.\n- color_pattern_analysis_skill: Boosted by skill retrieval score=13.00.; Included as part of the core structured observation layer.; Matched active trigger profile `foundational_observation`.; Matched active trigger profile `multiple_ddx`.\n- distribution_analysis_skill: Boosted by skill retrieval score=16.00.; Included as part of the core structured observation layer.; Matched active trigger profile `foundational_observation`.; Matched active trigger profile `multiple_ddx`.",
+  "evidence_calibration_debug": {
+    "calibrator_type": "heuristic",
+    "calibrator_version": "v1",
+    "section_plan": {
+      "observation": {
+        "skill_names": [
+          "lesion_description_structuring_skill",
+          "morphology_analysis_skill",
+          "color_pattern_analysis_skill",
+          "distribution_analysis_skill"
+        ],
+        "merged_groups": [
+          {
+            "label": "structured_lesion_observation",
+            "skills": [
+              "lesion_description_structuring_skill",
+              "morphology_analysis_skill",
+              "color_pattern_analysis_skill"
+            ],
+            "max_members": 3
+          }
+        ],
+        "raw_case_source_ids": []
+      },
+      "comparison": {
+        "skill_names": [
+          "exclusion_reasoning_skill",
+          "ack_scc_specialist_skill",
+          "metadata_consistency_skill"
+        ],
+        "merged_groups": [],
+        "tactical_source_ids": [
+          "tac_PAT_1516_1765_34c7ae80a73a",
+          "tac_PAT_1516_1765_a0a91034ab1a"
+        ]
+      },
+      "risk": {
+        "skill_names": [
+          "malignancy_risk_assessment_skill"
+        ],
+        "abstract_source_ids": [
+          "abs_confusion_01d077299876",
+          "abs_rule_c93aa7bc54f6"
+        ]
+      },
+      "conflict_uncertainty": {
+        "skill_names": [
+          "escalation_recommendation_skill",
+          "contradiction_check_skill",
+          "information_gap_detection_skill"
+        ]
+      },
+      "planner": {
+        "max_reason_skills": 3
+      },
+      "section_order": [
+        "observation",
+        "comparison",
+        "risk",
+        "conflict_uncertainty",
+        "planner"
+      ]
+    },
+    "item_scores": [
+      {
+        "item_id": "malignancy_risk_assessment_skill",
+        "item_type": "skill_output",
+        "section": "risk",
+        "heuristic_score": 10.6,
+        "learned_score": 0.0,
+        "final_score": 10.6,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "escalation_recommendation_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 10.3,
+        "learned_score": 0.0,
+        "final_score": 10.3,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "exclusion_reasoning_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 10.0,
+        "learned_score": 0.0,
+        "final_score": 10.0,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "contradiction_check_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 9.76,
+        "learned_score": 0.0,
+        "final_score": 9.76,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "ack_scc_specialist_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 9.68,
+        "learned_score": 0.0,
+        "final_score": 9.68,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "lesion_description_structuring_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 9.16,
+        "learned_score": 0.0,
+        "final_score": 9.16,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "information_gap_detection_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 9.1,
+        "learned_score": 0.0,
+        "final_score": 9.1,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "uncertainty_assessment_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 8.9,
+        "learned_score": 0.0,
+        "final_score": 8.9,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "morphology_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.88,
+        "learned_score": 0.0,
+        "final_score": 7.88,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "metadata_consistency_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 7.8,
+        "learned_score": 0.0,
+        "final_score": 7.8,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.74,
+        "learned_score": 0.0,
+        "final_score": 7.74,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.58,
+        "learned_score": 0.0,
+        "final_score": 7.58,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "differential_compare_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 7.3,
+        "learned_score": 0.0,
+        "final_score": 7.3,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "temporal_evolution_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 6.18,
+        "learned_score": 0.0,
+        "final_score": 6.18,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "abs_confusion_01d077299876",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 5.0,
+        "learned_score": 0.0,
+        "final_score": 5.0,
+        "selected": true,
+        "reason": "selected"
+      },
+      {
+        "item_id": "abs_rule_c93aa7bc54f6",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 4.2,
+        "learned_score": 0.0,
+        "final_score": 4.2,
+        "selected": true,
+        "reason": "selected"
+      },
+      {
+        "item_id": "abs_confusion_96013d69cef6",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 4.1,
+        "learned_score": 0.0,
+        "final_score": 4.1,
+        "selected": false,
+        "reason": "dropped_by_rank"
+      },
+      {
+        "item_id": "tac_PAT_1516_1765_34c7ae80a73a",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 3.4,
+        "learned_score": 0.0,
+        "final_score": 3.4,
+        "selected": true,
+        "reason": "selected"
+      },
+      {
+        "item_id": "tac_PAT_1516_1765_a0a91034ab1a",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 3.2,
+        "learned_score": 0.0,
+        "final_score": 3.2,
+        "selected": true,
+        "reason": "selected"
+      },
+      {
+        "item_id": "tac_PAT_1516_1765_cff415b93e52",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 2.8,
+        "learned_score": 0.0,
+        "final_score": 2.8,
+        "selected": false,
+        "reason": "dropped_by_rank"
+      }
+    ],
+    "omitted_items": [],
+    "debug": {
+      "policy": {
+        "enable_evidence_calibrator": true,
+        "calibrator_mode": "heuristic",
+        "calibrator_checkpoint_path": "",
+        "learned_calibration_weight": 1.2,
+        "max_observation_skills": 4,
+        "max_comparison_skills": 3,
+        "max_risk_skills": 2,
+        "max_uncertainty_skills": 3,
+        "max_raw_cases": 1,
+        "max_tactical": 2,
+        "max_abstract": 2,
+        "max_planner_reasons": 3,
+        "omit_low_value_evidence": true,
+        "min_effective_score": 2.4,
+        "debug_output": true
+      },
+      "learned_scorer_loaded": false,
+      "contradiction_count": 8,
+      "uncertainty_level": "high",
+      "risk_flag_count": 1
+    }
+  }
+}

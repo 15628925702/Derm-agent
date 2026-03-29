@@ -77,6 +77,44 @@ RUN_PROFILES: dict[str, SmokeRunProfile] = {
         include_paper_exports=True,
         estimated_runtime="about_9_to_11_hours",
     ),
+    "reuse3h_incremental_no_ablation_v1": SmokeRunProfile(
+        profile_id="reuse3h_incremental_no_ablation_v1",
+        description=(
+            "Short incremental reuse profile intended to build on a prior medium run. "
+            "It assumes the first 120 train seed cases already exist, adds a small batch of new train cases, "
+            "re-trains learned components on the accumulated records, and runs a compact frozen val/test check "
+            "without ablations."
+        ),
+        train_seed_cases=136,
+        stage_training_limit=136,
+        training_epochs=3,
+        val_compare_cases=10,
+        test_eval_cases=10,
+        ablation_cases=0,
+        include_ablations=False,
+        include_batch_reflection=True,
+        include_paper_exports=True,
+        estimated_runtime="about_2_to_4_hours",
+    ),
+    "reuse_medium_signal_10h_v1": SmokeRunProfile(
+        profile_id="reuse_medium_signal_10h_v1",
+        description=(
+            "Overnight incremental reuse profile that builds on an existing medium run instead of starting from zero. "
+            "It assumes an earlier run already seeded the first 136 train cases and learned a usable controller/"
+            "retrieval pair, then adds a moderate batch of new train cases, retrains on the larger accumulated "
+            "record set, and runs a fuller frozen val/test check without ablations."
+        ),
+        train_seed_cases=176,
+        stage_training_limit=176,
+        training_epochs=5,
+        val_compare_cases=24,
+        test_eval_cases=24,
+        ablation_cases=0,
+        include_ablations=False,
+        include_batch_reflection=True,
+        include_paper_exports=True,
+        estimated_runtime="about_9_to_11_hours",
+    ),
     "micro_validation_v1": SmokeRunProfile(
         profile_id="micro_validation_v1",
         description=(

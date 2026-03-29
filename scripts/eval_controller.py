@@ -13,7 +13,14 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from agent.supervised_controller import ControllerMLP, ControllerSelectionPolicy, flatten_training_example_features, multilabel_metrics, select_skills_with_policy, vectorize_feature_maps
+from agent.supervised_controller import (
+    ControllerMLP,
+    ControllerSelectionPolicy,
+    flatten_training_example_features,
+    multilabel_metrics,
+    select_skills_with_policy_details,
+    vectorize_feature_maps,
+)
 from scripts.train_controller import (
     DEFAULT_EXAMPLES_PATH,
     FALLBACK_EXAMPLES_PATH,
@@ -92,6 +99,9 @@ def main() -> int:
         min_select=max(1, int(selection_policy_payload.get("min_select", 4) or 1)),
         max_select=max(1, int(selection_policy_payload.get("max_select", 8) or 1)),
         top_k_buffer=max(0, int(selection_policy_payload.get("top_k_buffer", 1) or 0)),
+        relative_margin=max(0.0, float(selection_policy_payload.get("relative_margin", 0.0) or 0.0)),
+        floor_score=max(0.0, float(selection_policy_payload.get("floor_score", 0.0) or 0.0)),
+        preserve_top1=bool(selection_policy_payload.get("preserve_top1", True)),
     )
 
     with torch.no_grad():
@@ -130,6 +140,7 @@ def main() -> int:
         "selection_policy": selection_policy.to_dict(),
         "label_source": label_source,
         "metrics": metrics,
+        "selection_summary": summarize_prediction_rows(prediction_rows),
     }
     if args.output_path:
         args.output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -183,8 +194,12 @@ def _build_prediction_rows(
             min_select=selection_policy.min_select,
             max_select=selection_policy.max_select,
             top_k_buffer=selection_policy.top_k_buffer,
+            relative_margin=selection_policy.relative_margin,
+            floor_score=selection_policy.floor_score,
+            preserve_top1=selection_policy.preserve_top1,
         )
-        selected = select_skills_with_policy(ranked_skills=ranked, score_map=score_map, policy=local_policy)
+        selection_details = select_skills_with_policy_details(ranked_skills=ranked, score_map=score_map, policy=local_policy)
+        selected = list(selection_details.get("selected_skills", []))
         harmful = {str(item).strip() for item in dict(example.get("outcome", {})).get("explicit_negative_skills", []) if str(item).strip()}
         rows.append(
             {
@@ -198,9 +213,32 @@ def _build_prediction_rows(
                 "skill_probabilities": {key: round(value, 6) for key, value in score_map.items()},
                 "selected_skills_true": [str(item).strip() for item in example.get("selected_skills", []) if str(item).strip()],
                 "primary_positive_skills_true": [str(item).strip() for item in dict(example.get("outcome", {})).get("primary_positive_skills", []) if str(item).strip()],
+                "rejected_skills_pred": list(selection_details.get("rejected_skills", [])),
+                "selection_info": dict(selection_details),
             }
         )
     return rows
+
+
+def summarize_prediction_rows(rows: list[dict[str, Any]]) -> dict[str, float | int | None]:
+    if not rows:
+        return {
+            "avg_predicted_labels": None,
+            "avg_target_k": None,
+            "avg_predicted_minus_target": None,
+            "harmful_case_overlap_rate": None,
+        }
+    predicted_counts = [int(row.get("predicted_skill_count", 0) or 0) for row in rows]
+    target_counts = [int(row.get("target_k", 0) or 0) for row in rows]
+    harmful_overlaps = [1 if row.get("harmful_selected_overlap") else 0 for row in rows]
+    avg_predicted = sum(predicted_counts) / len(predicted_counts)
+    avg_target = sum(target_counts) / len(target_counts)
+    return {
+        "avg_predicted_labels": round(avg_predicted, 6),
+        "avg_target_k": round(avg_target, 6),
+        "avg_predicted_minus_target": round(avg_predicted - avg_target, 6),
+        "harmful_case_overlap_rate": round(sum(harmful_overlaps) / len(harmful_overlaps), 6),
+    }
 
 
 if __name__ == "__main__":

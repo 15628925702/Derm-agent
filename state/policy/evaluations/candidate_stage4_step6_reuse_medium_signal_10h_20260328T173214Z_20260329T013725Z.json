@@ -1,0 +1,2901 @@
+{
+  "evaluated_at": "2026-03-29T01:37:25Z",
+  "stable_policy": {
+    "policy_id": "stable_default_policy",
+    "version": 1,
+    "status": "stable",
+    "created_at": "2026-03-26T06:24:32Z",
+    "parent_policy_id": "",
+    "description": "Default conservative stable planner policy.",
+    "change_summary": {
+      "planner": [
+        "Baseline rule-based planner with structured evidence support."
+      ],
+      "skill_overrides": [],
+      "retrieval": [
+        "Use cognition-guided retrieval with conservative top-k defaults."
+      ],
+      "cognition_defaults": []
+    },
+    "planner_policy": {
+      "controller_family": "heuristic",
+      "controller_checkpoint_path": "",
+      "learned_controller_weight": 4.0,
+      "learned_controller_select_threshold": 0.4,
+      "learned_controller_top_k": 0,
+      "learned_controller_force_top_k": 0,
+      "learned_controller_mode": "union",
+      "learned_controller_sparse_rule_floor": 9,
+      "learned_controller_protected_min_score": 7,
+      "score_threshold_default": 4,
+      "retrieval_score_cap": 3,
+      "foundational_bonus": 6,
+      "preferred_skill_bonus": 3,
+      "helpful_rate_bonus": 2,
+      "failure_rate_penalty": 2,
+      "signal_match_bonus": 2,
+      "known_confusion_bonus": 2,
+      "experience_compare_bonus": 2,
+      "experience_risk_bonus": 2,
+      "experience_gap_bonus": 2,
+      "experience_conflict_bonus": 2,
+      "experience_escalation_bonus": 2,
+      "enable_signals": {
+        "experience_compare_pattern": true,
+        "experience_risk_pattern": true,
+        "experience_gap_pattern": true,
+        "experience_conflict_pattern": true,
+        "experience_escalation_pattern": true
+      },
+      "force_select_skills": [],
+      "force_disable_skills": [],
+      "skill_overrides": {}
+    },
+    "retrieval_policy": {
+      "top_k_experience": 3,
+      "top_k_tactical": 3,
+      "top_k_abstract": 3,
+      "top_k_skill_candidates": 14,
+      "prioritize_confusion_cases": true,
+      "enable_learned_retrieval_reranker": false,
+      "retrieval_reranker_checkpoint_path": "",
+      "retrieval_reranker_blend_weight": 2.5,
+      "retrieval_reranker_fail_open": true
+    },
+    "evidence_policy": {
+      "enable_evidence_calibrator": true,
+      "calibrator_mode": "heuristic",
+      "calibrator_checkpoint_path": "",
+      "learned_calibration_weight": 1.2,
+      "max_observation_skills": 4,
+      "max_comparison_skills": 3,
+      "max_risk_skills": 2,
+      "max_uncertainty_skills": 3,
+      "max_raw_cases": 1,
+      "max_tactical": 2,
+      "max_abstract": 2,
+      "max_planner_reasons": 3,
+      "omit_low_value_evidence": true,
+      "min_effective_score": 2.4,
+      "debug_output": true
+    },
+    "skill_config_refs": [],
+    "evidence_refs": {},
+    "evaluation_gate": {
+      "minimum_cases": 10,
+      "max_top1_drop": 0.0,
+      "max_topk_drop": 0.02,
+      "max_error_rate_increase": 0.02,
+      "max_key_confusion_drop": 0.0,
+      "require_non_decreasing_malignant_recall": true
+    },
+    "last_evaluation": {},
+    "rollback_history": [],
+    "state_split": "global",
+    "state_version": "policy_config:global:38b3edb40121",
+    "source_path": "/root/DermAgent/state/policy/current_stable_policy.json"
+  },
+  "candidate_policy": {
+    "policy_id": "candidate_stage4_step6_reuse_medium_signal_10h_20260328T173214Z",
+    "version": 2,
+    "status": "candidate",
+    "created_at": "2026-03-28T18:43:45Z",
+    "parent_policy_id": "stable_default_policy",
+    "description": "Auto-generated candidate policy from staged training pipeline.",
+    "change_summary": {
+      "planner": [
+        "Baseline rule-based planner with structured evidence support."
+      ],
+      "skill_overrides": [],
+      "retrieval": [
+        "Use cognition-guided retrieval with conservative top-k defaults."
+      ],
+      "cognition_defaults": [],
+      "pipeline": [
+        "staged_training_run:reuse_medium_signal_10h_20260328T173214Z"
+      ]
+    },
+    "planner_policy": {
+      "controller_family": "learned_supervised",
+      "controller_checkpoint_path": "/root/DermAgent/outputs/smoke_cycles/reuse_medium_signal_10h_20260328T173214Z/train_runs/reuse_medium_signal_10h_20260328T173214Z/stage1_supervised_controller_training/checkpoints/controller_planner_scorer__candidate__reuse_medium_signal_10h_20260328T173214Z.pt",
+      "learned_controller_weight": 4.0,
+      "learned_controller_select_threshold": 0.4,
+      "learned_controller_top_k": 0,
+      "learned_controller_force_top_k": 0,
+      "learned_controller_mode": "union",
+      "learned_controller_sparse_rule_floor": 9,
+      "learned_controller_protected_min_score": 7,
+      "score_threshold_default": 4,
+      "retrieval_score_cap": 3,
+      "foundational_bonus": 6,
+      "preferred_skill_bonus": 3,
+      "helpful_rate_bonus": 2,
+      "failure_rate_penalty": 2,
+      "signal_match_bonus": 2,
+      "known_confusion_bonus": 2,
+      "experience_compare_bonus": 2,
+      "experience_risk_bonus": 2,
+      "experience_gap_bonus": 2,
+      "experience_conflict_bonus": 2,
+      "experience_escalation_bonus": 2,
+      "enable_signals": {
+        "experience_compare_pattern": true,
+        "experience_risk_pattern": true,
+        "experience_gap_pattern": true,
+        "experience_conflict_pattern": true,
+        "experience_escalation_pattern": true
+      },
+      "force_select_skills": [],
+      "force_disable_skills": [],
+      "skill_overrides": {}
+    },
+    "retrieval_policy": {
+      "top_k_experience": 3,
+      "top_k_tactical": 3,
+      "top_k_abstract": 3,
+      "top_k_skill_candidates": 14,
+      "prioritize_confusion_cases": true,
+      "enable_learned_retrieval_reranker": true,
+      "retrieval_reranker_checkpoint_path": "/root/DermAgent/outputs/smoke_cycles/reuse_medium_signal_10h_20260328T173214Z/train_runs/reuse_medium_signal_10h_20260328T173214Z/stage2_retrieval_scorer_training/checkpoints/retrieval_reranker__candidate__reuse_medium_signal_10h_20260328T173214Z.pt",
+      "retrieval_reranker_blend_weight": 2.5,
+      "retrieval_reranker_fail_open": true
+    },
+    "evidence_policy": {
+      "enable_evidence_calibrator": true,
+      "calibrator_mode": "heuristic",
+      "calibrator_checkpoint_path": "",
+      "learned_calibration_weight": 1.2,
+      "max_observation_skills": 4,
+      "max_comparison_skills": 3,
+      "max_risk_skills": 2,
+      "max_uncertainty_skills": 3,
+      "max_raw_cases": 1,
+      "max_tactical": 2,
+      "max_abstract": 2,
+      "max_planner_reasons": 3,
+      "omit_low_value_evidence": true,
+      "min_effective_score": 2.4,
+      "debug_output": true
+    },
+    "skill_config_refs": [],
+    "evidence_refs": {},
+    "evaluation_gate": {
+      "minimum_cases": 10,
+      "max_top1_drop": 0.0,
+      "max_topk_drop": 0.02,
+      "max_error_rate_increase": 0.02,
+      "max_key_confusion_drop": 0.0,
+      "require_non_decreasing_malignant_recall": true
+    },
+    "last_evaluation": {},
+    "rollback_history": [],
+    "state_split": "global",
+    "state_version": "policy_config:global:38b3edb40121",
+    "source_path": "/root/DermAgent/outputs/smoke_cycles/reuse_medium_signal_10h_20260328T173214Z/train_runs/reuse_medium_signal_10h_20260328T173214Z/stage3_policy_candidate_evaluation/candidate_policy.json"
+  },
+  "stable_summary": {
+    "num_cases": 176,
+    "num_with_ground_truth": 176,
+    "top1": {
+      "hits": 47,
+      "total": 176,
+      "rate": 0.26704545454545453
+    },
+    "topk": {
+      "hits": 128,
+      "total": 176,
+      "rate": 0.7272727272727273
+    },
+    "malignant_recall": {
+      "hits": 95,
+      "total": 144,
+      "rate": 0.6597222222222222
+    },
+    "error_rate": {
+      "errors": 129,
+      "total": 176,
+      "rate": 0.7329545454545454
+    },
+    "key_confusion_subsets": {
+      "ack->bcc": {
+        "num_cases": 69,
+        "num_with_ground_truth": 69,
+        "top1": {
+          "hits": 25,
+          "total": 69,
+          "rate": 0.36231884057971014
+        },
+        "topk": {
+          "hits": 57,
+          "total": 69,
+          "rate": 0.8260869565217391
+        },
+        "malignant_recall": {
+          "hits": 35,
+          "total": 50,
+          "rate": 0.7
+        },
+        "error_rate": {
+          "errors": 44,
+          "total": 69,
+          "rate": 0.6376811594202898
+        }
+      },
+      "acne vulgaris->nev": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 0,
+          "rate": null
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "actinic keratosis->bcc": {
+        "num_cases": 12,
+        "num_with_ground_truth": 12,
+        "top1": {
+          "hits": 0,
+          "total": 12,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 11,
+          "total": 12,
+          "rate": 0.9166666666666666
+        },
+        "malignant_recall": {
+          "hits": 12,
+          "total": 12,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 12,
+          "total": 12,
+          "rate": 1.0
+        }
+      },
+      "actinic keratosis->scc": {
+        "num_cases": 3,
+        "num_with_ground_truth": 3,
+        "top1": {
+          "hits": 0,
+          "total": 3,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 3,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 3,
+          "total": 3,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 3,
+          "total": 3,
+          "rate": 1.0
+        }
+      },
+      "actinic keratosis->sek": {
+        "num_cases": 4,
+        "num_with_ground_truth": 4,
+        "top1": {
+          "hits": 0,
+          "total": 4,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 4,
+          "total": 4,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 0,
+          "rate": null
+        },
+        "error_rate": {
+          "errors": 4,
+          "total": 4,
+          "rate": 1.0
+        }
+      },
+      "acute otitis externa->ack": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "atypical mole->ack": {
+        "num_cases": 2,
+        "num_with_ground_truth": 2,
+        "top1": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 2,
+          "total": 2,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 2,
+          "total": 2,
+          "rate": 1.0
+        }
+      },
+      "basal cell carcinoma->ack": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "basal cell carcinoma->scc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "basal cell carcinoma->sek": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 0,
+          "rate": null
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "blue nevus->ack": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "contact dermatitis->ack": {
+        "num_cases": 5,
+        "num_with_ground_truth": 5,
+        "top1": {
+          "hits": 0,
+          "total": 5,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 5,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 5,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 5,
+          "total": 5,
+          "rate": 1.0
+        }
+      },
+      "contact dermatitis->bcc": {
+        "num_cases": 3,
+        "num_with_ground_truth": 3,
+        "top1": {
+          "hits": 0,
+          "total": 3,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 3,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 3,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 3,
+          "total": 3,
+          "rate": 1.0
+        }
+      },
+      "herpes simplex virus (hsv) infection->scc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "inflammatory->ack": {
+        "num_cases": 5,
+        "num_with_ground_truth": 5,
+        "top1": {
+          "hits": 3,
+          "total": 5,
+          "rate": 0.6
+        },
+        "topk": {
+          "hits": 4,
+          "total": 5,
+          "rate": 0.8
+        },
+        "malignant_recall": {
+          "hits": 5,
+          "total": 5,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 2,
+          "total": 5,
+          "rate": 0.4
+        }
+      },
+      "ink stain->ack": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "keratoacanthoma->ack": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "keratoacanthoma->bcc": {
+        "num_cases": 2,
+        "num_with_ground_truth": 2,
+        "top1": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 2,
+          "total": 2,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 2,
+          "total": 2,
+          "rate": 1.0
+        }
+      },
+      "lichen planus->ack": {
+        "num_cases": 3,
+        "num_with_ground_truth": 3,
+        "top1": {
+          "hits": 0,
+          "total": 3,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 3,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 3,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 3,
+          "total": 3,
+          "rate": 1.0
+        }
+      },
+      "lichen simplex chronicus->ack": {
+        "num_cases": 2,
+        "num_with_ground_truth": 2,
+        "top1": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 2,
+          "total": 2,
+          "rate": 1.0
+        }
+      },
+      "lichen simplex chronicus->bcc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "malignant melanoma->ack": {
+        "num_cases": 5,
+        "num_with_ground_truth": 5,
+        "top1": {
+          "hits": 0,
+          "total": 5,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 4,
+          "total": 5,
+          "rate": 0.8
+        },
+        "malignant_recall": {
+          "hits": 5,
+          "total": 5,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 5,
+          "total": 5,
+          "rate": 1.0
+        }
+      },
+      "malignant melanoma->bcc": {
+        "num_cases": 4,
+        "num_with_ground_truth": 4,
+        "top1": {
+          "hits": 0,
+          "total": 4,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 4,
+          "total": 4,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 4,
+          "total": 4,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 4,
+          "total": 4,
+          "rate": 1.0
+        }
+      },
+      "malignant melanoma->nev": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 0,
+          "rate": null
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "malignant melanoma->scc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "malignant melanoma->sek": {
+        "num_cases": 3,
+        "num_with_ground_truth": 3,
+        "top1": {
+          "hits": 0,
+          "total": 3,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 3,
+          "total": 3,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 0,
+          "rate": null
+        },
+        "error_rate": {
+          "errors": 3,
+          "total": 3,
+          "rate": 1.0
+        }
+      },
+      "melanoma->nev": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "topk": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 0,
+          "total": 1,
+          "rate": 0.0
+        }
+      },
+      "none": {
+        "num_cases": 94,
+        "num_with_ground_truth": 94,
+        "top1": {
+          "hits": 47,
+          "total": 94,
+          "rate": 0.5
+        },
+        "topk": {
+          "hits": 62,
+          "total": 94,
+          "rate": 0.6595744680851063
+        },
+        "malignant_recall": {
+          "hits": 41,
+          "total": 74,
+          "rate": 0.5540540540540541
+        },
+        "error_rate": {
+          "errors": 47,
+          "total": 94,
+          "rate": 0.5
+        }
+      },
+      "plantar wart->scc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "post-inflammatory hyperpigmentation->ack": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "psoriasis->ack": {
+        "num_cases": 4,
+        "num_with_ground_truth": 4,
+        "top1": {
+          "hits": 0,
+          "total": 4,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 4,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 4,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 4,
+          "total": 4,
+          "rate": 1.0
+        }
+      },
+      "rosacea->ack": {
+        "num_cases": 2,
+        "num_with_ground_truth": 2,
+        "top1": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 1,
+          "total": 2,
+          "rate": 0.5
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 2,
+          "total": 2,
+          "rate": 1.0
+        }
+      },
+      "rosacea->scc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "scc->bcc": {
+        "num_cases": 45,
+        "num_with_ground_truth": 45,
+        "top1": {
+          "hits": 10,
+          "total": 45,
+          "rate": 0.2222222222222222
+        },
+        "topk": {
+          "hits": 42,
+          "total": 45,
+          "rate": 0.9333333333333333
+        },
+        "malignant_recall": {
+          "hits": 44,
+          "total": 45,
+          "rate": 0.9777777777777777
+        },
+        "error_rate": {
+          "errors": 35,
+          "total": 45,
+          "rate": 0.7777777777777778
+        }
+      },
+      "seborrheic keratosis->ack": {
+        "num_cases": 9,
+        "num_with_ground_truth": 9,
+        "top1": {
+          "hits": 0,
+          "total": 9,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 8,
+          "total": 9,
+          "rate": 0.8888888888888888
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 9,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 9,
+          "total": 9,
+          "rate": 1.0
+        }
+      },
+      "seborrheic keratosis->bcc": {
+        "num_cases": 7,
+        "num_with_ground_truth": 7,
+        "top1": {
+          "hits": 0,
+          "total": 7,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 6,
+          "total": 7,
+          "rate": 0.8571428571428571
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 7,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 7,
+          "total": 7,
+          "rate": 1.0
+        }
+      },
+      "seborrheic keratosis->nev": {
+        "num_cases": 10,
+        "num_with_ground_truth": 10,
+        "top1": {
+          "hits": 0,
+          "total": 10,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 2,
+          "total": 10,
+          "rate": 0.2
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 0,
+          "rate": null
+        },
+        "error_rate": {
+          "errors": 10,
+          "total": 10,
+          "rate": 1.0
+        }
+      },
+      "seborrheic keratosis->scc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "sek->bcc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 0,
+          "rate": null
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "solar lentigo->sek": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 0,
+          "rate": null
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "squamous cell carcinoma (scc)->bcc": {
+        "num_cases": 2,
+        "num_with_ground_truth": 2,
+        "top1": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 2,
+          "total": 2,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 2,
+          "total": 2,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 2,
+          "total": 2,
+          "rate": 1.0
+        }
+      },
+      "squamous cell carcinoma->ack": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "squamous cell carcinoma->bcc": {
+        "num_cases": 27,
+        "num_with_ground_truth": 27,
+        "top1": {
+          "hits": 0,
+          "total": 27,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 24,
+          "total": 27,
+          "rate": 0.8888888888888888
+        },
+        "malignant_recall": {
+          "hits": 27,
+          "total": 27,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 27,
+          "total": 27,
+          "rate": 1.0
+        }
+      },
+      "superficial spreading melanoma->ack": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "superficial spreading melanoma->bcc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      }
+    }
+  },
+  "candidate_summary": {
+    "num_cases": 176,
+    "num_with_ground_truth": 176,
+    "top1": {
+      "hits": 43,
+      "total": 176,
+      "rate": 0.24431818181818182
+    },
+    "topk": {
+      "hits": 132,
+      "total": 176,
+      "rate": 0.75
+    },
+    "malignant_recall": {
+      "hits": 96,
+      "total": 144,
+      "rate": 0.6666666666666666
+    },
+    "error_rate": {
+      "errors": 133,
+      "total": 176,
+      "rate": 0.7556818181818182
+    },
+    "key_confusion_subsets": {
+      "ack->bcc": {
+        "num_cases": 68,
+        "num_with_ground_truth": 68,
+        "top1": {
+          "hits": 19,
+          "total": 68,
+          "rate": 0.27941176470588236
+        },
+        "topk": {
+          "hits": 57,
+          "total": 68,
+          "rate": 0.8382352941176471
+        },
+        "malignant_recall": {
+          "hits": 33,
+          "total": 50,
+          "rate": 0.66
+        },
+        "error_rate": {
+          "errors": 49,
+          "total": 68,
+          "rate": 0.7205882352941176
+        }
+      },
+      "actinic keratosis->bcc": {
+        "num_cases": 13,
+        "num_with_ground_truth": 13,
+        "top1": {
+          "hits": 0,
+          "total": 13,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 12,
+          "total": 13,
+          "rate": 0.9230769230769231
+        },
+        "malignant_recall": {
+          "hits": 13,
+          "total": 13,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 13,
+          "total": 13,
+          "rate": 1.0
+        }
+      },
+      "actinic keratosis->nev": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 0,
+          "rate": null
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "actinic keratosis->scc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "actinic keratosis->sek": {
+        "num_cases": 4,
+        "num_with_ground_truth": 4,
+        "top1": {
+          "hits": 0,
+          "total": 4,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 4,
+          "total": 4,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 0,
+          "rate": null
+        },
+        "error_rate": {
+          "errors": 4,
+          "total": 4,
+          "rate": 1.0
+        }
+      },
+      "acute otitis externa->ack": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "atopic dermatitis->ack": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "atypical mole->ack": {
+        "num_cases": 2,
+        "num_with_ground_truth": 2,
+        "top1": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 2,
+          "total": 2,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 2,
+          "total": 2,
+          "rate": 1.0
+        }
+      },
+      "atypical nevus->ack": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "atypical nevus->sek": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 0,
+          "rate": null
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "basal cell carcinoma->ack": {
+        "num_cases": 4,
+        "num_with_ground_truth": 4,
+        "top1": {
+          "hits": 0,
+          "total": 4,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 4,
+          "total": 4,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 4,
+          "total": 4,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 4,
+          "total": 4,
+          "rate": 1.0
+        }
+      },
+      "basal cell carcinoma->scc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "basal cell carcinoma->sek": {
+        "num_cases": 2,
+        "num_with_ground_truth": 2,
+        "top1": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 2,
+          "total": 2,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 0,
+          "rate": null
+        },
+        "error_rate": {
+          "errors": 2,
+          "total": 2,
+          "rate": 1.0
+        }
+      },
+      "blue nevus->ack": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "contact dermatitis->ack": {
+        "num_cases": 4,
+        "num_with_ground_truth": 4,
+        "top1": {
+          "hits": 0,
+          "total": 4,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 4,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 4,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 4,
+          "total": 4,
+          "rate": 1.0
+        }
+      },
+      "contact dermatitis->bcc": {
+        "num_cases": 3,
+        "num_with_ground_truth": 3,
+        "top1": {
+          "hits": 0,
+          "total": 3,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 3,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 3,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 3,
+          "total": 3,
+          "rate": 1.0
+        }
+      },
+      "herpes simplex virus (hsv) infection->scc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "inflammatory->ack": {
+        "num_cases": 7,
+        "num_with_ground_truth": 7,
+        "top1": {
+          "hits": 6,
+          "total": 7,
+          "rate": 0.8571428571428571
+        },
+        "topk": {
+          "hits": 6,
+          "total": 7,
+          "rate": 0.8571428571428571
+        },
+        "malignant_recall": {
+          "hits": 7,
+          "total": 7,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 7,
+          "rate": 0.14285714285714285
+        }
+      },
+      "ink stain->ack": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "keratoacanthoma->bcc": {
+        "num_cases": 4,
+        "num_with_ground_truth": 4,
+        "top1": {
+          "hits": 0,
+          "total": 4,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 4,
+          "total": 4,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 4,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 4,
+          "total": 4,
+          "rate": 1.0
+        }
+      },
+      "lichen planus->ack": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "lichen simplex chronicus->ack": {
+        "num_cases": 2,
+        "num_with_ground_truth": 2,
+        "top1": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 2,
+          "total": 2,
+          "rate": 1.0
+        }
+      },
+      "lichen simplex chronicus->bcc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "malignant melanoma->ack": {
+        "num_cases": 5,
+        "num_with_ground_truth": 5,
+        "top1": {
+          "hits": 0,
+          "total": 5,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 4,
+          "total": 5,
+          "rate": 0.8
+        },
+        "malignant_recall": {
+          "hits": 5,
+          "total": 5,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 5,
+          "total": 5,
+          "rate": 1.0
+        }
+      },
+      "malignant melanoma->bcc": {
+        "num_cases": 6,
+        "num_with_ground_truth": 6,
+        "top1": {
+          "hits": 0,
+          "total": 6,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 6,
+          "total": 6,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 6,
+          "total": 6,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 6,
+          "total": 6,
+          "rate": 1.0
+        }
+      },
+      "malignant melanoma->nev": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 0,
+          "rate": null
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "malignant melanoma->scc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "malignant melanoma->sek": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 0,
+          "rate": null
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "melanoma->nev": {
+        "num_cases": 2,
+        "num_with_ground_truth": 2,
+        "top1": {
+          "hits": 1,
+          "total": 2,
+          "rate": 0.5
+        },
+        "topk": {
+          "hits": 1,
+          "total": 2,
+          "rate": 0.5
+        },
+        "malignant_recall": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 2,
+          "rate": 0.5
+        }
+      },
+      "none": {
+        "num_cases": 86,
+        "num_with_ground_truth": 86,
+        "top1": {
+          "hits": 43,
+          "total": 86,
+          "rate": 0.5
+        },
+        "topk": {
+          "hits": 57,
+          "total": 86,
+          "rate": 0.6627906976744186
+        },
+        "malignant_recall": {
+          "hits": 39,
+          "total": 68,
+          "rate": 0.5735294117647058
+        },
+        "error_rate": {
+          "errors": 43,
+          "total": 86,
+          "rate": 0.5
+        }
+      },
+      "plantar wart->scc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "post-inflammatory hyperpigmentation->ack": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "psoriasis->ack": {
+        "num_cases": 2,
+        "num_with_ground_truth": 2,
+        "top1": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 2,
+          "total": 2,
+          "rate": 1.0
+        }
+      },
+      "rosacea->ack": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "rosacea->scc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "scc->bcc": {
+        "num_cases": 45,
+        "num_with_ground_truth": 45,
+        "top1": {
+          "hits": 7,
+          "total": 45,
+          "rate": 0.15555555555555556
+        },
+        "topk": {
+          "hits": 43,
+          "total": 45,
+          "rate": 0.9555555555555556
+        },
+        "malignant_recall": {
+          "hits": 42,
+          "total": 44,
+          "rate": 0.9545454545454546
+        },
+        "error_rate": {
+          "errors": 38,
+          "total": 45,
+          "rate": 0.8444444444444444
+        }
+      },
+      "seborrheic keratosis->ack": {
+        "num_cases": 9,
+        "num_with_ground_truth": 9,
+        "top1": {
+          "hits": 0,
+          "total": 9,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 9,
+          "total": 9,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 9,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 9,
+          "total": 9,
+          "rate": 1.0
+        }
+      },
+      "seborrheic keratosis->bcc": {
+        "num_cases": 7,
+        "num_with_ground_truth": 7,
+        "top1": {
+          "hits": 0,
+          "total": 7,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 6,
+          "total": 7,
+          "rate": 0.8571428571428571
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 7,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 7,
+          "total": 7,
+          "rate": 1.0
+        }
+      },
+      "seborrheic keratosis->nev": {
+        "num_cases": 10,
+        "num_with_ground_truth": 10,
+        "top1": {
+          "hits": 0,
+          "total": 10,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 2,
+          "total": 10,
+          "rate": 0.2
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 0,
+          "rate": null
+        },
+        "error_rate": {
+          "errors": 10,
+          "total": 10,
+          "rate": 1.0
+        }
+      },
+      "seborrheic keratosis->scc": {
+        "num_cases": 3,
+        "num_with_ground_truth": 3,
+        "top1": {
+          "hits": 0,
+          "total": 3,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 2,
+          "total": 3,
+          "rate": 0.6666666666666666
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 3,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 3,
+          "total": 3,
+          "rate": 1.0
+        }
+      },
+      "sek->bcc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 0,
+          "rate": null
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "solar lentigo->sek": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 0,
+          "rate": null
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "squamous cell carcinoma (scc)->bcc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "squamous cell carcinoma->ack": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "squamous cell carcinoma->bcc": {
+        "num_cases": 29,
+        "num_with_ground_truth": 29,
+        "top1": {
+          "hits": 0,
+          "total": 29,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 28,
+          "total": 29,
+          "rate": 0.9655172413793104
+        },
+        "malignant_recall": {
+          "hits": 29,
+          "total": 29,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 29,
+          "total": 29,
+          "rate": 1.0
+        }
+      },
+      "squamous cell carcinoma->nev": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 0,
+          "rate": null
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "superficial spreading melanoma->bcc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      }
+    }
+  },
+  "gate_decision": {
+    "decision": "rollback",
+    "passed": false,
+    "rollback_required": true,
+    "reasons": [
+      "top1 dropped by -0.0227.",
+      "error rate increased by 0.0227.",
+      "key confusion subset `ack->bcc` top1 dropped by -0.0829.",
+      "key confusion subset `ack->bcc` malignant recall dropped by -0.0400.",
+      "key confusion subset `melanoma->nev` top1 dropped by -0.5000.",
+      "key confusion subset `scc->bcc` top1 dropped by -0.0667.",
+      "key confusion subset `scc->bcc` malignant recall dropped by -0.0232."
+    ],
+    "summary_delta": {
+      "top1_delta": -0.022727,
+      "topk_delta": 0.022727,
+      "malignant_recall_delta": 0.006944,
+      "error_rate_delta": 0.022727,
+      "key_confusion_subset_deltas": {
+        "ack->bcc": {
+          "top1_delta": -0.082907,
+          "topk_delta": 0.012148,
+          "malignant_recall_delta": -0.04,
+          "error_rate_delta": 0.082907,
+          "candidate_cases": 68,
+          "stable_cases": 69
+        },
+        "ack->scc": {
+          "top1_delta": null,
+          "topk_delta": null,
+          "malignant_recall_delta": null,
+          "error_rate_delta": null,
+          "candidate_cases": 0,
+          "stable_cases": 0
+        },
+        "acne vulgaris->nev": {
+          "top1_delta": null,
+          "topk_delta": null,
+          "malignant_recall_delta": null,
+          "error_rate_delta": null,
+          "candidate_cases": 0,
+          "stable_cases": 1
+        },
+        "actinic keratosis->bcc": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.00641,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 13,
+          "stable_cases": 12
+        },
+        "actinic keratosis->nev": {
+          "top1_delta": null,
+          "topk_delta": null,
+          "malignant_recall_delta": null,
+          "error_rate_delta": null,
+          "candidate_cases": 1,
+          "stable_cases": 0
+        },
+        "actinic keratosis->scc": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 1,
+          "stable_cases": 3
+        },
+        "actinic keratosis->sek": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": null,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 4,
+          "stable_cases": 4
+        },
+        "acute otitis externa->ack": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 1,
+          "stable_cases": 1
+        },
+        "atopic dermatitis->ack": {
+          "top1_delta": null,
+          "topk_delta": null,
+          "malignant_recall_delta": null,
+          "error_rate_delta": null,
+          "candidate_cases": 1,
+          "stable_cases": 0
+        },
+        "atypical mole->ack": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 2,
+          "stable_cases": 2
+        },
+        "atypical nevus->ack": {
+          "top1_delta": null,
+          "topk_delta": null,
+          "malignant_recall_delta": null,
+          "error_rate_delta": null,
+          "candidate_cases": 1,
+          "stable_cases": 0
+        },
+        "atypical nevus->sek": {
+          "top1_delta": null,
+          "topk_delta": null,
+          "malignant_recall_delta": null,
+          "error_rate_delta": null,
+          "candidate_cases": 1,
+          "stable_cases": 0
+        },
+        "basal cell carcinoma->ack": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 4,
+          "stable_cases": 1
+        },
+        "basal cell carcinoma->scc": {
+          "top1_delta": 0.0,
+          "topk_delta": -1.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 1,
+          "stable_cases": 1
+        },
+        "basal cell carcinoma->sek": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": null,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 2,
+          "stable_cases": 1
+        },
+        "blue nevus->ack": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 1,
+          "stable_cases": 1
+        },
+        "contact dermatitis->ack": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 4,
+          "stable_cases": 5
+        },
+        "contact dermatitis->bcc": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 3,
+          "stable_cases": 3
+        },
+        "herpes simplex virus (hsv) infection->scc": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 1,
+          "stable_cases": 1
+        },
+        "inflammatory->ack": {
+          "top1_delta": 0.257143,
+          "topk_delta": 0.057143,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": -0.257143,
+          "candidate_cases": 7,
+          "stable_cases": 5
+        },
+        "ink stain->ack": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 1,
+          "stable_cases": 1
+        },
+        "keratoacanthoma->ack": {
+          "top1_delta": null,
+          "topk_delta": null,
+          "malignant_recall_delta": null,
+          "error_rate_delta": null,
+          "candidate_cases": 0,
+          "stable_cases": 1
+        },
+        "keratoacanthoma->bcc": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 4,
+          "stable_cases": 2
+        },
+        "lichen planus->ack": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 1,
+          "stable_cases": 3
+        },
+        "lichen simplex chronicus->ack": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 2,
+          "stable_cases": 2
+        },
+        "lichen simplex chronicus->bcc": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 1,
+          "stable_cases": 1
+        },
+        "malignant melanoma->ack": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 5,
+          "stable_cases": 5
+        },
+        "malignant melanoma->bcc": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 6,
+          "stable_cases": 4
+        },
+        "malignant melanoma->nev": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": null,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 1,
+          "stable_cases": 1
+        },
+        "malignant melanoma->scc": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 1,
+          "stable_cases": 1
+        },
+        "malignant melanoma->sek": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": null,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 1,
+          "stable_cases": 3
+        },
+        "melanoma->nev": {
+          "top1_delta": -0.5,
+          "topk_delta": -0.5,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.5,
+          "candidate_cases": 2,
+          "stable_cases": 1
+        },
+        "none": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.003216,
+          "malignant_recall_delta": 0.019475,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 86,
+          "stable_cases": 94
+        },
+        "plantar wart->scc": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 1,
+          "stable_cases": 1
+        },
+        "post-inflammatory hyperpigmentation->ack": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 1,
+          "stable_cases": 1
+        },
+        "psoriasis->ack": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 2,
+          "stable_cases": 4
+        },
+        "rosacea->ack": {
+          "top1_delta": 0.0,
+          "topk_delta": -0.5,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 1,
+          "stable_cases": 2
+        },
+        "rosacea->scc": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 1,
+          "stable_cases": 1
+        },
+        "scc->bcc": {
+          "top1_delta": -0.066667,
+          "topk_delta": 0.022222,
+          "malignant_recall_delta": -0.023232,
+          "error_rate_delta": 0.066667,
+          "candidate_cases": 45,
+          "stable_cases": 45
+        },
+        "seborrheic keratosis->ack": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.111111,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 9,
+          "stable_cases": 9
+        },
+        "seborrheic keratosis->bcc": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 7,
+          "stable_cases": 7
+        },
+        "seborrheic keratosis->nev": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": null,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 10,
+          "stable_cases": 10
+        },
+        "seborrheic keratosis->scc": {
+          "top1_delta": 0.0,
+          "topk_delta": -0.333333,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 3,
+          "stable_cases": 1
+        },
+        "sek->bcc": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": null,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 1,
+          "stable_cases": 1
+        },
+        "solar lentigo->sek": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": null,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 1,
+          "stable_cases": 1
+        },
+        "squamous cell carcinoma (scc)->bcc": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 1,
+          "stable_cases": 2
+        },
+        "squamous cell carcinoma->ack": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 1,
+          "stable_cases": 1
+        },
+        "squamous cell carcinoma->bcc": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.076628,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 29,
+          "stable_cases": 27
+        },
+        "squamous cell carcinoma->nev": {
+          "top1_delta": null,
+          "topk_delta": null,
+          "malignant_recall_delta": null,
+          "error_rate_delta": null,
+          "candidate_cases": 1,
+          "stable_cases": 0
+        },
+        "superficial spreading melanoma->ack": {
+          "top1_delta": null,
+          "topk_delta": null,
+          "malignant_recall_delta": null,
+          "error_rate_delta": null,
+          "candidate_cases": 0,
+          "stable_cases": 1
+        },
+        "superficial spreading melanoma->bcc": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 1,
+          "stable_cases": 1
+        }
+      }
+    }
+  },
+  "run_config": {
+    "data_root": "/root/DermAgent/data",
+    "limit": 176,
+    "case_offset": 1608,
+    "data_split": "val",
+    "split_json": "/root/DermAgent/outputs/smoke_cycles/reuse_medium_signal_10h_20260328T173214Z/fixed_split.json",
+    "strict_frozen_eval": true,
+    "client_timeout": 180.0,
+    "client_max_retries": 3
+  },
+  "artifacts": {
+    "stable_output_dir": "/root/DermAgent/outputs/smoke_cycles/reuse_medium_signal_10h_20260328T173214Z/train_runs/reuse_medium_signal_10h_20260328T173214Z/stage3_policy_candidate_evaluation/evaluation/stable_run",
+    "candidate_output_dir": "/root/DermAgent/outputs/smoke_cycles/reuse_medium_signal_10h_20260328T173214Z/train_runs/reuse_medium_signal_10h_20260328T173214Z/stage3_policy_candidate_evaluation/evaluation/candidate_run"
+  },
+  "evaluation_record_path": "/root/DermAgent/outputs/smoke_cycles/reuse_medium_signal_10h_20260328T173214Z/train_runs/reuse_medium_signal_10h_20260328T173214Z/stage3_policy_candidate_evaluation/evaluation/policy_eval_candidate_stage4_step6_reuse_medium_signal_10h_20260328T173214Z_20260329T013725Z.json"
+}

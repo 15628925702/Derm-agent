@@ -1,0 +1,3337 @@
+{
+  "reasoning_summary": "Perception summary: A close-up view of skin showing a slightly raised, irregularly shaped lesion with a reddish hue. | Useful skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, temporal_evolution_skill, malignancy_risk_assessment_skill, differential_compare_skill, ack_scc_specialist_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill | Final answer: Actinic Keratosis | Uncertainty: medium | Risk flags: malignancy_risk:medium | Detected errors: final_diagnosis_mismatch_reference",
+  "useful_skills": [
+    "morphology_analysis_skill",
+    "color_pattern_analysis_skill",
+    "border_surface_analysis_skill",
+    "distribution_analysis_skill",
+    "lesion_description_structuring_skill",
+    "metadata_consistency_skill",
+    "temporal_evolution_skill",
+    "malignancy_risk_assessment_skill",
+    "differential_compare_skill",
+    "ack_scc_specialist_skill",
+    "information_gap_detection_skill",
+    "uncertainty_assessment_skill",
+    "contradiction_check_skill",
+    "escalation_recommendation_skill"
+  ],
+  "detected_errors": [
+    "final_diagnosis_mismatch_reference"
+  ],
+  "experience_type": "confusion_experience",
+  "write_experience": true,
+  "case_outcome": {
+    "status": "failure",
+    "has_ground_truth": true,
+    "is_correct": false,
+    "error_type": "final_diagnosis_mismatch_reference",
+    "predicted_label": "Actinic Keratosis",
+    "reference_label": "SEK",
+    "predicted_canonical_label": "ACK",
+    "reference_canonical_label": "SEK",
+    "confidence_level": "medium",
+    "uncertainty_level": "medium",
+    "malignant_flag": {
+      "ground_truth": false,
+      "predicted": true
+    },
+    "confusion_pair": "Actinic Keratosis->SEK",
+    "risk_flags": [
+      "malignancy_risk:medium"
+    ]
+  },
+  "skill_assessments": [
+    {
+      "skill_name": "morphology_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "failure",
+      "impact": "harmful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing",
+        "morphology_analysis_skill likely added little net value under the observed evidence state"
+      ],
+      "key_steps": [
+        "inspect dominant lesion silhouette",
+        "judge elevation and lesion count"
+      ],
+      "referenced_experiences": [],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.0,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [
+        "evidence_not_used",
+        "low_signal_on_failed_case",
+        "selection_tail_low_value"
+      ],
+      "applicable_scenarios": [
+        "morphology_analysis_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Actinic Keratosis->SEK"
+      ],
+      "failure_modes": [
+        "low_net_reasoning_value",
+        "active_confusion_unresolved",
+        "final_reasoning_failed",
+        "evidence_not_used",
+        "low_signal_on_failed_case",
+        "selection_tail_low_value"
+      ],
+      "reusable": false,
+      "reuse_reason": ""
+    },
+    {
+      "skill_name": "color_pattern_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "failure",
+      "impact": "harmful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing",
+        "color_pattern_analysis_skill likely added little net value under the observed evidence state"
+      ],
+      "key_steps": [
+        "inspect dominant color",
+        "compare internal color asymmetry"
+      ],
+      "referenced_experiences": [],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.0,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [
+        "evidence_not_used",
+        "low_signal_on_failed_case",
+        "selection_tail_low_value"
+      ],
+      "applicable_scenarios": [
+        "color_pattern_analysis_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Actinic Keratosis->SEK"
+      ],
+      "failure_modes": [
+        "low_net_reasoning_value",
+        "active_confusion_unresolved",
+        "final_reasoning_failed",
+        "evidence_not_used",
+        "low_signal_on_failed_case",
+        "selection_tail_low_value"
+      ],
+      "reusable": false,
+      "reuse_reason": ""
+    },
+    {
+      "skill_name": "border_surface_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "failure",
+      "impact": "harmful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing",
+        "border_surface_analysis_skill likely added little net value under the observed evidence state"
+      ],
+      "key_steps": [
+        "judge border definition",
+        "inspect surface change and scale"
+      ],
+      "referenced_experiences": [],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.0,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [
+        "evidence_not_used",
+        "low_signal_on_failed_case",
+        "selection_tail_low_value"
+      ],
+      "applicable_scenarios": [
+        "border_surface_analysis_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Actinic Keratosis->SEK"
+      ],
+      "failure_modes": [
+        "low_net_reasoning_value",
+        "active_confusion_unresolved",
+        "final_reasoning_failed",
+        "evidence_not_used",
+        "low_signal_on_failed_case",
+        "selection_tail_low_value"
+      ],
+      "reusable": false,
+      "reuse_reason": ""
+    },
+    {
+      "skill_name": "distribution_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "failure",
+      "impact": "harmful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing",
+        "distribution_analysis_skill likely added little net value under the observed evidence state"
+      ],
+      "key_steps": [
+        "identify likely anatomic site",
+        "judge extent and clustering"
+      ],
+      "referenced_experiences": [],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.0,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [
+        "evidence_not_used",
+        "low_signal_on_failed_case",
+        "selection_tail_low_value"
+      ],
+      "applicable_scenarios": [
+        "distribution_analysis_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Actinic Keratosis->SEK"
+      ],
+      "failure_modes": [
+        "low_net_reasoning_value",
+        "active_confusion_unresolved",
+        "final_reasoning_failed",
+        "evidence_not_used",
+        "low_signal_on_failed_case",
+        "selection_tail_low_value"
+      ],
+      "reusable": false,
+      "reuse_reason": ""
+    },
+    {
+      "skill_name": "lesion_description_structuring_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 1.25,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "lesion_description_structuring_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Actinic Keratosis->SEK"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "lesion_description_structuring_skill remains reusable for Actinic Keratosis->SEK style confusion"
+    },
+    {
+      "skill_name": "metadata_consistency_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "failure",
+      "impact": "harmful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing",
+        "metadata_consistency_skill likely added little net value under the observed evidence state"
+      ],
+      "key_steps": [
+        "compare visible cues against metadata",
+        "separate direct conflicts from soft concerns"
+      ],
+      "referenced_experiences": [],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": true,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.0,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [
+        "evidence_not_used",
+        "low_signal_on_failed_case",
+        "selection_tail_low_value"
+      ],
+      "applicable_scenarios": [
+        "metadata_consistency_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Actinic Keratosis->SEK"
+      ],
+      "failure_modes": [
+        "low_net_reasoning_value",
+        "active_confusion_unresolved",
+        "final_reasoning_failed",
+        "evidence_not_used",
+        "low_signal_on_failed_case",
+        "selection_tail_low_value"
+      ],
+      "reusable": false,
+      "reuse_reason": ""
+    },
+    {
+      "skill_name": "temporal_evolution_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [
+        "converted history into structured temporal evidence",
+        "made change over time inspectable"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "collect growth and symptom history",
+        "translate history into stability and tempo"
+      ],
+      "referenced_experiences": [],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 1.0,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "temporal_evolution_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Actinic Keratosis->SEK"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "temporal_evolution_skill remains reusable for Actinic Keratosis->SEK style confusion"
+    },
+    {
+      "skill_name": "malignancy_risk_assessment_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [
+        "made risk framing explicit",
+        "highlighted alarm signals without forcing diagnosis"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "collect alarm signals",
+        "balance concerning and reassuring evidence"
+      ],
+      "referenced_experiences": [],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "risk_signal",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 1.0,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "malignancy_risk_assessment_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Actinic Keratosis->SEK"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "malignancy_risk_assessment_skill remains reusable for Actinic Keratosis->SEK style confusion"
+    },
+    {
+      "skill_name": "differential_compare_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [
+        "kept the differential open",
+        "made pairwise reasoning explicit"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "select the most relevant candidate pair",
+        "preserve unresolved comparative evidence"
+      ],
+      "referenced_experiences": [],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "comparative_support",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 1.25,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "differential_compare_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Actinic Keratosis->SEK"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "differential_compare_skill remains reusable for Actinic Keratosis->SEK style confusion"
+    },
+    {
+      "skill_name": "ack_scc_specialist_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "failure",
+      "impact": "harmful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing",
+        "ack_scc_specialist_skill likely added little net value under the observed evidence state"
+      ],
+      "key_steps": [
+        "focus the confusion pair",
+        "contrast malignant versus keratotic clues"
+      ],
+      "referenced_experiences": [],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "comparative_support",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 0.0,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [
+        "evidence_not_used",
+        "excess_redundancy_low_usage",
+        "selection_tail_low_value"
+      ],
+      "applicable_scenarios": [
+        "ack_scc_specialist_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Actinic Keratosis->SEK"
+      ],
+      "failure_modes": [
+        "low_net_reasoning_value",
+        "active_confusion_unresolved",
+        "final_reasoning_failed",
+        "evidence_not_used",
+        "excess_redundancy_low_usage",
+        "selection_tail_low_value"
+      ],
+      "reusable": false,
+      "reuse_reason": ""
+    },
+    {
+      "skill_name": "information_gap_detection_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "uncertainty_signal",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 2.0,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "information_gap_detection_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Actinic Keratosis->SEK"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "information_gap_detection_skill remains reusable for Actinic Keratosis->SEK style confusion"
+    },
+    {
+      "skill_name": "uncertainty_assessment_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [
+        "made evidence limits explicit",
+        "prevented overconfident downstream use"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "scan ambiguity across evidence streams",
+        "name missing information explicitly"
+      ],
+      "referenced_experiences": [],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 1.0,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "uncertainty_assessment_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Actinic Keratosis->SEK"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "uncertainty_assessment_skill remains reusable for Actinic Keratosis->SEK style confusion"
+    },
+    {
+      "skill_name": "contradiction_check_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "failure",
+      "impact": "harmful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing",
+        "contradiction_check_skill likely added little net value under the observed evidence state"
+      ],
+      "key_steps": [
+        "scan for conflicts across evidence sources",
+        "surface missing links in the reasoning chain"
+      ],
+      "referenced_experiences": [],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": true,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.0,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [
+        "evidence_not_used",
+        "low_signal_on_failed_case",
+        "excess_redundancy_low_usage",
+        "selection_tail_low_value"
+      ],
+      "applicable_scenarios": [
+        "contradiction_check_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Actinic Keratosis->SEK"
+      ],
+      "failure_modes": [
+        "low_net_reasoning_value",
+        "active_confusion_unresolved",
+        "final_reasoning_failed",
+        "evidence_not_used",
+        "low_signal_on_failed_case",
+        "excess_redundancy_low_usage",
+        "selection_tail_low_value"
+      ],
+      "reusable": false,
+      "reuse_reason": ""
+    },
+    {
+      "skill_name": "escalation_recommendation_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "risk_signal",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 1.0,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "escalation_recommendation_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Actinic Keratosis->SEK"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "escalation_recommendation_skill remains reusable for Actinic Keratosis->SEK style confusion"
+    }
+  ],
+  "reflection_extract": {
+    "raw_case_memory_ready": true,
+    "tactical_experience_count": 14,
+    "abstract_experience_candidate_count": 2,
+    "reusable_tactical_count": 7,
+    "composite_skill_seed_count": 0,
+    "composite_skill_seed_ids": [],
+    "abstract_flags": {
+      "confusion_memory": true,
+      "prototype": false,
+      "rule": true,
+      "rule_candidate": false,
+      "composite_skill_seed": false
+    },
+    "case_status": "failure"
+  },
+  "writeback_bundle": {
+    "raw_case_memory": {
+      "case_id": "PAT_1184_678",
+      "image_paths": [
+        "/root/DermAgent/data/pad_ufes_20/images/imgs_part_3/PAT_1184_678_86.png"
+      ],
+      "metadata": {
+        "patient_id": "PAT_1184",
+        "lesion_id": "678",
+        "smoke": "",
+        "drink": "",
+        "background_father": "",
+        "background_mother": "",
+        "age": "59",
+        "pesticide": "",
+        "gender": "",
+        "skin_cancer_history": "",
+        "cancer_history": "",
+        "has_piped_water": "",
+        "has_sewage_system": "",
+        "fitspatrick": "",
+        "region": "FACE",
+        "diameter_1": "",
+        "diameter_2": "",
+        "diagnostic": "SEK",
+        "itch": "False",
+        "grew": "True",
+        "hurt": "False",
+        "changed": "False",
+        "bleed": "False",
+        "elevation": "True",
+        "img_id": "PAT_1184_678_86.png",
+        "biopsed": "False"
+      },
+      "true_label": "SEK",
+      "qwen_output": {
+        "final_diagnosis": "Actinic Keratosis",
+        "differential_diagnoses": [
+          "Seborrheic Keratosis",
+          "Basal Cell Carcinoma"
+        ],
+        "rationale": "The lesion is located on the face, which is a common site for actinic keratoses. It is slightly raised, irregularly shaped, and has a reddish hue, which are characteristic features of actinic keratoses. The presence of keratotic surface texture and scaling is also supportive of this diagnosis. However, the lesion's growth over time is a concerning symptom for malignancy, which is not specific to any particular condition. Further imaging or biopsy is recommended to confirm the nature of the lesion.",
+        "confidence": "Medium",
+        "follow_up_considerations": [
+          "Perform a biopsy to confirm the diagnosis and rule out other conditions.",
+          "Assess for any signs of ulceration or invasive-looking surface disruption.",
+          "Assess for any vascular hints or color changes that might suggest Basal Cell Carcinoma."
+        ]
+      },
+      "agent_output": {
+        "perception": {
+          "image_summary": "A close-up view of skin showing a slightly raised, irregularly shaped lesion with a reddish hue.",
+          "ddx_candidates": [
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "Basal cell carcinoma"
+          ],
+          "uncertainty": {
+            "level": "low",
+            "reasons": [
+              "Lesion is small and subtle, making it difficult to definitively rule out other conditions."
+            ]
+          },
+          "notes": [
+            "The lesion appears to be on the face, which is a common location for actinic keratoses.",
+            "The color and texture suggest a keratotic lesion rather than a vascular one."
+          ]
+        },
+        "skill_outputs": {
+          "morphology_analysis_skill": {
+            "lesion_type": "papule",
+            "size_range": "small",
+            "elevation": "raised",
+            "count": "solitary",
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "color_pattern_analysis_skill": {
+            "primary_color": "reddish",
+            "color_variation": "mild",
+            "pigmentation_pattern": "reticular",
+            "asymmetry_color": "absent",
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "border_surface_analysis_skill": {
+            "border_clarity": "poor",
+            "border_irregularity": "irregular",
+            "surface_texture": "keratotic",
+            "scaling_presence": "present",
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "distribution_analysis_skill": {
+            "body_location": "FACE",
+            "symmetry": "asymmetric",
+            "localized_vs_generalized": "localized",
+            "clustering_pattern": "solitary",
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "lesion_description_structuring_skill": {
+            "primary_lesion_morphology": "papule",
+            "color": [
+              "reddish"
+            ],
+            "border": [
+              "irregular"
+            ],
+            "surface": [
+              "keratotic"
+            ],
+            "size_count": [
+              "size: small, count: solitary"
+            ],
+            "distribution": [
+              "body_location: FACE, symmetry: asymmetric, localized_vs_generalized: localized, clustering_pattern: solitary"
+            ],
+            "associated_context": [
+              "age: 59, itch: False, grew: True, hurt: False, changed: False, bleed: False, elevation: True"
+            ],
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "metadata_consistency_skill": {
+            "consistency_score": "medium",
+            "conflicts": [],
+            "suspicious_points": [
+              "The lesion's elevation is noted in both the image summary and metadata, but the exact nature of the elevation (e.g., papular vs. nodular) is not specified in the metadata."
+            ],
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "temporal_evolution_skill": {
+            "onset_type": "unknown",
+            "progression_speed": "stable",
+            "recurrence": "uncertain",
+            "stability": "stable",
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "malignancy_risk_assessment_skill": {
+            "risk_level": "medium",
+            "risk_evidence": [
+              "{'type': 'morphology', 'description': 'The lesion is slightly raised and irregularly shaped, suggesting a papule.'}",
+              "{'type': 'color', 'description': 'The primary color is reddish with mild variation, indicating a keratotic lesion.'}",
+              "{'type': 'border', 'description': 'The border is irregular and unclear, with a keratotic surface texture and scaling presence.'}",
+              "{'type': 'symptoms', 'description': 'The lesion has grown over time, which is a concerning symptom for malignancy.'}"
+            ],
+            "alarm_signals": [
+              "Irregular border",
+              "Reddish hue",
+              "Growth over time"
+            ],
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "recommendation_type": "risk_signal"
+          },
+          "differential_compare_skill": {
+            "candidate_pairs": [
+              "Actinic keratosis vs Seborrheic keratosis",
+              "Actinic keratosis vs Basal cell carcinoma",
+              "Seborrheic keratosis vs Basal cell carcinoma"
+            ],
+            "supporting_evidence": [
+              {
+                "candidate_pair": "Actinic keratosis vs Seborrheic keratosis",
+                "evidence": "The lesion is on the face, which is a common location for actinic keratoses."
+              },
+              {
+                "candidate_pair": "Actinic keratosis vs Basal cell carcinoma",
+                "evidence": "The lesion is slightly raised and irregularly shaped, suggesting a papule, which is consistent with actinic keratosis but not typical for basal cell carcinoma."
+              },
+              {
+                "candidate_pair": "Seborrheic keratosis vs Basal cell carcinoma",
+                "evidence": "The lesion has a keratotic surface texture and scaling presence, which is more characteristic of seborrheic keratosis than basal cell carcinoma."
+              }
+            ],
+            "conflicting_evidence": [
+              {
+                "candidate_pair": "Actinic keratosis vs Seborrheic keratosis",
+                "evidence": "The lesion's reddish hue and mild color variation could also be seen in seborrheic keratosis."
+              },
+              {
+                "candidate_pair": "Actinic keratosis vs Basal cell carcinoma",
+                "evidence": "The lesion's growth over time is a concerning symptom for malignancy, which is not specific to actinic keratosis."
+              },
+              {
+                "candidate_pair": "Seborrheic keratosis vs Basal cell carcinoma",
+                "evidence": "The lesion's growth over time is a concerning symptom for malignancy, which is not specific to seborrheic keratosis."
+              }
+            ],
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "recommendation_type": "comparative_support"
+          },
+          "ack_scc_specialist_skill": {
+            "differentiation_features": [
+              "Keratotic surface texture",
+              "Scaling presence",
+              "Raised lesion"
+            ],
+            "supporting_evidence": [
+              "The lesion has a keratotic surface texture and scaling presence, which are more characteristic of ACK.",
+              "The lesion is slightly raised, which can be seen in ACK."
+            ],
+            "opposing_evidence": [
+              "The lesion does not show significant ulceration or invasive-looking surface disruption, which are more typical of SCC."
+            ],
+            "further_observation_suggestions": [
+              "Examine for any signs of ulceration or invasive-looking surface disruption.",
+              "Assess for any vascular hints or color changes that might suggest SCC."
+            ],
+            "referenced_confusion_patterns": [],
+            "critical_supporting_evidence": [
+              "Keratotic surface texture and scaling presence."
+            ],
+            "counterexample_watchouts": [
+              "Equating roughness or keratin alone with SCC."
+            ],
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "recommendation_type": "comparative_support"
+          },
+          "information_gap_detection_skill": {
+            "missing_information": [
+              "duration of the lesion",
+              "any家族 history of skin cancer"
+            ],
+            "why_it_matters": [
+              "Duration can help determine if the lesion is chronic or acute, which is important for differentiating between conditions. Family history of skin cancer can provide additional risk factors that might influence the differential diagnosis."
+            ],
+            "impact_on_differential": [
+              "Without knowing the duration, it's harder to assess whether the lesion is a chronic condition like actinic keratosis or a rapidly growing one like basal cell carcinoma. Family history can help identify individuals at higher risk for certain types of skin cancer, which can narrow down the differential."
+            ],
+            "uncertainty_if_missing": "high",
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "recommendation_type": "uncertainty_signal"
+          },
+          "uncertainty_assessment_skill": {
+            "uncertainty_level": "medium",
+            "reasons": [
+              "The lesion's morphology and color are suggestive of keratotic lesions, but the lack of clear asymmetry and the subtle nature of the lesion make it challenging to definitively rule out other conditions.",
+              "The patient's history includes growth over time, which is a concerning symptom for malignancy, but this is not specific to any particular condition."
+            ],
+            "missing_information": [
+              "More detailed clinical history, including symptoms like itching, pain, or bleeding, which could provide additional clues.",
+              "Further imaging or biopsy results to confirm the nature of the lesion."
+            ],
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "contradiction_check_skill": {
+            "contradictions": [],
+            "missing_links": [
+              "The lesion's exact size in millimeters is not provided.",
+              "The lesion's precise location on the face is not specified."
+            ],
+            "reasoning_gaps": [
+              "The lesion's growth rate over time is not quantified.",
+              "The lesion's response to external stimuli (like pressure) is not assessed."
+            ],
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "escalation_recommendation_skill": {
+            "whether_escalation_needed": "consider",
+            "escalation_reason": [
+              "The lesion exhibits characteristics suggestive of malignancy, including an irregular border and growth over time, which increases the need for further investigation."
+            ],
+            "suggested_next_check_type": "biopsy",
+            "caution_flags": [
+              "Need for further imaging",
+              "Family history of skin cancer"
+            ],
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "recommendation_type": "risk_signal"
+          }
+        },
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty": {
+          "uncertainty_level": "medium",
+          "reasons": [
+            "The lesion's morphology and color are suggestive of keratotic lesions, but the lack of clear asymmetry and the subtle nature of the lesion make it challenging to definitively rule out other conditions.",
+            "The patient's history includes growth over time, which is a concerning symptom for malignancy, but this is not specific to any particular condition."
+          ],
+          "missing_information": [
+            "More detailed clinical history, including symptoms like itching, pain, or bleeding, which could provide additional clues.",
+            "Further imaging or biopsy results to confirm the nature of the lesion."
+          ],
+          "referenced_experiences": [],
+          "evidence_strength": "medium",
+          "recommendation_type": "descriptive_evidence"
+        },
+        "retrieved_experience_refs": [],
+        "notes": [
+          "Agent generated structured evidence only.",
+          "Qwen remains the sole final diagnostic decision maker.",
+          "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, temporal_evolution_skill, malignancy_risk_assessment_skill, differential_compare_skill, ack_scc_specialist_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill.",
+          "Policy in use: candidate_stage4_step6_medium_signal_no_ablation_10h_v1__full_dermagent.",
+          "Skill retrieval candidates: metadata_consistency_skill, lesion_description_structuring_skill, distribution_analysis_skill, color_pattern_analysis_skill, malignancy_risk_assessment_skill, morphology_analysis_skill, uncertainty_assessment_skill, temporal_evolution_skill, contradiction_check_skill, border_surface_analysis_skill, ack_scc_specialist_skill, escalation_recommendation_skill, differential_compare_skill, information_gap_detection_skill.",
+          "Learned retrieval reranker applied (fallback-safe).",
+          "The lesion appears to be on the face, which is a common location for actinic keratoses.",
+          "The color and texture suggest a keratotic lesion rather than a vascular one."
+        ],
+        "skill_assessments": [
+          {
+            "skill_name": "morphology_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "failure",
+            "impact": "harmful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing",
+              "morphology_analysis_skill likely added little net value under the observed evidence state"
+            ],
+            "key_steps": [
+              "inspect dominant lesion silhouette",
+              "judge elevation and lesion count"
+            ],
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.0,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [
+              "evidence_not_used",
+              "low_signal_on_failed_case",
+              "selection_tail_low_value"
+            ],
+            "applicable_scenarios": [
+              "morphology_analysis_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Actinic Keratosis->SEK"
+            ],
+            "failure_modes": [
+              "low_net_reasoning_value",
+              "active_confusion_unresolved",
+              "final_reasoning_failed",
+              "evidence_not_used",
+              "low_signal_on_failed_case",
+              "selection_tail_low_value"
+            ],
+            "reusable": false,
+            "reuse_reason": ""
+          },
+          {
+            "skill_name": "color_pattern_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "failure",
+            "impact": "harmful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing",
+              "color_pattern_analysis_skill likely added little net value under the observed evidence state"
+            ],
+            "key_steps": [
+              "inspect dominant color",
+              "compare internal color asymmetry"
+            ],
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.0,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [
+              "evidence_not_used",
+              "low_signal_on_failed_case",
+              "selection_tail_low_value"
+            ],
+            "applicable_scenarios": [
+              "color_pattern_analysis_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Actinic Keratosis->SEK"
+            ],
+            "failure_modes": [
+              "low_net_reasoning_value",
+              "active_confusion_unresolved",
+              "final_reasoning_failed",
+              "evidence_not_used",
+              "low_signal_on_failed_case",
+              "selection_tail_low_value"
+            ],
+            "reusable": false,
+            "reuse_reason": ""
+          },
+          {
+            "skill_name": "border_surface_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "failure",
+            "impact": "harmful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing",
+              "border_surface_analysis_skill likely added little net value under the observed evidence state"
+            ],
+            "key_steps": [
+              "judge border definition",
+              "inspect surface change and scale"
+            ],
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.0,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [
+              "evidence_not_used",
+              "low_signal_on_failed_case",
+              "selection_tail_low_value"
+            ],
+            "applicable_scenarios": [
+              "border_surface_analysis_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Actinic Keratosis->SEK"
+            ],
+            "failure_modes": [
+              "low_net_reasoning_value",
+              "active_confusion_unresolved",
+              "final_reasoning_failed",
+              "evidence_not_used",
+              "low_signal_on_failed_case",
+              "selection_tail_low_value"
+            ],
+            "reusable": false,
+            "reuse_reason": ""
+          },
+          {
+            "skill_name": "distribution_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "failure",
+            "impact": "harmful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing",
+              "distribution_analysis_skill likely added little net value under the observed evidence state"
+            ],
+            "key_steps": [
+              "identify likely anatomic site",
+              "judge extent and clustering"
+            ],
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.0,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [
+              "evidence_not_used",
+              "low_signal_on_failed_case",
+              "selection_tail_low_value"
+            ],
+            "applicable_scenarios": [
+              "distribution_analysis_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Actinic Keratosis->SEK"
+            ],
+            "failure_modes": [
+              "low_net_reasoning_value",
+              "active_confusion_unresolved",
+              "final_reasoning_failed",
+              "evidence_not_used",
+              "low_signal_on_failed_case",
+              "selection_tail_low_value"
+            ],
+            "reusable": false,
+            "reuse_reason": ""
+          },
+          {
+            "skill_name": "lesion_description_structuring_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 1.25,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "lesion_description_structuring_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Actinic Keratosis->SEK"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "lesion_description_structuring_skill remains reusable for Actinic Keratosis->SEK style confusion"
+          },
+          {
+            "skill_name": "metadata_consistency_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "failure",
+            "impact": "harmful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing",
+              "metadata_consistency_skill likely added little net value under the observed evidence state"
+            ],
+            "key_steps": [
+              "compare visible cues against metadata",
+              "separate direct conflicts from soft concerns"
+            ],
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": true,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.0,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [
+              "evidence_not_used",
+              "low_signal_on_failed_case",
+              "selection_tail_low_value"
+            ],
+            "applicable_scenarios": [
+              "metadata_consistency_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Actinic Keratosis->SEK"
+            ],
+            "failure_modes": [
+              "low_net_reasoning_value",
+              "active_confusion_unresolved",
+              "final_reasoning_failed",
+              "evidence_not_used",
+              "low_signal_on_failed_case",
+              "selection_tail_low_value"
+            ],
+            "reusable": false,
+            "reuse_reason": ""
+          },
+          {
+            "skill_name": "temporal_evolution_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [
+              "converted history into structured temporal evidence",
+              "made change over time inspectable"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "collect growth and symptom history",
+              "translate history into stability and tempo"
+            ],
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 1.0,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "temporal_evolution_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Actinic Keratosis->SEK"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "temporal_evolution_skill remains reusable for Actinic Keratosis->SEK style confusion"
+          },
+          {
+            "skill_name": "malignancy_risk_assessment_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [
+              "made risk framing explicit",
+              "highlighted alarm signals without forcing diagnosis"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "collect alarm signals",
+              "balance concerning and reassuring evidence"
+            ],
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "risk_signal",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 1.0,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "malignancy_risk_assessment_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Actinic Keratosis->SEK"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "malignancy_risk_assessment_skill remains reusable for Actinic Keratosis->SEK style confusion"
+          },
+          {
+            "skill_name": "differential_compare_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [
+              "kept the differential open",
+              "made pairwise reasoning explicit"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "select the most relevant candidate pair",
+              "preserve unresolved comparative evidence"
+            ],
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "comparative_support",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 1.25,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "differential_compare_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Actinic Keratosis->SEK"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "differential_compare_skill remains reusable for Actinic Keratosis->SEK style confusion"
+          },
+          {
+            "skill_name": "ack_scc_specialist_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "failure",
+            "impact": "harmful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing",
+              "ack_scc_specialist_skill likely added little net value under the observed evidence state"
+            ],
+            "key_steps": [
+              "focus the confusion pair",
+              "contrast malignant versus keratotic clues"
+            ],
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "comparative_support",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 0.0,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [
+              "evidence_not_used",
+              "excess_redundancy_low_usage",
+              "selection_tail_low_value"
+            ],
+            "applicable_scenarios": [
+              "ack_scc_specialist_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Actinic Keratosis->SEK"
+            ],
+            "failure_modes": [
+              "low_net_reasoning_value",
+              "active_confusion_unresolved",
+              "final_reasoning_failed",
+              "evidence_not_used",
+              "excess_redundancy_low_usage",
+              "selection_tail_low_value"
+            ],
+            "reusable": false,
+            "reuse_reason": ""
+          },
+          {
+            "skill_name": "information_gap_detection_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "uncertainty_signal",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 2.0,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "information_gap_detection_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Actinic Keratosis->SEK"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "information_gap_detection_skill remains reusable for Actinic Keratosis->SEK style confusion"
+          },
+          {
+            "skill_name": "uncertainty_assessment_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [
+              "made evidence limits explicit",
+              "prevented overconfident downstream use"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "scan ambiguity across evidence streams",
+              "name missing information explicitly"
+            ],
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 1.0,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "uncertainty_assessment_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Actinic Keratosis->SEK"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "uncertainty_assessment_skill remains reusable for Actinic Keratosis->SEK style confusion"
+          },
+          {
+            "skill_name": "contradiction_check_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "failure",
+            "impact": "harmful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing",
+              "contradiction_check_skill likely added little net value under the observed evidence state"
+            ],
+            "key_steps": [
+              "scan for conflicts across evidence sources",
+              "surface missing links in the reasoning chain"
+            ],
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": true,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.0,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [
+              "evidence_not_used",
+              "low_signal_on_failed_case",
+              "excess_redundancy_low_usage",
+              "selection_tail_low_value"
+            ],
+            "applicable_scenarios": [
+              "contradiction_check_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Actinic Keratosis->SEK"
+            ],
+            "failure_modes": [
+              "low_net_reasoning_value",
+              "active_confusion_unresolved",
+              "final_reasoning_failed",
+              "evidence_not_used",
+              "low_signal_on_failed_case",
+              "excess_redundancy_low_usage",
+              "selection_tail_low_value"
+            ],
+            "reusable": false,
+            "reuse_reason": ""
+          },
+          {
+            "skill_name": "escalation_recommendation_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "risk_signal",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 1.0,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "escalation_recommendation_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Actinic Keratosis->SEK"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "escalation_recommendation_skill remains reusable for Actinic Keratosis->SEK style confusion"
+          }
+        ]
+      },
+      "final_decision": {
+        "label": "Actinic Keratosis",
+        "source": "qwen_final_diagnosis",
+        "canonical_label": "Actinic Keratosis"
+      },
+      "correctness": {
+        "has_ground_truth": true,
+        "is_correct": false,
+        "error_type": "final_diagnosis_mismatch_reference"
+      },
+      "malignant_flag": {
+        "ground_truth": false,
+        "predicted": true
+      }
+    },
+    "tactical_experiences": [
+      {
+        "exp_id": "tac_PAT_1184_678_6c3b3ffa107e",
+        "case_id": "PAT_1184_678",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Actinic Keratosis->SEK",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:More detailed clinical history, including symptoms like itching, pain, or bleeding, which could provide additional clues.",
+            "missing:Further imaging or biopsy results to confirm the nature of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "morphology_analysis_skill",
+          "skills_used": [
+            "morphology_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing",
+          "morphology_analysis_skill likely added little net value under the observed evidence state"
+        ],
+        "step_trace": [
+          "inspect dominant lesion silhouette",
+          "judge elevation and lesion count"
+        ],
+        "outcome": {
+          "result": "failure",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "morphology_analysis_skill",
+            "Actinic Keratosis->SEK",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:medium"
+          ],
+          "priority": "low"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_1184_678_bf1daef8d1ed",
+        "case_id": "PAT_1184_678",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Actinic Keratosis->SEK",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:More detailed clinical history, including symptoms like itching, pain, or bleeding, which could provide additional clues.",
+            "missing:Further imaging or biopsy results to confirm the nature of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "color_pattern_analysis_skill",
+          "skills_used": [
+            "color_pattern_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing",
+          "color_pattern_analysis_skill likely added little net value under the observed evidence state"
+        ],
+        "step_trace": [
+          "inspect dominant color",
+          "compare internal color asymmetry"
+        ],
+        "outcome": {
+          "result": "failure",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "color_pattern_analysis_skill",
+            "Actinic Keratosis->SEK",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:medium"
+          ],
+          "priority": "low"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_1184_678_e54520a93f61",
+        "case_id": "PAT_1184_678",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Actinic Keratosis->SEK",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:More detailed clinical history, including symptoms like itching, pain, or bleeding, which could provide additional clues.",
+            "missing:Further imaging or biopsy results to confirm the nature of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "border_surface_analysis_skill",
+          "skills_used": [
+            "border_surface_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing",
+          "border_surface_analysis_skill likely added little net value under the observed evidence state"
+        ],
+        "step_trace": [
+          "judge border definition",
+          "inspect surface change and scale"
+        ],
+        "outcome": {
+          "result": "failure",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "border_surface_analysis_skill",
+            "Actinic Keratosis->SEK",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:medium"
+          ],
+          "priority": "low"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_1184_678_be2fabee45d1",
+        "case_id": "PAT_1184_678",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Actinic Keratosis->SEK",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:More detailed clinical history, including symptoms like itching, pain, or bleeding, which could provide additional clues.",
+            "missing:Further imaging or biopsy results to confirm the nature of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "distribution_analysis_skill",
+          "skills_used": [
+            "distribution_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing",
+          "distribution_analysis_skill likely added little net value under the observed evidence state"
+        ],
+        "step_trace": [
+          "identify likely anatomic site",
+          "judge extent and clustering"
+        ],
+        "outcome": {
+          "result": "failure",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "distribution_analysis_skill",
+            "Actinic Keratosis->SEK",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:medium"
+          ],
+          "priority": "low"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_1184_678_8fa365c666e8",
+        "case_id": "PAT_1184_678",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Actinic Keratosis->SEK",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:More detailed clinical history, including symptoms like itching, pain, or bleeding, which could provide additional clues.",
+            "missing:Further imaging or biopsy results to confirm the nature of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "lesion_description_structuring_skill",
+          "skills_used": [
+            "lesion_description_structuring_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "lesion_description_structuring_skill",
+            "Actinic Keratosis->SEK",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_1184_678_0c2ece073fbd",
+        "case_id": "PAT_1184_678",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Actinic Keratosis->SEK",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:More detailed clinical history, including symptoms like itching, pain, or bleeding, which could provide additional clues.",
+            "missing:Further imaging or biopsy results to confirm the nature of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "metadata_consistency_skill",
+          "skills_used": [
+            "metadata_consistency_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing",
+          "metadata_consistency_skill likely added little net value under the observed evidence state"
+        ],
+        "step_trace": [
+          "compare visible cues against metadata",
+          "separate direct conflicts from soft concerns"
+        ],
+        "outcome": {
+          "result": "failure",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "metadata_consistency_skill",
+            "Actinic Keratosis->SEK",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:medium"
+          ],
+          "priority": "low"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_1184_678_34221a9b3938",
+        "case_id": "PAT_1184_678",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Actinic Keratosis->SEK",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:More detailed clinical history, including symptoms like itching, pain, or bleeding, which could provide additional clues.",
+            "missing:Further imaging or biopsy results to confirm the nature of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "temporal_evolution_skill",
+          "skills_used": [
+            "temporal_evolution_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "converted history into structured temporal evidence",
+          "made change over time inspectable",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "collect growth and symptom history",
+          "translate history into stability and tempo"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "temporal_evolution_skill",
+            "Actinic Keratosis->SEK",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_1184_678_47d9748366d2",
+        "case_id": "PAT_1184_678",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Actinic Keratosis->SEK",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:More detailed clinical history, including symptoms like itching, pain, or bleeding, which could provide additional clues.",
+            "missing:Further imaging or biopsy results to confirm the nature of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "malignancy_risk_assessment_skill",
+          "skills_used": [
+            "malignancy_risk_assessment_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made risk framing explicit",
+          "highlighted alarm signals without forcing diagnosis",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "collect alarm signals",
+          "balance concerning and reassuring evidence"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "malignancy_risk_assessment_skill",
+            "Actinic Keratosis->SEK",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_1184_678_bce72efcf1a2",
+        "case_id": "PAT_1184_678",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Actinic Keratosis->SEK",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:More detailed clinical history, including symptoms like itching, pain, or bleeding, which could provide additional clues.",
+            "missing:Further imaging or biopsy results to confirm the nature of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "differential_compare_skill",
+          "skills_used": [
+            "differential_compare_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "kept the differential open",
+          "made pairwise reasoning explicit",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "select the most relevant candidate pair",
+          "preserve unresolved comparative evidence"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "differential_compare_skill",
+            "Actinic Keratosis->SEK",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_1184_678_d9e321289e67",
+        "case_id": "PAT_1184_678",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Actinic Keratosis->SEK",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:More detailed clinical history, including symptoms like itching, pain, or bleeding, which could provide additional clues.",
+            "missing:Further imaging or biopsy results to confirm the nature of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "ack_scc_specialist_skill",
+          "skills_used": [
+            "ack_scc_specialist_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing",
+          "ack_scc_specialist_skill likely added little net value under the observed evidence state"
+        ],
+        "step_trace": [
+          "focus the confusion pair",
+          "contrast malignant versus keratotic clues"
+        ],
+        "outcome": {
+          "result": "failure",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "ack_scc_specialist_skill",
+            "Actinic Keratosis->SEK",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:medium"
+          ],
+          "priority": "low"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_1184_678_3195d993f5b8",
+        "case_id": "PAT_1184_678",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Actinic Keratosis->SEK",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:More detailed clinical history, including symptoms like itching, pain, or bleeding, which could provide additional clues.",
+            "missing:Further imaging or biopsy results to confirm the nature of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "information_gap_detection_skill",
+          "skills_used": [
+            "information_gap_detection_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "information_gap_detection_skill",
+            "Actinic Keratosis->SEK",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_1184_678_e21fa70f1cb7",
+        "case_id": "PAT_1184_678",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Actinic Keratosis->SEK",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:More detailed clinical history, including symptoms like itching, pain, or bleeding, which could provide additional clues.",
+            "missing:Further imaging or biopsy results to confirm the nature of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "uncertainty_assessment_skill",
+          "skills_used": [
+            "uncertainty_assessment_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made evidence limits explicit",
+          "prevented overconfident downstream use",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "scan ambiguity across evidence streams",
+          "name missing information explicitly"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "uncertainty_assessment_skill",
+            "Actinic Keratosis->SEK",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_1184_678_de8e70a05f15",
+        "case_id": "PAT_1184_678",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Actinic Keratosis->SEK",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:More detailed clinical history, including symptoms like itching, pain, or bleeding, which could provide additional clues.",
+            "missing:Further imaging or biopsy results to confirm the nature of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "contradiction_check_skill",
+          "skills_used": [
+            "contradiction_check_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing",
+          "contradiction_check_skill likely added little net value under the observed evidence state"
+        ],
+        "step_trace": [
+          "scan for conflicts across evidence sources",
+          "surface missing links in the reasoning chain"
+        ],
+        "outcome": {
+          "result": "failure",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "contradiction_check_skill",
+            "Actinic Keratosis->SEK",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:medium"
+          ],
+          "priority": "low"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_1184_678_3f9fb737051a",
+        "case_id": "PAT_1184_678",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Actinic Keratosis->SEK",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:More detailed clinical history, including symptoms like itching, pain, or bleeding, which could provide additional clues.",
+            "missing:Further imaging or biopsy results to confirm the nature of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "escalation_recommendation_skill",
+          "skills_used": [
+            "escalation_recommendation_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "escalation_recommendation_skill",
+            "Actinic Keratosis->SEK",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      }
+    ],
+    "abstract_experiences": [
+      {
+        "abs_id": "abs_confusion_38ddf9b09e7b",
+        "type": "confusion_memory",
+        "concept": "actinic_keratosis->sek",
+        "pattern_summary": {
+          "confusion_pair": "Actinic Keratosis->SEK",
+          "supporting_pattern": [
+            "A close-up view of skin showing a slightly raised, irregularly shaped lesion with a reddish hue.",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:medium"
+          ],
+          "failure_pattern": [
+            "final_diagnosis_mismatch_reference"
+          ]
+        },
+        "supporting_cases": [
+          "PAT_1184_678"
+        ],
+        "counter_cases": [],
+        "derived_rule": {
+          "rule_text": "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+          "action_hint": "compare_then_audit_uncertainty"
+        },
+        "version": "v1",
+        "seed_id": null,
+        "composite_skill_seed": {},
+        "provenance": {}
+      },
+      {
+        "abs_id": "abs_rule_97a155a28150",
+        "type": "rule",
+        "concept": "compare_then_audit_uncertainty",
+        "pattern_summary": {
+          "supporting_pattern": [
+            "A close-up view of skin showing a slightly raised, irregularly shaped lesion with a reddish hue.",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:medium"
+          ],
+          "failure_pattern": [
+            "final_diagnosis_mismatch_reference"
+          ]
+        },
+        "supporting_cases": [
+          "PAT_1184_678"
+        ],
+        "counter_cases": [],
+        "derived_rule": {
+          "rule_text": "When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Qwen integration.",
+          "action_hint": "compare_then_audit_uncertainty"
+        },
+        "version": "v1",
+        "seed_id": null,
+        "composite_skill_seed": {},
+        "provenance": {}
+      }
+    ],
+    "cognition_update": {
+      "total_cases_increment": 1,
+      "failed_cases_increment": 1,
+      "confusion_cases_increment": 1,
+      "hard_cases_increment": 0,
+      "confusion_pair": "Actinic Keratosis->SEK",
+      "preferred_skills": [
+        "lesion_description_structuring_skill",
+        "temporal_evolution_skill",
+        "malignancy_risk_assessment_skill",
+        "differential_compare_skill",
+        "information_gap_detection_skill",
+        "uncertainty_assessment_skill",
+        "escalation_recommendation_skill"
+      ]
+    },
+    "skill_stats_update": [
+      {
+        "skill_name": "morphology_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 1,
+        "failure_increment": 1,
+        "reusable_increment": 0,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 0,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "color_pattern_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 1,
+        "failure_increment": 1,
+        "reusable_increment": 0,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 0,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "border_surface_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 1,
+        "failure_increment": 1,
+        "reusable_increment": 0,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 0,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "distribution_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 1,
+        "failure_increment": 1,
+        "reusable_increment": 0,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 0,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "lesion_description_structuring_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "metadata_consistency_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 1,
+        "failure_increment": 1,
+        "reusable_increment": 0,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 1,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 0,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "temporal_evolution_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "malignancy_risk_assessment_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "differential_compare_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "ack_scc_specialist_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 1,
+        "failure_increment": 1,
+        "reusable_increment": 0,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 0,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 1,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "information_gap_detection_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "uncertainty_assessment_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "contradiction_check_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 1,
+        "failure_increment": 1,
+        "reusable_increment": 0,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 1,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 0,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 1,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "escalation_recommendation_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      }
+    ],
+    "reflection_extract": {
+      "raw_case_memory_ready": true,
+      "tactical_experience_count": 14,
+      "abstract_experience_candidate_count": 2,
+      "reusable_tactical_count": 7,
+      "composite_skill_seed_count": 0,
+      "composite_skill_seed_ids": [],
+      "abstract_flags": {
+        "confusion_memory": true,
+        "prototype": false,
+        "rule": true,
+        "rule_candidate": false,
+        "composite_skill_seed": false
+      },
+      "case_status": "failure"
+    }
+  },
+  "cognition_update": {
+    "total_cases_increment": 1,
+    "failed_cases_increment": 1,
+    "confusion_cases_increment": 1,
+    "hard_cases_increment": 0,
+    "confusion_pair": "Actinic Keratosis->SEK",
+    "preferred_skills": [
+      "lesion_description_structuring_skill",
+      "temporal_evolution_skill",
+      "malignancy_risk_assessment_skill",
+      "differential_compare_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "escalation_recommendation_skill"
+    ]
+  }
+}

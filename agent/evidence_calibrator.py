@@ -5,6 +5,8 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
+from agent.confusion_clusters import cluster_priority_bonus, preferred_abstract_section
+
 try:
     import torch
     from torch import nn
@@ -199,6 +201,11 @@ class EvidenceCalibrator:
         risk_flags = [str(item).strip() for item in calibration_input.get("risk_flags", []) if str(item).strip()]
         contradiction_count = _contradiction_count(contradiction_summary)
         uncertainty_level = str(uncertainty_summary.get("uncertainty_level", "unknown")).strip().lower() or "unknown"
+        confusion_clusters = [
+            str(item).strip()
+            for item in calibration_input.get("confusion_clusters", [])
+            if str(item).strip()
+        ]
 
         item_scores: list[CalibrationItemScore] = []
         selected_skills_by_section: dict[str, list[tuple[str, float]]] = {section: [] for section in SECTION_PRIORITY}
@@ -214,6 +221,7 @@ class EvidenceCalibrator:
                 uncertainty_level=uncertainty_level,
                 contradiction_count=contradiction_count,
                 risk_flags=risk_flags,
+                confusion_clusters=confusion_clusters,
             )
             learned = self._score_with_learned(
                 _build_skill_feature_map(
@@ -290,6 +298,7 @@ class EvidenceCalibrator:
             uncertainty_level=uncertainty_level,
             contradiction_count=contradiction_count,
             risk_flags=risk_flags,
+            confusion_clusters=confusion_clusters,
         )
         tactical_selected, tactical_item_scores = self._select_retrieval_records(
             records=tactical_records,
@@ -298,6 +307,7 @@ class EvidenceCalibrator:
             uncertainty_level=uncertainty_level,
             contradiction_count=contradiction_count,
             risk_flags=risk_flags,
+            confusion_clusters=confusion_clusters,
         )
         abstract_selected, abstract_item_scores = self._select_retrieval_records(
             records=abstract_records,
@@ -306,10 +316,22 @@ class EvidenceCalibrator:
             uncertainty_level=uncertainty_level,
             contradiction_count=contradiction_count,
             risk_flags=risk_flags,
+            confusion_clusters=confusion_clusters,
         )
         item_scores.extend(raw_item_scores)
         item_scores.extend(tactical_item_scores)
         item_scores.extend(abstract_item_scores)
+        comparison_abstract_ids: list[str] = []
+        risk_abstract_ids: list[str] = []
+        for item in abstract_selected:
+            source_id = str(item.get("source_id", "")).strip()
+            if not source_id:
+                continue
+            preferred_section = preferred_abstract_section(record=item, cluster_names=confusion_clusters)
+            if preferred_section == "comparison":
+                comparison_abstract_ids.append(source_id)
+            else:
+                risk_abstract_ids.append(source_id)
 
         section_plan = {
             "observation": {
@@ -321,10 +343,11 @@ class EvidenceCalibrator:
                 "skill_names": ordered_section_skills.get("comparison", []),
                 "merged_groups": _comparison_merged_groups(ordered_section_skills.get("comparison", [])),
                 "tactical_source_ids": [item.get("source_id") for item in tactical_selected if item.get("source_id")],
+                "abstract_source_ids": comparison_abstract_ids,
             },
             "risk": {
                 "skill_names": ordered_section_skills.get("risk", []),
-                "abstract_source_ids": [item.get("source_id") for item in abstract_selected if item.get("source_id")],
+                "abstract_source_ids": risk_abstract_ids,
             },
             "conflict_uncertainty": {
                 "skill_names": ordered_section_skills.get("conflict_uncertainty", []),
@@ -346,6 +369,7 @@ class EvidenceCalibrator:
                 "contradiction_count": contradiction_count,
                 "uncertainty_level": uncertainty_level,
                 "risk_flag_count": len(risk_flags),
+                "confusion_clusters": confusion_clusters,
             },
         )
 
@@ -358,6 +382,7 @@ class EvidenceCalibrator:
         uncertainty_level: str,
         contradiction_count: int,
         risk_flags: list[str],
+        confusion_clusters: list[str],
     ) -> tuple[list[dict[str, Any]], list[CalibrationItemScore]]:
         scored: list[tuple[dict[str, Any], float, float, float]] = []
         rows: list[CalibrationItemScore] = []
@@ -371,6 +396,7 @@ class EvidenceCalibrator:
                 uncertainty_level=uncertainty_level,
                 contradiction_count=contradiction_count,
                 risk_flags=risk_flags,
+                confusion_clusters=confusion_clusters,
             )
             learned = self._score_with_learned(
                 _build_retrieval_feature_map(
@@ -445,10 +471,25 @@ class EvidenceCalibrator:
     @staticmethod
     def _fallback_section_plan(calibration_input: dict[str, Any]) -> dict[str, Any]:
         skill_outputs = dict(calibration_input.get("skill_outputs", {}))
+        confusion_clusters = [
+            str(item).strip()
+            for item in calibration_input.get("confusion_clusters", [])
+            if str(item).strip()
+        ]
         section_map: dict[str, list[str]] = {section: [] for section in SECTION_PRIORITY}
         for skill_name in skill_outputs.keys():
             section = SKILL_SECTION_MAP.get(skill_name, "comparison")
             section_map.setdefault(section, []).append(skill_name)
+        comparison_abstract_ids: list[str] = []
+        risk_abstract_ids: list[str] = []
+        for item in calibration_input.get("retrieved_abstract_experiences_summary", [])[:3]:
+            source_id = item.get("source_id")
+            if not source_id:
+                continue
+            if preferred_abstract_section(record=item, cluster_names=confusion_clusters) == "comparison":
+                comparison_abstract_ids.append(source_id)
+            else:
+                risk_abstract_ids.append(source_id)
         return {
             "observation": {
                 "skill_names": section_map.get("observation", []),
@@ -467,14 +508,11 @@ class EvidenceCalibrator:
                     for item in calibration_input.get("retrieved_tactical_experiences_summary", [])[:2]
                     if item.get("source_id")
                 ],
+                "abstract_source_ids": comparison_abstract_ids,
             },
             "risk": {
                 "skill_names": section_map.get("risk", []),
-                "abstract_source_ids": [
-                    item.get("source_id")
-                    for item in calibration_input.get("retrieved_abstract_experiences_summary", [])[:2]
-                    if item.get("source_id")
-                ],
+                "abstract_source_ids": risk_abstract_ids,
             },
             "conflict_uncertainty": {
                 "skill_names": section_map.get("conflict_uncertainty", []),
@@ -506,6 +544,7 @@ def _score_skill_output(
     uncertainty_level: str,
     contradiction_count: int,
     risk_flags: list[str],
+    confusion_clusters: list[str],
 ) -> float:
     score = float(SKILL_BASE_WEIGHT.get(skill_name, 2.2))
     score += float(EVIDENCE_STRENGTH_WEIGHT.get(str(output.get("evidence_strength", "unknown")).strip().lower(), 0.0))
@@ -515,6 +554,9 @@ def _score_skill_output(
     score += min(1.2, 0.1 * _count_non_control_fields(output))
     if output.get("referenced_experiences"):
         score += 0.3
+    cluster_bonus = float(cluster_priority_bonus(confusion_clusters, skill_name))
+    if cluster_bonus > 0:
+        score += min(1.6, 0.7 * cluster_bonus)
     if uncertainty_level == "high" and skill_name in {
         "uncertainty_assessment_skill",
         "information_gap_detection_skill",
@@ -548,6 +590,7 @@ def _score_retrieval_record(
     uncertainty_level: str,
     contradiction_count: int,
     risk_flags: list[str],
+    confusion_clusters: list[str],
 ) -> float:
     layer_weight = {
         "raw_case_memory": 1.0,
@@ -573,6 +616,10 @@ def _score_retrieval_record(
         score += 0.5
     if record.get("confusion_pair"):
         score += 0.3
+    if source_layer == "abstract_experience":
+        preferred_section = preferred_abstract_section(record=record, cluster_names=confusion_clusters)
+        if preferred_section == "comparison":
+            score += 0.8
     return float(score)
 
 

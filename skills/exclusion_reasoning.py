@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from agent.confusion_clusters import cluster_pairs, cluster_related_keywords
 from agent.state import CaseState
 from skills.base import BaseSkill
 from skills.catalog import make_skill_object
@@ -59,15 +60,32 @@ class ExclusionReasoningSkill(BaseSkill):
         ],
     )
 
+    def select_related_abstract_experiences(
+        self,
+        state: CaseState,
+        abstract_experiences: list[dict[str, object]],
+    ) -> list[dict[str, object]]:
+        cluster_names = self.active_confusion_clusters(state)
+        return self.filter_related_abstract_experiences(
+            abstract_experiences,
+            confusion_pairs=cluster_pairs(cluster_names),
+            keywords=cluster_related_keywords(cluster_names),
+            allowed_types=("confusion_memory", "prototype", "rule"),
+            top_k=3,
+        )
+
     def build_prompt(self, state: CaseState) -> str:
+        cluster_payload = self.confusion_cluster_prompt_payload(state, max_items=2)
         return (
             f"{self.workflow_text()}\n"
             "You are executing the exclusion reasoning routine.\n"
             "When to use: use when the differential remains open and physician-style narrowing by exclusion would improve interpretability.\n"
             "What evidence to inspect: current ddx, structured observation outputs, pairwise comparisons, specialist comparisons, uncertainty, and missing evidence.\n"
             "Common pitfalls: introducing new diagnoses, treating missing evidence as hard contradiction, and naming a final winner.\n"
+            "Exclusion evidence must stay lesion-specific. Do not use age, body site, Fitzpatrick type, or generic risk background as exclusion_evidence unless directly tied to a visible lesion pattern.\n"
             "Hard-cluster requirement: if BCC is in active/related differential, explicitly state at least one exclusion_evidence item and one required_missing_evidence item for BCC.\n"
             "Hard-cluster requirement: if inflammatory descriptors are present with ACK candidate, separate inflammatory mimic clues from true actinic support.\n"
+            "Hard-cluster requirement: for ACK/BCC/SCC, ACK/SEK, or MEL/NEV confusion, explicitly keep negative evidence separate from still-missing evidence.\n"
             "Do NOT output a final diagnosis, final winner, or definitive disease class.\n"
             "Only exclude or weaken candidates that are already present in the current case reasoning state.\n"
             "Return JSON only with the following fields:\n"
@@ -75,6 +93,7 @@ class ExclusionReasoningSkill(BaseSkill):
             f"Initial perception: {self.perception_snapshot(state)}\n"
             f"Current skill outputs: {self.skill_outputs_snapshot(state, preferred_skills=('lesion_description_structuring_skill', 'differential_compare_skill', 'mel_nev_specialist_skill', 'ack_scc_specialist_skill', 'metadata_consistency_skill', 'uncertainty_assessment_skill'), max_skills=6)}\n"
             f"Metadata: {self.metadata_snapshot(state)}\n"
+            f"Active confusion cluster guidance: {cluster_payload}\n"
         )
 
     def normalize_field(self, field_name: str, value: Any) -> Any:

@@ -1,0 +1,108 @@
+{
+  "schema_version": "staged_training_pipeline_v1",
+  "stage_id": 2,
+  "stage_name": "retrieval_scorer_training",
+  "run_id": "medium_signal_no_ablation_10h_v1",
+  "status": "completed",
+  "started_at": "2026-03-27T19:04:10Z",
+  "finished_at": "2026-03-27T19:04:14Z",
+  "inputs": {
+    "records_root": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_10h_v1/train_runs/medium_signal_no_ablation_10h_v1/stage0_bootstrap_collect_data/records_snapshot",
+    "dataset_filter": "",
+    "split_json": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_10h_v1/fixed_split.json",
+    "epochs": 8,
+    "seed": 42
+  },
+  "outputs": {
+    "checkpoint_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_10h_v1/train_runs/medium_signal_no_ablation_10h_v1/stage2_retrieval_scorer_training/checkpoints/retrieval_reranker__candidate__medium_signal_no_ablation_10h_v1.pt",
+    "metrics_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_10h_v1/train_runs/medium_signal_no_ablation_10h_v1/stage2_retrieval_scorer_training/checkpoints/retrieval_reranker__candidate__medium_signal_no_ablation_10h_v1_metrics.json",
+    "version": "retrieval_reranker_v0.1.0+medium_signal_no_ablation_10h_v1",
+    "stdout_tail": "ise\": {\n        \"brier\": 0.0284,\n        \"mae\": 0.131072,\n        \"mse\": 0.0284,\n        \"binary_precision\": 0.969541,\n        \"binary_recall\": 0.990794,\n        \"binary_f1\": 0.980052,\n        \"avg_prob\": 0.74656,\n        \"positive_rate\": 0.968989\n      },\n      \"grouped\": {\n        \"top1_hit_rate\": 0.94958,\n        \"group_count\": 357\n      },\n      \"sample_count\": 2354\n    },\n    \"val\": {\n      \"pointwise\": {\n        \"brier\": 0.027906,\n        \"mae\": 0.12825,\n        \"mse\": 0.027906,\n        \"binary_precision\": 0.958549,\n        \"binary_recall\": 0.973684,\n        \"binary_f1\": 0.966057,\n        \"avg_prob\": 0.743822,\n        \"positive_rate\": 0.959596\n      },\n      \"grouped\": {\n        \"top1_hit_rate\": 0.966667,\n        \"group_count\": 30\n      },\n      \"sample_count\": 198\n    },\n    \"test\": {\n      \"pointwise\": {\n        \"brier\": 0.024919,\n        \"mae\": 0.126691,\n        \"mse\": 0.024919,\n        \"binary_precision\": 0.968354,\n        \"binary_recall\": 1.0,\n        \"binary_f1\": 0.983923,\n        \"avg_prob\": 0.761915,\n        \"positive_rate\": 0.968354\n      },\n      \"grouped\": {\n        \"top1_hit_rate\": 0.916667,\n        \"group_count\": 24\n      },\n      \"sample_count\": 158\n    }\n  }\n}\n"
+  },
+  "checkpoint": {
+    "component": "retrieval_reranker",
+    "version": "retrieval_reranker_v0.1.0+medium_signal_no_ablation_10h_v1",
+    "path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_10h_v1/train_runs/medium_signal_no_ablation_10h_v1/stage2_retrieval_scorer_training/checkpoints/retrieval_reranker__candidate__medium_signal_no_ablation_10h_v1.pt"
+  },
+  "command": [
+    "/root/miniconda3/bin/python",
+    "/root/DermAgent/scripts/train_retrieval_scorer.py",
+    "--records-root",
+    "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_10h_v1/train_runs/medium_signal_no_ablation_10h_v1/stage0_bootstrap_collect_data/records_snapshot",
+    "--output-dir",
+    "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_10h_v1/train_runs/medium_signal_no_ablation_10h_v1/stage2_retrieval_scorer_training/checkpoints",
+    "--epochs",
+    "8",
+    "--seed",
+    "42",
+    "--checkpoint-name",
+    "retrieval_reranker__candidate__medium_signal_no_ablation_10h_v1.pt",
+    "--split-json",
+    "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_10h_v1/fixed_split.json"
+  ],
+  "dry_run": false,
+  "metrics": {
+    "checkpoint_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_10h_v1/train_runs/medium_signal_no_ablation_10h_v1/stage2_retrieval_scorer_training/checkpoints/retrieval_reranker__candidate__medium_signal_no_ablation_10h_v1.pt",
+    "num_records": 119,
+    "num_samples": 2354,
+    "num_features": 168,
+    "object_types": [
+      "tactical_experience",
+      "abstract_experience",
+      "skill_candidate"
+    ],
+    "metrics": {
+      "train": {
+        "pointwise": {
+          "brier": 0.0284,
+          "mae": 0.131072,
+          "mse": 0.0284,
+          "binary_precision": 0.969541,
+          "binary_recall": 0.990794,
+          "binary_f1": 0.980052,
+          "avg_prob": 0.74656,
+          "positive_rate": 0.968989
+        },
+        "grouped": {
+          "top1_hit_rate": 0.94958,
+          "group_count": 357
+        },
+        "sample_count": 2354
+      },
+      "val": {
+        "pointwise": {
+          "brier": 0.027906,
+          "mae": 0.12825,
+          "mse": 0.027906,
+          "binary_precision": 0.958549,
+          "binary_recall": 0.973684,
+          "binary_f1": 0.966057,
+          "avg_prob": 0.743822,
+          "positive_rate": 0.959596
+        },
+        "grouped": {
+          "top1_hit_rate": 0.966667,
+          "group_count": 30
+        },
+        "sample_count": 198
+      },
+      "test": {
+        "pointwise": {
+          "brier": 0.024919,
+          "mae": 0.126691,
+          "mse": 0.024919,
+          "binary_precision": 0.968354,
+          "binary_recall": 1.0,
+          "binary_f1": 0.983923,
+          "avg_prob": 0.761915,
+          "positive_rate": 0.968354
+        },
+        "grouped": {
+          "top1_hit_rate": 0.916667,
+          "group_count": 24
+        },
+        "sample_count": 158
+      }
+    }
+  }
+}

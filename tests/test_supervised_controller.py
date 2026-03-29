@@ -16,6 +16,7 @@ from agent.supervised_controller import (
     LearnedControllerScorer,
     build_feature_vocab,
     flatten_training_example_features,
+    select_skills_with_policy_details,
     select_skills_with_policy,
     vectorize_feature_maps,
 )
@@ -98,11 +99,13 @@ def test_learned_controller_scorer_load_and_predict(tmp_path) -> None:
 
 def test_select_skills_with_policy_enforces_sparse_bounds() -> None:
     policy = ControllerSelectionPolicy(
-        threshold=0.5,
+        threshold=0.6,
         target_top_k=2,
         min_select=2,
         max_select=3,
         top_k_buffer=0,
+        relative_margin=0.15,
+        floor_score=0.05,
     )
     selected = select_skills_with_policy(
         ranked_skills=["skill_1", "skill_2", "skill_3", "skill_4"],
@@ -111,6 +114,27 @@ def test_select_skills_with_policy_enforces_sparse_bounds() -> None:
     )
 
     assert selected == ["skill_1", "skill_2"]
+
+
+def test_select_skills_with_policy_details_exposes_rejections() -> None:
+    policy = ControllerSelectionPolicy(
+        threshold=0.7,
+        target_top_k=2,
+        min_select=2,
+        max_select=3,
+        top_k_buffer=0,
+        relative_margin=0.08,
+        floor_score=0.05,
+    )
+    details = select_skills_with_policy_details(
+        ranked_skills=["skill_1", "skill_2", "skill_3", "skill_4"],
+        score_map={"skill_1": 0.92, "skill_2": 0.78, "skill_3": 0.69, "skill_4": 0.2},
+        policy=policy,
+    )
+
+    assert details["selected_skills"] == ["skill_1", "skill_2"]
+    assert "skill_3" in details["rejected_skills"]
+    assert details["desired_k"] == 2
 
 
 def test_planner_falls_back_when_learned_checkpoint_missing() -> None:

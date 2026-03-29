@@ -5,6 +5,7 @@ from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass, field
 from typing import Any
 
+from agent.confusion_clusters import cluster_priority_bonus, detect_confusion_clusters
 from cognition.cognition_state import CognitionState
 from skills.schema import SkillObject
 
@@ -53,6 +54,7 @@ SIGNAL_KEYWORD_MAP = {
     "location_or_size_metadata": ("location", "distribution", "site", "diameter", "metadata", "consistency"),
     "mel_nev_confusion": ("mel", "nev", "specialist", "compare", "confusion"),
     "ack_scc_confusion": ("ack", "scc", "specialist", "compare", "confusion"),
+    "ack_sek_confusion": ("ack", "seborrheic", "sek", "waxy", "stuck-on", "compare", "confusion"),
     "keratinocyte_bcc_confusion": ("bcc", "basal cell", "scc", "ack", "actinic", "seborrheic", "keratin"),
     "experience_compare_pattern": ("compare", "differential", "confusion", "specialist"),
     "experience_risk_pattern": ("risk", "alarm", "uncertainty"),
@@ -94,6 +96,9 @@ class SkillSelectionDecision:
     reasons: list[str] = field(default_factory=list)
     ordering_hint: int = 999
     matched_fields: list[str] = field(default_factory=list)
+    controller_probability: float | None = None
+    controller_selected: bool = False
+    controller_rejected: bool = False
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -106,6 +111,10 @@ class PlannerOutput:
     selection_reasons: dict[str, list[str]]
     ordering: list[str]
     decision_trace: list[dict[str, Any]]
+    rejected_skills: list[str] = field(default_factory=list)
+    rejected_reasons: dict[str, list[str]] = field(default_factory=dict)
+    selection_scores: dict[str, Any] = field(default_factory=dict)
+    controller_decision_info: dict[str, Any] = field(default_factory=dict)
     planner_type: str = "rule_based"
     planner_version: str = "v1"
     controller_family: str = "heuristic"
@@ -170,6 +179,14 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
                 )
             )
 
+        if learned_prediction is not None and str(policy.get("controller_family", "")).strip() == "learned_supervised":
+            self._apply_learned_controller_sparsification(
+                decisions=decisions,
+                learned_prediction=learned_prediction,
+                policy=policy,
+                signals=signals,
+            )
+
         selected = [decision for decision in decisions if decision.selected]
         force_top_k = int(policy.get("learned_controller_force_top_k", 0) or 0)
         if (
@@ -192,6 +209,33 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
         selected.sort(key=lambda item: (item.ordering_hint, -item.score, item.skill_name))
         ordering = [decision.skill_name for decision in selected]
         selection_reasons = {decision.skill_name: decision.reasons for decision in selected}
+        rejected = [decision for decision in decisions if not decision.selected]
+        rejected.sort(key=lambda item: (item.ordering_hint, -item.score, item.skill_name))
+        selection_scores = {
+            decision.skill_name: {
+                "rule_score": int(decision.score),
+                "controller_probability": (
+                    round(float(decision.controller_probability), 6)
+                    if decision.controller_probability is not None
+                    else None
+                ),
+                "selected": bool(decision.selected),
+                "controller_selected": bool(decision.controller_selected),
+                "controller_rejected": bool(decision.controller_rejected),
+            }
+            for decision in decisions
+        }
+        controller_decision_info = {
+            "controller_family": str(policy.get("controller_family", "heuristic")),
+            "controller_mode": str(policy.get("learned_controller_mode", "union")),
+            "threshold": float(policy.get("learned_controller_select_threshold", 0.4) or 0.4),
+            "target_top_k": int(policy.get("learned_controller_top_k", 0) or 0),
+            "force_top_k": int(policy.get("learned_controller_force_top_k", 0) or 0),
+        }
+        if learned_prediction is not None:
+            controller_decision_info["selection_info"] = learned_prediction.selection_info
+            controller_decision_info["controller_selected_skills"] = list(learned_prediction.selected_skills)
+            controller_decision_info["controller_rejected_skills"] = list(learned_prediction.rejected_skills)
 
         return PlannerOutput(
             available_skill_candidates=[skill.name for skill in planner_input.available_skills],
@@ -199,6 +243,10 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
             selection_reasons=selection_reasons,
             ordering=ordering,
             decision_trace=[decision.to_dict() for decision in sorted(decisions, key=lambda item: item.ordering_hint)],
+            rejected_skills=[decision.skill_name for decision in rejected],
+            rejected_reasons={decision.skill_name: decision.reasons for decision in rejected},
+            selection_scores=selection_scores,
+            controller_decision_info=controller_decision_info,
             planner_type=self.planner_type,
             planner_version=self.planner_version,
             controller_family=str(policy.get("controller_family", "heuristic")),
@@ -296,6 +344,18 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
             score -= int(policy.get("failure_rate_penalty", 2))
             reasons.append(f"Penalized by cognition skill failure_rate={failure_rate:.2f}.")
             matched_fields.append("cognition.skill_statistics.failure_rate")
+
+        active_clusters = [str(item) for item in signals.get("active_confusion_clusters", []) if str(item).strip()]
+        cluster_bonus = float(cluster_priority_bonus(active_clusters, skill.name))
+        if cluster_bonus > 0:
+            rounded_bonus = max(1, int(round(cluster_bonus)))
+            score += rounded_bonus
+            reasons.append(
+                "Boosted by active confusion cluster(s): "
+                + ", ".join(active_clusters)
+                + f" (bonus={rounded_bonus})."
+            )
+            matched_fields.append("confusion_cluster.priority")
 
         enabled_signals = {
             **{
@@ -418,6 +478,96 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
             reasons=dedupe_reasons(reasons),
             ordering_hint=ORDERING_HINTS.get(skill.name, 999),
             matched_fields=dedupe_reasons(matched_fields),
+            controller_probability=learned_probability,
+            controller_selected=learned_selected,
+        )
+
+    def _apply_learned_controller_sparsification(
+        self,
+        *,
+        decisions: list[SkillSelectionDecision],
+        learned_prediction: Any,
+        policy: dict[str, Any],
+        signals: dict[str, Any],
+    ) -> None:
+        mode = str(policy.get("learned_controller_mode", "union")).strip().lower()
+        if mode not in {"sparse_hybrid", "strict_topk"}:
+            return
+        learned_selected_set = {
+            str(skill_name).strip()
+            for skill_name in getattr(learned_prediction, "selected_skills", [])
+            if str(skill_name).strip()
+        }
+        for decision in decisions:
+            if not decision.selected:
+                continue
+            if decision.skill_name in FOUNDATIONAL_SKILLS:
+                continue
+            if "policy.force_select" in decision.matched_fields:
+                continue
+            if decision.skill_name in learned_selected_set:
+                decision.controller_selected = True
+                decision.reasons = dedupe_reasons(
+                    decision.reasons + ["Retained by learned controller sparse selection."]
+                )
+                decision.matched_fields = dedupe_reasons(
+                    decision.matched_fields + ["learned_controller.sparse_selection"]
+                )
+                continue
+            if mode == "sparse_hybrid" and self._allow_sparse_rule_bypass(
+                skill_name=decision.skill_name,
+                score=decision.score,
+                signals=signals,
+                policy=policy,
+            ):
+                decision.reasons = dedupe_reasons(
+                    decision.reasons + ["Retained by sparse hybrid safety guard despite controller rejection."]
+                )
+                decision.matched_fields = dedupe_reasons(
+                    decision.matched_fields + ["learned_controller.sparse_bypass"]
+                )
+                continue
+            decision.selected = False
+            decision.controller_rejected = True
+            decision.reasons = dedupe_reasons(
+                decision.reasons + ["Rejected by learned controller sparse pruning."]
+            )
+            decision.matched_fields = dedupe_reasons(
+                decision.matched_fields + ["learned_controller.sparse_prune"]
+            )
+
+    @staticmethod
+    def _allow_sparse_rule_bypass(
+        *,
+        skill_name: str,
+        score: int,
+        signals: dict[str, Any],
+        policy: dict[str, Any],
+    ) -> bool:
+        protected_floor = int(policy.get("learned_controller_protected_min_score", 7) or 7)
+        rule_floor = int(policy.get("learned_controller_sparse_rule_floor", 9) or 9)
+        if skill_name == "malignancy_risk_assessment_skill":
+            return signals["malignancy_possible"] and score >= protected_floor
+        if skill_name == "uncertainty_assessment_skill":
+            return signals["high_uncertainty"] and score >= protected_floor
+        if skill_name == "information_gap_detection_skill":
+            return signals["high_uncertainty"] and score >= protected_floor
+        if skill_name == "contradiction_check_skill":
+            return (signals["high_uncertainty"] or signals["multiple_ddx"]) and score >= protected_floor
+        if skill_name == "escalation_recommendation_skill":
+            return (signals["malignancy_possible"] or signals["high_uncertainty"]) and score >= max(protected_floor, 8)
+        if skill_name == "mel_nev_specialist_skill":
+            return signals["mel_nev_confusion"] and score >= protected_floor
+        if skill_name == "ack_scc_specialist_skill":
+            return (
+                signals["ack_scc_confusion"]
+                or signals.get("ack_sek_confusion", False)
+                or signals.get("keratinocyte_bcc_confusion", False)
+            ) and score >= protected_floor
+        return score >= rule_floor and (
+            signals["malignancy_possible"]
+            or signals["high_uncertainty"]
+            or signals["multiple_ddx"]
         )
 
     @staticmethod
@@ -429,9 +579,14 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
         if skill_name == "malignancy_risk_assessment_skill":
             return signals["malignancy_possible"] or score >= min_score
         if skill_name == "differential_compare_skill":
-            return signals["multiple_ddx"] or score >= min_score
+            return signals["multiple_ddx"] or bool(signals.get("active_confusion_clusters")) or score >= min_score
         if skill_name == "exclusion_reasoning_skill":
-            return signals["multiple_ddx"] or signals["high_uncertainty"] or score >= min_score
+            return (
+                signals["multiple_ddx"]
+                or signals["high_uncertainty"]
+                or bool(signals.get("active_confusion_clusters"))
+                or score >= min_score
+            )
         if skill_name == "information_gap_detection_skill":
             return signals["high_uncertainty"] or signals["experience_gap_pattern"] or signals["multiple_ddx"] or score >= min_score
         if skill_name == "mel_nev_specialist_skill":
@@ -439,6 +594,7 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
         if skill_name == "ack_scc_specialist_skill":
             return (
                 signals["ack_scc_confusion"]
+                or signals.get("ack_sek_confusion", False)
                 or signals.get("keratinocyte_bcc_confusion", False)
                 or (signals.get("known_confusion_match", False) and score >= max(2, min_score - 1))
             )
@@ -488,6 +644,13 @@ def _build_signal_profile(planner_input: PlannerInput) -> dict[str, Any]:
             or current_confusion_pair.lower() in known_confusion_text
         )
     )
+    active_confusion_clusters = detect_confusion_clusters(
+        ddx_candidates=ddx_candidates,
+        confusion_pair=current_confusion_pair,
+        known_confusion_text=known_confusion_text,
+        image_summary=str(perception.get("image_summary", "")),
+        notes=[str(item) for item in perception.get("notes", []) if str(item).strip()],
+    )
     keratinocyte_precursor_present = any(
         any(term in candidate for term in ("ack", "actinic keratos", "scc", "squamous", "seborrheic", "sek"))
         for candidate in ddx_candidates
@@ -527,6 +690,12 @@ def _build_signal_profile(planner_input: PlannerInput) -> dict[str, Any]:
             ("ack", "actinic keratosis", "actinic keratos"),
             ("scc", "squamous cell", "squamous"),
         ),
+        "ack_sek_confusion": has_confusion_pair(
+            ddx_candidates,
+            ("ack", "actinic keratosis", "actinic keratos"),
+            ("seborrheic keratosis", "sek"),
+        )
+        or "ack_sek" in active_confusion_clusters,
         "keratinocyte_bcc_confusion": keratinocyte_bcc_confusion,
         "experience_compare_pattern": any(
             pattern in retrieved_text for pattern in ("compare_then_audit_uncertainty", "confusion_memory", "differential")
@@ -544,6 +713,7 @@ def _build_signal_profile(planner_input: PlannerInput) -> dict[str, Any]:
             pattern in retrieved_text for pattern in ("escalat", "dermoscopy", "biopsy", "closer exam", "further check", "urgent")
         ),
         "known_confusion_match": known_confusion_match,
+        "active_confusion_clusters": active_confusion_clusters,
     }
 
 
@@ -624,6 +794,9 @@ def _normalize_planner_policy(policy: dict[str, Any] | None) -> dict[str, Any]:
         "learned_controller_select_threshold": 0.4,
         "learned_controller_top_k": 0,
         "learned_controller_force_top_k": 0,
+        "learned_controller_mode": "union",
+        "learned_controller_sparse_rule_floor": 9,
+        "learned_controller_protected_min_score": 7,
         "score_threshold_default": 4,
         "retrieval_score_cap": 3,
         "foundational_bonus": 6,

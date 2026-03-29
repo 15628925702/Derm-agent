@@ -398,6 +398,8 @@ def run_stage1_controller_training(args: argparse.Namespace, *, run_id: str, run
         str(PROJECT_ROOT / "scripts" / "train_controller.py"),
         "--output-dir",
         str(checkpoint_dir),
+        "--selection-profile",
+        "conservative_sparse",
         "--epochs",
         str(max(1, int(args.epochs))),
         "--checkpoint-name",

@@ -21,6 +21,7 @@ DEFAULT_RECORDS_ROOT = PROJECT_ROOT / "outputs"
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Export learnable-controller training examples from execution records.")
     parser.add_argument("--records-root", type=Path, default=DEFAULT_RECORDS_ROOT, help="Root directory containing case execution records.")
+    parser.add_argument("--records-jsonl", type=Path, default=None, help="Optional JSONL snapshot of execution records to export from directly.")
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR, help="Directory for exported controller training data.")
     parser.add_argument("--dataset", type=str, default=None, help="Optional dataset name filter.")
     return parser.parse_args()
@@ -30,7 +31,10 @@ def main() -> int:
     args = parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
-    execution_records = load_execution_records(args.records_root)
+    if args.records_jsonl:
+        execution_records = load_records_jsonl(args.records_jsonl)
+    else:
+        execution_records = load_execution_records(args.records_root)
     examples, summary = export_controller_training_data(execution_records, dataset_name=args.dataset)
     output_paths = save_controller_training_data(examples, summary, output_dir=args.output_dir)
 
@@ -40,6 +44,7 @@ def main() -> int:
                 "records_scanned": len(execution_records),
                 "example_count": len(examples),
                 "dataset_filter": args.dataset,
+                "records_jsonl": str(args.records_jsonl) if args.records_jsonl else "",
                 "examples_path": output_paths["examples_path"],
                 "summary_path": output_paths["summary_path"],
             },
@@ -48,6 +53,19 @@ def main() -> int:
         )
     )
     return 0
+
+
+def load_records_jsonl(path: Path) -> list[dict]:
+    rows: list[dict] = []
+    with path.open("r", encoding="utf-8") as handle:
+        for line in handle:
+            line = line.strip()
+            if not line:
+                continue
+            payload = json.loads(line)
+            if isinstance(payload, dict):
+                rows.append(payload)
+    return rows
 
 
 if __name__ == "__main__":

@@ -55,13 +55,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--weight-decay", type=float, default=1e-4)
     parser.add_argument("--hidden-dim", type=int, default=128)
     parser.add_argument("--dropout", type=float, default=0.1)
-    parser.add_argument("--threshold", type=float, default=0.5)
-    parser.add_argument("--top-k", type=int, default=5)
-    parser.add_argument("--min-select", type=int, default=4)
-    parser.add_argument("--max-select", type=int, default=8)
-    parser.add_argument("--top-k-buffer", type=int, default=1)
-    parser.add_argument("--harmful-negative-weight", type=float, default=2.0)
-    parser.add_argument("--weak-positive-weight", type=float, default=0.75)
+    parser.add_argument("--selection-profile", type=str, default="conservative_sparse", choices=("legacy", "conservative_sparse"))
+    parser.add_argument("--threshold", type=float, default=0.52)
+    parser.add_argument("--top-k", type=int, default=3)
+    parser.add_argument("--min-select", type=int, default=2)
+    parser.add_argument("--max-select", type=int, default=5)
+    parser.add_argument("--top-k-buffer", type=int, default=0)
+    parser.add_argument("--relative-margin", type=float, default=0.12)
+    parser.add_argument("--floor-score", type=float, default=0.05)
+    parser.add_argument("--harmful-negative-weight", type=float, default=3.0)
+    parser.add_argument("--negative-weight", type=float, default=1.15)
+    parser.add_argument("--weak-positive-weight", type=float, default=0.45)
+    parser.add_argument("--sparsity-weight", type=float, default=0.25)
+    parser.add_argument("--target-density-margin", type=float, default=0.04)
     parser.add_argument("--min-label-frequency", type=int, default=1)
     parser.add_argument("--checkpoint-name", type=str, default="")
     parser.add_argument(
@@ -75,6 +81,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+    args = apply_selection_profile(args)
     examples_path = resolve_examples_path(args.examples_path)
     examples = load_examples(examples_path, dataset_filter=args.dataset_filter.strip())
     if not examples:
@@ -161,7 +168,10 @@ def main() -> int:
                 harmful_mask=batch_harmful,
                 candidate_mask=batch_candidate,
                 harmful_negative_weight=float(args.harmful_negative_weight),
+                negative_weight=float(args.negative_weight),
                 weak_positive_weight=float(args.weak_positive_weight),
+                sparsity_weight=float(args.sparsity_weight),
+                target_density_margin=float(args.target_density_margin),
             )
             if not is_finite_tensor(loss):
                 raise RuntimeError(f"Non-finite loss detected at epoch={epoch}.")
@@ -271,6 +281,8 @@ def main() -> int:
             min_select=int(args.min_select),
             max_select=int(args.max_select),
             top_k_buffer=int(args.top_k_buffer),
+            relative_margin=float(args.relative_margin),
+            floor_score=float(args.floor_score),
         ).to_dict(),
         "label_source": args.label_source,
         "model_state_dict": {key: value.cpu() for key, value in model.state_dict().items()},
@@ -290,8 +302,14 @@ def main() -> int:
             "min_select": args.min_select,
             "max_select": args.max_select,
             "top_k_buffer": args.top_k_buffer,
+            "relative_margin": args.relative_margin,
+            "floor_score": args.floor_score,
+            "selection_profile": args.selection_profile,
             "harmful_negative_weight": args.harmful_negative_weight,
+            "negative_weight": args.negative_weight,
             "weak_positive_weight": args.weak_positive_weight,
+            "sparsity_weight": args.sparsity_weight,
+            "target_density_margin": args.target_density_margin,
         },
         "split_indices": split_indices,
         "case_ids": [str(example.get("case_id", "")) for example in examples],
@@ -315,12 +333,31 @@ def main() -> int:
         "num_labels": len(label_vocab),
         "num_features": len(feature_vocab),
         "label_source": args.label_source,
+        "selection_profile": args.selection_profile,
         "metrics": metrics,
     }
     report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
 
     print(json.dumps(report, ensure_ascii=False, indent=2))
     return 0
+
+
+def apply_selection_profile(args: argparse.Namespace) -> argparse.Namespace:
+    if str(args.selection_profile).strip() != "legacy":
+        return args
+    args.threshold = 0.5
+    args.top_k = 5
+    args.min_select = 4
+    args.max_select = 8
+    args.top_k_buffer = 1
+    args.relative_margin = 0.0
+    args.floor_score = 0.0
+    args.harmful_negative_weight = 2.0
+    args.negative_weight = 1.0
+    args.weak_positive_weight = 0.75
+    args.sparsity_weight = 0.0
+    args.target_density_margin = 0.1
+    return args
 
 
 def resolve_examples_path(path: Path) -> Path:
@@ -583,17 +620,28 @@ def compute_sparse_controller_loss(
     harmful_mask: torch.Tensor,
     candidate_mask: torch.Tensor,
     harmful_negative_weight: float,
+    negative_weight: float,
     weak_positive_weight: float,
+    sparsity_weight: float,
+    target_density_margin: float,
 ) -> torch.Tensor:
-    binary_targets = (target_scores > 0).float()
-    per_entry_loss = nn.functional.binary_cross_entropy_with_logits(logits, binary_targets, reduction="none")
+    soft_targets = torch.clamp(target_scores, min=0.0, max=1.0)
+    per_entry_loss = nn.functional.binary_cross_entropy_with_logits(logits, soft_targets, reduction="none")
     weights = torch.ones_like(per_entry_loss)
-    weights = torch.where((target_scores > 0) & (target_scores < 1.0), torch.full_like(weights, float(weak_positive_weight)), weights)
-    weights = torch.where(target_scores >= 1.0, torch.full_like(weights, 1.25), weights)
+    weights = torch.where(soft_targets <= 0.0, torch.full_like(weights, float(max(0.1, negative_weight))), weights)
+    weights = torch.where((soft_targets > 0.0) & (soft_targets < 0.5), torch.full_like(weights, float(weak_positive_weight)), weights)
+    weights = torch.where(soft_targets >= 0.5, torch.full_like(weights, 1.35), weights)
     weights = torch.where(harmful_mask > 0, torch.full_like(weights, float(harmful_negative_weight)), weights)
     masked_weights = weights * torch.clamp(candidate_mask, min=0.0, max=1.0)
     denom = torch.clamp(masked_weights.sum(), min=1.0)
-    return (per_entry_loss * masked_weights).sum() / denom
+    base_loss = (per_entry_loss * masked_weights).sum() / denom
+
+    probs = torch.sigmoid(logits) * torch.clamp(candidate_mask, min=0.0, max=1.0)
+    candidate_count = torch.clamp(candidate_mask.sum(dim=1), min=1.0)
+    target_density = ((soft_targets * candidate_mask).sum(dim=1) / candidate_count) + float(target_density_margin)
+    pred_density = probs.sum(dim=1) / candidate_count
+    sparsity_penalty = torch.relu(pred_density - target_density).mean() * float(max(0.0, sparsity_weight))
+    return base_loss + sparsity_penalty
 
 
 if __name__ == "__main__":

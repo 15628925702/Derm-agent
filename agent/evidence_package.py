@@ -24,6 +24,7 @@ class EvidencePackage:
     information_gap_summary: dict[str, Any] = field(default_factory=dict)
     escalation_summary: dict[str, Any] = field(default_factory=dict)
     planner_rationale: dict[str, Any] = field(default_factory=dict)
+    confusion_cluster_summary: dict[str, Any] = field(default_factory=dict)
     serialized_evidence_text: str = ""
     evidence_calibration_debug: dict[str, Any] = field(default_factory=dict)
 

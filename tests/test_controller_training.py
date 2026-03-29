@@ -156,8 +156,45 @@ def test_build_sparse_controller_targets_does_not_treat_all_selected_skills_as_p
     assert targets["primary_positive_skills"] == ["morphology_analysis_skill", "differential_compare_skill"]
     assert "uncertainty_assessment_skill" in targets["explicit_negative_skills"]
     assert targets["target_skill_scores"]["morphology_analysis_skill"] == 1.0
-    assert targets["target_skill_scores"]["differential_compare_skill"] >= 0.7
+    assert targets["target_skill_scores"]["differential_compare_skill"] >= 0.6
     assert targets["target_skill_scores"]["uncertainty_assessment_skill"] == 0.0
+    assert targets["target_k"] <= 4
+
+
+def test_build_sparse_controller_targets_keeps_target_k_conservative() -> None:
+    targets = build_sparse_controller_targets(
+        available_skill_candidates=[
+            "morphology_analysis_skill",
+            "color_pattern_analysis_skill",
+            "border_surface_analysis_skill",
+            "distribution_analysis_skill",
+            "malignancy_risk_assessment_skill",
+            "uncertainty_assessment_skill",
+            "contradiction_check_skill",
+        ],
+        selected_skills=[
+            "morphology_analysis_skill",
+            "color_pattern_analysis_skill",
+            "border_surface_analysis_skill",
+            "distribution_analysis_skill",
+            "malignancy_risk_assessment_skill",
+            "uncertainty_assessment_skill",
+        ],
+        helpful_skills=["morphology_analysis_skill", "malignancy_risk_assessment_skill"],
+        partially_helpful_skills=["uncertainty_assessment_skill", "contradiction_check_skill"],
+        harmful_skills=["distribution_analysis_skill"],
+        evaluation={
+            "correct": True,
+            "agent_vs_baseline_delta": {"correct_delta": 1, "malignant_recall_delta": 1},
+        },
+    )
+
+    assert targets["target_k"] <= 5
+    assert "distribution_analysis_skill" in targets["explicit_negative_skills"]
+    assert targets["primary_positive_skills"][:2] == [
+        "morphology_analysis_skill",
+        "malignancy_risk_assessment_skill",
+    ]
 
 
 def test_load_execution_records_prefers_richer_v2_record_for_same_case(tmp_path) -> None:

@@ -4,6 +4,7 @@ import json
 from dataclasses import asdict, dataclass, field
 from typing import Any
 
+from agent.confusion_clusters import cluster_match_bonus, detect_confusion_clusters
 from agent.state import CaseState
 from memory.experience_store import ExperienceStore
 from memory.experience_transform import (
@@ -20,6 +21,7 @@ class RetrievalQuery:
     metadata_patterns: list[str] = field(default_factory=list)
     risk_patterns: list[str] = field(default_factory=list)
     confusion_pair: str | None = None
+    confusion_clusters: list[str] = field(default_factory=list)
     uncertainty_level: str = "unknown"
     image_summary: str = ""
     top_k_raw: int = 2
@@ -62,6 +64,12 @@ class ExperienceRetriever:
         )
         resolved_confusion_pair = confusion_pair or self._detect_confusion_pair([item.lower() for item in resolved_ddx])
         resolved_morphology = morphology_clues or self._extract_morphology_clues(case_state=case_state, perception=query_perception)
+        resolved_confusion_clusters = detect_confusion_clusters(
+            ddx_candidates=[str(item).lower() for item in resolved_ddx],
+            confusion_pair=resolved_confusion_pair,
+            image_summary=str(query_perception.get("image_summary", "")),
+            notes=[str(item) for item in query_perception.get("notes", []) if str(item).strip()],
+        )
 
         return RetrievalQuery(
             ddx_candidates=dedupe_strings(resolved_ddx),
@@ -69,6 +77,7 @@ class ExperienceRetriever:
             metadata_patterns=dedupe_strings(self._extract_metadata_patterns(query_metadata)),
             risk_patterns=dedupe_strings(self._extract_risk_patterns(query_perception, query_metadata, query_risk_flags)),
             confusion_pair=resolved_confusion_pair,
+            confusion_clusters=resolved_confusion_clusters,
             uncertainty_level=str(
                 query_uncertainty.get("uncertainty_level", query_perception.get("uncertainty", {}).get("level", "unknown"))
             ).lower(),
@@ -236,6 +245,8 @@ class ExperienceRetriever:
                 score += 6
             elif query_pair and record_pair and _is_same_confusion_family(query_pair, record_pair):
                 score += 3
+        if query.confusion_clusters:
+            score += int(round(cluster_match_bonus(cluster_names=query.confusion_clusters, text=text, subtype="tactical_experience")))
 
         if condition.get("trigger_type") == "confusion_pair":
             score += 2
@@ -292,6 +303,8 @@ class ExperienceRetriever:
             score += 2
         elif record_type == "prototype":
             score += 1
+        if query.confusion_clusters:
+            score += int(round(cluster_match_bonus(cluster_names=query.confusion_clusters, text=text, subtype=record_type)))
         return score
 
     @staticmethod
@@ -326,6 +339,8 @@ class ExperienceRetriever:
             score += 1
         if query.confusion_pair and query.confusion_pair.lower() in text:
             score += 1
+        if query.confusion_clusters:
+            score += int(round(cluster_match_bonus(cluster_names=query.confusion_clusters, text=text, subtype="raw_case_memory")))
         return score
 
     @staticmethod

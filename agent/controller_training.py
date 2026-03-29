@@ -335,14 +335,15 @@ def build_sparse_controller_targets(
     evaluation: dict[str, Any],
 ) -> dict[str, Any]:
     available = [str(item).strip() for item in available_skill_candidates if str(item).strip()]
+    available_set = set(available)
     selected = [str(item).strip() for item in selected_skills if str(item).strip()]
-    helpful = [str(item).strip() for item in helpful_skills if str(item).strip() and str(item).strip() in set(available)]
+    helpful = [str(item).strip() for item in helpful_skills if str(item).strip() and str(item).strip() in available_set]
     partial = [
         str(item).strip()
         for item in partially_helpful_skills
-        if str(item).strip() and str(item).strip() in set(available)
+        if str(item).strip() and str(item).strip() in available_set
     ]
-    harmful = [str(item).strip() for item in harmful_skills if str(item).strip() and str(item).strip() in set(available)]
+    harmful = [str(item).strip() for item in harmful_skills if str(item).strip() and str(item).strip() in available_set]
 
     delta = dict(evaluation.get("agent_vs_baseline_delta", {}) or {})
     case_improved = any(float(delta.get(field, 0) or 0) > 0 for field in ("correct_delta", "topk_hit_delta", "malignant_recall_delta"))
@@ -355,41 +356,41 @@ def build_sparse_controller_targets(
     selected_neutral = [
         skill_name
         for skill_name in selected
-        if skill_name in set(available) and skill_name not in harmful_set and skill_name not in helpful_set and skill_name not in partial_set
+        if skill_name in available_set and skill_name not in harmful_set and skill_name not in helpful_set and skill_name not in partial_set
     ]
 
-    partial_primary_budget = 2 if (final_correct or case_improved) else 1
-    partial_weak_budget = 2 if case_not_worse else 1
+    partial_primary_budget = 1 if (final_correct or case_improved) else 0
+    partial_weak_budget = 1 if case_not_worse else 0
     partial_primary = partial[:partial_primary_budget]
     remaining_partial = [skill_name for skill_name in partial if skill_name not in set(partial_primary)]
     weak_positive = remaining_partial[:partial_weak_budget]
-    if not weak_positive and (final_correct or case_improved):
-        weak_positive = selected_neutral[:1]
 
     primary_positive = list(dict.fromkeys(helpful + partial_primary))
     if not primary_positive:
-        primary_positive = list(dict.fromkeys(partial[: min(2, len(partial))]))
-    if not primary_positive:
-        primary_positive = selected_neutral[: min(2, len(selected_neutral))]
+        primary_positive = list(dict.fromkeys(partial[:1]))
+    if not primary_positive and final_correct:
+        primary_positive = selected_neutral[:1]
     if not primary_positive and selected:
-        primary_positive = [skill_name for skill_name in selected[:1] if skill_name in set(available) and skill_name not in harmful_set]
+        primary_positive = [skill_name for skill_name in selected[:1] if skill_name in available_set and skill_name not in harmful_set]
 
     target_skill_scores: dict[str, float] = {skill_name: 0.0 for skill_name in available}
     for skill_name in helpful:
         target_skill_scores[skill_name] = 1.0
     for skill_name in partial_primary:
-        target_skill_scores[skill_name] = max(target_skill_scores.get(skill_name, 0.0), 0.7)
+        target_skill_scores[skill_name] = max(target_skill_scores.get(skill_name, 0.0), 0.6)
     for skill_name in weak_positive:
-        target_skill_scores[skill_name] = max(target_skill_scores.get(skill_name, 0.0), 0.35)
-    min_target_k = min(max(len(available), 1), 4)
-    max_target_k = min(max(len(available), 1), 8)
-    target_k = len(primary_positive) + (1 if weak_positive else 0)
+        target_skill_scores[skill_name] = max(target_skill_scores.get(skill_name, 0.0), 0.2)
+    min_target_k = 1 if len(available) <= 1 else 2
+    if float(delta.get("malignant_recall_delta", 0) or 0) > 0:
+        min_target_k = min(max(len(available), 1), max(min_target_k, 3))
+    max_target_k = min(max(len(available), 1), 5 if case_not_worse else 4)
+    target_k = len(primary_positive) + len(weak_positive)
     target_k = max(min_target_k, target_k)
     target_k = min(max_target_k, target_k)
     overflow_selected = [
         skill_name
         for skill_name in selected[target_k:]
-        if skill_name in set(available)
+        if skill_name in available_set
         and skill_name not in helpful_set
         and skill_name not in set(primary_positive)
         and skill_name not in set(weak_positive)

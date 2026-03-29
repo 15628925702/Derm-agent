@@ -6,6 +6,7 @@ from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass, field
 from typing import Any
 
+from agent.confusion_clusters import cluster_priority_bonus, detect_confusion_clusters
 from cognition.cognition_state import CognitionState
 from skills.schema import SkillObject
 
@@ -41,6 +42,7 @@ SIGNAL_KEYWORD_MAP = {
     "location_or_size_metadata": ("location", "distribution", "site", "diameter", "metadata", "consistency"),
     "mel_nev_confusion": ("mel", "nev", "specialist", "compare", "confusion"),
     "ack_scc_confusion": ("ack", "scc", "specialist", "compare", "confusion"),
+    "ack_sek_confusion": ("ack", "seborrheic", "sek", "waxy", "stuck-on", "compare", "confusion"),
     "keratinocyte_bcc_confusion": ("bcc", "basal cell", "scc", "ack", "actinic", "seborrheic", "keratin"),
     "contradiction_rich": ("contradiction", "conflict", "audit", "inconsisten"),
     "information_gap": ("missing", "gap", "underdetermined", "need more information"),
@@ -166,6 +168,17 @@ class RuleMetadataHybridSkillRetriever(BaseSkillRetriever):
             reasons.append(f"Penalized by cognition failure_rate={failure_rate:.2f}.")
             matched_fields.append("cognition.skill_statistics.failure_rate")
 
+        active_clusters = [str(item) for item in signal_profile.get("active_confusion_clusters", []) if str(item).strip()]
+        cluster_bonus = float(cluster_priority_bonus(active_clusters, skill.name))
+        if cluster_bonus > 0:
+            score += cluster_bonus
+            reasons.append(
+                "Boosted by active confusion cluster(s): "
+                + ", ".join(active_clusters)
+                + f" (bonus={cluster_bonus:.1f})."
+            )
+            matched_fields.append("confusion_cluster.priority")
+
         for signal_name, active in signal_profile.items():
             if not active:
                 continue
@@ -238,6 +251,13 @@ def _build_signal_profile(query: SkillRetrievalQuery) -> dict[str, Any]:
             or confusion_pair.lower() in known_confusion_text
         )
     )
+    active_confusion_clusters = detect_confusion_clusters(
+        ddx_candidates=ddx_candidates,
+        confusion_pair=confusion_pair,
+        known_confusion_text=known_confusion_text,
+        image_summary=image_summary,
+        notes=[str(item) for item in query.perception.get("notes", []) if str(item).strip()],
+    )
     keratinocyte_precursor_present = any(
         any(term in candidate for term in ("ack", "actinic keratos", "scc", "squamous", "seborrheic", "sek"))
         for candidate in ddx_candidates
@@ -290,11 +310,18 @@ def _build_signal_profile(query: SkillRetrievalQuery) -> dict[str, Any]:
             ("ack", "actinic keratosis", "actinic keratos"),
             ("scc", "squamous cell", "squamous"),
         ),
+        "ack_sek_confusion": has_confusion_pair(
+            ddx_candidates,
+            ("ack", "actinic keratosis", "actinic keratos"),
+            ("seborrheic keratosis", "sek"),
+        )
+        or "ack_sek" in active_confusion_clusters,
         "keratinocyte_bcc_confusion": keratinocyte_bcc_confusion,
         "contradiction_rich": contradiction_rich,
         "information_gap": information_gap,
         "escalation_needed": escalation_needed,
         "known_confusion_match": known_confusion_match,
+        "active_confusion_clusters": active_confusion_clusters,
     }
 
 
@@ -316,6 +343,7 @@ def _query_summary(query: SkillRetrievalQuery, signal_profile: dict[str, Any]) -
         "risk_patterns": risk_patterns,
         "uncertainty_level": signal_profile.get("uncertainty_level", "unknown"),
         "confusion_pair": signal_profile.get("confusion_pair"),
+        "confusion_clusters": list(signal_profile.get("active_confusion_clusters", [])),
     }
 
 
@@ -399,7 +427,12 @@ def _should_select_skill(skill_name: str, score: float, signal_profile: dict[str
     if skill_name == "differential_compare_skill":
         return bool(signal_profile["multiple_ddx"] or score >= 3.5)
     if skill_name == "exclusion_reasoning_skill":
-        return bool(signal_profile["multiple_ddx"] or signal_profile["information_gap"] or score >= 3.5)
+        return bool(
+            signal_profile["multiple_ddx"]
+            or signal_profile["information_gap"]
+            or signal_profile.get("active_confusion_clusters")
+            or score >= 3.5
+        )
     if skill_name == "information_gap_detection_skill":
         return bool(signal_profile["high_uncertainty"] or signal_profile["information_gap"] or score >= 3.5)
     if skill_name == "mel_nev_specialist_skill":
@@ -407,6 +440,7 @@ def _should_select_skill(skill_name: str, score: float, signal_profile: dict[str
     if skill_name == "ack_scc_specialist_skill":
         return bool(
             signal_profile["ack_scc_confusion"]
+            or signal_profile.get("ack_sek_confusion", False)
             or signal_profile.get("keratinocyte_bcc_confusion", False)
             or (signal_profile["known_confusion_match"] and score >= 2.5)
         )

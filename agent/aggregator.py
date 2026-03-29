@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from agent.confusion_clusters import cluster_guidance_snapshot, detect_confusion_clusters
 from agent.evidence_calibrator import build_default_evidence_calibrator
 from agent.state import CaseState
 
@@ -44,6 +45,7 @@ def build_evidence_bundle(state: CaseState) -> dict[str, Any]:
     information_gap_summary = _build_information_gap_summary(state)
     escalation_summary = _build_escalation_summary(state)
     planner_rationale = _build_planner_rationale(state)
+    confusion_cluster_summary = _build_confusion_cluster_summary(state)
     evidence_policy = _extract_evidence_policy(state)
     calibrator = build_default_evidence_calibrator(policy=evidence_policy)
     calibration = calibrator.calibrate(
@@ -60,6 +62,7 @@ def build_evidence_bundle(state: CaseState) -> dict[str, Any]:
             "escalation_summary": escalation_summary,
             "planner_rationale": planner_rationale,
             "skill_retrieval_scores": dict(state.skill_retrieval_bundle.get("retrieval_scores", {})),
+            "confusion_clusters": list(confusion_cluster_summary.get("active_clusters", [])),
             "policy": evidence_policy,
         }
     )
@@ -75,6 +78,7 @@ def build_evidence_bundle(state: CaseState) -> dict[str, Any]:
         information_gap_summary=information_gap_summary,
         escalation_summary=escalation_summary,
         planner_rationale=planner_rationale,
+        confusion_cluster_summary=confusion_cluster_summary,
         calibration=calibration.to_dict(),
     )
 
@@ -94,6 +98,7 @@ def build_evidence_bundle(state: CaseState) -> dict[str, Any]:
         "information_gap_summary": information_gap_summary,
         "escalation_summary": escalation_summary,
         "planner_rationale": planner_rationale,
+        "confusion_cluster_summary": confusion_cluster_summary,
         "serialized_evidence_text": serialized_evidence_text,
         "evidence_calibration_debug": calibration.to_dict() if evidence_policy.get("debug_output", True) else {},
     }
@@ -219,6 +224,21 @@ def _build_planner_rationale(state: CaseState) -> dict[str, Any]:
     }
 
 
+def _build_confusion_cluster_summary(state: CaseState) -> dict[str, Any]:
+    perception = state.perception or {}
+    retrieval_query = (state.retrieval_bundle or {}).get("query", {})
+    active_clusters = detect_confusion_clusters(
+        ddx_candidates=[str(item) for item in perception.get("ddx_candidates", []) if str(item).strip()],
+        confusion_pair=str(retrieval_query.get("confusion_pair", "")).strip() or None,
+        image_summary=str(perception.get("image_summary", "")),
+        notes=[str(item) for item in perception.get("notes", []) if str(item).strip()],
+    )
+    return {
+        "active_clusters": active_clusters,
+        "guidance": cluster_guidance_snapshot(active_clusters, max_items=2),
+    }
+
+
 def _serialize_evidence(
     *,
     initial_perception_summary: dict[str, Any],
@@ -232,6 +252,7 @@ def _serialize_evidence(
     information_gap_summary: dict[str, Any],
     escalation_summary: dict[str, Any],
     planner_rationale: dict[str, Any],
+    confusion_cluster_summary: dict[str, Any],
     calibration: dict[str, Any],
 ) -> str:
     section_plan = dict(calibration.get("section_plan", {}))
@@ -258,15 +279,28 @@ def _serialize_evidence(
                 retrieved_tactical_experiences_summary,
                 [str(item) for item in comparison_plan.get("tactical_source_ids", []) if str(item).strip()],
             ),
+            (
+                _select_retrieval_records_by_ids(
+                    retrieved_abstract_experiences_summary,
+                    [str(item) for item in comparison_plan.get("abstract_source_ids", []) if str(item).strip()],
+                )
+                if [str(item) for item in comparison_plan.get("abstract_source_ids", []) if str(item).strip()]
+                else []
+            ),
+            confusion_cluster_summary=confusion_cluster_summary,
             skill_order=[str(item) for item in comparison_plan.get("skill_names", []) if str(item).strip()],
             merged_groups=list(comparison_plan.get("merged_groups", [])),
         ),
         "risk": lambda: _serialize_risk_section(
             skill_outputs,
             risk_flags,
-            _select_retrieval_records_by_ids(
-                retrieved_abstract_experiences_summary,
-                [str(item) for item in risk_plan.get("abstract_source_ids", []) if str(item).strip()],
+            (
+                _select_retrieval_records_by_ids(
+                    retrieved_abstract_experiences_summary,
+                    [str(item) for item in risk_plan.get("abstract_source_ids", []) if str(item).strip()],
+                )
+                if [str(item) for item in risk_plan.get("abstract_source_ids", []) if str(item).strip()]
+                else []
             ),
             skill_order=[str(item) for item in risk_plan.get("skill_names", []) if str(item).strip()],
         ),
@@ -327,11 +361,21 @@ def _serialize_observation_section(
 def _serialize_comparison_section(
     skill_outputs: dict[str, dict[str, Any]],
     retrieved_tactical_experiences_summary: list[dict[str, Any]],
+    retrieved_comparison_abstract_experiences_summary: list[dict[str, Any]],
     *,
+    confusion_cluster_summary: dict[str, Any] | None = None,
     skill_order: list[str] | None = None,
     merged_groups: list[dict[str, Any]] | None = None,
 ) -> str:
     lines = ["[Exclusion And Comparison Evidence]"]
+    active_clusters = list((confusion_cluster_summary or {}).get("active_clusters", []))
+    if active_clusters:
+        lines.append(f"- Active confusion clusters: {', '.join(active_clusters)}")
+    for guidance in list((confusion_cluster_summary or {}).get("guidance", []))[:2]:
+        label = str(guidance.get("label", "")).strip()
+        watch_outs = [str(item).strip() for item in guidance.get("watch_outs", []) if str(item).strip()]
+        if label and watch_outs:
+            lines.append(f"- {label} watch-out: {'; '.join(watch_outs[:2])}")
     chosen_order = skill_order if skill_order else list(COMPARISON_SKILLS)
     lines.extend(
         _render_skill_entries(
@@ -346,6 +390,12 @@ def _serialize_comparison_section(
         details = "; ".join([description] + learning_points) if learning_points else str(description)
         if details.strip():
             lines.append(f"- Tactical experience {record.get('source_id')}: {details}")
+    for record in retrieved_comparison_abstract_experiences_summary:
+        description = record.get("perception_summary")
+        learning_points = record.get("learning_points", [])
+        details = "; ".join([description] + learning_points) if learning_points else str(description)
+        if details.strip():
+            lines.append(f"- Abstract comparison memory {record.get('source_id')}: {details}")
     return "\n".join(lines)
 
 

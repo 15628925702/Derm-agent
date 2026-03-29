@@ -5,6 +5,12 @@ import json
 import logging
 from typing import Any, Iterable
 
+from agent.confusion_clusters import (
+    cluster_guidance_snapshot,
+    cluster_pairs,
+    cluster_related_keywords,
+    detect_confusion_clusters,
+)
 from agent.state import CaseState
 from integrations.openai_client import DermOpenAIClient
 from skills.schema import SkillExecutionContext, SkillObject
@@ -176,6 +182,34 @@ class BaseSkill(ABC):
         abstract_experiences: list[dict[str, Any]],
     ) -> list[dict[str, Any]]:
         return []
+
+    def active_confusion_clusters(self, state: CaseState) -> list[str]:
+        perception = state.perception or {}
+        related_packets = []
+        if self._active_execution_context:
+            related_packets = list(self._active_execution_context.related_abstract_experiences)
+        related_text = " ".join(
+            str(packet.get("confusion_pair", "")).strip()
+            or str(packet.get("perception_summary", "")).strip()
+            for packet in related_packets
+        )
+        retrieval_query = (state.retrieval_bundle or {}).get("query", {})
+        return detect_confusion_clusters(
+            ddx_candidates=[str(item) for item in perception.get("ddx_candidates", []) if str(item).strip()],
+            confusion_pair=str(retrieval_query.get("confusion_pair", "")).strip() or None,
+            known_confusion_text=related_text,
+            image_summary=str(perception.get("image_summary", "")),
+            notes=[str(item) for item in perception.get("notes", []) if str(item).strip()],
+        )
+
+    def confusion_cluster_prompt_payload(self, state: CaseState, *, max_items: int = 2) -> dict[str, Any]:
+        cluster_names = self.active_confusion_clusters(state)
+        return {
+            "active_clusters": cluster_names,
+            "related_confusion_pairs": list(cluster_pairs(cluster_names)),
+            "related_keywords": list(cluster_related_keywords(cluster_names)),
+            "guidance": cluster_guidance_snapshot(cluster_names, max_items=max_items),
+        }
 
     def execution_context_text(self, execution_context: SkillExecutionContext) -> str:
         payload = {

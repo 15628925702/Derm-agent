@@ -1,0 +1,150 @@
+{
+  "proposal_id": "proposal_5d2d7f667040",
+  "source_seed_ids": [
+    "batch_seed_146da6853422"
+  ],
+  "trigger_pattern": {
+    "decision_pattern": "batch_success_sequence",
+    "case_outcome": "success"
+  },
+  "intended_scope": {
+    "use_case": "Bundle a repeated doctor-style skill sequence into a reviewable composite workflow proposal for planning and evidence organization.",
+    "applicable_when": [
+      "decision_pattern:batch_success_sequence",
+      "uncertainty:medium",
+      "risk:malignancy_risk:medium",
+      "ddx:Actinic keratosis|Seborrheic keratosis",
+      "uncertainty:high",
+      "ddx:Seborrheic Keratosis|Actinic Keratosis",
+      "risk:malignancy_risk:high"
+    ],
+    "do_not_use_when": [
+      "similar trigger pattern appears in known counter-cases",
+      "unresolved agent_failure_no_baseline pattern remains dominant"
+    ]
+  },
+  "proposed_workflow_text": "Use this composite workflow when the case matches `batch_success_sequence` and the planner needs a repeatable evidence-building path.\nStart by establishing the structured lesion description and morphology-driven observation layer before narrowing reasoning.\nThen run the comparison and risk-oriented skills in sequence so negative evidence, conflict signals, and uncertainty stay explicit.\nFinish by packaging the outputs into a coherent evidence bundle for Qwen, without letting the composite workflow make the final diagnosis.\nComponent sequence: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, temporal_evolution_skill, malignancy_risk_assessment_skill, differential_compare_skill, ack_scc_specialist_skill, exclusion_reasoning_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill.\nIntended scope markers: decision_pattern:batch_success_sequence, uncertainty:medium, risk:malignancy_risk:medium, ddx:Actinic keratosis|Seborrheic keratosis, uncertainty:high, ddx:Seborrheic Keratosis|Actinic Keratosis.",
+  "skill_sequence": [
+    "morphology_analysis_skill",
+    "color_pattern_analysis_skill",
+    "border_surface_analysis_skill",
+    "distribution_analysis_skill",
+    "lesion_description_structuring_skill",
+    "metadata_consistency_skill",
+    "temporal_evolution_skill",
+    "malignancy_risk_assessment_skill",
+    "differential_compare_skill",
+    "ack_scc_specialist_skill",
+    "exclusion_reasoning_skill",
+    "uncertainty_assessment_skill",
+    "contradiction_check_skill",
+    "escalation_recommendation_skill"
+  ],
+  "supporting_cases": [
+    "PAT_369_755",
+    "PAT_963_1820"
+  ],
+  "counter_cases": [
+    "PAT_106_159",
+    "PAT_241_367",
+    "PAT_265_406",
+    "PAT_302_651",
+    "PAT_42_58",
+    "PAT_430_848",
+    "PAT_46_881",
+    "PAT_479_919",
+    "PAT_53_1370",
+    "PAT_636_1204"
+  ],
+  "expected_benefit": {
+    "planner_benefit": [
+      "Reduce repeated planner work for known stable multi-skill sequences.",
+      "Make candidate skill selection more consistent under repeated trigger patterns."
+    ],
+    "cot_explainability_benefit": [
+      "Preserve a doctor-style ordered workflow instead of scattered skill outputs.",
+      "Keep negative evidence, uncertainty, and escalation framing visible in a single reusable path.",
+      "Backed by 2 repeated successful supporting cases."
+    ],
+    "evidence_bundle_benefit": [
+      "Improve evidence serialization consistency for final Qwen reasoning.",
+      "Create a more replayable and auditable intermediate evidence package.",
+      "Align with existing rule candidates distilled from repeated tactical condition->action traces."
+    ]
+  },
+  "risk_notes": [
+    "morphology_analysis_skill: review workflow_update because Skill is repeatedly present in difficult executions but the current reasoning workflow is not robust enough for the observed failure pattern..",
+    "color_pattern_analysis_skill: review workflow_update because Skill is repeatedly present in difficult executions but the current reasoning workflow is not robust enough for the observed failure pattern..",
+    "border_surface_analysis_skill: review workflow_update because Skill is repeatedly present in difficult executions but the current reasoning workflow is not robust enough for the observed failure pattern..",
+    "border_surface_analysis_skill: review trigger_update because Hard-case scenarios overlap with this skill's known application profile, but the skill was not selected..",
+    "distribution_analysis_skill: review workflow_update because Skill is repeatedly present in difficult executions but the current reasoning workflow is not robust enough for the observed failure pattern..",
+    "distribution_analysis_skill: review output_schema_update because The skill output does not appear expressive enough for difficult cases..",
+    "lesion_description_structuring_skill: review workflow_update because Skill is repeatedly present in difficult executions but the current reasoning workflow is not robust enough for the observed failure pattern..",
+    "metadata_consistency_skill: review workflow_update because Skill is repeatedly present in difficult executions but the current reasoning workflow is not robust enough for the observed failure pattern..",
+    "metadata_consistency_skill: review watchout_update because Hard cases show repeated contradiction-heavy evidence or unresolved conflicts that should be surfaced more explicitly as doctor-style watch-outs..",
+    "temporal_evolution_skill: review workflow_update because Skill is repeatedly present in difficult executions but the current reasoning workflow is not robust enough for the observed failure pattern..",
+    "temporal_evolution_skill: review output_schema_update because The skill output does not appear expressive enough for difficult cases..",
+    "malignancy_risk_assessment_skill: review workflow_update because Skill is repeatedly present in difficult executions but the current reasoning workflow is not robust enough for the observed failure pattern.."
+  ],
+  "review_status": "pending_review",
+  "review_checklist": [
+    "Confirm the trigger pattern is stable across supporting cases rather than overfit to one image style.",
+    "Review whether any component skill should stay independent instead of being fused into a composite workflow.",
+    "Check that counter-cases do not expose harmful shortcut behavior or hidden diagnostic leakage.",
+    "Ensure the proposal improves evidence organization and CoT explainability rather than replacing final diagnosis.",
+    "If approved, materialize as a new skill spec and registry entry manually; do not auto-enable."
+  ],
+  "proposal_artifacts": {
+    "suggested_skill_id": "skill.morphology_analysis_escalation_recommendation_composite.proposal.v1",
+    "suggested_skill_name": "morphology_analysis_skill_escalation_recommendation_skill_composite_skill",
+    "target_proposal_dir": "/root/DermAgent/proposals/composite_skills/morphology_analysis_skill_escalation_recommendation_skill_composite_skill.json",
+    "future_skill_type": "composite_workflow_skill",
+    "manual_integration_targets": {
+      "design_skill_spec_path": "/root/DermAgent/design/skill_specs/composite/morphology_analysis_skill_escalation_recommendation_skill_composite_skill.md",
+      "python_skill_path": "/root/DermAgent/skills/morphology_analysis_escalation_recommendation_composite.py",
+      "registry_update_required": true
+    }
+  },
+  "evidence_refs": {
+    "batch_critique_sections": [
+      "success_clusters",
+      "composite_skill_seed_candidates",
+      "rule_candidates",
+      "refinement_inputs.success_patterns_for_policy_reuse"
+    ],
+    "batch_id": "batch_f9a0551d415e",
+    "abstract_experience_ids": [],
+    "refinement_candidate_ids": [
+      "src_4a7d17e140e2",
+      "src_8ccd783ce1f5",
+      "src_b7a42003edf3",
+      "src_776f5b940dc3",
+      "src_a7642d24a503",
+      "src_3727c4699c6e",
+      "src_56428f30a82b",
+      "src_3720ee5d010d",
+      "src_46a797ce431c",
+      "src_55b6d5dbe1f3",
+      "src_ddf6aecbba45",
+      "src_d068c543ea8c",
+      "src_632154d67716",
+      "src_b9b7ce988bcf",
+      "src_9cd5e666aa1f",
+      "src_a31e5850add9",
+      "src_607ee5b4abb8",
+      "src_dd39436b1923",
+      "src_fd3d02150e94",
+      "src_e736b890e487",
+      "src_0519e1ee6218",
+      "src_043fcec78c03",
+      "src_ccc96ec417ff",
+      "src_23ddcf0f92ec",
+      "src_424c54961f1c",
+      "src_d4bfec20b6fa",
+      "src_1b0ea8f5dd84",
+      "src_01a8121b9285",
+      "src_02cb68caabe6"
+    ]
+  },
+  "created_at": "2026-03-27T19:04:07Z"
+}

@@ -1,0 +1,3597 @@
+{
+  "reasoning_summary": "Perception summary: A raised, irregularly shaped lesion with a central depression and surrounding erythema on the back. | Useful skills: morphology_analysis_skill, color_pattern_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, temporal_evolution_skill, malignancy_risk_assessment_skill, differential_compare_skill, ack_scc_specialist_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill | Final answer: Squamous cell carcinoma | Uncertainty: high | Risk flags: malignancy_risk:high | Detected errors: final_diagnosis_mismatch_reference",
+  "useful_skills": [
+    "morphology_analysis_skill",
+    "color_pattern_analysis_skill",
+    "distribution_analysis_skill",
+    "lesion_description_structuring_skill",
+    "metadata_consistency_skill",
+    "temporal_evolution_skill",
+    "malignancy_risk_assessment_skill",
+    "differential_compare_skill",
+    "ack_scc_specialist_skill",
+    "exclusion_reasoning_skill",
+    "information_gap_detection_skill",
+    "uncertainty_assessment_skill",
+    "contradiction_check_skill",
+    "escalation_recommendation_skill"
+  ],
+  "detected_errors": [
+    "final_diagnosis_mismatch_reference"
+  ],
+  "experience_type": "confusion_experience",
+  "write_experience": true,
+  "case_outcome": {
+    "status": "failure",
+    "has_ground_truth": true,
+    "is_correct": false,
+    "error_type": "final_diagnosis_mismatch_reference",
+    "predicted_label": "Squamous cell carcinoma",
+    "reference_label": "BCC",
+    "predicted_canonical_label": "SCC",
+    "reference_canonical_label": "BCC",
+    "confidence_level": "high",
+    "uncertainty_level": "high",
+    "malignant_flag": {
+      "ground_truth": true,
+      "predicted": true
+    },
+    "confusion_pair": "Squamous cell carcinoma->BCC",
+    "risk_flags": [
+      "malignancy_risk:high"
+    ]
+  },
+  "skill_assessments": [
+    {
+      "skill_name": "morphology_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:high"
+        ],
+        "uncertainty_level": "high",
+        "region": "BACK"
+      },
+      "helped_aspects": [
+        "stabilized lesion structure",
+        "made morphology explicit for downstream reasoning"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "inspect dominant lesion silhouette",
+        "judge elevation and lesion count"
+      ],
+      "referenced_experiences": [
+        "tac_PAT_1516_1765_34c7ae80a73a"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "morphology_analysis_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:high",
+        "region:back",
+        "uncertainty:high",
+        "confusion:Squamous cell carcinoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "morphology_analysis_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+    },
+    {
+      "skill_name": "color_pattern_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:high"
+        ],
+        "uncertainty_level": "high",
+        "region": "BACK"
+      },
+      "helped_aspects": [
+        "made pigment variation explicit",
+        "surfaced color asymmetry as auditable evidence"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "inspect dominant color",
+        "compare internal color asymmetry"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "color_pattern_analysis_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:high",
+        "region:back",
+        "uncertainty:high",
+        "confusion:Squamous cell carcinoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "color_pattern_analysis_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+    },
+    {
+      "skill_name": "distribution_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:high"
+        ],
+        "uncertainty_level": "high",
+        "region": "BACK"
+      },
+      "helped_aspects": [
+        "made location and extent assumptions explicit",
+        "captured distribution context for later comparison"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "identify likely anatomic site",
+        "judge extent and clustering"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "distribution_analysis_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:high",
+        "region:back",
+        "uncertainty:high",
+        "confusion:Squamous cell carcinoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "distribution_analysis_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+    },
+    {
+      "skill_name": "lesion_description_structuring_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:high"
+        ],
+        "uncertainty_level": "high",
+        "region": "BACK"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 1.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "lesion_description_structuring_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:high",
+        "region:back",
+        "uncertainty:high",
+        "confusion:Squamous cell carcinoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "lesion_description_structuring_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+    },
+    {
+      "skill_name": "metadata_consistency_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:high"
+        ],
+        "uncertainty_level": "high",
+        "region": "BACK"
+      },
+      "helped_aspects": [
+        "checked image-metadata coherence",
+        "flagged reliability issues before integration"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "compare visible cues against metadata",
+        "separate direct conflicts from soft concerns"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": true,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "metadata_consistency_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:high",
+        "region:back",
+        "uncertainty:high",
+        "confusion:Squamous cell carcinoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "metadata_consistency_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+    },
+    {
+      "skill_name": "temporal_evolution_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:high"
+        ],
+        "uncertainty_level": "high",
+        "region": "BACK"
+      },
+      "helped_aspects": [
+        "converted history into structured temporal evidence",
+        "made change over time inspectable"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "collect growth and symptom history",
+        "translate history into stability and tempo"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 1.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "temporal_evolution_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:high",
+        "region:back",
+        "uncertainty:high",
+        "confusion:Squamous cell carcinoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "temporal_evolution_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+    },
+    {
+      "skill_name": "malignancy_risk_assessment_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:high"
+        ],
+        "uncertainty_level": "high",
+        "region": "BACK"
+      },
+      "helped_aspects": [
+        "made risk framing explicit",
+        "highlighted alarm signals without forcing diagnosis"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "collect alarm signals",
+        "balance concerning and reassuring evidence"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a"
+      ],
+      "evidence_strength": "high",
+      "evidence_strength_score": 1.0,
+      "recommendation_type": "risk_signal",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 2.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_high",
+        "evidence_used_in_bundle",
+        "malignant_support_relevant"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "malignancy_risk_assessment_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:high",
+        "region:back",
+        "uncertainty:high",
+        "confusion:Squamous cell carcinoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "malignancy_risk_assessment_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+    },
+    {
+      "skill_name": "differential_compare_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:high"
+        ],
+        "uncertainty_level": "high",
+        "region": "BACK"
+      },
+      "helped_aspects": [
+        "kept the differential open",
+        "made pairwise reasoning explicit"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "select the most relevant candidate pair",
+        "preserve unresolved comparative evidence"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "comparative_support",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 2.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported",
+        "malignant_support_relevant"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "differential_compare_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:high",
+        "region:back",
+        "uncertainty:high",
+        "confusion:Squamous cell carcinoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "differential_compare_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+    },
+    {
+      "skill_name": "ack_scc_specialist_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:high"
+        ],
+        "uncertainty_level": "high",
+        "region": "BACK"
+      },
+      "helped_aspects": [
+        "focused a high-value confusion pair",
+        "sharpened specialist keratinization clues"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "focus the confusion pair",
+        "contrast malignant versus keratotic clues"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "comparative_support",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 1.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "malignant_support_relevant"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "ack_scc_specialist_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:high",
+        "region:back",
+        "uncertainty:high",
+        "confusion:Squamous cell carcinoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "ack_scc_specialist_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+    },
+    {
+      "skill_name": "exclusion_reasoning_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:high"
+        ],
+        "uncertainty_level": "high",
+        "region": "BACK"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 1.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "exclusion_reasoning_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:high",
+        "region:back",
+        "uncertainty:high",
+        "confusion:Squamous cell carcinoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "exclusion_reasoning_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+    },
+    {
+      "skill_name": "information_gap_detection_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:high"
+        ],
+        "uncertainty_level": "high",
+        "region": "BACK"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 2.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported",
+        "malignant_support_relevant"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "information_gap_detection_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:high",
+        "region:back",
+        "uncertainty:high",
+        "confusion:Squamous cell carcinoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "information_gap_detection_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+    },
+    {
+      "skill_name": "uncertainty_assessment_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:high"
+        ],
+        "uncertainty_level": "high",
+        "region": "BACK"
+      },
+      "helped_aspects": [
+        "made evidence limits explicit",
+        "prevented overconfident downstream use"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "scan ambiguity across evidence streams",
+        "name missing information explicitly"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "uncertainty_signal",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 3.0,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported",
+        "malignant_support_relevant"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "uncertainty_assessment_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:high",
+        "region:back",
+        "uncertainty:high",
+        "confusion:Squamous cell carcinoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "uncertainty_assessment_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+    },
+    {
+      "skill_name": "contradiction_check_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "failure",
+      "impact": "harmful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:high"
+        ],
+        "uncertainty_level": "high",
+        "region": "BACK"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing",
+        "contradiction_check_skill likely added little net value under the observed evidence state"
+      ],
+      "key_steps": [
+        "scan for conflicts across evidence sources",
+        "surface missing links in the reasoning chain"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": true,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [
+        "excess_redundancy_low_usage",
+        "selection_tail_low_value"
+      ],
+      "applicable_scenarios": [
+        "contradiction_check_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:high",
+        "region:back",
+        "uncertainty:high",
+        "confusion:Squamous cell carcinoma->BCC"
+      ],
+      "failure_modes": [
+        "low_net_reasoning_value",
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed",
+        "excess_redundancy_low_usage",
+        "selection_tail_low_value"
+      ],
+      "reusable": false,
+      "reuse_reason": ""
+    },
+    {
+      "skill_name": "escalation_recommendation_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "risk_flags": [
+          "malignancy_risk:high"
+        ],
+        "uncertainty_level": "high",
+        "region": "BACK"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a"
+      ],
+      "evidence_strength": "high",
+      "evidence_strength_score": 1.0,
+      "recommendation_type": "risk_signal",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 3.0,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_high",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported",
+        "malignant_support_relevant"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "escalation_recommendation_skill",
+        "ddx:Actinic keratosis|Seborrheic keratosis",
+        "risk:malignancy_risk:high",
+        "region:back",
+        "uncertainty:high",
+        "confusion:Squamous cell carcinoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "escalation_recommendation_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+    }
+  ],
+  "reflection_extract": {
+    "raw_case_memory_ready": true,
+    "tactical_experience_count": 14,
+    "abstract_experience_candidate_count": 2,
+    "reusable_tactical_count": 13,
+    "composite_skill_seed_count": 0,
+    "composite_skill_seed_ids": [],
+    "abstract_flags": {
+      "confusion_memory": true,
+      "prototype": false,
+      "rule": true,
+      "rule_candidate": false,
+      "composite_skill_seed": false
+    },
+    "case_status": "failure"
+  },
+  "writeback_bundle": {
+    "raw_case_memory": {
+      "case_id": "PAT_135_202",
+      "image_paths": [
+        "/root/DermAgent/data/pad_ufes_20/images/imgs_part_1/PAT_135_202_695.png"
+      ],
+      "metadata": {
+        "patient_id": "PAT_135",
+        "lesion_id": "202",
+        "smoke": "False",
+        "drink": "False",
+        "background_father": "POMERANIA",
+        "background_mother": "POMERANIA",
+        "age": "53",
+        "pesticide": "True",
+        "gender": "FEMALE",
+        "skin_cancer_history": "False",
+        "cancer_history": "True",
+        "has_piped_water": "False",
+        "has_sewage_system": "False",
+        "fitspatrick": "2.0",
+        "region": "BACK",
+        "diameter_1": "10.0",
+        "diameter_2": "9.0",
+        "diagnostic": "BCC",
+        "itch": "True",
+        "grew": "True",
+        "hurt": "True",
+        "changed": "False",
+        "bleed": "True",
+        "elevation": "True",
+        "img_id": "PAT_135_202_695.png",
+        "biopsed": "True"
+      },
+      "true_label": "BCC",
+      "qwen_output": {
+        "final_diagnosis": "Squamous cell carcinoma",
+        "differential_diagnoses": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Basal cell carcinoma"
+        ],
+        "rationale": "The lesion exhibits concerning features such as a central depression, surrounding erythema, and irregular morphology, which are indicative of malignancy. The location on the back, a common site for squamous cell carcinomas, also supports this diagnosis. The presence of ulceration and invasive-looking surface disruption further suggests a higher risk of malignancy, aligning with the characteristics of squamous cell carcinoma.",
+        "confidence": "High",
+        "follow_up_considerations": [
+          "Perform a dermatoscopy to assess the lesion's surface and borders more closely.",
+          "Consider a biopsy to confirm the diagnosis and rule out other possibilities.",
+          "Review the patient's medical history, including any previous skin biopsies or treatments, to understand the lesion's behavior.",
+          "Assess the patient for any systemic symptoms or risk factors (such as smoking) that could provide additional context."
+        ]
+      },
+      "agent_output": {
+        "perception": {
+          "image_summary": "A raised, irregularly shaped lesion with a central depression and surrounding erythema on the back.",
+          "ddx_candidates": [
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "Basal cell carcinoma",
+            "Squamous cell carcinoma"
+          ],
+          "uncertainty": {
+            "level": "high",
+            "reasons": [
+              "Lesion is large and has a central depression, which can be seen in various conditions."
+            ]
+          },
+          "notes": [
+            "The lesion is located on the back, which is a common site for actinic keratoses and squamous cell carcinomas."
+          ]
+        },
+        "skill_outputs": {
+          "morphology_analysis_skill": {
+            "lesion_type": "nodule",
+            "size_range": "large",
+            "elevation": "raised",
+            "count": "solitary",
+            "referenced_experiences": [
+              "tac_PAT_1516_1765_34c7ae80a73a"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "color_pattern_analysis_skill": {
+            "primary_color": "Pinkish-red",
+            "color_variation": "Marked",
+            "pigmentation_pattern": "Reticular",
+            "asymmetry_color": "Present",
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "distribution_analysis_skill": {
+            "body_location": "back",
+            "symmetry": "asymmetric",
+            "localized_vs_generalized": "localized",
+            "clustering_pattern": "solitary",
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876",
+              "tac_PAT_1516_1765_34c7ae80a73a",
+              "abs_rule_c93aa7bc54f6"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "lesion_description_structuring_skill": {
+            "primary_lesion_morphology": "Nodular, irregularly shaped with a central depression",
+            "color": [
+              "Pinkish-red with erythematous border"
+            ],
+            "border": [
+              "Erythematous, slightly irregular"
+            ],
+            "surface": [
+              "Smooth with a central depression"
+            ],
+            "size_count": [
+              "size: Large (10.0 mm), count: Solitary"
+            ],
+            "distribution": [
+              "site: Back, symmetry: Asymmetric"
+            ],
+            "associated_context": [
+              "smoke: False, drink: False, background_father: POMERANIA, background_mother: POMERANIA, age: 53, pesticide: True, gender: Female, skin_cancer_history: False, cancer_history: True, has_piped_water: False, has_sewage_system: False, fitspatrick: 2.0, region: Back"
+            ],
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "metadata_consistency_skill": {
+            "consistency_score": "medium",
+            "conflicts": [],
+            "suspicious_points": [
+              "The lesion's central depression and surrounding erythema are noted in both the image summary and metadata, but the lesion's morphology described as 'Nodular, irregularly shaped with a central depression' might suggest a more complex structure that could be indicative of different conditions.",
+              "The presence of erythema around the lesion is mentioned in both sources, but the metadata does not specify the color variation or pigmentation pattern, which could provide additional context."
+            ],
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876",
+              "tac_PAT_1516_1765_34c7ae80a73a",
+              "abs_rule_c93aa7bc54f6"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "temporal_evolution_skill": {
+            "onset_type": "unknown",
+            "progression_speed": "unknown",
+            "recurrence": "uncertain",
+            "stability": "stable",
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "malignancy_risk_assessment_skill": {
+            "risk_level": "high",
+            "risk_evidence": [
+              "{'type': 'morphology', 'description': 'The lesion is raised and irregularly shaped with a central depression, which is concerning for malignancy.'}",
+              "{'type': 'color', 'description': 'The primary color is pinkish-red with marked color variation and reticular pigmentation pattern, suggesting atypical features.'}",
+              "{'type': 'evolution', 'description': 'The lesion appears stable in size and shape over time, but the central depression and surrounding erythema raise suspicion.'}",
+              "{'type': 'symptoms', 'description': 'The patient reports itching, which can be associated with skin lesions and may indicate an underlying issue.'}"
+            ],
+            "alarm_signals": [
+              "Central depression",
+              "Marked color variation",
+              "Reticular pigmentation pattern",
+              "Surrounding erythema",
+              "Itching"
+            ],
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876",
+              "tac_PAT_1516_1765_34c7ae80a73a"
+            ],
+            "evidence_strength": "high",
+            "recommendation_type": "risk_signal"
+          },
+          "differential_compare_skill": {
+            "candidate_pairs": [
+              "Actinic keratosis vs. Squamous cell carcinoma",
+              "Seborrheic keratosis vs. Basal cell carcinoma"
+            ],
+            "supporting_evidence": [
+              {
+                "type": "morphology",
+                "description": "The lesion is raised and irregularly shaped with a central depression, which is concerning for malignancy."
+              },
+              {
+                "type": "color",
+                "description": "The primary color is pinkish-red with marked color variation and reticular pigmentation pattern, suggesting atypical features."
+              },
+              {
+                "type": "evolution",
+                "description": "The lesion appears stable in size and shape over time, but the central depression and surrounding erythema raise suspicion."
+              }
+            ],
+            "conflicting_evidence": [
+              {
+                "type": "location",
+                "description": "The lesion is located on the back, which is a common site for both actinic keratoses and squamous cell carcinomas."
+              }
+            ],
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876",
+              "tac_PAT_1516_1765_34c7ae80a73a"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "comparative_support"
+          },
+          "ack_scc_specialist_skill": {
+            "differentiation_features": [
+              "Ulceration",
+              "Invasive-looking surface disruption"
+            ],
+            "supporting_evidence": [
+              "The lesion shows signs of ulceration, which is more characteristic of SCC.",
+              "The invasive-looking surface disruption suggests a deeper invasion, typical of SCC."
+            ],
+            "opposing_evidence": [
+              "The lesion does not show significant keratinization or scale formation, which is less common in SCC.",
+              "The lesion's morphology is not highly pearly or translucent, which is more indicative of ACK or BCC."
+            ],
+            "further_observation_suggestions": [
+              "Examine the lesion for any signs of keratinization or scale formation.",
+              "Assess the lesion for any pearly or translucent qualities."
+            ],
+            "referenced_confusion_patterns": [],
+            "critical_supporting_evidence": [
+              "Ulceration and invasive-looking surface disruption"
+            ],
+            "counterexample_watchouts": [
+              "Keratinization or scale formation should not be equated with SCC.",
+              "Pearly or translucent qualities should not be ignored in favor of ACK or BCC."
+            ],
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "comparative_support"
+          },
+          "exclusion_reasoning_skill": {
+            "unlikely_candidates": [
+              "Seborrheic keratosis"
+            ],
+            "exclusion_evidence": [
+              "The lesion does not show significant keratinization or scale formation, which is less common in Seborrheic keratosis."
+            ],
+            "required_missing_evidence": [
+              "Observation of keratinization or scale formation would strengthen the exclusion of Seborrheic keratosis."
+            ],
+            "exclusion_confidence": "medium",
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876",
+              "tac_PAT_1516_1765_34c7ae80a73a",
+              "abs_rule_c93aa7bc54f6"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "information_gap_detection_skill": {
+            "missing_information": [
+              "Observation of keratinization or scale formation",
+              "Detailed history of the lesion's evolution over time",
+              "Family history of skin cancer or other relevant medical conditions"
+            ],
+            "why_it_matters": [
+              "Keratinization or scale formation can help exclude certain benign lesions.",
+              "Detailed history of the lesion's evolution can provide insights into its nature.",
+              "Family history can influence the likelihood of certain skin cancers."
+            ],
+            "impact_on_differential": [
+              "Observation of keratinization or scale formation would strengthen the exclusion of Seborrheic keratosis.",
+              "Detailed history could help differentiate between benign and malignant lesions based on growth patterns.",
+              "Family history can increase the suspicion for hereditary skin cancers."
+            ],
+            "uncertainty_if_missing": "medium",
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876",
+              "tac_PAT_1516_1765_34c7ae80a73a",
+              "abs_rule_c93aa7bc54f6"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "uncertainty_assessment_skill": {
+            "uncertainty_level": "high",
+            "reasons": [
+              "The lesion's central depression and surrounding erythema are concerning for malignancy.",
+              "The lesion's location on the back is a common site for both actinic keratoses and squamous cell carcinomas."
+            ],
+            "missing_information": [
+              "Detailed history of the lesion, including onset, growth rate, and any changes over time.",
+              "Family history of skin cancer or other relevant medical conditions.",
+              "Results from any dermatoscopy or biopsy performed on the lesion."
+            ],
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876",
+              "tac_PAT_1516_1765_34c7ae80a73a",
+              "abs_rule_c93aa7bc54f6"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "uncertainty_signal"
+          },
+          "contradiction_check_skill": {
+            "contradictions": [
+              {
+                "source": "morphology_analysis_skill",
+                "reason": "The lesion is described as 'raised' and 'irregularly shaped,' but the image shows a central depression."
+              },
+              {
+                "source": "color_pattern_analysis_skill",
+                "reason": "The lesion is described as having 'pinkish-red' color, but the image does not show a clear pinkish-red hue."
+              }
+            ],
+            "missing_links": [
+              {
+                "description": "The lesion's exact size in centimeters needs to be determined for a more precise size range assessment."
+              },
+              {
+                "description": "The lesion's evolution over time should be assessed to determine if it is growing or changing."
+              }
+            ],
+            "reasoning_gaps": [
+              {
+                "description": "The patient's detailed medical history, including any previous skin biopsies or treatments, is lacking."
+              },
+              {
+                "description": "The presence of any systemic symptoms or risk factors (such as smoking) could provide additional context."
+              }
+            ],
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876",
+              "tac_PAT_1516_1765_34c7ae80a73a",
+              "abs_rule_c93aa7bc54f6"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "escalation_recommendation_skill": {
+            "whether_escalation_needed": "yes",
+            "escalation_reason": [
+              "High malignancy risk and high uncertainty level suggest the need for further investigation."
+            ],
+            "suggested_next_check_type": "Dermatoscopy and biopsy",
+            "caution_flags": [
+              "High malignancy risk",
+              "High uncertainty level"
+            ],
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876",
+              "tac_PAT_1516_1765_34c7ae80a73a"
+            ],
+            "evidence_strength": "high",
+            "recommendation_type": "risk_signal"
+          }
+        },
+        "risk_flags": [
+          "malignancy_risk:high"
+        ],
+        "uncertainty": {
+          "uncertainty_level": "high",
+          "reasons": [
+            "The lesion's central depression and surrounding erythema are concerning for malignancy.",
+            "The lesion's location on the back is a common site for both actinic keratoses and squamous cell carcinomas."
+          ],
+          "missing_information": [
+            "Detailed history of the lesion, including onset, growth rate, and any changes over time.",
+            "Family history of skin cancer or other relevant medical conditions.",
+            "Results from any dermatoscopy or biopsy performed on the lesion."
+          ],
+          "referenced_experiences": [
+            "abs_confusion_96013d69cef6",
+            "abs_confusion_01d077299876",
+            "tac_PAT_1516_1765_34c7ae80a73a",
+            "abs_rule_c93aa7bc54f6"
+          ],
+          "evidence_strength": "medium",
+          "recommendation_type": "uncertainty_signal"
+        },
+        "retrieved_experience_refs": [
+          "abs_confusion_96013d69cef6",
+          "abs_confusion_01d077299876",
+          "abs_rule_c93aa7bc54f6"
+        ],
+        "notes": [
+          "Agent generated structured evidence only.",
+          "Qwen remains the sole final diagnostic decision maker.",
+          "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, temporal_evolution_skill, malignancy_risk_assessment_skill, differential_compare_skill, ack_scc_specialist_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill.",
+          "Policy in use: stable_default_policy.",
+          "Skill retrieval candidates: metadata_consistency_skill, lesion_description_structuring_skill, contradiction_check_skill, distribution_analysis_skill, ack_scc_specialist_skill, uncertainty_assessment_skill, malignancy_risk_assessment_skill, morphology_analysis_skill, color_pattern_analysis_skill, temporal_evolution_skill, information_gap_detection_skill, exclusion_reasoning_skill, escalation_recommendation_skill, differential_compare_skill.",
+          "The lesion is located on the back, which is a common site for actinic keratoses and squamous cell carcinomas.",
+          "Retrieved prior reasoning experience for context.",
+          "High uncertainty detected in MVP skeleton."
+        ],
+        "skill_assessments": [
+          {
+            "skill_name": "morphology_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:high"
+              ],
+              "uncertainty_level": "high",
+              "region": "BACK"
+            },
+            "helped_aspects": [
+              "stabilized lesion structure",
+              "made morphology explicit for downstream reasoning"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "inspect dominant lesion silhouette",
+              "judge elevation and lesion count"
+            ],
+            "referenced_experiences": [
+              "tac_PAT_1516_1765_34c7ae80a73a"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "morphology_analysis_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:high",
+              "region:back",
+              "uncertainty:high",
+              "confusion:Squamous cell carcinoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "morphology_analysis_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+          },
+          {
+            "skill_name": "color_pattern_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:high"
+              ],
+              "uncertainty_level": "high",
+              "region": "BACK"
+            },
+            "helped_aspects": [
+              "made pigment variation explicit",
+              "surfaced color asymmetry as auditable evidence"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "inspect dominant color",
+              "compare internal color asymmetry"
+            ],
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "color_pattern_analysis_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:high",
+              "region:back",
+              "uncertainty:high",
+              "confusion:Squamous cell carcinoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "color_pattern_analysis_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+          },
+          {
+            "skill_name": "distribution_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:high"
+              ],
+              "uncertainty_level": "high",
+              "region": "BACK"
+            },
+            "helped_aspects": [
+              "made location and extent assumptions explicit",
+              "captured distribution context for later comparison"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "identify likely anatomic site",
+              "judge extent and clustering"
+            ],
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876",
+              "tac_PAT_1516_1765_34c7ae80a73a",
+              "abs_rule_c93aa7bc54f6"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "distribution_analysis_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:high",
+              "region:back",
+              "uncertainty:high",
+              "confusion:Squamous cell carcinoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "distribution_analysis_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+          },
+          {
+            "skill_name": "lesion_description_structuring_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:high"
+              ],
+              "uncertainty_level": "high",
+              "region": "BACK"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 1.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "lesion_description_structuring_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:high",
+              "region:back",
+              "uncertainty:high",
+              "confusion:Squamous cell carcinoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "lesion_description_structuring_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+          },
+          {
+            "skill_name": "metadata_consistency_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:high"
+              ],
+              "uncertainty_level": "high",
+              "region": "BACK"
+            },
+            "helped_aspects": [
+              "checked image-metadata coherence",
+              "flagged reliability issues before integration"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "compare visible cues against metadata",
+              "separate direct conflicts from soft concerns"
+            ],
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876",
+              "tac_PAT_1516_1765_34c7ae80a73a",
+              "abs_rule_c93aa7bc54f6"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": true,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "metadata_consistency_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:high",
+              "region:back",
+              "uncertainty:high",
+              "confusion:Squamous cell carcinoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "metadata_consistency_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+          },
+          {
+            "skill_name": "temporal_evolution_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:high"
+              ],
+              "uncertainty_level": "high",
+              "region": "BACK"
+            },
+            "helped_aspects": [
+              "converted history into structured temporal evidence",
+              "made change over time inspectable"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "collect growth and symptom history",
+              "translate history into stability and tempo"
+            ],
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 1.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "temporal_evolution_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:high",
+              "region:back",
+              "uncertainty:high",
+              "confusion:Squamous cell carcinoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "temporal_evolution_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+          },
+          {
+            "skill_name": "malignancy_risk_assessment_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:high"
+              ],
+              "uncertainty_level": "high",
+              "region": "BACK"
+            },
+            "helped_aspects": [
+              "made risk framing explicit",
+              "highlighted alarm signals without forcing diagnosis"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "collect alarm signals",
+              "balance concerning and reassuring evidence"
+            ],
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876",
+              "tac_PAT_1516_1765_34c7ae80a73a"
+            ],
+            "evidence_strength": "high",
+            "evidence_strength_score": 1.0,
+            "recommendation_type": "risk_signal",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 2.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_high",
+              "evidence_used_in_bundle",
+              "malignant_support_relevant"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "malignancy_risk_assessment_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:high",
+              "region:back",
+              "uncertainty:high",
+              "confusion:Squamous cell carcinoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "malignancy_risk_assessment_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+          },
+          {
+            "skill_name": "differential_compare_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:high"
+              ],
+              "uncertainty_level": "high",
+              "region": "BACK"
+            },
+            "helped_aspects": [
+              "kept the differential open",
+              "made pairwise reasoning explicit"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "select the most relevant candidate pair",
+              "preserve unresolved comparative evidence"
+            ],
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876",
+              "tac_PAT_1516_1765_34c7ae80a73a"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "comparative_support",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 2.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported",
+              "malignant_support_relevant"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "differential_compare_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:high",
+              "region:back",
+              "uncertainty:high",
+              "confusion:Squamous cell carcinoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "differential_compare_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+          },
+          {
+            "skill_name": "ack_scc_specialist_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:high"
+              ],
+              "uncertainty_level": "high",
+              "region": "BACK"
+            },
+            "helped_aspects": [
+              "focused a high-value confusion pair",
+              "sharpened specialist keratinization clues"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "focus the confusion pair",
+              "contrast malignant versus keratotic clues"
+            ],
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "comparative_support",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 1.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "malignant_support_relevant"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "ack_scc_specialist_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:high",
+              "region:back",
+              "uncertainty:high",
+              "confusion:Squamous cell carcinoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "ack_scc_specialist_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+          },
+          {
+            "skill_name": "exclusion_reasoning_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:high"
+              ],
+              "uncertainty_level": "high",
+              "region": "BACK"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876",
+              "tac_PAT_1516_1765_34c7ae80a73a",
+              "abs_rule_c93aa7bc54f6"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 1.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "exclusion_reasoning_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:high",
+              "region:back",
+              "uncertainty:high",
+              "confusion:Squamous cell carcinoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "exclusion_reasoning_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+          },
+          {
+            "skill_name": "information_gap_detection_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:high"
+              ],
+              "uncertainty_level": "high",
+              "region": "BACK"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876",
+              "tac_PAT_1516_1765_34c7ae80a73a",
+              "abs_rule_c93aa7bc54f6"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 2.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported",
+              "malignant_support_relevant"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "information_gap_detection_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:high",
+              "region:back",
+              "uncertainty:high",
+              "confusion:Squamous cell carcinoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "information_gap_detection_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+          },
+          {
+            "skill_name": "uncertainty_assessment_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:high"
+              ],
+              "uncertainty_level": "high",
+              "region": "BACK"
+            },
+            "helped_aspects": [
+              "made evidence limits explicit",
+              "prevented overconfident downstream use"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "scan ambiguity across evidence streams",
+              "name missing information explicitly"
+            ],
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876",
+              "tac_PAT_1516_1765_34c7ae80a73a",
+              "abs_rule_c93aa7bc54f6"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "uncertainty_signal",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 3.0,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported",
+              "malignant_support_relevant"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "uncertainty_assessment_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:high",
+              "region:back",
+              "uncertainty:high",
+              "confusion:Squamous cell carcinoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "uncertainty_assessment_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+          },
+          {
+            "skill_name": "contradiction_check_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "failure",
+            "impact": "harmful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:high"
+              ],
+              "uncertainty_level": "high",
+              "region": "BACK"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing",
+              "contradiction_check_skill likely added little net value under the observed evidence state"
+            ],
+            "key_steps": [
+              "scan for conflicts across evidence sources",
+              "surface missing links in the reasoning chain"
+            ],
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876",
+              "tac_PAT_1516_1765_34c7ae80a73a",
+              "abs_rule_c93aa7bc54f6"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": true,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [
+              "excess_redundancy_low_usage",
+              "selection_tail_low_value"
+            ],
+            "applicable_scenarios": [
+              "contradiction_check_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:high",
+              "region:back",
+              "uncertainty:high",
+              "confusion:Squamous cell carcinoma->BCC"
+            ],
+            "failure_modes": [
+              "low_net_reasoning_value",
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed",
+              "excess_redundancy_low_usage",
+              "selection_tail_low_value"
+            ],
+            "reusable": false,
+            "reuse_reason": ""
+          },
+          {
+            "skill_name": "escalation_recommendation_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Actinic keratosis",
+                "Seborrheic keratosis",
+                "Basal cell carcinoma"
+              ],
+              "risk_flags": [
+                "malignancy_risk:high"
+              ],
+              "uncertainty_level": "high",
+              "region": "BACK"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "abs_confusion_96013d69cef6",
+              "abs_confusion_01d077299876",
+              "tac_PAT_1516_1765_34c7ae80a73a"
+            ],
+            "evidence_strength": "high",
+            "evidence_strength_score": 1.0,
+            "recommendation_type": "risk_signal",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 3.0,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_high",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported",
+              "malignant_support_relevant"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "escalation_recommendation_skill",
+              "ddx:Actinic keratosis|Seborrheic keratosis",
+              "risk:malignancy_risk:high",
+              "region:back",
+              "uncertainty:high",
+              "confusion:Squamous cell carcinoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "escalation_recommendation_skill remains reusable for Squamous cell carcinoma->BCC style confusion"
+          }
+        ]
+      },
+      "final_decision": {
+        "label": "Squamous cell carcinoma",
+        "source": "qwen_final_diagnosis",
+        "canonical_label": "Squamous cell carcinoma"
+      },
+      "correctness": {
+        "has_ground_truth": true,
+        "is_correct": false,
+        "error_type": "final_diagnosis_mismatch_reference"
+      },
+      "malignant_flag": {
+        "ground_truth": true,
+        "predicted": true
+      }
+    },
+    "tactical_experiences": [
+      {
+        "exp_id": "tac_PAT_135_202_e5b6956c8c26",
+        "case_id": "PAT_135_202",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Squamous cell carcinoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:high"
+            ],
+            "uncertainty_level": "high",
+            "region": "BACK"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed history of the lesion, including onset, growth rate, and any changes over time.",
+            "missing:Family history of skin cancer or other relevant medical conditions.",
+            "missing:Results from any dermatoscopy or biopsy performed on the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "morphology_analysis_skill",
+          "skills_used": [
+            "morphology_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "stabilized lesion structure",
+          "made morphology explicit for downstream reasoning",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "inspect dominant lesion silhouette",
+          "judge elevation and lesion count"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "high"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "morphology_analysis_skill",
+            "Squamous cell carcinoma->BCC",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:high",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_135_202_5d8de46f6089",
+        "case_id": "PAT_135_202",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Squamous cell carcinoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:high"
+            ],
+            "uncertainty_level": "high",
+            "region": "BACK"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed history of the lesion, including onset, growth rate, and any changes over time.",
+            "missing:Family history of skin cancer or other relevant medical conditions.",
+            "missing:Results from any dermatoscopy or biopsy performed on the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "color_pattern_analysis_skill",
+          "skills_used": [
+            "color_pattern_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made pigment variation explicit",
+          "surfaced color asymmetry as auditable evidence",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "inspect dominant color",
+          "compare internal color asymmetry"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "high"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "color_pattern_analysis_skill",
+            "Squamous cell carcinoma->BCC",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:high",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_135_202_586325b3723c",
+        "case_id": "PAT_135_202",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Squamous cell carcinoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:high"
+            ],
+            "uncertainty_level": "high",
+            "region": "BACK"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed history of the lesion, including onset, growth rate, and any changes over time.",
+            "missing:Family history of skin cancer or other relevant medical conditions.",
+            "missing:Results from any dermatoscopy or biopsy performed on the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "distribution_analysis_skill",
+          "skills_used": [
+            "distribution_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made location and extent assumptions explicit",
+          "captured distribution context for later comparison",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "identify likely anatomic site",
+          "judge extent and clustering"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "high"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "distribution_analysis_skill",
+            "Squamous cell carcinoma->BCC",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:high",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_135_202_8fa365c666e8",
+        "case_id": "PAT_135_202",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Squamous cell carcinoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:high"
+            ],
+            "uncertainty_level": "high",
+            "region": "BACK"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed history of the lesion, including onset, growth rate, and any changes over time.",
+            "missing:Family history of skin cancer or other relevant medical conditions.",
+            "missing:Results from any dermatoscopy or biopsy performed on the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "lesion_description_structuring_skill",
+          "skills_used": [
+            "lesion_description_structuring_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "high"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "lesion_description_structuring_skill",
+            "Squamous cell carcinoma->BCC",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:high",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_135_202_2f79c85a7fb8",
+        "case_id": "PAT_135_202",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Squamous cell carcinoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:high"
+            ],
+            "uncertainty_level": "high",
+            "region": "BACK"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed history of the lesion, including onset, growth rate, and any changes over time.",
+            "missing:Family history of skin cancer or other relevant medical conditions.",
+            "missing:Results from any dermatoscopy or biopsy performed on the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "metadata_consistency_skill",
+          "skills_used": [
+            "metadata_consistency_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "checked image-metadata coherence",
+          "flagged reliability issues before integration",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "compare visible cues against metadata",
+          "separate direct conflicts from soft concerns"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "high"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "metadata_consistency_skill",
+            "Squamous cell carcinoma->BCC",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:high",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_135_202_34221a9b3938",
+        "case_id": "PAT_135_202",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Squamous cell carcinoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:high"
+            ],
+            "uncertainty_level": "high",
+            "region": "BACK"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed history of the lesion, including onset, growth rate, and any changes over time.",
+            "missing:Family history of skin cancer or other relevant medical conditions.",
+            "missing:Results from any dermatoscopy or biopsy performed on the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "temporal_evolution_skill",
+          "skills_used": [
+            "temporal_evolution_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "converted history into structured temporal evidence",
+          "made change over time inspectable",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "collect growth and symptom history",
+          "translate history into stability and tempo"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "high"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "temporal_evolution_skill",
+            "Squamous cell carcinoma->BCC",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:high",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_135_202_47d9748366d2",
+        "case_id": "PAT_135_202",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Squamous cell carcinoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:high"
+            ],
+            "uncertainty_level": "high",
+            "region": "BACK"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed history of the lesion, including onset, growth rate, and any changes over time.",
+            "missing:Family history of skin cancer or other relevant medical conditions.",
+            "missing:Results from any dermatoscopy or biopsy performed on the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "malignancy_risk_assessment_skill",
+          "skills_used": [
+            "malignancy_risk_assessment_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made risk framing explicit",
+          "highlighted alarm signals without forcing diagnosis",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "collect alarm signals",
+          "balance concerning and reassuring evidence"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "high"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "malignancy_risk_assessment_skill",
+            "Squamous cell carcinoma->BCC",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:high",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_135_202_bce72efcf1a2",
+        "case_id": "PAT_135_202",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Squamous cell carcinoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:high"
+            ],
+            "uncertainty_level": "high",
+            "region": "BACK"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed history of the lesion, including onset, growth rate, and any changes over time.",
+            "missing:Family history of skin cancer or other relevant medical conditions.",
+            "missing:Results from any dermatoscopy or biopsy performed on the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "differential_compare_skill",
+          "skills_used": [
+            "differential_compare_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "kept the differential open",
+          "made pairwise reasoning explicit",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "select the most relevant candidate pair",
+          "preserve unresolved comparative evidence"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "high"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "differential_compare_skill",
+            "Squamous cell carcinoma->BCC",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:high",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_135_202_3a26b1b0de4b",
+        "case_id": "PAT_135_202",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Squamous cell carcinoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:high"
+            ],
+            "uncertainty_level": "high",
+            "region": "BACK"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed history of the lesion, including onset, growth rate, and any changes over time.",
+            "missing:Family history of skin cancer or other relevant medical conditions.",
+            "missing:Results from any dermatoscopy or biopsy performed on the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "ack_scc_specialist_skill",
+          "skills_used": [
+            "ack_scc_specialist_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "focused a high-value confusion pair",
+          "sharpened specialist keratinization clues",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "focus the confusion pair",
+          "contrast malignant versus keratotic clues"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "high"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "ack_scc_specialist_skill",
+            "Squamous cell carcinoma->BCC",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:high",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_135_202_77b666058907",
+        "case_id": "PAT_135_202",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Squamous cell carcinoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:high"
+            ],
+            "uncertainty_level": "high",
+            "region": "BACK"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed history of the lesion, including onset, growth rate, and any changes over time.",
+            "missing:Family history of skin cancer or other relevant medical conditions.",
+            "missing:Results from any dermatoscopy or biopsy performed on the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "exclusion_reasoning_skill",
+          "skills_used": [
+            "exclusion_reasoning_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "high"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "exclusion_reasoning_skill",
+            "Squamous cell carcinoma->BCC",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:high",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_135_202_3195d993f5b8",
+        "case_id": "PAT_135_202",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Squamous cell carcinoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:high"
+            ],
+            "uncertainty_level": "high",
+            "region": "BACK"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed history of the lesion, including onset, growth rate, and any changes over time.",
+            "missing:Family history of skin cancer or other relevant medical conditions.",
+            "missing:Results from any dermatoscopy or biopsy performed on the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "information_gap_detection_skill",
+          "skills_used": [
+            "information_gap_detection_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "high"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "information_gap_detection_skill",
+            "Squamous cell carcinoma->BCC",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:high",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_135_202_e21fa70f1cb7",
+        "case_id": "PAT_135_202",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Squamous cell carcinoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:high"
+            ],
+            "uncertainty_level": "high",
+            "region": "BACK"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed history of the lesion, including onset, growth rate, and any changes over time.",
+            "missing:Family history of skin cancer or other relevant medical conditions.",
+            "missing:Results from any dermatoscopy or biopsy performed on the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "uncertainty_assessment_skill",
+          "skills_used": [
+            "uncertainty_assessment_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made evidence limits explicit",
+          "prevented overconfident downstream use",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "scan ambiguity across evidence streams",
+          "name missing information explicitly"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "high"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "uncertainty_assessment_skill",
+            "Squamous cell carcinoma->BCC",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:high",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_135_202_de8e70a05f15",
+        "case_id": "PAT_135_202",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Squamous cell carcinoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:high"
+            ],
+            "uncertainty_level": "high",
+            "region": "BACK"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed history of the lesion, including onset, growth rate, and any changes over time.",
+            "missing:Family history of skin cancer or other relevant medical conditions.",
+            "missing:Results from any dermatoscopy or biopsy performed on the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "contradiction_check_skill",
+          "skills_used": [
+            "contradiction_check_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing",
+          "contradiction_check_skill likely added little net value under the observed evidence state"
+        ],
+        "step_trace": [
+          "scan for conflicts across evidence sources",
+          "surface missing links in the reasoning chain"
+        ],
+        "outcome": {
+          "result": "failure",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "high"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "contradiction_check_skill",
+            "Squamous cell carcinoma->BCC",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:high",
+            "high_uncertainty_case"
+          ],
+          "priority": "low"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_135_202_3f9fb737051a",
+        "case_id": "PAT_135_202",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Squamous cell carcinoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "Actinic keratosis",
+              "Seborrheic keratosis",
+              "Basal cell carcinoma"
+            ],
+            "risk_flags": [
+              "malignancy_risk:high"
+            ],
+            "uncertainty_level": "high",
+            "region": "BACK"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed history of the lesion, including onset, growth rate, and any changes over time.",
+            "missing:Family history of skin cancer or other relevant medical conditions.",
+            "missing:Results from any dermatoscopy or biopsy performed on the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "escalation_recommendation_skill",
+          "skills_used": [
+            "escalation_recommendation_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "high"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "escalation_recommendation_skill",
+            "Squamous cell carcinoma->BCC",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:high",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      }
+    ],
+    "abstract_experiences": [
+      {
+        "abs_id": "abs_confusion_ce158bd5a2a1",
+        "type": "confusion_memory",
+        "concept": "squamous_cell_carcinoma->bcc",
+        "pattern_summary": {
+          "confusion_pair": "Squamous cell carcinoma->BCC",
+          "supporting_pattern": [
+            "A raised, irregularly shaped lesion with a central depression and surrounding erythema on the back.",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:high"
+          ],
+          "failure_pattern": [
+            "final_diagnosis_mismatch_reference"
+          ]
+        },
+        "supporting_cases": [
+          "PAT_135_202"
+        ],
+        "counter_cases": [],
+        "derived_rule": {
+          "rule_text": "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+          "action_hint": "compare_then_audit_uncertainty"
+        },
+        "version": "v1",
+        "seed_id": null,
+        "composite_skill_seed": {},
+        "provenance": {}
+      },
+      {
+        "abs_id": "abs_rule_97a155a28150",
+        "type": "rule",
+        "concept": "compare_then_audit_uncertainty",
+        "pattern_summary": {
+          "supporting_pattern": [
+            "A raised, irregularly shaped lesion with a central depression and surrounding erythema on the back.",
+            "Actinic keratosis",
+            "Seborrheic keratosis",
+            "malignancy_risk:high"
+          ],
+          "failure_pattern": [
+            "final_diagnosis_mismatch_reference"
+          ]
+        },
+        "supporting_cases": [
+          "PAT_135_202"
+        ],
+        "counter_cases": [],
+        "derived_rule": {
+          "rule_text": "When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Qwen integration.",
+          "action_hint": "compare_then_audit_uncertainty"
+        },
+        "version": "v1",
+        "seed_id": null,
+        "composite_skill_seed": {},
+        "provenance": {}
+      }
+    ],
+    "cognition_update": {
+      "total_cases_increment": 1,
+      "failed_cases_increment": 1,
+      "confusion_cases_increment": 1,
+      "hard_cases_increment": 0,
+      "confusion_pair": "Squamous cell carcinoma->BCC",
+      "preferred_skills": [
+        "morphology_analysis_skill",
+        "color_pattern_analysis_skill",
+        "distribution_analysis_skill",
+        "lesion_description_structuring_skill",
+        "metadata_consistency_skill",
+        "temporal_evolution_skill",
+        "malignancy_risk_assessment_skill",
+        "differential_compare_skill",
+        "ack_scc_specialist_skill",
+        "exclusion_reasoning_skill",
+        "information_gap_detection_skill",
+        "uncertainty_assessment_skill",
+        "escalation_recommendation_skill"
+      ]
+    },
+    "skill_stats_update": [
+      {
+        "skill_name": "morphology_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "color_pattern_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "distribution_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "lesion_description_structuring_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "metadata_consistency_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 1,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "temporal_evolution_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "malignancy_risk_assessment_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 1.0,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "differential_compare_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "ack_scc_specialist_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "exclusion_reasoning_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "information_gap_detection_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "uncertainty_assessment_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "contradiction_check_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 1,
+        "failure_increment": 1,
+        "reusable_increment": 0,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 1,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 1,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "escalation_recommendation_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 1.0,
+        "evidence_strength_count": 1
+      }
+    ],
+    "reflection_extract": {
+      "raw_case_memory_ready": true,
+      "tactical_experience_count": 14,
+      "abstract_experience_candidate_count": 2,
+      "reusable_tactical_count": 13,
+      "composite_skill_seed_count": 0,
+      "composite_skill_seed_ids": [],
+      "abstract_flags": {
+        "confusion_memory": true,
+        "prototype": false,
+        "rule": true,
+        "rule_candidate": false,
+        "composite_skill_seed": false
+      },
+      "case_status": "failure"
+    }
+  },
+  "cognition_update": {
+    "total_cases_increment": 1,
+    "failed_cases_increment": 1,
+    "confusion_cases_increment": 1,
+    "hard_cases_increment": 0,
+    "confusion_pair": "Squamous cell carcinoma->BCC",
+    "preferred_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "distribution_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "temporal_evolution_skill",
+      "malignancy_risk_assessment_skill",
+      "differential_compare_skill",
+      "ack_scc_specialist_skill",
+      "exclusion_reasoning_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "escalation_recommendation_skill"
+    ]
+  }
+}

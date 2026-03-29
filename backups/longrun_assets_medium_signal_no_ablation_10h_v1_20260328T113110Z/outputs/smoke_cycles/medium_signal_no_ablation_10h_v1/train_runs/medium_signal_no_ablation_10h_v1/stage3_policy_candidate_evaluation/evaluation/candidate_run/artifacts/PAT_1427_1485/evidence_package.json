@@ -1,0 +1,898 @@
+{
+  "perception": {
+    "image_summary": "The image shows a patchy area of erythema (redness) on the forearm. The skin appears slightly scaly and there is some hyperpigmentation present.",
+    "ddx_candidates": [
+      "Contact dermatitis",
+      "Psoriasis",
+      "Lichen planus"
+    ],
+    "uncertainty": {
+      "level": "low",
+      "reasons": [
+        "Insufficient information to make a definitive diagnosis."
+      ]
+    },
+    "notes": [
+      "The patient reports itching but no bleeding or change in size.",
+      "No history of skin cancer or other significant medical conditions."
+    ]
+  },
+  "retrieved_experience": [
+    {
+      "case_id": "PAT_1516_1765",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "A well-circumscribed, slightly irregular brown lesion on the arm.",
+      "confusion_pair": "Atypical Nevus->NEV",
+      "learning_points": [
+        "Imported legacy confusion memory.",
+        "observe_then_structure"
+      ],
+      "source_id": "abs_confusion_96013d69cef6",
+      "retrieval_score": 3,
+      "base_retrieval_score": 3.0,
+      "rerank_probability": 0.636961,
+      "rerank_score": 4.592401
+    },
+    {
+      "case_id": "PAT_1516_1765",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "{'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "confusion_pair": "Atypical Mole->NEV",
+      "learning_points": [
+        "Imported legacy confusion memory.",
+        "risk_then_uncertainty_audit"
+      ],
+      "source_id": "abs_confusion_01d077299876",
+      "retrieval_score": 3,
+      "base_retrieval_score": 3.0,
+      "rerank_probability": 0.636961,
+      "rerank_score": 4.592401
+    },
+    {
+      "case_id": "PAT_1516_1765",
+      "source_layer": "tactical_experience",
+      "source_subtype": "confusion_experience",
+      "experience_type": "tactical_experience",
+      "perception_summary": "risk=malignancy_risk:medium; uncertainty=low; {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "confusion_pair": "Atypical Mole->NEV",
+      "learning_points": [
+        "Preserve Qwen as the only final diagnostic decision maker.",
+        "Use evidence package to surface structured morphology, risk, and uncertainty clues.",
+        "Action pattern: risk_then_uncertainty_audit"
+      ],
+      "source_id": "tac_PAT_1516_1765_a0a91034ab1a",
+      "retrieval_score": 3,
+      "base_retrieval_score": 3.0,
+      "rerank_probability": 0.575397,
+      "rerank_score": 4.438494
+    }
+  ],
+  "skill_outputs": {
+    "morphology_analysis_skill": {
+      "lesion_type": "macule",
+      "size_range": "small",
+      "elevation": "flat",
+      "count": "multiple",
+      "referenced_experiences": [
+        "PAT_1516_1765"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "color_pattern_analysis_skill": {
+      "primary_color": "Red",
+      "color_variation": "Marked",
+      "pigmentation_pattern": "Patchy",
+      "asymmetry_color": "Present",
+      "referenced_experiences": [
+        "PAT_1516_1765"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "border_surface_analysis_skill": {
+      "border_clarity": "poorly defined",
+      "border_irregularity": "irregular",
+      "surface_texture": "rough",
+      "scaling_presence": "present",
+      "referenced_experiences": [
+        "PAT_1516_1765"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "distribution_analysis_skill": {
+      "body_location": "forearm",
+      "symmetry": "asymmetric",
+      "localized_vs_generalized": "generalized",
+      "clustering_pattern": "clustered",
+      "referenced_experiences": [
+        "PAT_1516_1765",
+        "abs_confusion_01d077299876",
+        "abs_rule_903518803931",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "lesion_description_structuring_skill": {
+      "primary_lesion_morphology": "Patchy erythema",
+      "color": [
+        "Red, patchy, marked variation"
+      ],
+      "border": [
+        "Poorly defined, irregular"
+      ],
+      "surface": [
+        "Rough, slightly scaly"
+      ],
+      "size_count": [
+        "Small, multiple lesions"
+      ],
+      "distribution": [
+        "Generalized, clustered on forearm"
+      ],
+      "associated_context": [
+        "age: 47, itching: True, history_of_skin_cancer: No, other_significant_medical_conditions: No"
+      ],
+      "referenced_experiences": [
+        "PAT_1516_1765",
+        "abs_confusion_01d077299876",
+        "abs_rule_903518803931",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "metadata_consistency_skill": {
+      "consistency_score": "medium",
+      "conflicts": [],
+      "suspicious_points": [
+        "The lesion description mentions erythema and scaling, which align with the observed redness and rough texture in the image.",
+        "The metadata indicates itchiness, which is consistent with the patient's report."
+      ],
+      "referenced_experiences": [
+        "PAT_1516_1765",
+        "abs_confusion_01d077299876",
+        "abs_rule_903518803931",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "temporal_evolution_skill": {
+      "onset_type": "unknown",
+      "progression_speed": "stable",
+      "recurrence": "no",
+      "stability": "stable",
+      "referenced_experiences": [
+        "PAT_1516_1765",
+        "abs_confusion_01d077299876",
+        "abs_rule_903518803931",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "malignancy_risk_assessment_skill": {
+      "risk_level": "medium",
+      "risk_evidence": [
+        "{'morphology': 'The lesion is described as a macule with multiple patches, suggesting a possible spread.', 'color': 'The primary color is red with marked variation and patchy pigmentation, indicating inconsistency.', 'border': 'The border is poorly defined and irregular, with a rough surface texture and scaling presence.', 'symptoms': 'The patient reports itching, which is a symptom often associated with inflammatory conditions like contact dermatitis.', 'evolution': 'There is no mention of growth or change in size, but the stability is noted as stable.'}"
+      ],
+      "alarm_signals": [
+        "Poorly defined and irregular border",
+        "Marked color variation and patchy pigmentation",
+        "Rough surface texture and scaling presence"
+      ],
+      "referenced_experiences": [
+        "PAT_1516_1765"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "risk_signal"
+    },
+    "differential_compare_skill": {
+      "candidate_pairs": [
+        "Contact dermatitis vs Psoriasis",
+        "Contact dermatitis vs Lichen planus",
+        "Psoriasis vs Lichen planus"
+      ],
+      "supporting_evidence": [
+        "{'Contact dermatitis vs Psoriasis': ['The lesion is described as a macule with multiple patches, suggesting a possible spread.', 'The primary color is red with marked variation and patchy pigmentation.'], 'Contact dermatitis vs Lichen planus': ['The lesion is described as a macule with multiple patches, suggesting a possible spread.', 'The primary color is red with marked variation and patchy pigmentation.'], 'Psoriasis vs Lichen planus': ['The lesion is described as a macule with multiple patches, suggesting a possible spread.', 'The primary color is red with marked variation and patchy pigmentation.']}"
+      ],
+      "conflicting_evidence": [
+        "{'Contact dermatitis vs Psoriasis': ['The lesion is described as a macule with multiple patches, suggesting a possible spread.', 'The primary color is red with marked variation and patchy pigmentation.'], 'Contact dermatitis vs Lichen planus': ['The lesion is described as a macule with multiple patches, suggesting a possible spread.', 'The primary color is red with marked variation and patchy pigmentation.'], 'Psoriasis vs Lichen planus': ['The lesion is described as a macule with multiple patches, suggesting a possible spread.', 'The primary color is red with marked variation and patchy pigmentation.']}"
+      ],
+      "referenced_experiences": [
+        "PAT_1516_1765",
+        "abs_confusion_01d077299876",
+        "abs_rule_903518803931",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "comparative_support"
+    },
+    "exclusion_reasoning_skill": {
+      "unlikely_candidates": [
+        "Psoriasis"
+      ],
+      "exclusion_evidence": [
+        "The lesion is described as a macule with multiple patches, suggesting a possible spread.",
+        "The primary color is red with marked variation..."
+      ],
+      "required_missing_evidence": [
+        "Confirmation of scaling or plaque formation typical of psoriasis.",
+        "History of psoriasis or family history of psoriasis would strengthen exclusion."
+      ],
+      "exclusion_confidence": "medium",
+      "referenced_experiences": [
+        "PAT_1516_1765"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "uncertainty_assessment_skill": {
+      "uncertainty_level": "medium",
+      "reasons": [
+        "The image shows patchy erythema with slight scaling, which can be seen in various dermatological conditions.",
+        "The differential diagnosis includes Contact dermatitis, Psoriasis, and Lichen planus, all of which can present with similar symptoms.",
+        "The patient's history lacks specific details about the duration of symptoms, prior treatments, or exposure to potential allergens."
+      ],
+      "missing_information": [
+        "Duration of symptoms",
+        "History of previous skin conditions or allergies",
+        "Patient's occupation and potential environmental exposures"
+      ],
+      "referenced_experiences": [
+        "PAT_1516_1765",
+        "abs_confusion_01d077299876",
+        "abs_rule_903518803931",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "uncertainty_signal"
+    },
+    "contradiction_check_skill": {
+      "contradictions": [
+        {
+          "description": "The image shows a patchy area of erythema with slight scaling, while the morphology analysis suggests a macule with multiple patches, which could indicate a spread. However, the image does not clearly show multiple patches, making it difficult to reconcile these observations.",
+          "evidence_sources": [
+            "image_summary",
+            "morphology_analysis_skill"
+          ]
+        }
+      ],
+      "missing_links": [
+        {
+          "description": "The patient's history lacks specific details about the duration of symptoms, prior treatments, or exposure to potential allergens, which are crucial for narrowing down the differential diagnosis.",
+          "evidence_sources": [
+            "notes",
+            "metadata"
+          ]
+        }
+      ],
+      "reasoning_gaps": [
+        {
+          "description": "The patient's history is incomplete, and there is no information about the duration of symptoms, prior treatments, or exposure to potential allergens. This lack of information makes it challenging to determine the most likely diagnosis.",
+          "evidence_sources": [
+            "notes",
+            "metadata"
+          ]
+        }
+      ],
+      "referenced_experiences": [
+        "PAT_1516_1765",
+        "abs_confusion_01d077299876",
+        "abs_rule_903518803931",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "uncertainty_signal"
+    }
+  },
+  "risk_flags": [
+    "malignancy_risk:medium"
+  ],
+  "uncertainty": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The image shows patchy erythema with slight scaling, which can be seen in various dermatological conditions.",
+      "The differential diagnosis includes Contact dermatitis, Psoriasis, and Lichen planus, all of which can present with similar symptoms.",
+      "The patient's history lacks specific details about the duration of symptoms, prior treatments, or exposure to potential allergens."
+    ],
+    "missing_information": [
+      "Duration of symptoms",
+      "History of previous skin conditions or allergies",
+      "Patient's occupation and potential environmental exposures"
+    ],
+    "referenced_experiences": [
+      "PAT_1516_1765",
+      "abs_confusion_01d077299876",
+      "abs_rule_903518803931",
+      "abs_rule_c93aa7bc54f6"
+    ],
+    "evidence_strength": "medium",
+    "recommendation_type": "uncertainty_signal"
+  },
+  "notes": [
+    "Agent generated structured evidence only.",
+    "Qwen remains the sole final diagnostic decision maker.",
+    "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, temporal_evolution_skill, malignancy_risk_assessment_skill, differential_compare_skill, exclusion_reasoning_skill, uncertainty_assessment_skill, contradiction_check_skill.",
+    "Policy in use: candidate_stage4_step6_medium_signal_no_ablation_10h_v1.",
+    "Skill retrieval candidates: metadata_consistency_skill, distribution_analysis_skill, lesion_description_structuring_skill, morphology_analysis_skill, malignancy_risk_assessment_skill, color_pattern_analysis_skill, temporal_evolution_skill, uncertainty_assessment_skill, border_surface_analysis_skill, contradiction_check_skill, differential_compare_skill, exclusion_reasoning_skill.",
+    "Learned retrieval reranker applied (fallback-safe).",
+    "The patient reports itching but no bleeding or change in size.",
+    "No history of skin cancer or other significant medical conditions.",
+    "Retrieved prior reasoning experience for context."
+  ],
+  "initial_perception_summary": {
+    "image_summary": "The image shows a patchy area of erythema (redness) on the forearm. The skin appears slightly scaly and there is some hyperpigmentation present.",
+    "ddx_candidates": [
+      "Contact dermatitis",
+      "Psoriasis",
+      "Lichen planus"
+    ],
+    "uncertainty_level": "low",
+    "uncertainty_reasons": [
+      "Insufficient information to make a definitive diagnosis."
+    ],
+    "observation_notes": [
+      "The patient reports itching but no bleeding or change in size.",
+      "No history of skin cancer or other significant medical conditions."
+    ]
+  },
+  "retrieved_raw_cases_summary": [
+    {
+      "source_id": "PAT_1516_1765",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "None",
+      "perception_summary": "",
+      "learning_points": [
+        "Final decision: None",
+        "Correctness: None"
+      ],
+      "retrieval_score": 2.0,
+      "base_retrieval_score": 2.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_tactical_experiences_summary": [
+    {
+      "source_id": "tac_PAT_1516_1765_a0a91034ab1a",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Mole->NEV",
+      "perception_summary": "risk=malignancy_risk:medium; uncertainty=low; {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "learning_points": [
+        "Preserve Qwen as the only final diagnostic decision maker.",
+        "Use evidence package to surface structured morphology, risk, and uncertainty clues.",
+        "Action pattern: risk_then_uncertainty_audit"
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 4.438494,
+      "rerank_probability": 0.575397
+    },
+    {
+      "source_id": "tac_PAT_1516_1765_6c7d6a323fec",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Nevus->NEV",
+      "perception_summary": "risk=malignancy_risk:medium; uncertainty=low; A well-circumscribed, slightly irregular brown lesion on the arm.",
+      "learning_points": [
+        "Keep Qwen as the only final diagnostic decision maker.",
+        "Use structured skill evidence to support, not replace, final diagnosis.",
+        "Track confusion pattern: Atypical Nevus->NEV."
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 4.438494,
+      "rerank_probability": 0.575397
+    },
+    {
+      "source_id": "tac_PAT_1516_1765_510e192d29fd",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Mole->NEV",
+      "perception_summary": "risk=malignancy_risk:medium; uncertainty=low; morphology=Irregular; color=Brown; border=Irregular; surface=Smooth; body_location=Arm",
+      "learning_points": [
+        "Keep Qwen as the only final diagnostic decision maker.",
+        "Use structured skill evidence to support, not replace, final diagnosis.",
+        "Track confusion pattern: Atypical Mole->NEV."
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 4.438494,
+      "rerank_probability": 0.575397
+    }
+  ],
+  "retrieved_abstract_experiences_summary": [
+    {
+      "source_id": "abs_confusion_96013d69cef6",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Nevus->NEV",
+      "perception_summary": "A well-circumscribed, slightly irregular brown lesion on the arm.",
+      "learning_points": [
+        "Imported legacy confusion memory.",
+        "observe_then_structure"
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 4.592401,
+      "rerank_probability": 0.636961
+    },
+    {
+      "source_id": "abs_confusion_01d077299876",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Mole->NEV",
+      "perception_summary": "{'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "learning_points": [
+        "Imported legacy confusion memory.",
+        "risk_then_uncertainty_audit"
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 4.592401,
+      "rerank_probability": 0.636961
+    },
+    {
+      "source_id": "abs_rule_c93aa7bc54f6",
+      "source_layer": "abstract_experience",
+      "experience_type": "rule",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "None",
+      "perception_summary": "{'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "learning_points": [
+        "Preserve Qwen as the only final diagnostic decision maker.",
+        "observe_then_structure"
+      ],
+      "retrieval_score": 2.0,
+      "base_retrieval_score": 2.0,
+      "rerank_score": 3.541527,
+      "rerank_probability": 0.616611
+    }
+  ],
+  "uncertainty_summary": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The image shows patchy erythema with slight scaling, which can be seen in various dermatological conditions.",
+      "The differential diagnosis includes Contact dermatitis, Psoriasis, and Lichen planus, all of which can present with similar symptoms.",
+      "The patient's history lacks specific details about the duration of symptoms, prior treatments, or exposure to potential allergens."
+    ],
+    "missing_information": [
+      "Duration of symptoms",
+      "History of previous skin conditions or allergies",
+      "Patient's occupation and potential environmental exposures"
+    ],
+    "referenced_experiences": [
+      "PAT_1516_1765",
+      "abs_confusion_01d077299876",
+      "abs_rule_903518803931",
+      "abs_rule_c93aa7bc54f6"
+    ]
+  },
+  "contradiction_summary": {
+    "contradictions": [
+      "{'description': 'The image shows a patchy area of erythema with slight scaling, while the morphology analysis suggests a macule with multiple patches, which could indicate a spread. However, the image does not clearly show multiple patches, making it difficult to reconcile these observations.', 'evidence_sources': ['image_summary', 'morphology_analysis_skill']}"
+    ],
+    "missing_links": [
+      "{'description': \"The patient's history lacks specific details about the duration of symptoms, prior treatments, or exposure to potential allergens, which are crucial for narrowing down the differential diagnosis.\", 'evidence_sources': ['notes', 'metadata']}"
+    ],
+    "reasoning_gaps": [
+      "{'description': \"The patient's history is incomplete, and there is no information about the duration of symptoms, prior treatments, or exposure to potential allergens. This lack of information makes it challenging to determine the most likely diagnosis.\", 'evidence_sources': ['notes', 'metadata']}"
+    ],
+    "metadata_conflicts": [],
+    "suspicious_points": [
+      "The lesion description mentions erythema and scaling, which align with the observed redness and rough texture in the image.",
+      "The metadata indicates itchiness, which is consistent with the patient's report."
+    ]
+  },
+  "information_gap_summary": {
+    "missing_information": [],
+    "why_it_matters": [],
+    "impact_on_differential": [],
+    "uncertainty_if_missing": "unknown"
+  },
+  "escalation_summary": {
+    "whether_escalation_needed": "unknown",
+    "escalation_reason": [],
+    "suggested_next_check_type": "",
+    "caution_flags": []
+  },
+  "planner_rationale": {
+    "planner_type": "rule_based",
+    "planner_version": "v1",
+    "selected_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "border_surface_analysis_skill",
+      "distribution_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "temporal_evolution_skill",
+      "malignancy_risk_assessment_skill",
+      "differential_compare_skill",
+      "exclusion_reasoning_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill"
+    ],
+    "selection_reasons": {
+      "morphology_analysis_skill": [
+        "Boosted by skill retrieval score=14.18.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "color_pattern_analysis_skill": [
+        "Boosted by skill retrieval score=12.15.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "border_surface_analysis_skill": [
+        "Boosted by skill retrieval score=9.62.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "distribution_analysis_skill": [
+        "Boosted by skill retrieval score=14.69.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "lesion_description_structuring_skill": [
+        "Boosted by skill retrieval score=14.65.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `temporal_metadata`."
+      ],
+      "metadata_consistency_skill": [
+        "Boosted by skill retrieval score=16.69.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "temporal_evolution_skill": [
+        "Boosted by skill retrieval score=11.63.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `temporal_metadata`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ],
+      "malignancy_risk_assessment_skill": [
+        "Boosted by skill retrieval score=13.66.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `temporal_metadata`."
+      ],
+      "differential_compare_skill": [
+        "Boosted by skill retrieval score=6.11.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active signal `multiple_ddx` via skill trigger metadata."
+      ],
+      "exclusion_reasoning_skill": [
+        "Boosted by skill retrieval score=4.59.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched 1 morphology clues from the current perception.",
+        "Matched active signal `multiple_ddx` via skill trigger metadata."
+      ],
+      "uncertainty_assessment_skill": [
+        "Boosted by skill retrieval score=9.64.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `location_or_size_metadata`.",
+        "Matched 3 metadata clues from the current case."
+      ],
+      "contradiction_check_skill": [
+        "Boosted by skill retrieval score=8.85.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `location_or_size_metadata`.",
+        "Matched 3 metadata clues from the current case."
+      ]
+    }
+  },
+  "serialized_evidence_text": "[Observation Evidence]\n- Initial image summary: The image shows a patchy area of erythema (redness) on the forearm. The skin appears slightly scaly and there is some hyperpigmentation present.\n- Early differential candidates: Contact dermatitis, Psoriasis, Lichen planus\n- structured lesion observation: lesion_description_structuring_skill: primary_lesion_morphology=Patchy erythema | color=Red, patchy, marked variation | border=Poorly defined, irregular | surface=Rough, slightly scaly | size_count=Small, multiple lesions | distribution=Generalized, clustered on forearm || morphology_analysis_skill: lesion_type=macule | size_range=small | elevation=flat | count=multiple | evidence_strength=medium | recommendation_type=descriptive_evidence || color_pattern_analysis_skill: primary_color=Red | color_variation=Marked | pigmentation_pattern=Patchy | asymmetry_color=Present | evidence_strength=medium | recommendation_type=descriptive_evidence\n- distribution_analysis_skill: body_location=forearm | symmetry=asymmetric | localized_vs_generalized=generalized | clustering_pattern=clustered | evidence_strength=medium | recommendation_type=descriptive_evidence\n\n[Exclusion And Comparison Evidence]\n- differential and exclusion reasoning: differential_compare_skill: candidate_pairs=Contact dermatitis vs Psoriasis; Contact dermatitis vs Lichen planus; Psoriasis vs Lichen planus | supporting_evidence={'Contact dermatitis vs Psoriasis': ['The lesion is described as a macule with multiple patches, suggesting a possible spread.', 'The primary color is red wi... | conflicting_evidence={'Contact dermatitis vs Psoriasis': ['The lesion is described as a macule with multiple patches, suggesting a possible spread.', 'The primary color is red wi... | evidence_strength=medium | recommendation_type=comparative_support || exclusion_reasoning_skill: unlikely_candidates=Psoriasis | exclusion_evidence=The lesion is described as a macule with multiple patches, suggesting a possible spread.; The primary color is red with marked variation... | required_missing_evidence=Confirmation of scaling or plaque formation typical of psoriasis.; History of psoriasis or family history of psoriasis would strengthen exclusion. | exclusion_confidence=medium | evidence_strength=medium | recommendation_type=descriptive_evidence\n- metadata_consistency_skill: consistency_score=medium | suspicious_points=The lesion description mentions erythema and scaling, which align with the observed redness and rough texture in the image.; The metadata indicates itchiness... | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Tactical experience tac_PAT_1516_1765_a0a91034ab1a: risk=malignancy_risk:medium; uncertainty=low; {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}; Preserve Qwen as the only final diagnostic decision maker.; Use evidence package to surface structured morphology, risk, and uncertainty clues.; Action pattern: risk_then_uncertainty_audit\n- Tactical experience tac_PAT_1516_1765_6c7d6a323fec: risk=malignancy_risk:medium; uncertainty=low; A well-circumscribed, slightly irregular brown lesion on the arm.; Keep Qwen as the only final diagnostic decision maker.; Use structured skill evidence to support, not replace, final diagnosis.; Track confusion pattern: Atypical Nevus->NEV.\n\n[Risk Evidence]\n- Risk flags: malignancy_risk:medium\n- malignancy_risk_assessment_skill: risk_level=medium | risk_evidence={'morphology': 'The lesion is described as a macule with multiple patches, suggesting a possible spread.', 'color': 'The primary color is red with marked var... | alarm_signals=Poorly defined and irregular border; Marked color variation and patchy pigmentation; Rough surface texture and scaling presence | evidence_strength=medium | recommendation_type=risk_signal\n- Abstract experience abs_confusion_01d077299876: {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}; Imported legacy confusion memory.; risk_then_uncertainty_audit\n- Abstract experience abs_rule_c93aa7bc54f6: {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}; Preserve Qwen as the only final diagnostic decision maker.; observe_then_structure\n\n[Conflict And Uncertainty]\n- Uncertainty level: medium\n- Uncertainty reasons: The image shows patchy erythema with slight scaling, which can be seen in various dermatological conditions.; The differential diagnosis includes Contact dermatitis, Psoriasis, and Lichen planus, all of which can present with similar symptoms.; The patient's history lacks specific details about the duration of symptoms, prior treatments, or exposure to potential allergens.\n- Missing information: Duration of symptoms; History of previous skin conditions or allergies; Patient's occupation and potential environmental exposures\n- contradictions: {'description': 'The image shows a patchy area of erythema with slight scaling, while the morphology analysis suggests a macule with multiple patches, which could indicate a spread. However, the image does not clearly show multiple patches, making it difficult to reconcile these observations.', 'evidence_sources': ['image_summary', 'morphology_analysis_skill']}\n- missing links: {'description': \"The patient's history lacks specific details about the duration of symptoms, prior treatments, or exposure to potential allergens, which are crucial for narrowing down the differential diagnosis.\", 'evidence_sources': ['notes', 'metadata']}\n- reasoning gaps: {'description': \"The patient's history is incomplete, and there is no information about the duration of symptoms, prior treatments, or exposure to potential allergens. This lack of information makes it challenging to determine the most likely diagnosis.\", 'evidence_sources': ['notes', 'metadata']}\n- suspicious points: The lesion description mentions erythema and scaling, which align with the observed redness and rough texture in the image.; The metadata indicates itchiness, which is consistent with the patient's report.\n- contradiction_check_skill: contradictions={'description': 'The image shows a patchy area of erythema with slight scaling, while the morphology analysis suggests a macule with multiple patches, which ... | missing_links={'description': \"The patient's history lacks specific details about the duration of symptoms, prior treatments, or exposure to potential allergens, which are... | reasoning_gaps={'description': \"The patient's history is incomplete, and there is no information about the duration of symptoms, prior treatments, or exposure to potential ... | evidence_strength=medium | recommendation_type=uncertainty_signal\n- uncertainty_assessment_skill: uncertainty_level=medium | reasons=The image shows patchy erythema with slight scaling, which can be seen in various dermatological conditions.; The differential diagnosis includes Contact der... | missing_information=Duration of symptoms; History of previous skin conditions or allergies; Patient's occupation and potential environmental exposures | evidence_strength=medium | recommendation_type=uncertainty_signal\n- residual uncertainty if still missing: unknown\n- escalation needed: unknown\n\n[Planner Rationale]\n- Selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, temporal_evolution_skill, malignancy_risk_assessment_skill, differential_compare_skill, exclusion_reasoning_skill, uncertainty_assessment_skill, contradiction_check_skill\n- morphology_analysis_skill: Boosted by skill retrieval score=14.18.; Included as part of the core structured observation layer.; Matched active trigger profile `foundational_observation`.; Matched active trigger profile `multiple_ddx`.\n- color_pattern_analysis_skill: Boosted by skill retrieval score=12.15.; Included as part of the core structured observation layer.; Matched active trigger profile `foundational_observation`.; Matched active trigger profile `multiple_ddx`.\n- border_surface_analysis_skill: Boosted by skill retrieval score=9.62.; Included as part of the core structured observation layer.; Matched active trigger profile `foundational_observation`.; Matched active trigger profile `multiple_ddx`.",
+  "evidence_calibration_debug": {
+    "calibrator_type": "heuristic",
+    "calibrator_version": "v1",
+    "section_plan": {
+      "observation": {
+        "skill_names": [
+          "lesion_description_structuring_skill",
+          "morphology_analysis_skill",
+          "color_pattern_analysis_skill",
+          "distribution_analysis_skill"
+        ],
+        "merged_groups": [
+          {
+            "label": "structured_lesion_observation",
+            "skills": [
+              "lesion_description_structuring_skill",
+              "morphology_analysis_skill",
+              "color_pattern_analysis_skill"
+            ],
+            "max_members": 3
+          }
+        ],
+        "raw_case_source_ids": [
+          "PAT_1516_1765"
+        ]
+      },
+      "comparison": {
+        "skill_names": [
+          "exclusion_reasoning_skill",
+          "metadata_consistency_skill",
+          "differential_compare_skill"
+        ],
+        "merged_groups": [
+          {
+            "label": "differential_and_exclusion_reasoning",
+            "skills": [
+              "differential_compare_skill",
+              "exclusion_reasoning_skill"
+            ],
+            "max_members": 2
+          }
+        ],
+        "tactical_source_ids": [
+          "tac_PAT_1516_1765_a0a91034ab1a",
+          "tac_PAT_1516_1765_6c7d6a323fec"
+        ]
+      },
+      "risk": {
+        "skill_names": [
+          "malignancy_risk_assessment_skill"
+        ],
+        "abstract_source_ids": [
+          "abs_confusion_01d077299876",
+          "abs_rule_c93aa7bc54f6"
+        ]
+      },
+      "conflict_uncertainty": {
+        "skill_names": [
+          "contradiction_check_skill",
+          "uncertainty_assessment_skill"
+        ]
+      },
+      "planner": {
+        "max_reason_skills": 3
+      },
+      "section_order": [
+        "observation",
+        "comparison",
+        "risk",
+        "conflict_uncertainty",
+        "planner"
+      ]
+    },
+    "item_scores": [
+      {
+        "item_id": "malignancy_risk_assessment_skill",
+        "item_type": "skill_output",
+        "section": "risk",
+        "heuristic_score": 9.592591,
+        "learned_score": 0.0,
+        "final_score": 9.592591,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "exclusion_reasoning_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 9.266827,
+        "learned_score": 0.0,
+        "final_score": 9.266827,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "lesion_description_structuring_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 8.97182,
+        "learned_score": 0.0,
+        "final_score": 8.97182,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "contradiction_check_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 8.408304,
+        "learned_score": 0.0,
+        "final_score": 8.408304,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "morphology_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.934351,
+        "learned_score": 0.0,
+        "final_score": 7.934351,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.672038,
+        "learned_score": 0.0,
+        "final_score": 7.672038,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "metadata_consistency_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 7.635013,
+        "learned_score": 0.0,
+        "final_score": 7.635013,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.474805,
+        "learned_score": 0.0,
+        "final_score": 7.474805,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "uncertainty_assessment_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 7.471508,
+        "learned_score": 0.0,
+        "final_score": 7.471508,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "border_surface_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.369306,
+        "learned_score": 0.0,
+        "final_score": 7.369306,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "differential_compare_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 6.988541,
+        "learned_score": 0.0,
+        "final_score": 6.988541,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "temporal_evolution_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 6.330019,
+        "learned_score": 0.0,
+        "final_score": 6.330019,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "abs_confusion_01d077299876",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 5.0,
+        "learned_score": 0.0,
+        "final_score": 5.0,
+        "selected": true,
+        "reason": "selected"
+      },
+      {
+        "item_id": "abs_rule_c93aa7bc54f6",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 4.2,
+        "learned_score": 0.0,
+        "final_score": 4.2,
+        "selected": true,
+        "reason": "selected"
+      },
+      {
+        "item_id": "abs_confusion_96013d69cef6",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 4.1,
+        "learned_score": 0.0,
+        "final_score": 4.1,
+        "selected": false,
+        "reason": "dropped_by_rank"
+      },
+      {
+        "item_id": "tac_PAT_1516_1765_a0a91034ab1a",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 3.6,
+        "learned_score": 0.0,
+        "final_score": 3.6,
+        "selected": true,
+        "reason": "selected"
+      },
+      {
+        "item_id": "tac_PAT_1516_1765_6c7d6a323fec",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 3.6,
+        "learned_score": 0.0,
+        "final_score": 3.6,
+        "selected": true,
+        "reason": "selected"
+      },
+      {
+        "item_id": "tac_PAT_1516_1765_510e192d29fd",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 3.6,
+        "learned_score": 0.0,
+        "final_score": 3.6,
+        "selected": false,
+        "reason": "dropped_by_rank"
+      },
+      {
+        "item_id": "PAT_1516_1765",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 1.7,
+        "learned_score": 0.0,
+        "final_score": 1.7,
+        "selected": true,
+        "reason": "selected"
+      }
+    ],
+    "omitted_items": [],
+    "debug": {
+      "policy": {
+        "enable_evidence_calibrator": true,
+        "calibrator_mode": "heuristic",
+        "calibrator_checkpoint_path": "",
+        "learned_calibration_weight": 1.2,
+        "max_observation_skills": 4,
+        "max_comparison_skills": 3,
+        "max_risk_skills": 2,
+        "max_uncertainty_skills": 3,
+        "max_raw_cases": 1,
+        "max_tactical": 2,
+        "max_abstract": 2,
+        "max_planner_reasons": 3,
+        "omit_low_value_evidence": true,
+        "min_effective_score": 2.4,
+        "debug_output": true
+      },
+      "learned_scorer_loaded": false,
+      "contradiction_count": 5,
+      "uncertainty_level": "medium",
+      "risk_flag_count": 1
+    }
+  }
+}

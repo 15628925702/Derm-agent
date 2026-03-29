@@ -1,0 +1,245 @@
+{
+  "record_version": "v3",
+  "timestamp": "2026-03-28T10:35:55Z",
+  "case_id": "PAT_36_50",
+  "dataset_name": "pad_ufes_20",
+  "input_summary": {
+    "image_path": "/root/DermAgent/data/pad_ufes_20/images/imgs_part_1/PAT_36_50_14.png",
+    "metadata_path": "/root/DermAgent/data/pad_ufes_20/metadata.csv",
+    "clinical_metadata": {
+      "smoke": "False",
+      "drink": "False",
+      "background_father": "GERMANY",
+      "background_mother": "GERMANY",
+      "age": "46",
+      "pesticide": "True",
+      "gender": "MALE",
+      "skin_cancer_history": "False",
+      "cancer_history": "True",
+      "has_piped_water": "False",
+      "has_sewage_system": "False",
+      "fitspatrick": "2.0",
+      "region": "ARM",
+      "diameter_1": "8.0",
+      "diameter_2": "2.0",
+      "itch": "False",
+      "grew": "UNK",
+      "hurt": "False",
+      "changed": "False",
+      "bleed": "False",
+      "elevation": "False"
+    },
+    "image_exists": true
+  },
+  "qwen_initial": {},
+  "skill_retrieval": {},
+  "planner_decision": {
+    "selected_skills": [],
+    "selection_reasons": {},
+    "ordering": [],
+    "decision_trace": [],
+    "planner_type": "direct_baseline",
+    "planner_version": "v1",
+    "controller_family": "none",
+    "controller_training_ready": false,
+    "policy_id": ""
+  },
+  "retrieval_bundle": {
+    "before_skills": {},
+    "after_skills": {}
+  },
+  "selected_skills": [],
+  "skill_outputs": {},
+  "evidence_bundle": {
+    "serialized_evidence_text": "",
+    "risk_flags": [],
+    "uncertainty_summary": {},
+    "contradiction_summary": {},
+    "planner_rationale": {}
+  },
+  "qwen_final": {
+    "final_diagnosis": "Actinic Keratosis",
+    "differential_diagnoses": [
+      "Basal Cell Carcinoma",
+      "Squamous Cell Carcinoma",
+      "Seborrheic Keratosis"
+    ],
+    "rationale": "The lesion appears as a scaly, crusty patch on the arm, which is consistent with Actinic Keratosis. The patient's history of pesticide exposure and Fitzpatrick skin type 2 suggest increased risk for actinic keratoses. The differential diagnoses include Basal Cell Carcinoma (BCC) and Squamous Cell Carcinoma (SCC), which can also present as scaly lesions but typically have different clinical features or associated symptoms. Seborrheic Keratosis is another possibility, characterized by a warty or horn-like appearance, which does not seem to be the case here.",
+    "confidence": "Moderate",
+    "follow_up_considerations": [
+      "Refer to a dermatologist for a definitive diagnosis and management plan.",
+      "Consider regular skin cancer screening due to the patient's history of cancer and environmental risk factors."
+    ]
+  },
+  "ground_truth": {
+    "raw_label": "ACK",
+    "canonical_label": "ACK",
+    "malignant_flag": true
+  },
+  "evaluation": {
+    "correct": true,
+    "topk_hit": true,
+    "malignant_recall_hit": true,
+    "baseline_correct": true,
+    "baseline_topk_hit": true,
+    "baseline_malignant_recall_hit": true,
+    "agent_vs_baseline_delta": {
+      "correct_delta": 0,
+      "topk_hit_delta": 0,
+      "malignant_recall_hit_delta": 0
+    }
+  },
+  "reflection_summary": {},
+  "writeback_ops": {
+    "writeback_enabled": false,
+    "write_experience": false,
+    "raw_case_memory_written": false,
+    "tactical_experience_count": 0,
+    "abstract_experience_count": 0,
+    "composite_skill_seed_count": 0,
+    "planned_raw_case_memory": false,
+    "planned_tactical_experience_count": 0,
+    "planned_abstract_experience_count": 0,
+    "skill_stats_update": [],
+    "cognition_update": {},
+    "planned_writeback_bundle": {},
+    "persisted_writeback_bundle": {}
+  },
+  "cognition_snapshot": {
+    "before": {},
+    "after": {}
+  },
+  "policy_snapshot": {
+    "policy_id": "candidate_stage4_step6_medium_signal_no_ablation_10h_v1",
+    "version": 2,
+    "status": "candidate",
+    "created_at": "2026-03-28T06:34:29Z",
+    "parent_policy_id": "stable_default_policy",
+    "description": "Auto-generated candidate policy from staged training pipeline.",
+    "change_summary": {
+      "planner": [
+        "Baseline rule-based planner with structured evidence support."
+      ],
+      "skill_overrides": [],
+      "retrieval": [
+        "Use cognition-guided retrieval with conservative top-k defaults."
+      ],
+      "cognition_defaults": [],
+      "pipeline": [
+        "staged_training_run:medium_signal_no_ablation_10h_v1"
+      ]
+    },
+    "planner_policy": {
+      "controller_family": "learned_supervised",
+      "controller_checkpoint_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_10h_v1/train_runs/medium_signal_no_ablation_10h_v1/stage1_supervised_controller_training/checkpoints/controller_planner_scorer__candidate__medium_signal_no_ablation_10h_v1.pt",
+      "learned_controller_weight": 4.0,
+      "learned_controller_select_threshold": 0.4,
+      "learned_controller_top_k": 0,
+      "learned_controller_force_top_k": 0,
+      "score_threshold_default": 4,
+      "retrieval_score_cap": 3,
+      "foundational_bonus": 6,
+      "preferred_skill_bonus": 3,
+      "helpful_rate_bonus": 2,
+      "failure_rate_penalty": 2,
+      "signal_match_bonus": 2,
+      "known_confusion_bonus": 2,
+      "experience_compare_bonus": 2,
+      "experience_risk_bonus": 2,
+      "experience_gap_bonus": 2,
+      "experience_conflict_bonus": 2,
+      "experience_escalation_bonus": 2,
+      "enable_signals": {
+        "experience_compare_pattern": true,
+        "experience_risk_pattern": true,
+        "experience_gap_pattern": true,
+        "experience_conflict_pattern": true,
+        "experience_escalation_pattern": true
+      },
+      "force_select_skills": [],
+      "force_disable_skills": [],
+      "skill_overrides": {}
+    },
+    "retrieval_policy": {
+      "top_k_experience": 3,
+      "top_k_tactical": 3,
+      "top_k_abstract": 3,
+      "top_k_skill_candidates": 14,
+      "prioritize_confusion_cases": true,
+      "enable_learned_retrieval_reranker": true,
+      "retrieval_reranker_checkpoint_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_10h_v1/train_runs/medium_signal_no_ablation_10h_v1/stage2_retrieval_scorer_training/checkpoints/retrieval_reranker__candidate__medium_signal_no_ablation_10h_v1.pt",
+      "retrieval_reranker_blend_weight": 2.5,
+      "retrieval_reranker_fail_open": true
+    },
+    "evidence_policy": {
+      "enable_evidence_calibrator": true,
+      "calibrator_mode": "heuristic",
+      "calibrator_checkpoint_path": "",
+      "learned_calibration_weight": 1.2,
+      "max_observation_skills": 4,
+      "max_comparison_skills": 3,
+      "max_risk_skills": 2,
+      "max_uncertainty_skills": 3,
+      "max_raw_cases": 1,
+      "max_tactical": 2,
+      "max_abstract": 2,
+      "max_planner_reasons": 3,
+      "omit_low_value_evidence": true,
+      "min_effective_score": 2.4,
+      "debug_output": true
+    },
+    "skill_config_refs": [],
+    "evidence_refs": {},
+    "evaluation_gate": {
+      "minimum_cases": 10,
+      "max_top1_drop": 0.0,
+      "max_topk_drop": 0.02,
+      "max_error_rate_increase": 0.02,
+      "max_key_confusion_drop": 0.0,
+      "require_non_decreasing_malignant_recall": true
+    },
+    "last_evaluation": {},
+    "rollback_history": [],
+    "state_split": "test",
+    "state_version": "policy_config:global:826bc4565510",
+    "source_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_10h_v1/train_runs/medium_signal_no_ablation_10h_v1/stage3_policy_candidate_evaluation/candidate_policy.json"
+  },
+  "state_versions": {
+    "run_mode": "test_frozen_inference",
+    "data_split": "test",
+    "experience_state": {},
+    "cognition_state": {},
+    "policy_state": {
+      "split_name": "test",
+      "split_aware_version": "policy_config:global:826bc4565510",
+      "policy_id": "candidate_stage4_step6_medium_signal_no_ablation_10h_v1"
+    }
+  },
+  "controller_training_example": {},
+  "baseline_qwen": {
+    "final_diagnosis": "Actinic Keratosis",
+    "differential_diagnoses": [
+      "Basal Cell Carcinoma",
+      "Squamous Cell Carcinoma",
+      "Seborrheic Keratosis"
+    ],
+    "rationale": "The lesion appears as a scaly, crusty patch on the arm, which is consistent with Actinic Keratosis. The patient's history of pesticide exposure and Fitzpatrick skin type 2 suggest increased risk for actinic keratoses. The differential diagnoses include Basal Cell Carcinoma (BCC) and Squamous Cell Carcinoma (SCC), which can also present as scaly lesions but typically have different clinical features or associated symptoms. Seborrheic Keratosis is another possibility, characterized by a warty or horn-like appearance, which does not seem to be the case here.",
+    "confidence": "Moderate",
+    "follow_up_considerations": [
+      "Refer to a dermatologist for a definitive diagnosis and management plan.",
+      "Consider regular skin cancer screening due to the patient's history of cancer and environmental risk factors."
+    ]
+  },
+  "evaluation_context": {
+    "eval_id": "eval_brief_20260328T103459Z",
+    "target_id": "direct_baseline",
+    "target_label": "Direct Baseline",
+    "target_type": "baseline",
+    "mode": "baseline",
+    "evaluation_manifest_path": "/root/DermAgent/outputs/smoke_cycles/medium_signal_no_ablation_10h_v1/evaluation_protocol/eval_brief_20260328T103459Z/evaluation_manifest.json",
+    "frozen_evaluation_mode": true,
+    "writeback_disabled": true,
+    "run_mode": "test_frozen_inference",
+    "data_split": "test"
+  }
+}

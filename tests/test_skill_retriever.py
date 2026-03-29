@@ -140,6 +140,51 @@ def test_skill_retriever_prefers_specialist_skill_for_mel_nev_confusion() -> Non
     assert any(hit in {"mel_nev_confusion", "known_confusion_match"} for hit in bundle.trigger_hits["mel_nev_specialist_skill"])
 
 
+def test_skill_retriever_boosts_ack_sek_cluster_and_exclusion_reasoning() -> None:
+    retriever = build_default_skill_retriever()
+    skills = [
+        _skill(
+            skill_id="skill.ack_scc_specialist.v1",
+            name="ack_scc_specialist_skill",
+            skill_type="specialist",
+            trigger_condition="Use when ACK/SCC/BCC/SEK confusion is active.",
+            trigger_rationale="Specialist comparison helps recurrent keratinocyte confusion clusters.",
+        ),
+        _skill(
+            skill_id="skill.exclusion_reasoning.v1",
+            name="exclusion_reasoning_skill",
+            skill_type="reasoning",
+            trigger_condition="Use when negative evidence and missing evidence matter for the active differential.",
+            trigger_rationale="Explicit exclusion reasoning improves hard-cluster interpretability.",
+        ),
+        _skill(
+            skill_id="skill.malignancy_risk_assessment.v1",
+            name="malignancy_risk_assessment_skill",
+            skill_type="risk_uncertainty",
+            trigger_condition="Use when malignant risk or alarm signals are possible.",
+            trigger_rationale="Risk framing should be explicit.",
+        ),
+    ]
+    bundle = retriever.retrieve(
+        SkillRetrievalQuery(
+            perception={
+                "image_summary": "A rough scaly lesion with uncertain stuck-on versus actinic surface pattern.",
+                "ddx_candidates": ["Actinic Keratosis", "Seborrheic Keratosis"],
+                "uncertainty": {"level": "high"},
+                "notes": ["Need better texture detail for ACK versus SEK confusion."],
+            },
+            metadata={"region": "FACE", "changed": "True"},
+            cognition=CognitionState(),
+        ),
+        skills,
+    )
+
+    assert "ack_scc_specialist_skill" in bundle.candidate_skill_names
+    assert "exclusion_reasoning_skill" in bundle.candidate_skill_names
+    assert "ack_sek_confusion" in bundle.trigger_hits["ack_scc_specialist_skill"]
+    assert bundle.retrieval_scores["ack_scc_specialist_skill"] >= bundle.retrieval_scores["malignancy_risk_assessment_skill"]
+
+
 def _skill(
     *,
     skill_id: str,

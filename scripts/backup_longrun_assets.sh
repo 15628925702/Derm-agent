@@ -27,7 +27,7 @@ copy_if_exists() {
   fi
 }
 
-copy_if_exists "${PROJECT_ROOT}/state/split_states/train" "${TARGET_DIR}/state/split_states/train"
+copy_if_exists "${PROJECT_ROOT}/state/split_states" "${TARGET_DIR}/state/split_states"
 copy_if_exists "${PROJECT_ROOT}/state/policy" "${TARGET_DIR}/state/policy"
 copy_if_exists "${PROJECT_ROOT}/outputs/checkpoints" "${TARGET_DIR}/outputs/checkpoints"
 copy_if_exists "${PROJECT_ROOT}/outputs/smoke_cycles/${RUN_ID}" "${TARGET_DIR}/outputs/smoke_cycles/${RUN_ID}"
@@ -40,10 +40,11 @@ cat > "${MANIFEST_PATH}" <<EOF
   "created_at_utc": "${STAMP}",
   "project_root": "${PROJECT_ROOT}",
   "paths": {
-    "train_state": "${TARGET_DIR}/state/split_states/train",
+    "split_states": "${TARGET_DIR}/state/split_states",
     "policy_state": "${TARGET_DIR}/state/policy",
     "checkpoints": "${TARGET_DIR}/outputs/checkpoints",
-    "smoke_cycle_run": "${TARGET_DIR}/outputs/smoke_cycles/${RUN_ID}"
+    "smoke_cycle_run": "${TARGET_DIR}/outputs/smoke_cycles/${RUN_ID}",
+    "run_local_checkpoints": "${TARGET_DIR}/outputs/smoke_cycles/${RUN_ID}/checkpoints"
   }
 }
 EOF

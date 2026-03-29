@@ -1,0 +1,1006 @@
+{
+  "perception": {
+    "image_summary": "A small, raised, crusty lesion is present on the foot. The surrounding skin appears slightly erythematous.",
+    "ddx_candidates": [
+      "Plantar wart",
+      "Fungal infection (e.g., tinea pedis)",
+      "Seborrheic keratosis",
+      "Malignant melanoma"
+    ],
+    "uncertainty": {
+      "level": "high",
+      "reasons": [
+        "Lesion size and location suggest a variety of possibilities.",
+        "History of cancer raises concern for malignancy."
+      ]
+    },
+    "notes": [
+      "The lesion is located on the foot, which is a common site for plantar warts.",
+      "The crusty appearance could be indicative of a fungal infection or a seborrheic keratosis.",
+      "The patient's history of cancer adds complexity to the differential diagnosis."
+    ]
+  },
+  "retrieved_experience": [
+    {
+      "case_id": "PAT_1516_1765",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "A well-circumscribed, slightly irregular brown lesion on the arm.",
+      "confusion_pair": "Atypical Nevus->NEV",
+      "learning_points": [
+        "Imported legacy confusion memory.",
+        "observe_then_structure"
+      ],
+      "source_id": "abs_confusion_96013d69cef6",
+      "retrieval_score": 3
+    },
+    {
+      "case_id": "PAT_1516_1765",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "{'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "confusion_pair": "Atypical Mole->NEV",
+      "learning_points": [
+        "Imported legacy confusion memory.",
+        "risk_then_uncertainty_audit"
+      ],
+      "source_id": "abs_confusion_01d077299876",
+      "retrieval_score": 3
+    },
+    {
+      "case_id": "PAT_1516_1765",
+      "source_layer": "tactical_experience",
+      "source_subtype": "confusion_experience",
+      "experience_type": "tactical_experience",
+      "perception_summary": "risk=malignancy_risk:medium; uncertainty=low; {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "confusion_pair": "Atypical Mole->NEV",
+      "learning_points": [
+        "Preserve Qwen as the only final diagnostic decision maker.",
+        "Use evidence package to surface structured morphology, risk, and uncertainty clues.",
+        "Action pattern: risk_then_uncertainty_audit"
+      ],
+      "source_id": "tac_PAT_1516_1765_a0a91034ab1a",
+      "retrieval_score": 3
+    }
+  ],
+  "skill_outputs": {
+    "morphology_analysis_skill": {
+      "lesion_type": "papule",
+      "size_range": "small",
+      "elevation": "raised",
+      "count": "solitary",
+      "referenced_experiences": [
+        "tac_PAT_1516_1765_34c7ae80a73a"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "color_pattern_analysis_skill": {
+      "primary_color": "Brown",
+      "color_variation": "marked",
+      "pigmentation_pattern": "mixed",
+      "asymmetry_color": "present",
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "border_surface_analysis_skill": {
+      "border_clarity": "poorly defined",
+      "border_irregularity": "irregular",
+      "surface_texture": "keratotic",
+      "scaling_presence": "present",
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "distribution_analysis_skill": {
+      "body_location": "foot",
+      "symmetry": "asymmetric",
+      "localized_vs_generalized": "localized",
+      "clustering_pattern": "solitary",
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "lesion_description_structuring_skill": {
+      "primary_lesion_morphology": "Papule",
+      "color": [
+        "Brown, Crusty"
+      ],
+      "border": [
+        "Poorly defined, Irregular"
+      ],
+      "surface": [
+        "Keratotic, Scaling"
+      ],
+      "size_count": [
+        "size_range: Small, count: Solitary"
+      ],
+      "distribution": [
+        "body_location: Foot, symmetry: Asymmetric, localized_vs_generalized: Localized, clustering_pattern: Solitary"
+      ],
+      "associated_context": [
+        "patient_gender: Female, patient_age: 46, patient_skin_type: Fair, patient_skin_cancer_history: False, patient_cancer_history: True, patient_foot_condition: Erythematous"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "metadata_consistency_skill": {
+      "consistency_score": "medium",
+      "conflicts": [],
+      "suspicious_points": [
+        "The lesion is described as 'crusty' but the image shows a smooth surface texture.",
+        "The lesion is reported to be 'slightly erythematous,' yet the image does not show significant redness."
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "uncertainty_signal"
+    },
+    "temporal_evolution_skill": {
+      "onset_type": "unknown",
+      "progression_speed": "stable",
+      "recurrence": "uncertain",
+      "stability": "stable",
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "malignancy_risk_assessment_skill": {
+      "risk_level": "medium",
+      "risk_evidence": [
+        "{'type': 'morphology', 'description': 'The lesion is a papule with a raised, crusty appearance.', 'evidence_strength': 'medium'}",
+        "{'type': 'color', 'description': 'The primary color is brown with marked color variation and mixed pigmentation.', 'evidence_strength': 'medium'}",
+        "{'type': 'border', 'description': 'The border is poorly defined and irregular, with a keratotic surface and scaling presence.', 'evidence_strength': 'medium'}",
+        "{'type': 'evolution', 'description': 'The lesion has a stable progression speed and stability, with uncertain recurrence.', 'evidence_strength': 'medium'}"
+      ],
+      "alarm_signals": [
+        "Poorly defined and irregular border",
+        "Keratotic surface and scaling presence",
+        "Marked color variation and mixed pigmentation"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "risk_signal"
+    },
+    "differential_compare_skill": {
+      "candidate_pairs": [
+        "Plantar wart vs Fungal infection (e.g., tinea pedis)",
+        "Plantar wart vs Seborrheic keratosis",
+        "Plantar wart vs Malignant melanoma"
+      ],
+      "supporting_evidence": [
+        "{'Plantar wart vs Fungal infection (e.g., tinea pedis)': ['The lesion is located on the foot, which is a common site for plantar warts.', 'The crusty appearance could be indicative of a fungal infection.'], 'Plantar wart vs Seborrheic keratosis': ['The lesion is located on the foot, which is a common site for plantar warts.', 'The crusty appearance could also be indicative of a seborrheic keratosis.'], 'Plantar wart vs Malignant melanoma': ['The lesion has a raised, crusty appearance, which can be seen in both plantar warts and malignant melanomas.', \"The patient's history of cancer raises concern for malignancy.\"]}"
+      ],
+      "conflicting_evidence": [
+        "{'Plantar wart vs Fungal infection (e.g., tinea pedis)': ['The lesion is located on the foot, which is a common site for plantar warts.', 'The crusty appearance could be indicative of a fungal infection.'], 'Plantar wart vs Seborrheic keratosis': ['The lesion is located on the foot, which is a common site for plantar warts.', 'The crusty appearance could also be indicative of a seborrheic keratosis.'], 'Plantar wart vs Malignant melanoma': ['The lesion has a raised, crusty appearance, which can be seen in both plantar warts and malignant melanomas.', \"The patient's history of cancer raises concern for malignancy.\"]}"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "exclusion_reasoning_skill": {
+      "unlikely_candidates": [
+        "Fungal infection (e.g., tinea pedis)",
+        "Seborrheic keratosis"
+      ],
+      "exclusion_evidence": [
+        "The lesion is located on the foot, which is a common site for plantar warts.",
+        "The crusty appearance could be indicative of a fungal infection or a seborrheic keratosis."
+      ],
+      "required_missing_evidence": [
+        "Confirmation of the presence of typical fungal elements like scaling or hyperkeratosis.",
+        "Documentation of the lesion's response to antifungal treatment."
+      ],
+      "exclusion_confidence": "medium",
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "information_gap_detection_skill": {
+      "missing_information": [
+        "Patient's medical history (specifically, any history of skin conditions or treatments).",
+        "Results of any relevant laboratory tests (e.g., biopsy results, blood tests).",
+        "Patient's family history of skin diseases.",
+        "Any recent trauma or injury to the foot."
+      ],
+      "why_it_matters": [
+        "A detailed medical history can provide insights into the patient's risk factors and previous treatments, which are crucial for differentiating between benign and malignant lesions.",
+        "Laboratory tests can confirm the presence of specific pathogens or cellular abnormalities.",
+        "Family history can indicate genetic predispositions to certain skin conditions.",
+        "Recent trauma or injury might influence the lesion's appearance and behavior."
+      ],
+      "impact_on_differential": [
+        "Without a detailed medical history, it is challenging to rule out or confirm the presence of malignancy, especially given the patient's history of cancer.",
+        "Biopsy results would be essential to confirm the nature of the lesion, ruling out benign conditions like plantar warts and seborrheic keratoses.",
+        "Family history can help identify inherited skin conditions that might affect the differential diagnosis.",
+        "Recent trauma or injury could alter the lesion's characteristics, making it more difficult to differentiate between benign and malignant conditions."
+      ],
+      "uncertainty_if_missing": "high",
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "low",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "uncertainty_assessment_skill": {
+      "uncertainty_level": "high",
+      "reasons": [
+        "The lesion's morphology suggests multiple possibilities including plantar wart, fungal infection, seborrheic keratosis, and malignant melanoma.",
+        "The patient's history of cancer raises significant concern for malignancy, complicating the differential diagnosis."
+      ],
+      "missing_information": [
+        "Clinical history beyond the patient's cancer history, such as duration of the lesion, recent trauma, or exposure to irritants.",
+        "Laboratory tests or biopsy results to confirm the nature of the lesion."
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "uncertainty_signal"
+    },
+    "contradiction_check_skill": {
+      "contradictions": [
+        {
+          "source": "morphology_analysis_skill",
+          "description": "The lesion is described as 'papule' with 'raised' elevation, but the image shows a flat lesion."
+        },
+        {
+          "source": "border_surface_analysis_skill",
+          "description": "The lesion is described as having a 'poorly defined' and 'irregular' border, but the image does not show significant irregularity."
+        }
+      ],
+      "missing_links": [
+        {
+          "description": "The lesion's exact size cannot be determined from the image alone.",
+          "source": "morphology_analysis_skill"
+        },
+        {
+          "description": "The lesion's exact color cannot be determined from the image alone.",
+          "source": "color_pattern_analysis_skill"
+        }
+      ],
+      "reasoning_gaps": [
+        {
+          "description": "The lesion's exact location on the foot cannot be confirmed from the image alone.",
+          "source": "initial_perception"
+        },
+        {
+          "description": "The lesion's exact count cannot be confirmed from the image alone.",
+          "source": "initial_perception"
+        }
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876",
+        "tac_PAT_1516_1765_34c7ae80a73a",
+        "abs_rule_c93aa7bc54f6"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "escalation_recommendation_skill": {
+      "whether_escalation_needed": "yes",
+      "escalation_reason": [
+        "High uncertainty and potential malignancy risk due to lesion morphology and patient's cancer history."
+      ],
+      "suggested_next_check_type": "biopsy",
+      "caution_flags": [
+        "High uncertainty level",
+        "Patient's cancer history raises concern for malignancy"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_96013d69cef6",
+        "abs_confusion_01d077299876"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "risk_signal"
+    }
+  },
+  "risk_flags": [
+    "malignancy_risk:medium"
+  ],
+  "uncertainty": {
+    "uncertainty_level": "high",
+    "reasons": [
+      "The lesion's morphology suggests multiple possibilities including plantar wart, fungal infection, seborrheic keratosis, and malignant melanoma.",
+      "The patient's history of cancer raises significant concern for malignancy, complicating the differential diagnosis."
+    ],
+    "missing_information": [
+      "Clinical history beyond the patient's cancer history, such as duration of the lesion, recent trauma, or exposure to irritants.",
+      "Laboratory tests or biopsy results to confirm the nature of the lesion."
+    ],
+    "referenced_experiences": [
+      "abs_confusion_96013d69cef6",
+      "abs_confusion_01d077299876",
+      "tac_PAT_1516_1765_34c7ae80a73a",
+      "abs_rule_c93aa7bc54f6"
+    ],
+    "evidence_strength": "medium",
+    "recommendation_type": "uncertainty_signal"
+  },
+  "notes": [
+    "Agent generated structured evidence only.",
+    "Qwen remains the sole final diagnostic decision maker.",
+    "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, temporal_evolution_skill, malignancy_risk_assessment_skill, differential_compare_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill.",
+    "Policy in use: stable_default_policy.",
+    "Skill retrieval candidates: metadata_consistency_skill, lesion_description_structuring_skill, malignancy_risk_assessment_skill, morphology_analysis_skill, uncertainty_assessment_skill, distribution_analysis_skill, color_pattern_analysis_skill, temporal_evolution_skill, contradiction_check_skill, border_surface_analysis_skill, information_gap_detection_skill, escalation_recommendation_skill, exclusion_reasoning_skill, differential_compare_skill.",
+    "The lesion is located on the foot, which is a common site for plantar warts.",
+    "The crusty appearance could be indicative of a fungal infection or a seborrheic keratosis.",
+    "The patient's history of cancer adds complexity to the differential diagnosis.",
+    "Retrieved prior reasoning experience for context.",
+    "High uncertainty detected in MVP skeleton."
+  ],
+  "initial_perception_summary": {
+    "image_summary": "A small, raised, crusty lesion is present on the foot. The surrounding skin appears slightly erythematous.",
+    "ddx_candidates": [
+      "Plantar wart",
+      "Fungal infection (e.g., tinea pedis)",
+      "Seborrheic keratosis",
+      "Malignant melanoma"
+    ],
+    "uncertainty_level": "high",
+    "uncertainty_reasons": [
+      "Lesion size and location suggest a variety of possibilities.",
+      "History of cancer raises concern for malignancy."
+    ],
+    "observation_notes": [
+      "The lesion is located on the foot, which is a common site for plantar warts.",
+      "The crusty appearance could be indicative of a fungal infection or a seborrheic keratosis.",
+      "The patient's history of cancer adds complexity to the differential diagnosis."
+    ]
+  },
+  "retrieved_raw_cases_summary": [
+    {
+      "source_id": "PAT_1516_1765",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "None",
+      "perception_summary": "",
+      "learning_points": [
+        "Final decision: None",
+        "Correctness: None"
+      ],
+      "retrieval_score": 1.0,
+      "base_retrieval_score": 1.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_tactical_experiences_summary": [
+    {
+      "source_id": "tac_PAT_1516_1765_a0a91034ab1a",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Mole->NEV",
+      "perception_summary": "risk=malignancy_risk:medium; uncertainty=low; {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "learning_points": [
+        "Preserve Qwen as the only final diagnostic decision maker.",
+        "Use evidence package to surface structured morphology, risk, and uncertainty clues.",
+        "Action pattern: risk_then_uncertainty_audit"
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_PAT_1516_1765_6c7d6a323fec",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Nevus->NEV",
+      "perception_summary": "risk=malignancy_risk:medium; uncertainty=low; A well-circumscribed, slightly irregular brown lesion on the arm.",
+      "learning_points": [
+        "Keep Qwen as the only final diagnostic decision maker.",
+        "Use structured skill evidence to support, not replace, final diagnosis.",
+        "Track confusion pattern: Atypical Nevus->NEV."
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_PAT_1516_1765_510e192d29fd",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Mole->NEV",
+      "perception_summary": "risk=malignancy_risk:medium; uncertainty=low; morphology=Irregular; color=Brown; border=Irregular; surface=Smooth; body_location=Arm",
+      "learning_points": [
+        "Keep Qwen as the only final diagnostic decision maker.",
+        "Use structured skill evidence to support, not replace, final diagnosis.",
+        "Track confusion pattern: Atypical Mole->NEV."
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_abstract_experiences_summary": [
+    {
+      "source_id": "abs_confusion_96013d69cef6",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Nevus->NEV",
+      "perception_summary": "A well-circumscribed, slightly irregular brown lesion on the arm.",
+      "learning_points": [
+        "Imported legacy confusion memory.",
+        "observe_then_structure"
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_confusion_01d077299876",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "Atypical Mole->NEV",
+      "perception_summary": "{'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "learning_points": [
+        "Imported legacy confusion memory.",
+        "risk_then_uncertainty_audit"
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_rule_c93aa7bc54f6",
+      "source_layer": "abstract_experience",
+      "experience_type": "rule",
+      "case_id": "PAT_1516_1765",
+      "confusion_pair": "None",
+      "perception_summary": "{'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}",
+      "learning_points": [
+        "Preserve Qwen as the only final diagnostic decision maker.",
+        "observe_then_structure"
+      ],
+      "retrieval_score": 2.0,
+      "base_retrieval_score": 2.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "uncertainty_summary": {
+    "uncertainty_level": "high",
+    "reasons": [
+      "The lesion's morphology suggests multiple possibilities including plantar wart, fungal infection, seborrheic keratosis, and malignant melanoma.",
+      "The patient's history of cancer raises significant concern for malignancy, complicating the differential diagnosis."
+    ],
+    "missing_information": [
+      "Clinical history beyond the patient's cancer history, such as duration of the lesion, recent trauma, or exposure to irritants.",
+      "Laboratory tests or biopsy results to confirm the nature of the lesion."
+    ],
+    "referenced_experiences": [
+      "abs_confusion_96013d69cef6",
+      "abs_confusion_01d077299876",
+      "tac_PAT_1516_1765_34c7ae80a73a",
+      "abs_rule_c93aa7bc54f6"
+    ]
+  },
+  "contradiction_summary": {
+    "contradictions": [
+      "{'source': 'morphology_analysis_skill', 'description': \"The lesion is described as 'papule' with 'raised' elevation, but the image shows a flat lesion.\"}",
+      "{'source': 'border_surface_analysis_skill', 'description': \"The lesion is described as having a 'poorly defined' and 'irregular' border, but the image does not show significant irregularity.\"}"
+    ],
+    "missing_links": [
+      "{'description': \"The lesion's exact size cannot be determined from the image alone.\", 'source': 'morphology_analysis_skill'}",
+      "{'description': \"The lesion's exact color cannot be determined from the image alone.\", 'source': 'color_pattern_analysis_skill'}"
+    ],
+    "reasoning_gaps": [
+      "{'description': \"The lesion's exact location on the foot cannot be confirmed from the image alone.\", 'source': 'initial_perception'}",
+      "{'description': \"The lesion's exact count cannot be confirmed from the image alone.\", 'source': 'initial_perception'}"
+    ],
+    "metadata_conflicts": [],
+    "suspicious_points": [
+      "The lesion is described as 'crusty' but the image shows a smooth surface texture.",
+      "The lesion is reported to be 'slightly erythematous,' yet the image does not show significant redness."
+    ]
+  },
+  "information_gap_summary": {
+    "missing_information": [
+      "Patient's medical history (specifically, any history of skin conditions or treatments).",
+      "Results of any relevant laboratory tests (e.g., biopsy results, blood tests).",
+      "Patient's family history of skin diseases.",
+      "Any recent trauma or injury to the foot."
+    ],
+    "why_it_matters": [
+      "A detailed medical history can provide insights into the patient's risk factors and previous treatments, which are crucial for differentiating between benign and malignant lesions.",
+      "Laboratory tests can confirm the presence of specific pathogens or cellular abnormalities.",
+      "Family history can indicate genetic predispositions to certain skin conditions.",
+      "Recent trauma or injury might influence the lesion's appearance and behavior."
+    ],
+    "impact_on_differential": [
+      "Without a detailed medical history, it is challenging to rule out or confirm the presence of malignancy, especially given the patient's history of cancer.",
+      "Biopsy results would be essential to confirm the nature of the lesion, ruling out benign conditions like plantar warts and seborrheic keratoses.",
+      "Family history can help identify inherited skin conditions that might affect the differential diagnosis.",
+      "Recent trauma or injury could alter the lesion's characteristics, making it more difficult to differentiate between benign and malignant conditions."
+    ],
+    "uncertainty_if_missing": "high"
+  },
+  "escalation_summary": {
+    "whether_escalation_needed": "yes",
+    "escalation_reason": [
+      "High uncertainty and potential malignancy risk due to lesion morphology and patient's cancer history."
+    ],
+    "suggested_next_check_type": "biopsy",
+    "caution_flags": [
+      "High uncertainty level",
+      "Patient's cancer history raises concern for malignancy"
+    ]
+  },
+  "planner_rationale": {
+    "planner_type": "rule_based",
+    "planner_version": "v1",
+    "selected_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "border_surface_analysis_skill",
+      "distribution_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "temporal_evolution_skill",
+      "malignancy_risk_assessment_skill",
+      "differential_compare_skill",
+      "exclusion_reasoning_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill",
+      "escalation_recommendation_skill"
+    ],
+    "selection_reasons": {
+      "morphology_analysis_skill": [
+        "Boosted by skill retrieval score=13.50.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "color_pattern_analysis_skill": [
+        "Boosted by skill retrieval score=12.00.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "border_surface_analysis_skill": [
+        "Boosted by skill retrieval score=9.00.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "distribution_analysis_skill": [
+        "Boosted by skill retrieval score=12.00.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "lesion_description_structuring_skill": [
+        "Boosted by skill retrieval score=17.00.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`."
+      ],
+      "metadata_consistency_skill": [
+        "Boosted by skill retrieval score=19.00.",
+        "Included as part of the core structured observation layer.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`."
+      ],
+      "temporal_evolution_skill": [
+        "Boosted by skill retrieval score=11.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `temporal_metadata`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ],
+      "malignancy_risk_assessment_skill": [
+        "Boosted by skill retrieval score=15.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "differential_compare_skill": [
+        "Boosted by skill retrieval score=6.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "exclusion_reasoning_skill": [
+        "Boosted by skill retrieval score=6.00.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `information_gap`."
+      ],
+      "information_gap_detection_skill": [
+        "Boosted by skill retrieval score=8.00.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `malignancy_possible`."
+      ],
+      "uncertainty_assessment_skill": [
+        "Boosted by skill retrieval score=13.00.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ],
+      "contradiction_check_skill": [
+        "Boosted by skill retrieval score=11.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ],
+      "escalation_recommendation_skill": [
+        "Boosted by skill retrieval score=8.00.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `malignancy_possible`.",
+        "Matched active trigger profile `information_gap`."
+      ]
+    }
+  },
+  "serialized_evidence_text": "[Observation Evidence]\n- Initial image summary: A small, raised, crusty lesion is present on the foot. The surrounding skin appears slightly erythematous.\n- Early differential candidates: Plantar wart, Fungal infection (e.g., tinea pedis), Seborrheic keratosis, Malignant melanoma\n- structured lesion observation: lesion_description_structuring_skill: primary_lesion_morphology=Papule | color=Brown, Crusty | border=Poorly defined, Irregular | surface=Keratotic, Scaling | size_count=size_range: Small, count: Solitary | distribution=body_location: Foot, symmetry: Asymmetric, localized_vs_generalized: Localized, clustering_pattern: Solitary || morphology_analysis_skill: lesion_type=papule | size_range=small | elevation=raised | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence || color_pattern_analysis_skill: primary_color=Brown | color_variation=marked | pigmentation_pattern=mixed | asymmetry_color=present | evidence_strength=medium | recommendation_type=descriptive_evidence\n- border_surface_analysis_skill: border_clarity=poorly defined | border_irregularity=irregular | surface_texture=keratotic | scaling_presence=present | evidence_strength=medium | recommendation_type=descriptive_evidence\n\n[Exclusion And Comparison Evidence]\n- differential and exclusion reasoning: differential_compare_skill: candidate_pairs=Plantar wart vs Fungal infection (e.g., tinea pedis); Plantar wart vs Seborrheic keratosis; Plantar wart vs Malignant melanoma | supporting_evidence={'Plantar wart vs Fungal infection (e.g., tinea pedis)': ['The lesion is located on the foot, which is a common site for plantar warts.', 'The crusty appeara... | conflicting_evidence={'Plantar wart vs Fungal infection (e.g., tinea pedis)': ['The lesion is located on the foot, which is a common site for plantar warts.', 'The crusty appeara... | evidence_strength=medium | recommendation_type=descriptive_evidence || exclusion_reasoning_skill: unlikely_candidates=Fungal infection (e.g., tinea pedis); Seborrheic keratosis | exclusion_evidence=The lesion is located on the foot, which is a common site for plantar warts.; The crusty appearance could be indicative of a fungal infection or a seborrheic... | required_missing_evidence=Confirmation of the presence of typical fungal elements like scaling or hyperkeratosis.; Documentation of the lesion's response to antifungal treatment. | exclusion_confidence=medium | evidence_strength=medium | recommendation_type=descriptive_evidence\n- metadata_consistency_skill: consistency_score=medium | suspicious_points=The lesion is described as 'crusty' but the image shows a smooth surface texture.; The lesion is reported to be 'slightly erythematous,' yet the image does n... | evidence_strength=medium | recommendation_type=uncertainty_signal\n- Tactical experience tac_PAT_1516_1765_a0a91034ab1a: risk=malignancy_risk:medium; uncertainty=low; {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}; Preserve Qwen as the only final diagnostic decision maker.; Use evidence package to surface structured morphology, risk, and uncertainty clues.; Action pattern: risk_then_uncertainty_audit\n- Tactical experience tac_PAT_1516_1765_6c7d6a323fec: risk=malignancy_risk:medium; uncertainty=low; A well-circumscribed, slightly irregular brown lesion on the arm.; Keep Qwen as the only final diagnostic decision maker.; Use structured skill evidence to support, not replace, final diagnosis.; Track confusion pattern: Atypical Nevus->NEV.\n\n[Risk Evidence]\n- Risk flags: malignancy_risk:medium\n- malignancy_risk_assessment_skill: risk_level=medium | risk_evidence={'type': 'morphology', 'description': 'The lesion is a papule with a raised, crusty appearance.', 'evidence_strength': 'medium'}; {'type': 'color', 'descript... | alarm_signals=Poorly defined and irregular border; Keratotic surface and scaling presence; Marked color variation and mixed pigmentation | evidence_strength=medium | recommendation_type=risk_signal\n- Abstract experience abs_confusion_01d077299876: {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}; Imported legacy confusion memory.; risk_then_uncertainty_audit\n- Abstract experience abs_rule_c93aa7bc54f6: {'morphology': 'Irregular', 'color': 'Brown', 'border': 'Irregular', 'surface': 'Smooth', 'body_location': 'Arm', 'uncertainty': 'Low'}; Preserve Qwen as the only final diagnostic decision maker.; observe_then_structure\n\n[Conflict And Uncertainty]\n- Uncertainty level: high\n- Uncertainty reasons: The lesion's morphology suggests multiple possibilities including plantar wart, fungal infection, seborrheic keratosis, and malignant melanoma.; The patient's history of cancer raises significant concern for malignancy, complicating the differential diagnosis.\n- Missing information: Clinical history beyond the patient's cancer history, such as duration of the lesion, recent trauma, or exposure to irritants.; Laboratory tests or biopsy results to confirm the nature of the lesion.\n- contradictions: {'source': 'morphology_analysis_skill', 'description': \"The lesion is described as 'papule' with 'raised' elevation, but the image shows a flat lesion.\"}; {'source': 'border_surface_analysis_skill', 'description': \"The lesion is described as having a 'poorly defined' and 'irregular' border, but the image does not show significant irregularity.\"}\n- missing links: {'description': \"The lesion's exact size cannot be determined from the image alone.\", 'source': 'morphology_analysis_skill'}; {'description': \"The lesion's exact color cannot be determined from the image alone.\", 'source': 'color_pattern_analysis_skill'}\n- reasoning gaps: {'description': \"The lesion's exact location on the foot cannot be confirmed from the image alone.\", 'source': 'initial_perception'}; {'description': \"The lesion's exact count cannot be confirmed from the image alone.\", 'source': 'initial_perception'}\n- suspicious points: The lesion is described as 'crusty' but the image shows a smooth surface texture.; The lesion is reported to be 'slightly erythematous,' yet the image does not show significant redness.\n- contradiction_check_skill: contradictions={'source': 'morphology_analysis_skill', 'description': \"The lesion is described as 'papule' with 'raised' elevation, but the image shows a flat lesion.\"}; {'... | missing_links={'description': \"The lesion's exact size cannot be determined from the image alone.\", 'source': 'morphology_analysis_skill'}; {'description': \"The lesion's e... | reasoning_gaps={'description': \"The lesion's exact location on the foot cannot be confirmed from the image alone.\", 'source': 'initial_perception'}; {'description': \"The le... | evidence_strength=medium | recommendation_type=descriptive_evidence\n- uncertainty_assessment_skill: uncertainty_level=high | reasons=The lesion's morphology suggests multiple possibilities including plantar wart, fungal infection, seborrheic keratosis, and malignant melanoma.; The patient'... | missing_information=Clinical history beyond the patient's cancer history, such as duration of the lesion, recent trauma, or exposure to irritants.; Laboratory tests or biopsy re... | evidence_strength=medium | recommendation_type=uncertainty_signal\n- explicit information gaps: Patient's medical history (specifically, any history of skin conditions or treatments).; Results of any relevant laboratory tests (e.g., biopsy results, blood tests).; Patient's family history of skin diseases.; Any recent trauma or injury to the foot.\n- why gaps matter: A detailed medical history can provide insights into the patient's risk factors and previous treatments, which are crucial for differentiating between benign and malignant lesions.; Laboratory tests can confirm the presence of specific pathogens or cellular abnormalities.; Family history can indicate genetic predispositions to certain skin conditions.; Recent trauma or injury might influence the lesion's appearance and behavior.\n- impact on differential: Without a detailed medical history, it is challenging to rule out or confirm the presence of malignancy, especially given the patient's history of cancer.; Biopsy results would be essential to confirm the nature of the lesion, ruling out benign conditions like plantar warts and seborrheic keratoses.; Family history can help identify inherited skin conditions that might affect the differential diagnosis.; Recent trauma or injury could alter the lesion's characteristics, making it more difficult to differentiate between benign and malignant conditions.\n- residual uncertainty if still missing: high\n- escalation_recommendation_skill: whether_escalation_needed=yes | escalation_reason=High uncertainty and potential malignancy risk due to lesion morphology and patient's cancer history. | suggested_next_check_type=biopsy | caution_flags=High uncertainty level; Patient's cancer history raises concern for malignancy | evidence_strength=medium | recommendation_type=risk_signal\n- escalation needed: yes\n- escalation reasons: High uncertainty and potential malignancy risk due to lesion morphology and patient's cancer history.\n- suggested next check type: biopsy\n- caution flags: High uncertainty level; Patient's cancer history raises concern for malignancy\n\n[Planner Rationale]\n- Selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, temporal_evolution_skill, malignancy_risk_assessment_skill, differential_compare_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill\n- morphology_analysis_skill: Boosted by skill retrieval score=13.50.; Included as part of the core structured observation layer.; Matched active trigger profile `foundational_observation`.; Matched active trigger profile `multiple_ddx`.\n- color_pattern_analysis_skill: Boosted by skill retrieval score=12.00.; Included as part of the core structured observation layer.; Matched active trigger profile `foundational_observation`.; Matched active trigger profile `multiple_ddx`.\n- border_surface_analysis_skill: Boosted by skill retrieval score=9.00.; Included as part of the core structured observation layer.; Matched active trigger profile `foundational_observation`.; Matched active trigger profile `multiple_ddx`.",
+  "evidence_calibration_debug": {
+    "calibrator_type": "heuristic",
+    "calibrator_version": "v1",
+    "section_plan": {
+      "observation": {
+        "skill_names": [
+          "lesion_description_structuring_skill",
+          "morphology_analysis_skill",
+          "color_pattern_analysis_skill",
+          "border_surface_analysis_skill"
+        ],
+        "merged_groups": [
+          {
+            "label": "structured_lesion_observation",
+            "skills": [
+              "lesion_description_structuring_skill",
+              "morphology_analysis_skill",
+              "color_pattern_analysis_skill",
+              "border_surface_analysis_skill"
+            ],
+            "max_members": 3
+          }
+        ],
+        "raw_case_source_ids": [
+          "PAT_1516_1765"
+        ]
+      },
+      "comparison": {
+        "skill_names": [
+          "exclusion_reasoning_skill",
+          "metadata_consistency_skill",
+          "differential_compare_skill"
+        ],
+        "merged_groups": [
+          {
+            "label": "differential_and_exclusion_reasoning",
+            "skills": [
+              "differential_compare_skill",
+              "exclusion_reasoning_skill"
+            ],
+            "max_members": 2
+          }
+        ],
+        "tactical_source_ids": [
+          "tac_PAT_1516_1765_a0a91034ab1a",
+          "tac_PAT_1516_1765_6c7d6a323fec"
+        ]
+      },
+      "risk": {
+        "skill_names": [
+          "malignancy_risk_assessment_skill"
+        ],
+        "abstract_source_ids": [
+          "abs_confusion_01d077299876",
+          "abs_rule_c93aa7bc54f6"
+        ]
+      },
+      "conflict_uncertainty": {
+        "skill_names": [
+          "contradiction_check_skill",
+          "escalation_recommendation_skill",
+          "uncertainty_assessment_skill"
+        ]
+      },
+      "planner": {
+        "max_reason_skills": 3
+      },
+      "section_order": [
+        "observation",
+        "comparison",
+        "risk",
+        "conflict_uncertainty",
+        "planner"
+      ]
+    },
+    "item_scores": [
+      {
+        "item_id": "malignancy_risk_assessment_skill",
+        "item_type": "skill_output",
+        "section": "risk",
+        "heuristic_score": 9.7,
+        "learned_score": 0.0,
+        "final_score": 9.7,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "exclusion_reasoning_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 9.68,
+        "learned_score": 0.0,
+        "final_score": 9.68,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "contradiction_check_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 9.28,
+        "learned_score": 0.0,
+        "final_score": 9.28,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "escalation_recommendation_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 9.24,
+        "learned_score": 0.0,
+        "final_score": 9.24,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "lesion_description_structuring_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 9.16,
+        "learned_score": 0.0,
+        "final_score": 9.16,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "uncertainty_assessment_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 8.74,
+        "learned_score": 0.0,
+        "final_score": 8.74,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "metadata_consistency_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 8.1,
+        "learned_score": 0.0,
+        "final_score": 8.1,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "information_gap_detection_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 8.04,
+        "learned_score": 0.0,
+        "final_score": 8.04,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "morphology_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.88,
+        "learned_score": 0.0,
+        "final_score": 7.88,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.66,
+        "learned_score": 0.0,
+        "final_score": 7.66,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "border_surface_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.32,
+        "learned_score": 0.0,
+        "final_score": 7.32,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.26,
+        "learned_score": 0.0,
+        "final_score": 7.26,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "differential_compare_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 6.68,
+        "learned_score": 0.0,
+        "final_score": 6.68,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "temporal_evolution_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 6.28,
+        "learned_score": 0.0,
+        "final_score": 6.28,
+        "selected": true,
+        "reason": "kept"
+      },
+      {
+        "item_id": "abs_confusion_01d077299876",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 5.0,
+        "learned_score": 0.0,
+        "final_score": 5.0,
+        "selected": true,
+        "reason": "selected"
+      },
+      {
+        "item_id": "abs_rule_c93aa7bc54f6",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 4.2,
+        "learned_score": 0.0,
+        "final_score": 4.2,
+        "selected": true,
+        "reason": "selected"
+      },
+      {
+        "item_id": "abs_confusion_96013d69cef6",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 4.1,
+        "learned_score": 0.0,
+        "final_score": 4.1,
+        "selected": false,
+        "reason": "dropped_by_rank"
+      },
+      {
+        "item_id": "tac_PAT_1516_1765_a0a91034ab1a",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 3.6,
+        "learned_score": 0.0,
+        "final_score": 3.6,
+        "selected": true,
+        "reason": "selected"
+      },
+      {
+        "item_id": "tac_PAT_1516_1765_6c7d6a323fec",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 3.6,
+        "learned_score": 0.0,
+        "final_score": 3.6,
+        "selected": true,
+        "reason": "selected"
+      },
+      {
+        "item_id": "tac_PAT_1516_1765_510e192d29fd",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 3.6,
+        "learned_score": 0.0,
+        "final_score": 3.6,
+        "selected": false,
+        "reason": "dropped_by_rank"
+      },
+      {
+        "item_id": "PAT_1516_1765",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 1.5,
+        "learned_score": 0.0,
+        "final_score": 1.5,
+        "selected": true,
+        "reason": "selected"
+      }
+    ],
+    "omitted_items": [],
+    "debug": {
+      "policy": {
+        "enable_evidence_calibrator": true,
+        "calibrator_mode": "heuristic",
+        "calibrator_checkpoint_path": "",
+        "learned_calibration_weight": 1.2,
+        "max_observation_skills": 4,
+        "max_comparison_skills": 3,
+        "max_risk_skills": 2,
+        "max_uncertainty_skills": 3,
+        "max_raw_cases": 1,
+        "max_tactical": 2,
+        "max_abstract": 2,
+        "max_planner_reasons": 3,
+        "omit_low_value_evidence": true,
+        "min_effective_score": 2.4,
+        "debug_output": true
+      },
+      "learned_scorer_loaded": false,
+      "contradiction_count": 8,
+      "uncertainty_level": "high",
+      "risk_flag_count": 1
+    }
+  }
+}

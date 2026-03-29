@@ -105,6 +105,50 @@ def test_evidence_calibrator_builds_section_plan_with_merges() -> None:
     assert any(name in comparison["skill_names"] for name in ("differential_compare_skill", "exclusion_reasoning_skill"))
 
 
+def test_evidence_calibrator_routes_cluster_confusion_memory_to_comparison() -> None:
+    calibrator = build_default_evidence_calibrator(
+        {
+            "enable_evidence_calibrator": True,
+            "calibrator_mode": "heuristic",
+            "max_abstract": 2,
+        }
+    )
+    output = calibrator.calibrate(
+        {
+            "skill_outputs": _mock_skill_outputs(),
+            "retrieved_raw_cases_summary": [],
+            "retrieved_tactical_experiences_summary": [],
+            "retrieved_abstract_experiences_summary": [
+                {
+                    "source_id": "abs_conf",
+                    "retrieval_score": 7,
+                    "experience_type": "confusion_memory",
+                    "confusion_pair": "ack->bcc",
+                    "perception_summary": "rough keratotic lesion where BCC remained plausible",
+                    "learning_points": ["do not exclude BCC without explicit opposing clue"],
+                },
+                {
+                    "source_id": "abs_risk",
+                    "retrieval_score": 5,
+                    "experience_type": "rule",
+                    "confusion_pair": None,
+                    "perception_summary": "risk framing",
+                    "learning_points": ["audit uncertainty after risk framing"],
+                },
+            ],
+            "risk_flags": ["malignancy_risk:high"],
+            "uncertainty_summary": {"uncertainty_level": "high"},
+            "contradiction_summary": {"contradictions": [], "missing_links": [], "reasoning_gaps": [], "metadata_conflicts": [], "suspicious_points": []},
+            "skill_retrieval_scores": {},
+            "confusion_clusters": ["ack_bcc_scc"],
+        }
+    ).to_dict()
+    comparison_ids = output["section_plan"]["comparison"]["abstract_source_ids"]
+    risk_ids = output["section_plan"]["risk"]["abstract_source_ids"]
+    assert "abs_conf" in comparison_ids
+    assert "abs_conf" not in risk_ids
+
+
 def test_aggregator_includes_calibration_debug_and_serialized_text() -> None:
     state = CaseState(
         case_input=CaseInput(
@@ -142,4 +186,4 @@ def test_aggregator_includes_calibration_debug_and_serialized_text() -> None:
     assert "evidence_calibration_debug" in evidence_bundle
     assert evidence_bundle["evidence_calibration_debug"].get("calibrator_version") == "v1"
     assert "[Observation Evidence]" in evidence_bundle["serialized_evidence_text"]
-
+    assert "Active confusion clusters" in evidence_bundle["serialized_evidence_text"]

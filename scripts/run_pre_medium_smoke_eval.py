@@ -24,6 +24,7 @@ from agent.supervised_controller import (
     ControllerSelectionPolicy,
     flatten_training_example_features,
     multilabel_metrics,
+    select_skills_with_policy_details,
     vectorize_feature_maps,
 )
 from integrations.openai_client import DermOpenAIClient
@@ -850,8 +851,12 @@ def build_controller_prediction_rows(
             min_select=selection_policy.min_select,
             max_select=selection_policy.max_select,
             top_k_buffer=selection_policy.top_k_buffer,
+            relative_margin=selection_policy.relative_margin,
+            floor_score=selection_policy.floor_score,
+            preserve_top1=selection_policy.preserve_top1,
         )
-        selected = select_skills_with_policy(ranked, score_map, local_policy)
+        selection_details = select_skills_with_policy_details(ranked_skills=ranked, score_map=score_map, policy=local_policy)
+        selected = list(selection_details.get("selected_skills", []))
         rows.append(
             {
                 "case_id": str(example.get("case_id", "")),
@@ -872,25 +877,6 @@ def build_controller_prediction_rows(
             }
         )
     return rows
-
-
-def select_skills_with_policy(
-    ranked_skills: list[str],
-    score_map: dict[str, float],
-    policy: ControllerSelectionPolicy,
-) -> list[str]:
-    selected = [skill_name for skill_name in ranked_skills if float(score_map.get(skill_name, 0.0)) >= float(policy.threshold)]
-    desired_k = max(int(policy.min_select), int(policy.target_top_k) + int(policy.top_k_buffer))
-    desired_k = min(max(1, desired_k), max(1, int(policy.max_select)))
-    if len(selected) < int(policy.min_select):
-        selected = ranked_skills[: min(len(ranked_skills), desired_k)]
-    elif len(selected) > int(policy.max_select):
-        selected = selected[: int(policy.max_select)]
-    else:
-        selected = selected[: min(len(selected), desired_k)]
-    return list(dict.fromkeys(selected))
-
-
 def run_helpfulness_records(compare_payload: dict[str, Any] | None) -> list[dict[str, Any]]:
     return list(compare_payload.get("agent_records", [])) if compare_payload else []
 

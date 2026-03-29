@@ -1,0 +1,671 @@
+{
+  "evaluated_at": "2026-03-28T16:48:05Z",
+  "stable_policy": {
+    "policy_id": "stable_default_policy",
+    "version": 1,
+    "status": "stable",
+    "created_at": "2026-03-26T06:24:32Z",
+    "parent_policy_id": "",
+    "description": "Default conservative stable planner policy.",
+    "change_summary": {
+      "planner": [
+        "Baseline rule-based planner with structured evidence support."
+      ],
+      "skill_overrides": [],
+      "retrieval": [
+        "Use cognition-guided retrieval with conservative top-k defaults."
+      ],
+      "cognition_defaults": []
+    },
+    "planner_policy": {
+      "controller_family": "heuristic",
+      "controller_checkpoint_path": "",
+      "learned_controller_weight": 4.0,
+      "learned_controller_select_threshold": 0.4,
+      "learned_controller_top_k": 0,
+      "learned_controller_force_top_k": 0,
+      "learned_controller_mode": "union",
+      "learned_controller_sparse_rule_floor": 9,
+      "learned_controller_protected_min_score": 7,
+      "score_threshold_default": 4,
+      "retrieval_score_cap": 3,
+      "foundational_bonus": 6,
+      "preferred_skill_bonus": 3,
+      "helpful_rate_bonus": 2,
+      "failure_rate_penalty": 2,
+      "signal_match_bonus": 2,
+      "known_confusion_bonus": 2,
+      "experience_compare_bonus": 2,
+      "experience_risk_bonus": 2,
+      "experience_gap_bonus": 2,
+      "experience_conflict_bonus": 2,
+      "experience_escalation_bonus": 2,
+      "enable_signals": {
+        "experience_compare_pattern": true,
+        "experience_risk_pattern": true,
+        "experience_gap_pattern": true,
+        "experience_conflict_pattern": true,
+        "experience_escalation_pattern": true
+      },
+      "force_select_skills": [],
+      "force_disable_skills": [],
+      "skill_overrides": {}
+    },
+    "retrieval_policy": {
+      "top_k_experience": 3,
+      "top_k_tactical": 3,
+      "top_k_abstract": 3,
+      "top_k_skill_candidates": 14,
+      "prioritize_confusion_cases": true,
+      "enable_learned_retrieval_reranker": false,
+      "retrieval_reranker_checkpoint_path": "",
+      "retrieval_reranker_blend_weight": 2.5,
+      "retrieval_reranker_fail_open": true
+    },
+    "evidence_policy": {
+      "enable_evidence_calibrator": true,
+      "calibrator_mode": "heuristic",
+      "calibrator_checkpoint_path": "",
+      "learned_calibration_weight": 1.2,
+      "max_observation_skills": 4,
+      "max_comparison_skills": 3,
+      "max_risk_skills": 2,
+      "max_uncertainty_skills": 3,
+      "max_raw_cases": 1,
+      "max_tactical": 2,
+      "max_abstract": 2,
+      "max_planner_reasons": 3,
+      "omit_low_value_evidence": true,
+      "min_effective_score": 2.4,
+      "debug_output": true
+    },
+    "skill_config_refs": [],
+    "evidence_refs": {},
+    "evaluation_gate": {
+      "minimum_cases": 10,
+      "max_top1_drop": 0.0,
+      "max_topk_drop": 0.02,
+      "max_error_rate_increase": 0.02,
+      "max_key_confusion_drop": 0.0,
+      "require_non_decreasing_malignant_recall": true
+    },
+    "last_evaluation": {},
+    "rollback_history": [],
+    "state_split": "global",
+    "state_version": "policy_config:global:38b3edb40121",
+    "source_path": "/root/DermAgent/state/policy/current_stable_policy.json"
+  },
+  "candidate_policy": {
+    "policy_id": "candidate_stage4_step6_stage34_probe_30m_20260328T163440Z",
+    "version": 2,
+    "status": "candidate",
+    "created_at": "2026-03-28T16:34:40Z",
+    "parent_policy_id": "stable_default_policy",
+    "description": "Auto-generated candidate policy from staged training pipeline.",
+    "change_summary": {
+      "planner": [
+        "Baseline rule-based planner with structured evidence support."
+      ],
+      "skill_overrides": [],
+      "retrieval": [
+        "Use cognition-guided retrieval with conservative top-k defaults."
+      ],
+      "cognition_defaults": [],
+      "pipeline": [
+        "staged_training_run:stage34_probe_30m_20260328T163440Z"
+      ]
+    },
+    "planner_policy": {
+      "controller_family": "learned_supervised",
+      "controller_checkpoint_path": "/root/DermAgent/outputs/smoke_cycles/reuse3h_signal_check_20260328T141307Z/train_runs/reuse3h_signal_check_20260328T141307Z/stage1_supervised_controller_training/checkpoints/controller_planner_scorer__candidate__reuse3h_signal_check_20260328T141307Z.pt",
+      "learned_controller_weight": 4.0,
+      "learned_controller_select_threshold": 0.4,
+      "learned_controller_top_k": 0,
+      "learned_controller_force_top_k": 0,
+      "learned_controller_mode": "union",
+      "learned_controller_sparse_rule_floor": 9,
+      "learned_controller_protected_min_score": 7,
+      "score_threshold_default": 4,
+      "retrieval_score_cap": 3,
+      "foundational_bonus": 6,
+      "preferred_skill_bonus": 3,
+      "helpful_rate_bonus": 2,
+      "failure_rate_penalty": 2,
+      "signal_match_bonus": 2,
+      "known_confusion_bonus": 2,
+      "experience_compare_bonus": 2,
+      "experience_risk_bonus": 2,
+      "experience_gap_bonus": 2,
+      "experience_conflict_bonus": 2,
+      "experience_escalation_bonus": 2,
+      "enable_signals": {
+        "experience_compare_pattern": true,
+        "experience_risk_pattern": true,
+        "experience_gap_pattern": true,
+        "experience_conflict_pattern": true,
+        "experience_escalation_pattern": true
+      },
+      "force_select_skills": [],
+      "force_disable_skills": [],
+      "skill_overrides": {}
+    },
+    "retrieval_policy": {
+      "top_k_experience": 3,
+      "top_k_tactical": 3,
+      "top_k_abstract": 3,
+      "top_k_skill_candidates": 14,
+      "prioritize_confusion_cases": true,
+      "enable_learned_retrieval_reranker": true,
+      "retrieval_reranker_checkpoint_path": "/root/DermAgent/outputs/smoke_cycles/reuse3h_signal_check_20260328T141307Z/train_runs/reuse3h_signal_check_20260328T141307Z/stage2_retrieval_scorer_training/checkpoints/retrieval_reranker__candidate__reuse3h_signal_check_20260328T141307Z.pt",
+      "retrieval_reranker_blend_weight": 2.5,
+      "retrieval_reranker_fail_open": true
+    },
+    "evidence_policy": {
+      "enable_evidence_calibrator": true,
+      "calibrator_mode": "heuristic",
+      "calibrator_checkpoint_path": "",
+      "learned_calibration_weight": 1.2,
+      "max_observation_skills": 4,
+      "max_comparison_skills": 3,
+      "max_risk_skills": 2,
+      "max_uncertainty_skills": 3,
+      "max_raw_cases": 1,
+      "max_tactical": 2,
+      "max_abstract": 2,
+      "max_planner_reasons": 3,
+      "omit_low_value_evidence": true,
+      "min_effective_score": 2.4,
+      "debug_output": true
+    },
+    "skill_config_refs": [],
+    "evidence_refs": {},
+    "evaluation_gate": {
+      "minimum_cases": 10,
+      "max_top1_drop": 0.0,
+      "max_topk_drop": 0.02,
+      "max_error_rate_increase": 0.02,
+      "max_key_confusion_drop": 0.0,
+      "require_non_decreasing_malignant_recall": true
+    },
+    "last_evaluation": {},
+    "rollback_history": [],
+    "state_split": "global",
+    "state_version": "policy_config:global:38b3edb40121",
+    "source_path": "/root/DermAgent/outputs/smoke_cycles/stage34_probe_30m_20260328T163440Z/train_runs/stage34_probe_30m_20260328T163440Z/stage3_policy_candidate_evaluation/candidate_policy.json"
+  },
+  "stable_summary": {
+    "num_cases": 4,
+    "num_with_ground_truth": 4,
+    "top1": {
+      "hits": 0,
+      "total": 4,
+      "rate": 0.0
+    },
+    "topk": {
+      "hits": 2,
+      "total": 4,
+      "rate": 0.5
+    },
+    "malignant_recall": {
+      "hits": 2,
+      "total": 4,
+      "rate": 0.5
+    },
+    "error_rate": {
+      "errors": 4,
+      "total": 4,
+      "rate": 1.0
+    },
+    "key_confusion_subsets": {
+      "ack->bcc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "lichen planus->ack": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "malignant melanoma->bcc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "none": {
+        "num_cases": 2,
+        "num_with_ground_truth": 2,
+        "top1": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 2,
+          "total": 2,
+          "rate": 1.0
+        }
+      },
+      "plantar wart->scc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "scc->bcc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "squamous cell carcinoma->bcc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      }
+    }
+  },
+  "candidate_summary": {
+    "num_cases": 4,
+    "num_with_ground_truth": 4,
+    "top1": {
+      "hits": 0,
+      "total": 4,
+      "rate": 0.0
+    },
+    "topk": {
+      "hits": 2,
+      "total": 4,
+      "rate": 0.5
+    },
+    "malignant_recall": {
+      "hits": 2,
+      "total": 4,
+      "rate": 0.5
+    },
+    "error_rate": {
+      "errors": 4,
+      "total": 4,
+      "rate": 1.0
+    },
+    "key_confusion_subsets": {
+      "ack->bcc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "atypical mole->ack": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "malignant melanoma->bcc": {
+        "num_cases": 2,
+        "num_with_ground_truth": 2,
+        "top1": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 2,
+          "total": 2,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 2,
+          "total": 2,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 2,
+          "total": 2,
+          "rate": 1.0
+        }
+      },
+      "none": {
+        "num_cases": 2,
+        "num_with_ground_truth": 2,
+        "top1": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 2,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 2,
+          "total": 2,
+          "rate": 1.0
+        }
+      },
+      "plantar wart->scc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "malignant_recall": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      },
+      "scc->bcc": {
+        "num_cases": 1,
+        "num_with_ground_truth": 1,
+        "top1": {
+          "hits": 0,
+          "total": 1,
+          "rate": 0.0
+        },
+        "topk": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "malignant_recall": {
+          "hits": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "error_rate": {
+          "errors": 1,
+          "total": 1,
+          "rate": 1.0
+        }
+      }
+    }
+  },
+  "gate_decision": {
+    "decision": "insufficient_data",
+    "passed": false,
+    "rollback_required": false,
+    "reasons": [
+      "Candidate evaluated on only 4 labeled cases, below minimum_cases=10."
+    ],
+    "summary_delta": {
+      "top1_delta": 0.0,
+      "topk_delta": 0.0,
+      "malignant_recall_delta": 0.0,
+      "error_rate_delta": 0.0,
+      "key_confusion_subset_deltas": {
+        "ack->bcc": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 1,
+          "stable_cases": 1
+        },
+        "ack->scc": {
+          "top1_delta": null,
+          "topk_delta": null,
+          "malignant_recall_delta": null,
+          "error_rate_delta": null,
+          "candidate_cases": 0,
+          "stable_cases": 0
+        },
+        "atypical mole->ack": {
+          "top1_delta": null,
+          "topk_delta": null,
+          "malignant_recall_delta": null,
+          "error_rate_delta": null,
+          "candidate_cases": 1,
+          "stable_cases": 0
+        },
+        "lichen planus->ack": {
+          "top1_delta": null,
+          "topk_delta": null,
+          "malignant_recall_delta": null,
+          "error_rate_delta": null,
+          "candidate_cases": 0,
+          "stable_cases": 1
+        },
+        "malignant melanoma->bcc": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 2,
+          "stable_cases": 1
+        },
+        "melanoma->nev": {
+          "top1_delta": null,
+          "topk_delta": null,
+          "malignant_recall_delta": null,
+          "error_rate_delta": null,
+          "candidate_cases": 0,
+          "stable_cases": 0
+        },
+        "none": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 2,
+          "stable_cases": 2
+        },
+        "plantar wart->scc": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 1,
+          "stable_cases": 1
+        },
+        "scc->bcc": {
+          "top1_delta": 0.0,
+          "topk_delta": 0.0,
+          "malignant_recall_delta": 0.0,
+          "error_rate_delta": 0.0,
+          "candidate_cases": 1,
+          "stable_cases": 1
+        },
+        "squamous cell carcinoma->bcc": {
+          "top1_delta": null,
+          "topk_delta": null,
+          "malignant_recall_delta": null,
+          "error_rate_delta": null,
+          "candidate_cases": 0,
+          "stable_cases": 1
+        }
+      }
+    }
+  },
+  "run_config": {
+    "data_root": "/root/DermAgent/data",
+    "limit": 4,
+    "case_offset": 1608,
+    "data_split": "val",
+    "split_json": "/root/DermAgent/outputs/smoke_cycles/reuse3h_signal_check_20260328T141307Z/fixed_split.json",
+    "strict_frozen_eval": true,
+    "client_timeout": 180.0,
+    "client_max_retries": 2
+  },
+  "artifacts": {
+    "stable_output_dir": "/root/DermAgent/outputs/smoke_cycles/stage34_probe_30m_20260328T163440Z/train_runs/stage34_probe_30m_20260328T163440Z/stage3_policy_candidate_evaluation/evaluation/stable_run",
+    "candidate_output_dir": "/root/DermAgent/outputs/smoke_cycles/stage34_probe_30m_20260328T163440Z/train_runs/stage34_probe_30m_20260328T163440Z/stage3_policy_candidate_evaluation/evaluation/candidate_run"
+  },
+  "evaluation_record_path": "/root/DermAgent/outputs/smoke_cycles/stage34_probe_30m_20260328T163440Z/train_runs/stage34_probe_30m_20260328T163440Z/stage3_policy_candidate_evaluation/evaluation/policy_eval_candidate_stage4_step6_stage34_probe_30m_20260328T163440Z_20260328T164805Z.json"
+}

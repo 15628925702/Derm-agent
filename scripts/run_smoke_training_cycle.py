@@ -36,6 +36,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--client-max-retries", type=int, default=3)
     parser.add_argument("--clean-outputs", action="store_true", help="Delete /root/DermAgent/outputs/* before starting.")
     parser.add_argument("--resume-seed-case-index", type=int, default=None, help="Resume the seed writeback loop from this case index.")
+    parser.add_argument("--controller-checkpoint-in", type=Path, default=None, help="Optional controller checkpoint to warm-start learned components.")
+    parser.add_argument("--retrieval-checkpoint-in", type=Path, default=None, help="Optional retrieval checkpoint to warm-start learned components.")
     parser.add_argument(
         "--abort-on-seed-failure",
         action="store_true",
@@ -468,6 +470,20 @@ def main() -> int:
                 ],
             )
         )
+
+    train_learned_components_command = next(
+        (command for step_name, command in command_plan if step_name == "train_learned_components"),
+        None,
+    )
+    if train_learned_components_command is not None:
+        if args.controller_checkpoint_in:
+            train_learned_components_command.extend(
+                ["--controller-checkpoint-in", str(args.controller_checkpoint_in.expanduser().resolve())]
+            )
+        if args.retrieval_checkpoint_in:
+            train_learned_components_command.extend(
+                ["--retrieval-checkpoint-in", str(args.retrieval_checkpoint_in.expanduser().resolve())]
+            )
 
     command_plan.append(
         (
