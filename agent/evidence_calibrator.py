@@ -5,7 +5,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
-from agent.confusion_clusters import cluster_priority_bonus, preferred_abstract_section
+from agent.confusion_clusters import cluster_ordering_hints, cluster_priority_bonus, preferred_abstract_section
 
 try:
     import torch
@@ -22,16 +22,28 @@ DEFAULT_EVIDENCE_POLICY = {
     "calibrator_mode": "heuristic",  # off | heuristic | learned | hybrid
     "calibrator_checkpoint_path": "",
     "learned_calibration_weight": 1.2,
+    "max_total_items": 8,
     "max_observation_skills": 4,
     "max_comparison_skills": 3,
     "max_risk_skills": 2,
     "max_uncertainty_skills": 3,
+    "max_exclusion_items": 2,
+    "max_experience_hints": 2,
     "max_raw_cases": 1,
     "max_tactical": 2,
     "max_abstract": 2,
     "max_planner_reasons": 3,
     "omit_low_value_evidence": True,
     "min_effective_score": 2.4,
+    "dedup_similar_evidence": True,
+    "cluster_aware_ordering": True,
+    "cluster_opposing_bonus": 1.8,
+    "cluster_exclusion_bonus": 1.4,
+    "risk_overweight_penalty": 1.2,
+    "uncertainty_overweight_penalty": 1.0,
+    "description_priority_bonus": 0.6,
+    "exclusion_priority_bonus": 1.2,
+    "negative_evidence_priority_bonus": 1.0,
     "debug_output": True,
 }
 
@@ -112,6 +124,9 @@ class CalibrationItemScore:
     final_score: float
     selected: bool = False
     reason: str = ""
+    category: str = ""
+    rank: int = 0
+    dedup_key: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -208,12 +223,16 @@ class EvidenceCalibrator:
         ]
 
         item_scores: list[CalibrationItemScore] = []
-        selected_skills_by_section: dict[str, list[tuple[str, float]]] = {section: [] for section in SECTION_PRIORITY}
         omitted_items: list[dict[str, Any]] = []
+        kept_items: list[dict[str, Any]] = []
+        pruned_items: list[dict[str, Any]] = []
+        reordered_items: list[dict[str, Any]] = []
+        candidates: list[dict[str, Any]] = []
         for skill_name, output in skill_outputs.items():
             if not isinstance(output, dict) or not _has_meaningful_skill_output(output):
                 continue
             section = SKILL_SECTION_MAP.get(skill_name, "comparison")
+            category = _infer_item_category(skill_name=skill_name, output=output)
             heuristic = _score_skill_output(
                 skill_name=skill_name,
                 output=output,
@@ -222,6 +241,7 @@ class EvidenceCalibrator:
                 contradiction_count=contradiction_count,
                 risk_flags=risk_flags,
                 confusion_clusters=confusion_clusters,
+                policy=self.policy,
             )
             learned = self._score_with_learned(
                 _build_skill_feature_map(
@@ -237,6 +257,7 @@ class EvidenceCalibrator:
             final_score = heuristic + self.learned_weight * learned if self.mode == "hybrid" else (
                 learned if self.mode == "learned" else heuristic
             )
+            dedup_key = _dedup_key_for_skill(skill_name=skill_name, output=output, category=category)
             should_omit = (
                 bool(self.policy.get("omit_low_value_evidence", True))
                 and final_score < float(self.policy.get("min_effective_score", 2.4))
@@ -249,10 +270,24 @@ class EvidenceCalibrator:
                         "item_type": "skill_output",
                         "reason": "below_min_effective_score",
                         "score": round(final_score, 6),
+                        "category": category,
                     }
                 )
             else:
-                selected_skills_by_section.setdefault(section, []).append((skill_name, final_score))
+                candidates.append(
+                    {
+                        "item_id": skill_name,
+                        "item_type": "skill_output",
+                        "section": section,
+                        "category": category,
+                        "score": float(final_score),
+                        "heuristic_score": float(heuristic),
+                        "learned_score": float(learned),
+                        "payload": output,
+                        "retrieval_score": float(skill_retrieval_scores.get(skill_name, 0.0) or 0.0),
+                        "dedup_key": dedup_key,
+                    }
+                )
             item_scores.append(
                 CalibrationItemScore(
                     item_id=skill_name,
@@ -263,35 +298,15 @@ class EvidenceCalibrator:
                     final_score=round(final_score, 6),
                     selected=not should_omit,
                     reason="kept" if not should_omit else "omitted_low_value",
+                    category=category,
+                    dedup_key=dedup_key,
                 )
             )
-
-        max_by_section = {
-            "observation": int(self.policy.get("max_observation_skills", 4)),
-            "comparison": int(self.policy.get("max_comparison_skills", 3)),
-            "risk": int(self.policy.get("max_risk_skills", 2)),
-            "conflict_uncertainty": int(self.policy.get("max_uncertainty_skills", 3)),
-        }
-        ordered_section_skills: dict[str, list[str]] = {}
-        for section_name, rows in selected_skills_by_section.items():
-            rows.sort(key=lambda item: (item[1], item[0]), reverse=True)
-            if section_name in max_by_section:
-                rows = rows[: max(0, max_by_section[section_name])]
-            ordered_section_skills[section_name] = [skill_name for skill_name, _ in rows]
-
-        # Keep critical evidence if present and section is empty.
-        for critical in CRITICAL_SKILLS:
-            if critical not in skill_outputs:
-                continue
-            section = SKILL_SECTION_MAP.get(critical, "comparison")
-            if critical not in ordered_section_skills.get(section, []):
-                if len(ordered_section_skills.get(section, [])) < max_by_section.get(section, 99):
-                    ordered_section_skills.setdefault(section, []).append(critical)
 
         raw_records = list(calibration_input.get("retrieved_raw_cases_summary", []))
         tactical_records = list(calibration_input.get("retrieved_tactical_experiences_summary", []))
         abstract_records = list(calibration_input.get("retrieved_abstract_experiences_summary", []))
-        raw_selected, raw_item_scores = self._select_retrieval_records(
+        raw_selected, raw_item_scores, raw_candidates = self._select_retrieval_records(
             records=raw_records,
             source_layer="raw_case_memory",
             top_k=int(self.policy.get("max_raw_cases", 1)),
@@ -300,7 +315,7 @@ class EvidenceCalibrator:
             risk_flags=risk_flags,
             confusion_clusters=confusion_clusters,
         )
-        tactical_selected, tactical_item_scores = self._select_retrieval_records(
+        tactical_selected, tactical_item_scores, tactical_candidates = self._select_retrieval_records(
             records=tactical_records,
             source_layer="tactical_experience",
             top_k=int(self.policy.get("max_tactical", 2)),
@@ -309,7 +324,7 @@ class EvidenceCalibrator:
             risk_flags=risk_flags,
             confusion_clusters=confusion_clusters,
         )
-        abstract_selected, abstract_item_scores = self._select_retrieval_records(
+        abstract_selected, abstract_item_scores, abstract_candidates = self._select_retrieval_records(
             records=abstract_records,
             source_layer="abstract_experience",
             top_k=int(self.policy.get("max_abstract", 2)),
@@ -321,9 +336,88 @@ class EvidenceCalibrator:
         item_scores.extend(raw_item_scores)
         item_scores.extend(tactical_item_scores)
         item_scores.extend(abstract_item_scores)
+        candidates.extend(raw_candidates)
+        candidates.extend(tactical_candidates)
+        candidates.extend(abstract_candidates)
+        ranked_candidates = _rank_evidence_candidates(
+            candidates=candidates,
+            confusion_clusters=confusion_clusters,
+            uncertainty_level=uncertainty_level,
+            risk_flags=risk_flags,
+            policy=self.policy,
+        )
+        kept_candidate_ids, pruned_from_budget, quota_state = _apply_pruning_and_budget(
+            ranked_candidates=ranked_candidates,
+            policy=self.policy,
+        )
+        kept_candidates = [item for item in ranked_candidates if item["item_id"] in kept_candidate_ids]
+        kept_candidates.sort(key=lambda item: int(item.get("rank", 0)))
+        kept_skill_names_by_section: dict[str, list[str]] = {section: [] for section in SECTION_PRIORITY}
+        kept_retrieval_ids: dict[str, list[str]] = {
+            "raw_case_memory": [],
+            "tactical_experience": [],
+            "abstract_experience": [],
+        }
+        for item in kept_candidates:
+            kept_items.append(
+                {
+                    "item_id": item["item_id"],
+                    "item_type": item["item_type"],
+                    "section": item["section"],
+                    "category": item["category"],
+                    "rank": item["rank"],
+                    "score": round(float(item["score"]), 6),
+                }
+            )
+            if item["item_type"] == "skill_output":
+                kept_skill_names_by_section.setdefault(item["section"], []).append(str(item["item_id"]))
+            else:
+                kept_retrieval_ids.setdefault(item["section"], []).append(str(item["item_id"]))
+        pruned_items.extend(pruned_from_budget)
+        omitted_items.extend(
+            [
+                {
+                    "item_id": item["item_id"],
+                    "item_type": item["item_type"],
+                    "reason": item["reason"],
+                    "section": item.get("section", ""),
+                    "category": item.get("category", ""),
+                    "score": round(float(item.get("score", 0.0) or 0.0), 6),
+                }
+                for item in pruned_from_budget
+            ]
+        )
+        for index, item in enumerate(kept_candidates, start=1):
+            reordered_items.append(
+                {
+                    "item_id": item["item_id"],
+                    "item_type": item["item_type"],
+                    "from_section": item["section"],
+                    "category": item["category"],
+                    "new_rank": index,
+                }
+            )
+        item_score_map = {(row.item_id, row.item_type): row for row in item_scores}
+        for index, item in enumerate(kept_candidates, start=1):
+            row = item_score_map.get((str(item["item_id"]), str(item["item_type"])))
+            if row is None:
+                continue
+            row.selected = True
+            row.reason = "kept"
+            row.rank = index
+        for item in pruned_from_budget:
+            row = item_score_map.get((str(item["item_id"]), str(item["item_type"])))
+            if row is None:
+                continue
+            row.selected = False
+            row.reason = str(item.get("reason", "pruned"))
         comparison_abstract_ids: list[str] = []
         risk_abstract_ids: list[str] = []
-        for item in abstract_selected:
+        kept_abstract_records = [
+            item for item in abstract_selected
+            if str(item.get("source_id", "")).strip() in set(kept_retrieval_ids.get("abstract_experience", []))
+        ]
+        for item in kept_abstract_records:
             source_id = str(item.get("source_id", "")).strip()
             if not source_id:
                 continue
@@ -335,22 +429,22 @@ class EvidenceCalibrator:
 
         section_plan = {
             "observation": {
-                "skill_names": ordered_section_skills.get("observation", []),
-                "merged_groups": _observation_merged_groups(ordered_section_skills.get("observation", [])),
-                "raw_case_source_ids": [item.get("source_id") for item in raw_selected if item.get("source_id")],
+                "skill_names": kept_skill_names_by_section.get("observation", []),
+                "merged_groups": _observation_merged_groups(kept_skill_names_by_section.get("observation", [])),
+                "raw_case_source_ids": kept_retrieval_ids.get("raw_case_memory", []),
             },
             "comparison": {
-                "skill_names": ordered_section_skills.get("comparison", []),
-                "merged_groups": _comparison_merged_groups(ordered_section_skills.get("comparison", [])),
-                "tactical_source_ids": [item.get("source_id") for item in tactical_selected if item.get("source_id")],
+                "skill_names": kept_skill_names_by_section.get("comparison", []),
+                "merged_groups": _comparison_merged_groups(kept_skill_names_by_section.get("comparison", [])),
+                "tactical_source_ids": kept_retrieval_ids.get("tactical_experience", []),
                 "abstract_source_ids": comparison_abstract_ids,
             },
             "risk": {
-                "skill_names": ordered_section_skills.get("risk", []),
+                "skill_names": kept_skill_names_by_section.get("risk", []),
                 "abstract_source_ids": risk_abstract_ids,
             },
             "conflict_uncertainty": {
-                "skill_names": ordered_section_skills.get("conflict_uncertainty", []),
+                "skill_names": kept_skill_names_by_section.get("conflict_uncertainty", []),
             },
             "planner": {
                 "max_reason_skills": int(self.policy.get("max_planner_reasons", 3)),
@@ -370,6 +464,10 @@ class EvidenceCalibrator:
                 "uncertainty_level": uncertainty_level,
                 "risk_flag_count": len(risk_flags),
                 "confusion_clusters": confusion_clusters,
+                "kept_items": kept_items,
+                "pruned_items": pruned_items,
+                "reordered_items": reordered_items,
+                "quota_state": quota_state,
             },
         )
 
@@ -383,9 +481,10 @@ class EvidenceCalibrator:
         contradiction_count: int,
         risk_flags: list[str],
         confusion_clusters: list[str],
-    ) -> tuple[list[dict[str, Any]], list[CalibrationItemScore]]:
+    ) -> tuple[list[dict[str, Any]], list[CalibrationItemScore], list[dict[str, Any]]]:
         scored: list[tuple[dict[str, Any], float, float, float]] = []
         rows: list[CalibrationItemScore] = []
+        candidates: list[dict[str, Any]] = []
         for record in records:
             source_id = str(record.get("source_id", "")).strip()
             if not source_id:
@@ -412,6 +511,20 @@ class EvidenceCalibrator:
                 learned if self.mode == "learned" else heuristic
             )
             scored.append((record, final_score, heuristic, learned))
+            category = _infer_retrieval_category(source_layer=source_layer, record=record)
+            candidates.append(
+                {
+                    "item_id": source_id,
+                    "item_type": "retrieval_record",
+                    "section": source_layer,
+                    "category": category,
+                    "score": float(final_score),
+                    "heuristic_score": float(heuristic),
+                    "learned_score": float(learned),
+                    "payload": record,
+                    "dedup_key": f"{source_layer}:{source_id}",
+                }
+            )
         scored.sort(
             key=lambda item: (
                 item[1],
@@ -438,9 +551,11 @@ class EvidenceCalibrator:
                     final_score=round(final_score, 6),
                     selected=source_id in selected_ids,
                     reason="selected" if source_id in selected_ids else "dropped_by_rank",
+                    category=_infer_retrieval_category(source_layer=source_layer, record=record),
+                    dedup_key=f"{source_layer}:{source_id}",
                 )
             )
-        return selected, rows
+        return selected, rows, candidates
 
     def _load_learned_scorer_if_needed(self) -> None:
         if self.mode not in {"learned", "hybrid"}:
@@ -545,6 +660,7 @@ def _score_skill_output(
     contradiction_count: int,
     risk_flags: list[str],
     confusion_clusters: list[str],
+    policy: dict[str, Any],
 ) -> float:
     score = float(SKILL_BASE_WEIGHT.get(skill_name, 2.2))
     score += float(EVIDENCE_STRENGTH_WEIGHT.get(str(output.get("evidence_strength", "unknown")).strip().lower(), 0.0))
@@ -580,6 +696,22 @@ def _score_skill_output(
             score += 0.3
     if risk_flags and skill_name in {"malignancy_risk_assessment_skill", "escalation_recommendation_skill"}:
         score += 0.9
+    category = _infer_item_category(skill_name=skill_name, output=output)
+    if category == "description":
+        score += float(policy.get("description_priority_bonus", 0.6) or 0.0)
+    if category == "exclusion_opposing":
+        score += float(policy.get("exclusion_priority_bonus", 1.2) or 0.0)
+    if _has_negative_evidence(output):
+        score += float(policy.get("negative_evidence_priority_bonus", 1.0) or 0.0)
+    if bool(policy.get("cluster_aware_ordering", True)) and confusion_clusters:
+        if category == "exclusion_opposing":
+            score += float(policy.get("cluster_exclusion_bonus", 1.4) or 0.0)
+        if skill_name in {"ack_scc_specialist_skill", "mel_nev_specialist_skill"} and _has_negative_evidence(output):
+            score += float(policy.get("cluster_opposing_bonus", 1.8) or 0.0)
+    if category == "risk" and confusion_clusters:
+        score -= float(policy.get("risk_overweight_penalty", 1.2) or 0.0)
+    if category == "contradiction_gap" and confusion_clusters:
+        score -= float(policy.get("uncertainty_overweight_penalty", 1.0) or 0.0)
     return float(score)
 
 
@@ -724,7 +856,7 @@ def _observation_merged_groups(skill_names: list[str]) -> list[dict[str, Any]]:
                 {
                     "label": "structured_lesion_observation",
                     "skills": members,
-                    "max_members": 3,
+                    "max_members": 2,
                 }
             ]
     return []
@@ -737,7 +869,158 @@ def _comparison_merged_groups(skill_names: list[str]) -> list[dict[str, Any]]:
             {
                 "label": "differential_and_exclusion_reasoning",
                 "skills": ["differential_compare_skill", "exclusion_reasoning_skill"],
-                "max_members": 2,
+                "max_members": 1,
             }
         ]
     return []
+
+
+def _infer_item_category(*, skill_name: str, output: dict[str, Any]) -> str:
+    if skill_name in {
+        "lesion_description_structuring_skill",
+        "morphology_analysis_skill",
+        "color_pattern_analysis_skill",
+        "border_surface_analysis_skill",
+        "distribution_analysis_skill",
+        "temporal_evolution_skill",
+    }:
+        return "description"
+    if skill_name in {"exclusion_reasoning_skill"} or _has_negative_evidence(output):
+        return "exclusion_opposing"
+    if skill_name in {"differential_compare_skill", "metadata_consistency_skill", "ack_scc_specialist_skill", "mel_nev_specialist_skill"}:
+        return "differential_support"
+    if skill_name == "malignancy_risk_assessment_skill":
+        return "risk"
+    if skill_name in {"uncertainty_assessment_skill", "information_gap_detection_skill", "contradiction_check_skill", "escalation_recommendation_skill"}:
+        return "contradiction_gap"
+    return "differential_support"
+
+
+def _infer_retrieval_category(*, source_layer: str, record: dict[str, Any]) -> str:
+    if source_layer == "raw_case_memory":
+        return "description"
+    if source_layer == "tactical_experience":
+        return "experience_hint"
+    if preferred_abstract_section(record=record, cluster_names=[]) == "comparison":
+        return "experience_hint"
+    return "risk"
+
+
+def _has_negative_evidence(output: dict[str, Any]) -> bool:
+    return any(
+        key in output and output.get(key) not in (None, "", [], {}, "unknown")
+        for key in ("opposing_evidence", "exclusion_evidence", "unlikely_candidates", "counterexample_watchouts")
+    )
+
+
+def _dedup_key_for_skill(*, skill_name: str, output: dict[str, Any], category: str) -> str:
+    if category == "description":
+        if skill_name in {"morphology_analysis_skill", "color_pattern_analysis_skill", "border_surface_analysis_skill", "distribution_analysis_skill"}:
+            return "description:secondary_observation"
+        return f"description:{skill_name}"
+    if category == "exclusion_opposing":
+        return "comparison:negative_evidence"
+    if category == "risk":
+        return "risk:malignancy"
+    if category == "contradiction_gap":
+        return f"uncertainty:{skill_name}"
+    return f"{category}:{skill_name}"
+
+
+def _rank_evidence_candidates(
+    *,
+    candidates: list[dict[str, Any]],
+    confusion_clusters: list[str],
+    uncertainty_level: str,
+    risk_flags: list[str],
+    policy: dict[str, Any],
+) -> list[dict[str, Any]]:
+    ranked = [dict(item) for item in candidates]
+    section_priority = {
+        "observation": 0,
+        "comparison": 1,
+        "risk": 2,
+        "conflict_uncertainty": 3,
+        "raw_case_memory": 4,
+        "tactical_experience": 5,
+        "abstract_experience": 6,
+    }
+    category_priority = {
+        "description": 0,
+        "exclusion_opposing": 1,
+        "differential_support": 2,
+        "risk": 3,
+        "contradiction_gap": 4,
+        "experience_hint": 5,
+    }
+    for item in ranked:
+        bonus = 0.0
+        ordering_hints = cluster_ordering_hints(confusion_clusters)
+        bonus += float(ordering_hints.get(str(item["item_id"]), 0.0) or 0.0)
+        if bool(policy.get("cluster_aware_ordering", True)) and confusion_clusters:
+            if item["category"] == "exclusion_opposing":
+                bonus += 1.0
+            if item["category"] == "differential_support" and item["item_id"] in {"ack_scc_specialist_skill", "mel_nev_specialist_skill"}:
+                bonus += 0.8
+        if item["category"] == "risk" and confusion_clusters:
+            bonus -= 0.5
+        if item["category"] == "contradiction_gap" and uncertainty_level != "high":
+            bonus -= 0.4
+        if item["category"] == "description":
+            bonus += 0.4
+        item["ordering_score"] = float(item["score"]) + bonus
+    ranked.sort(
+        key=lambda item: (
+            -float(item["ordering_score"]),
+            category_priority.get(str(item["category"]), 99),
+            section_priority.get(str(item["section"]), 99),
+            str(item["item_id"]),
+        )
+    )
+    for rank, item in enumerate(ranked, start=1):
+        item["rank"] = rank
+    return ranked
+
+
+def _apply_pruning_and_budget(
+    *,
+    ranked_candidates: list[dict[str, Any]],
+    policy: dict[str, Any],
+) -> tuple[set[str], list[dict[str, Any]], dict[str, Any]]:
+    max_total = max(3, int(policy.get("max_total_items", 8) or 8))
+    per_category_quota = {
+        "description": max(1, int(policy.get("max_observation_skills", 4) or 4) - 1),
+        "differential_support": max(1, int(policy.get("max_comparison_skills", 3) or 3) - 1),
+        "exclusion_opposing": max(1, int(policy.get("max_exclusion_items", 2) or 2)),
+        "risk": max(1, int(policy.get("max_risk_skills", 2) or 2) - 1),
+        "contradiction_gap": max(1, int(policy.get("max_uncertainty_skills", 3) or 3) - 1),
+        "experience_hint": max(0, int(policy.get("max_experience_hints", 2) or 2)),
+    }
+    dedup_enabled = bool(policy.get("dedup_similar_evidence", True))
+    kept_ids: set[str] = set()
+    pruned: list[dict[str, Any]] = []
+    used_dedup: set[str] = set()
+    category_counts = {key: 0 for key in per_category_quota}
+    for item in ranked_candidates:
+        item_id = str(item["item_id"])
+        category = str(item["category"])
+        dedup_key = str(item.get("dedup_key", ""))
+        if len(kept_ids) >= max_total:
+            pruned.append({**item, "reason": "global_budget_exceeded"})
+            continue
+        if dedup_enabled and dedup_key and dedup_key in used_dedup:
+            pruned.append({**item, "reason": "duplicate_of_higher_ranked_item"})
+            continue
+        if category_counts.get(category, 0) >= per_category_quota.get(category, 99):
+            pruned.append({**item, "reason": "category_quota_exceeded"})
+            continue
+        kept_ids.add(item_id)
+        category_counts[category] = category_counts.get(category, 0) + 1
+        if dedup_key:
+            used_dedup.add(dedup_key)
+    quota_state = {
+        "max_total_items": max_total,
+        "per_category_quota": per_category_quota,
+        "category_counts": category_counts,
+    }
+    return kept_ids, pruned, quota_state
