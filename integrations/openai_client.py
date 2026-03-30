@@ -287,9 +287,12 @@ class DermOpenAIClient:
                 "The evidence package contains two layers:\n"
                 "1. `risk_layer`: malignant-risk warnings, caution flags, follow-up suggestions, and the supporting shortlist.\n"
                 "2. `diagnosis_override_layer`: whether the agent evidence is strong enough to justify changing the diagnosis direction.\n"
-                "If `override_allowed` is false, stay close to a baseline-style diagnosis from the image and metadata, but preserve the risk warnings, caution, and follow-up context.\n"
-                "Only let the agent evidence strongly redirect the final diagnosis when `override_allowed` is true.\n"
-                "Within `selected_evidence`, separately weigh `supporting_evidence` against `opposing_evidence`.\n"
+                "Interpret the override layer conservatively:\n"
+                "- if `subtype_override_allowed` is true, you may output a specific diagnostic subtype.\n"
+                "- if only `malignancy_override_allowed` is true, prefer a suspicious-style subtype label such as `Suspicious for Basal Cell Carcinoma` instead of a fully confident subtype override.\n"
+                "- if neither override is allowed, stay close to a baseline-style diagnosis from the image and metadata, but preserve the risk warnings, caution, and follow-up context.\n"
+                "Within the override layer, separately weigh `Supporting Evidence` against `Opposing / Exclusion Evidence`.\n"
+                "Do not let generic risk or descriptive evidence count as subtype-specific support unless the override layer says subtype support is sufficient.\n"
                 "Prioritize the `selected_evidence` block as the curated shortlist chosen by the evidence calibrator.\n"
                 "Use `serialized_evidence_text` as supporting narrative context when it agrees with the selected evidence.\n"
                 "Integrate image, metadata, and evidence, then return a structured final diagnosis result.\n"
@@ -829,10 +832,14 @@ class DermOpenAIClient:
                 "risk_flag": str(risk_layer.get("risk_flag", "")).strip()[:120],
                 "caution_flags": [str(item).strip()[:120] for item in risk_layer.get("caution_flags", [])[:4] if str(item).strip()],
                 "follow_up_suggestion": str(risk_layer.get("follow_up_suggestion", "")).strip()[:220],
+                "baseline_preview": dict(risk_layer.get("baseline_preview", {})) if isinstance(risk_layer.get("baseline_preview", {}), dict) else {},
                 "selected_evidence": DermOpenAIClient._canonicalize_selected_evidence(risk_layer.get("selected_evidence", [])),
             },
             "diagnosis_override_layer": {
                 "override_allowed": bool(diagnosis_layer.get("override_allowed", False)),
+                "malignancy_override_allowed": bool(diagnosis_layer.get("malignancy_override_allowed", False)),
+                "subtype_override_allowed": bool(diagnosis_layer.get("subtype_override_allowed", False)),
+                "override_mode": str(diagnosis_layer.get("override_mode", "")).strip()[:60],
                 "override_reasons": [
                     str(item).strip()[:120] for item in diagnosis_layer.get("override_reasons", [])[:6] if str(item).strip()
                 ],
@@ -844,10 +851,14 @@ class DermOpenAIClient:
                 "supporting_score": diagnosis_layer.get("supporting_score"),
                 "opposing_score": diagnosis_layer.get("opposing_score"),
                 "support_margin": diagnosis_layer.get("support_margin"),
+                "subtype_support_score": diagnosis_layer.get("subtype_support_score"),
+                "subtype_support_margin": diagnosis_layer.get("subtype_support_margin"),
                 "specialist_support_present": bool(diagnosis_layer.get("specialist_support_present", False)),
                 "consistent_retrieval_count": diagnosis_layer.get("consistent_retrieval_count"),
                 "contradiction_count": diagnosis_layer.get("contradiction_count"),
                 "uncertainty_level": str(diagnosis_layer.get("uncertainty_level", "")).strip()[:60],
+                "opposing_quota_satisfied": bool(diagnosis_layer.get("opposing_quota_satisfied", False)),
+                "subtype_support_quota_satisfied": bool(diagnosis_layer.get("subtype_support_quota_satisfied", False)),
                 "supporting_evidence": DermOpenAIClient._canonicalize_selected_evidence(
                     diagnosis_layer.get("supporting_evidence", [])
                 ),
@@ -887,6 +898,7 @@ class DermOpenAIClient:
                 "risk_flag": risk_layer.get("risk_flag", ""),
                 "caution_flags": list(risk_layer.get("caution_flags", []))[:4],
                 "follow_up_suggestion": risk_layer.get("follow_up_suggestion", ""),
+                "baseline_preview": dict(risk_layer.get("baseline_preview", {})) if isinstance(risk_layer.get("baseline_preview", {}), dict) else {},
                 "selected_evidence": DermOpenAIClient._compact_selected_evidence(
                     risk_layer.get("selected_evidence", []),
                     top_k=top_k,
@@ -894,6 +906,9 @@ class DermOpenAIClient:
             },
             "diagnosis_override_layer": {
                 "override_allowed": bool(diagnosis_layer.get("override_allowed", False)),
+                "malignancy_override_allowed": bool(diagnosis_layer.get("malignancy_override_allowed", False)),
+                "subtype_override_allowed": bool(diagnosis_layer.get("subtype_override_allowed", False)),
+                "override_mode": diagnosis_layer.get("override_mode", ""),
                 "override_reasons": list(diagnosis_layer.get("override_reasons", []))[:4],
                 "why_not_confident_enough_to_override": list(
                     diagnosis_layer.get("why_not_confident_enough_to_override", [])
@@ -901,10 +916,14 @@ class DermOpenAIClient:
                 "supporting_score": diagnosis_layer.get("supporting_score"),
                 "opposing_score": diagnosis_layer.get("opposing_score"),
                 "support_margin": diagnosis_layer.get("support_margin"),
+                "subtype_support_score": diagnosis_layer.get("subtype_support_score"),
+                "subtype_support_margin": diagnosis_layer.get("subtype_support_margin"),
                 "specialist_support_present": bool(diagnosis_layer.get("specialist_support_present", False)),
                 "consistent_retrieval_count": diagnosis_layer.get("consistent_retrieval_count"),
                 "contradiction_count": diagnosis_layer.get("contradiction_count"),
                 "uncertainty_level": diagnosis_layer.get("uncertainty_level", ""),
+                "opposing_quota_satisfied": bool(diagnosis_layer.get("opposing_quota_satisfied", False)),
+                "subtype_support_quota_satisfied": bool(diagnosis_layer.get("subtype_support_quota_satisfied", False)),
                 "supporting_evidence": DermOpenAIClient._compact_selected_evidence(
                     diagnosis_layer.get("supporting_evidence", []),
                     top_k=top_k,

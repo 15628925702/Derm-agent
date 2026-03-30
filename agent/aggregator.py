@@ -96,6 +96,7 @@ def build_evidence_bundle(state: CaseState) -> dict[str, Any]:
         contradiction_summary=contradiction_summary,
         uncertainty_summary=uncertainty_summary,
         escalation_summary=escalation_summary,
+        initial_perception_summary=initial_perception_summary,
     )
 
     return {
@@ -687,10 +688,12 @@ def _build_evidence_decision_policy(
     contradiction_summary: dict[str, Any],
     uncertainty_summary: dict[str, Any],
     escalation_summary: dict[str, Any],
+    initial_perception_summary: dict[str, Any],
 ) -> dict[str, Any]:
     supporting_items, opposing_items = _split_selected_evidence(selected_evidence)
     supporting_score = round(sum(float(item.get("score", 0.0) or 0.0) for item in supporting_items), 6)
     opposing_score = round(sum(float(item.get("score", 0.0) or 0.0) for item in opposing_items), 6)
+    subtype_supporting_items = _subtype_supporting_items(supporting_items)
 
     risk_output = dict(state.skill_outputs.get("malignancy_risk_assessment_skill", {}))
     risk_level = str(risk_output.get("risk_level", "unknown")).strip().lower() or "unknown"
@@ -706,12 +709,37 @@ def _build_evidence_decision_policy(
         retrieved_abstract_experiences_summary=retrieved_abstract_experiences_summary,
     )
     support_margin = round(supporting_score - opposing_score, 6)
+    subtype_support_score = round(sum(float(item.get("score", 0.0) or 0.0) for item in subtype_supporting_items), 6)
+    opposing_quota_satisfied = len(opposing_items) >= 1
+    subtype_support_quota_satisfied = len(subtype_supporting_items) >= 1
+    subtype_support_margin = round(subtype_support_score - opposing_score, 6)
+    malignancy_override_allowed = (
+        risk_level == "high"
+        and support_margin >= 6.0
+        and uncertainty_level not in {"high", "unknown"}
+        and contradiction_count <= 2
+    )
+    subtype_override_allowed = (
+        malignancy_override_allowed
+        and subtype_support_margin >= 4.0
+        and specialist_support
+        and consistent_retrieval_count >= 1
+        and opposing_quota_satisfied
+        and subtype_support_quota_satisfied
+    )
+    override_mode = "risk_only"
+    if subtype_override_allowed:
+        override_mode = "subtype_override"
+    elif malignancy_override_allowed:
+        override_mode = "suspicious_subtype"
 
     override_reasons: list[str] = []
     if risk_level == "high":
         override_reasons.append("high_malignancy_risk")
     if support_margin >= 6.0 and len(supporting_items) >= max(2, len(opposing_items)):
         override_reasons.append("supporting_evidence_outweighs_opposition")
+    if subtype_support_margin >= 4.0 and subtype_support_quota_satisfied:
+        override_reasons.append("subtype_specific_support_present")
     if specialist_support:
         override_reasons.append("specialist_support_present")
     if uncertainty_level not in {"high", "unknown"}:
@@ -720,15 +748,8 @@ def _build_evidence_decision_policy(
         override_reasons.append("contradictions_not_excessive")
     if consistent_retrieval_count >= 1:
         override_reasons.append("consistent_retrieval_support")
-
-    override_allowed = (
-        risk_level == "high"
-        and support_margin >= 6.0
-        and specialist_support
-        and uncertainty_level not in {"high", "unknown"}
-        and contradiction_count <= 2
-        and consistent_retrieval_count >= 1
-    )
+    if opposing_quota_satisfied:
+        override_reasons.append("opposing_quota_satisfied")
 
     caution_flags: list[str] = []
     if risk_level == "high":
@@ -745,6 +766,8 @@ def _build_evidence_decision_policy(
         why_not_confident_enough.append("malignancy risk is not high enough for a diagnosis override")
     if support_margin < 6.0:
         why_not_confident_enough.append("supporting evidence does not sufficiently outweigh opposing or exclusion evidence")
+    if not subtype_support_quota_satisfied:
+        why_not_confident_enough.append("supporting evidence is not specific enough to justify a subtype override")
     if not specialist_support:
         why_not_confident_enough.append("no specialist evidence strongly supports the override direction")
     if uncertainty_level in {"high", "unknown"}:
@@ -753,15 +776,21 @@ def _build_evidence_decision_policy(
         why_not_confident_enough.append("contradictions or reasoning gaps remain too numerous")
     if consistent_retrieval_count < 1:
         why_not_confident_enough.append("retrieval evidence does not provide a consistent prototype or confusion-memory anchor")
+    if not opposing_quota_satisfied:
+        why_not_confident_enough.append("opposing or exclusion evidence quota is not satisfied")
 
     risk_layer = {
         "risk_flag": "malignancy_risk_high" if risk_level == "high" else f"malignancy_risk_{risk_level}",
         "caution_flags": caution_flags,
         "follow_up_suggestion": _build_follow_up_suggestion(escalation_summary=escalation_summary, uncertainty_summary=uncertainty_summary),
         "selected_evidence": supporting_items[:4] + opposing_items[:2],
+        "baseline_preview": _build_baseline_preview(initial_perception_summary=initial_perception_summary),
     }
     diagnosis_override_layer = {
-        "override_allowed": override_allowed,
+        "override_allowed": subtype_override_allowed,
+        "malignancy_override_allowed": malignancy_override_allowed,
+        "subtype_override_allowed": subtype_override_allowed,
+        "override_mode": override_mode,
         "override_reasons": override_reasons,
         "why_not_confident_enough_to_override": why_not_confident_enough,
         "supporting_evidence": supporting_items,
@@ -769,10 +798,14 @@ def _build_evidence_decision_policy(
         "supporting_score": supporting_score,
         "opposing_score": opposing_score,
         "support_margin": support_margin,
+        "subtype_support_score": subtype_support_score,
+        "subtype_support_margin": subtype_support_margin,
         "specialist_support_present": specialist_support,
         "consistent_retrieval_count": consistent_retrieval_count,
         "contradiction_count": contradiction_count,
         "uncertainty_level": uncertainty_level,
+        "opposing_quota_satisfied": opposing_quota_satisfied,
+        "subtype_support_quota_satisfied": subtype_support_quota_satisfied,
     }
     return {
         "risk_layer": risk_layer,
@@ -792,6 +825,24 @@ def _split_selected_evidence(selected_evidence: list[dict[str, Any]]) -> tuple[l
         else:
             supporting.append(annotated)
     return supporting, opposing
+
+
+def _subtype_supporting_items(selected_evidence: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    subtype_items: list[dict[str, Any]] = []
+    subtype_skill_names = {"ack_scc_specialist_skill", "mel_nev_specialist_skill", "differential_compare_skill"}
+    for item in selected_evidence:
+        skill_name = str(item.get("skill_name", "")).strip()
+        category = str(item.get("category", "")).strip().lower()
+        summary = str(item.get("summary", "")).lower()
+        if skill_name in subtype_skill_names:
+            subtype_items.append(item)
+            continue
+        if category == "differential_support":
+            subtype_items.append(item)
+            continue
+        if any(term in summary for term in ("basal cell", "squamous cell", "melanoma", "actinic keratos")):
+            subtype_items.append(item)
+    return subtype_items
 
 
 def _count_contradiction_items(summary: dict[str, Any]) -> int:
@@ -829,6 +880,14 @@ def _build_follow_up_suggestion(*, escalation_summary: dict[str, Any], uncertain
     if uncertainty_level == "high":
         return "closer dermatologic review or biopsy consideration"
     return "clinical follow-up and closer inspection if concern persists"
+
+
+def _build_baseline_preview(*, initial_perception_summary: dict[str, Any]) -> dict[str, Any]:
+    ddx_candidates = [str(item).strip() for item in initial_perception_summary.get("ddx_candidates", []) if str(item).strip()]
+    return {
+        "early_ddx_candidates": ddx_candidates[:3],
+        "image_summary": str(initial_perception_summary.get("image_summary", "")).strip()[:220],
+    }
 
 
 def _summarize_skill_evidence(skill_name: str, output: dict[str, Any]) -> str:
