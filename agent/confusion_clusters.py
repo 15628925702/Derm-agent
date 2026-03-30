@@ -264,6 +264,28 @@ def cluster_priority_bonus(cluster_names: list[str], skill_name: str) -> float:
     return bonus
 
 
+def cluster_ordering_hints(cluster_names: list[str]) -> dict[str, float]:
+    hints: dict[str, float] = {}
+    if not cluster_names:
+        return hints
+
+    # Keep description and exclusion-oriented evidence near the front when a
+    # confusion cluster is active so later ordering logic can down-rank pure
+    # risk items without losing the main comparison signal.
+    hints["lesion_description_structuring_skill"] = 0.6
+    hints["differential_compare_skill"] = 0.9
+    hints["exclusion_reasoning_skill"] = 1.2
+
+    for cluster_name in cluster_names:
+        definition = CONFUSION_CLUSTER_DEFINITIONS.get(cluster_name, {})
+        for skill_name, bonus in dict(definition.get("priority_skills", {})).items():
+            normalized_name = str(skill_name).strip()
+            if not normalized_name:
+                continue
+            hints[normalized_name] = max(float(hints.get(normalized_name, 0.0) or 0.0), float(bonus or 0.0))
+    return hints
+
+
 def cluster_related_keywords(cluster_names: list[str]) -> tuple[str, ...]:
     keywords: list[str] = []
     for cluster_name in cluster_names:

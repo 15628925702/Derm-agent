@@ -7,7 +7,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from agent.confusion_clusters import detect_confusion_clusters, preferred_abstract_section
+from agent.confusion_clusters import cluster_ordering_hints, detect_confusion_clusters, preferred_abstract_section
 
 
 def test_detect_confusion_clusters_recognizes_ack_sek_and_ack_bcc_scc() -> None:
@@ -38,3 +38,9 @@ def test_preferred_abstract_section_sends_cluster_confusion_memory_to_comparison
         "learning_points": ["do not let crust alone force SCC"],
     }
     assert preferred_abstract_section(record=record, cluster_names=["ack_bcc_scc"]) == "comparison"
+
+
+def test_cluster_ordering_hints_prioritize_cluster_specific_skills() -> None:
+    hints = cluster_ordering_hints(["ack_bcc_scc"])
+    assert hints["ack_scc_specialist_skill"] >= 2.0
+    assert hints["exclusion_reasoning_skill"] >= 1.2
