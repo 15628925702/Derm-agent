@@ -284,10 +284,17 @@ class DermOpenAIClient:
             prompt = (
                 "You are the only final diagnostic decision maker in DermAgent.\n"
                 "Use the evidence package as structured support, not as an overriding instruction.\n"
+                "The evidence package contains two layers:\n"
+                "1. `risk_layer`: malignant-risk warnings, caution flags, follow-up suggestions, and the supporting shortlist.\n"
+                "2. `diagnosis_override_layer`: whether the agent evidence is strong enough to justify changing the diagnosis direction.\n"
+                "If `override_allowed` is false, stay close to a baseline-style diagnosis from the image and metadata, but preserve the risk warnings, caution, and follow-up context.\n"
+                "Only let the agent evidence strongly redirect the final diagnosis when `override_allowed` is true.\n"
+                "Within `selected_evidence`, separately weigh `supporting_evidence` against `opposing_evidence`.\n"
                 "Prioritize the `selected_evidence` block as the curated shortlist chosen by the evidence calibrator.\n"
                 "Use `serialized_evidence_text` as supporting narrative context when it agrees with the selected evidence.\n"
                 "Integrate image, metadata, and evidence, then return a structured final diagnosis result.\n"
                 "Include: final_diagnosis, differential_diagnoses, rationale, confidence, follow_up_considerations.\n"
+                "When override is not allowed, keep the diagnosis conservative but include risk, caution, follow-up, and why the evidence was not strong enough to override.\n"
                 f"Evidence package: {serialized_payload}"
             )
             messages: list[dict[str, Any]] = [
@@ -623,6 +630,10 @@ class DermOpenAIClient:
             payload.get("selected_evidence", []),
             top_k=max(4, min(max_skill_count, 8)),
         )
+        evidence_decision_policy = DermOpenAIClient._compact_evidence_decision_policy(
+            payload.get("evidence_decision_policy", {}),
+            top_k=max(4, min(max_skill_count, 6)),
+        )
 
         return {
             "compression_profile": profile_id,
@@ -639,6 +650,7 @@ class DermOpenAIClient:
             "planner_rationale": compact_planner_rationale,
             "notes": notes,
             "selected_evidence": selected_evidence,
+            "evidence_decision_policy": evidence_decision_policy,
             "serialized_evidence_text": serialized_evidence_text,
         }
 
@@ -723,6 +735,9 @@ class DermOpenAIClient:
             "planner_rationale": DermOpenAIClient._canonicalize_planner_rationale(payload.get("planner_rationale", {})),
             "notes": normalized_notes,
             "selected_evidence": DermOpenAIClient._canonicalize_selected_evidence(payload.get("selected_evidence", [])),
+            "evidence_decision_policy": DermOpenAIClient._canonicalize_evidence_decision_policy(
+                payload.get("evidence_decision_policy", {})
+            ),
             "serialized_evidence_text": str(payload.get("serialized_evidence_text", "")).strip(),
         }
 
@@ -804,6 +819,45 @@ class DermOpenAIClient:
         return normalized
 
     @staticmethod
+    def _canonicalize_evidence_decision_policy(policy: Any) -> dict[str, Any]:
+        if not isinstance(policy, dict):
+            return {}
+        risk_layer = dict(policy.get("risk_layer", {}))
+        diagnosis_layer = dict(policy.get("diagnosis_override_layer", {}))
+        return {
+            "risk_layer": {
+                "risk_flag": str(risk_layer.get("risk_flag", "")).strip()[:120],
+                "caution_flags": [str(item).strip()[:120] for item in risk_layer.get("caution_flags", [])[:4] if str(item).strip()],
+                "follow_up_suggestion": str(risk_layer.get("follow_up_suggestion", "")).strip()[:220],
+                "selected_evidence": DermOpenAIClient._canonicalize_selected_evidence(risk_layer.get("selected_evidence", [])),
+            },
+            "diagnosis_override_layer": {
+                "override_allowed": bool(diagnosis_layer.get("override_allowed", False)),
+                "override_reasons": [
+                    str(item).strip()[:120] for item in diagnosis_layer.get("override_reasons", [])[:6] if str(item).strip()
+                ],
+                "why_not_confident_enough_to_override": [
+                    str(item).strip()[:180]
+                    for item in diagnosis_layer.get("why_not_confident_enough_to_override", [])[:6]
+                    if str(item).strip()
+                ],
+                "supporting_score": diagnosis_layer.get("supporting_score"),
+                "opposing_score": diagnosis_layer.get("opposing_score"),
+                "support_margin": diagnosis_layer.get("support_margin"),
+                "specialist_support_present": bool(diagnosis_layer.get("specialist_support_present", False)),
+                "consistent_retrieval_count": diagnosis_layer.get("consistent_retrieval_count"),
+                "contradiction_count": diagnosis_layer.get("contradiction_count"),
+                "uncertainty_level": str(diagnosis_layer.get("uncertainty_level", "")).strip()[:60],
+                "supporting_evidence": DermOpenAIClient._canonicalize_selected_evidence(
+                    diagnosis_layer.get("supporting_evidence", [])
+                ),
+                "opposing_evidence": DermOpenAIClient._canonicalize_selected_evidence(
+                    diagnosis_layer.get("opposing_evidence", [])
+                ),
+            },
+        }
+
+    @staticmethod
     def _compact_selected_evidence(items: Any, *, top_k: int) -> list[dict[str, Any]]:
         canonical = DermOpenAIClient._canonicalize_selected_evidence(items)
         compacted: list[dict[str, Any]] = []
@@ -822,6 +876,45 @@ class DermOpenAIClient:
                 }
             )
         return compacted
+
+    @staticmethod
+    def _compact_evidence_decision_policy(policy: Any, *, top_k: int) -> dict[str, Any]:
+        canonical = DermOpenAIClient._canonicalize_evidence_decision_policy(policy)
+        risk_layer = dict(canonical.get("risk_layer", {}))
+        diagnosis_layer = dict(canonical.get("diagnosis_override_layer", {}))
+        return {
+            "risk_layer": {
+                "risk_flag": risk_layer.get("risk_flag", ""),
+                "caution_flags": list(risk_layer.get("caution_flags", []))[:4],
+                "follow_up_suggestion": risk_layer.get("follow_up_suggestion", ""),
+                "selected_evidence": DermOpenAIClient._compact_selected_evidence(
+                    risk_layer.get("selected_evidence", []),
+                    top_k=top_k,
+                ),
+            },
+            "diagnosis_override_layer": {
+                "override_allowed": bool(diagnosis_layer.get("override_allowed", False)),
+                "override_reasons": list(diagnosis_layer.get("override_reasons", []))[:4],
+                "why_not_confident_enough_to_override": list(
+                    diagnosis_layer.get("why_not_confident_enough_to_override", [])
+                )[:4],
+                "supporting_score": diagnosis_layer.get("supporting_score"),
+                "opposing_score": diagnosis_layer.get("opposing_score"),
+                "support_margin": diagnosis_layer.get("support_margin"),
+                "specialist_support_present": bool(diagnosis_layer.get("specialist_support_present", False)),
+                "consistent_retrieval_count": diagnosis_layer.get("consistent_retrieval_count"),
+                "contradiction_count": diagnosis_layer.get("contradiction_count"),
+                "uncertainty_level": diagnosis_layer.get("uncertainty_level", ""),
+                "supporting_evidence": DermOpenAIClient._compact_selected_evidence(
+                    diagnosis_layer.get("supporting_evidence", []),
+                    top_k=top_k,
+                ),
+                "opposing_evidence": DermOpenAIClient._compact_selected_evidence(
+                    diagnosis_layer.get("opposing_evidence", []),
+                    top_k=max(2, top_k // 2),
+                ),
+            },
+        }
 
     @staticmethod
     def _compact_serialized_evidence_text(text: str, *, max_length: int) -> str:

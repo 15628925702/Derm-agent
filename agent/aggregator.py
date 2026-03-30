@@ -88,6 +88,15 @@ def build_evidence_bundle(state: CaseState) -> dict[str, Any]:
         retrieved_tactical_experiences_summary=retrieved_tactical_experiences_summary,
         retrieved_abstract_experiences_summary=retrieved_abstract_experiences_summary,
     )
+    evidence_decision_policy = _build_evidence_decision_policy(
+        state=state,
+        selected_evidence=selected_evidence,
+        retrieved_tactical_experiences_summary=retrieved_tactical_experiences_summary,
+        retrieved_abstract_experiences_summary=retrieved_abstract_experiences_summary,
+        contradiction_summary=contradiction_summary,
+        uncertainty_summary=uncertainty_summary,
+        escalation_summary=escalation_summary,
+    )
 
     return {
         "perception": state.perception,
@@ -107,6 +116,7 @@ def build_evidence_bundle(state: CaseState) -> dict[str, Any]:
         "planner_rationale": planner_rationale,
         "confusion_cluster_summary": confusion_cluster_summary,
         "selected_evidence": selected_evidence,
+        "evidence_decision_policy": evidence_decision_policy,
         "serialized_evidence_text": serialized_evidence_text,
         "evidence_calibration_debug": calibration.to_dict() if evidence_policy.get("debug_output", True) else {},
     }
@@ -666,6 +676,159 @@ def _build_selected_evidence(
             }
         )
     return selected
+
+
+def _build_evidence_decision_policy(
+    *,
+    state: CaseState,
+    selected_evidence: list[dict[str, Any]],
+    retrieved_tactical_experiences_summary: list[dict[str, Any]],
+    retrieved_abstract_experiences_summary: list[dict[str, Any]],
+    contradiction_summary: dict[str, Any],
+    uncertainty_summary: dict[str, Any],
+    escalation_summary: dict[str, Any],
+) -> dict[str, Any]:
+    supporting_items, opposing_items = _split_selected_evidence(selected_evidence)
+    supporting_score = round(sum(float(item.get("score", 0.0) or 0.0) for item in supporting_items), 6)
+    opposing_score = round(sum(float(item.get("score", 0.0) or 0.0) for item in opposing_items), 6)
+
+    risk_output = dict(state.skill_outputs.get("malignancy_risk_assessment_skill", {}))
+    risk_level = str(risk_output.get("risk_level", "unknown")).strip().lower() or "unknown"
+    contradiction_count = _count_contradiction_items(contradiction_summary)
+    uncertainty_level = str(uncertainty_summary.get("uncertainty_level", "unknown")).strip().lower() or "unknown"
+    specialist_items = [
+        item for item in supporting_items if str(item.get("skill_name", "")).strip() in {"ack_scc_specialist_skill", "mel_nev_specialist_skill"}
+    ]
+    specialist_support = bool(specialist_items)
+    consistent_retrieval_count = _count_consistent_retrieval_support(
+        supporting_items=supporting_items,
+        retrieved_tactical_experiences_summary=retrieved_tactical_experiences_summary,
+        retrieved_abstract_experiences_summary=retrieved_abstract_experiences_summary,
+    )
+    support_margin = round(supporting_score - opposing_score, 6)
+
+    override_reasons: list[str] = []
+    if risk_level == "high":
+        override_reasons.append("high_malignancy_risk")
+    if support_margin >= 6.0 and len(supporting_items) >= max(2, len(opposing_items)):
+        override_reasons.append("supporting_evidence_outweighs_opposition")
+    if specialist_support:
+        override_reasons.append("specialist_support_present")
+    if uncertainty_level not in {"high", "unknown"}:
+        override_reasons.append("uncertainty_not_high")
+    if contradiction_count <= 2:
+        override_reasons.append("contradictions_not_excessive")
+    if consistent_retrieval_count >= 1:
+        override_reasons.append("consistent_retrieval_support")
+
+    override_allowed = (
+        risk_level == "high"
+        and support_margin >= 6.0
+        and specialist_support
+        and uncertainty_level not in {"high", "unknown"}
+        and contradiction_count <= 2
+        and consistent_retrieval_count >= 1
+    )
+
+    caution_flags: list[str] = []
+    if risk_level == "high":
+        caution_flags.append("malignancy_risk_high")
+    if uncertainty_level == "high":
+        caution_flags.append("uncertainty_high")
+    if contradiction_count > 0:
+        caution_flags.append("contradictions_present")
+    if str(escalation_summary.get("whether_escalation_needed", "")).strip().lower() in {"yes", "consider"}:
+        caution_flags.append("follow_up_or_biopsy_consideration")
+
+    why_not_confident_enough: list[str] = []
+    if risk_level != "high":
+        why_not_confident_enough.append("malignancy risk is not high enough for a diagnosis override")
+    if support_margin < 6.0:
+        why_not_confident_enough.append("supporting evidence does not sufficiently outweigh opposing or exclusion evidence")
+    if not specialist_support:
+        why_not_confident_enough.append("no specialist evidence strongly supports the override direction")
+    if uncertainty_level in {"high", "unknown"}:
+        why_not_confident_enough.append("uncertainty remains too high for a confident diagnosis override")
+    if contradiction_count > 2:
+        why_not_confident_enough.append("contradictions or reasoning gaps remain too numerous")
+    if consistent_retrieval_count < 1:
+        why_not_confident_enough.append("retrieval evidence does not provide a consistent prototype or confusion-memory anchor")
+
+    risk_layer = {
+        "risk_flag": "malignancy_risk_high" if risk_level == "high" else f"malignancy_risk_{risk_level}",
+        "caution_flags": caution_flags,
+        "follow_up_suggestion": _build_follow_up_suggestion(escalation_summary=escalation_summary, uncertainty_summary=uncertainty_summary),
+        "selected_evidence": supporting_items[:4] + opposing_items[:2],
+    }
+    diagnosis_override_layer = {
+        "override_allowed": override_allowed,
+        "override_reasons": override_reasons,
+        "why_not_confident_enough_to_override": why_not_confident_enough,
+        "supporting_evidence": supporting_items,
+        "opposing_evidence": opposing_items,
+        "supporting_score": supporting_score,
+        "opposing_score": opposing_score,
+        "support_margin": support_margin,
+        "specialist_support_present": specialist_support,
+        "consistent_retrieval_count": consistent_retrieval_count,
+        "contradiction_count": contradiction_count,
+        "uncertainty_level": uncertainty_level,
+    }
+    return {
+        "risk_layer": risk_layer,
+        "diagnosis_override_layer": diagnosis_override_layer,
+    }
+
+
+def _split_selected_evidence(selected_evidence: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    supporting: list[dict[str, Any]] = []
+    opposing: list[dict[str, Any]] = []
+    for item in selected_evidence:
+        category = str(item.get("category", "")).strip().lower()
+        summary = str(item.get("summary", "")).strip()
+        annotated = dict(item)
+        if category == "exclusion_opposing" or "opposing_evidence" in summary or "exclusion_evidence" in summary:
+            opposing.append(annotated)
+        else:
+            supporting.append(annotated)
+    return supporting, opposing
+
+
+def _count_contradiction_items(summary: dict[str, Any]) -> int:
+    total = 0
+    for key in ("contradictions", "missing_links", "reasoning_gaps", "metadata_conflicts", "suspicious_points"):
+        total += len(summary.get(key, []) or [])
+    return total
+
+
+def _count_consistent_retrieval_support(
+    *,
+    supporting_items: list[dict[str, Any]],
+    retrieved_tactical_experiences_summary: list[dict[str, Any]],
+    retrieved_abstract_experiences_summary: list[dict[str, Any]],
+) -> int:
+    selected_retrieval_ids = {
+        str(item.get("source_name", "")).strip()
+        for item in supporting_items
+        if str(item.get("source_type", "")).strip() == "retrieval_record"
+    }
+    count = 0
+    for record in [*retrieved_tactical_experiences_summary, *retrieved_abstract_experiences_summary]:
+        source_id = str(record.get("source_id", "")).strip()
+        exp_type = str(record.get("experience_type", "")).strip().lower()
+        if source_id and source_id in selected_retrieval_ids and exp_type in {"prototype", "confusion_memory", "rule"}:
+            count += 1
+    return count
+
+
+def _build_follow_up_suggestion(*, escalation_summary: dict[str, Any], uncertainty_summary: dict[str, Any]) -> str:
+    next_check = str(escalation_summary.get("suggested_next_check_type", "")).strip()
+    if next_check:
+        return next_check
+    uncertainty_level = str(uncertainty_summary.get("uncertainty_level", "")).strip().lower()
+    if uncertainty_level == "high":
+        return "closer dermatologic review or biopsy consideration"
+    return "clinical follow-up and closer inspection if concern persists"
 
 
 def _summarize_skill_evidence(skill_name: str, output: dict[str, Any]) -> str:
