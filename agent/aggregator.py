@@ -81,6 +81,13 @@ def build_evidence_bundle(state: CaseState) -> dict[str, Any]:
         confusion_cluster_summary=confusion_cluster_summary,
         calibration=calibration.to_dict(),
     )
+    selected_evidence = _build_selected_evidence(
+        calibration=calibration.to_dict(),
+        skill_outputs=state.skill_outputs,
+        retrieved_raw_cases_summary=retrieved_raw_cases_summary,
+        retrieved_tactical_experiences_summary=retrieved_tactical_experiences_summary,
+        retrieved_abstract_experiences_summary=retrieved_abstract_experiences_summary,
+    )
 
     return {
         "perception": state.perception,
@@ -99,6 +106,7 @@ def build_evidence_bundle(state: CaseState) -> dict[str, Any]:
         "escalation_summary": escalation_summary,
         "planner_rationale": planner_rationale,
         "confusion_cluster_summary": confusion_cluster_summary,
+        "selected_evidence": selected_evidence,
         "serialized_evidence_text": serialized_evidence_text,
         "evidence_calibration_debug": calibration.to_dict() if evidence_policy.get("debug_output", True) else {},
     }
@@ -575,3 +583,113 @@ def _clip_text(value: Any, *, max_length: int = 220) -> str:
     if len(text) <= max_length:
         return text
     return text[: max_length - 3] + "..."
+
+
+def _build_selected_evidence(
+    *,
+    calibration: dict[str, Any],
+    skill_outputs: dict[str, dict[str, Any]],
+    retrieved_raw_cases_summary: list[dict[str, Any]],
+    retrieved_tactical_experiences_summary: list[dict[str, Any]],
+    retrieved_abstract_experiences_summary: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    item_scores = list(calibration.get("item_scores", []))
+    score_by_key = {
+        (str(item.get("item_id", "")).strip(), str(item.get("item_type", "")).strip()): item
+        for item in item_scores
+        if str(item.get("item_id", "")).strip()
+    }
+    kept_items = list(dict(calibration.get("debug", {})).get("kept_items", []))
+    retrieval_by_id = {
+        str(record.get("source_id", "")).strip(): record
+        for record in [
+            *retrieved_raw_cases_summary,
+            *retrieved_tactical_experiences_summary,
+            *retrieved_abstract_experiences_summary,
+        ]
+        if str(record.get("source_id", "")).strip()
+    }
+
+    selected: list[dict[str, Any]] = []
+    for kept in kept_items:
+        item_id = str(kept.get("item_id", "")).strip()
+        item_type = str(kept.get("item_type", "")).strip()
+        if not item_id or not item_type:
+            continue
+        score_row = score_by_key.get((item_id, item_type), {})
+        section = str(kept.get("section", "")).strip()
+        category = str(kept.get("category", "")).strip()
+        rank = int(kept.get("rank", score_row.get("rank", 0)) or 0)
+        score = float(score_row.get("final_score", kept.get("score", 0.0)) or 0.0)
+        keep_reason = str(score_row.get("reason", "kept")).strip() or "kept"
+        if item_type == "skill_output":
+            output = dict(skill_outputs.get(item_id, {}))
+            selected.append(
+                {
+                    "item_id": item_id,
+                    "item_type": item_type,
+                    "source_type": "skill_output",
+                    "source_name": item_id,
+                    "skill_name": item_id,
+                    "retrieval_type": "",
+                    "section": section,
+                    "category": category,
+                    "summary": _summarize_skill_evidence(item_id, output),
+                    "score": round(score, 6),
+                    "rank": rank,
+                    "keep_reason": keep_reason,
+                }
+            )
+            continue
+
+        record = retrieval_by_id.get(item_id, {})
+        source_layer = str(record.get("source_layer", section)).strip()
+        source_name = (
+            str(record.get("source_id", "")).strip()
+            or str(record.get("case_id", "")).strip()
+            or item_id
+        )
+        selected.append(
+            {
+                "item_id": item_id,
+                "item_type": item_type,
+                "source_type": "retrieval_record",
+                "source_name": source_name,
+                "skill_name": "",
+                "retrieval_type": source_layer,
+                "section": section,
+                "category": category,
+                "summary": _summarize_retrieval_evidence(record),
+                "score": round(score, 6),
+                "rank": rank,
+                "keep_reason": keep_reason,
+            }
+        )
+    return selected
+
+
+def _summarize_skill_evidence(skill_name: str, output: dict[str, Any]) -> str:
+    body = _format_skill_output(output)
+    if not body:
+        return skill_name
+    return _clip_text(f"{skill_name}: {body}", max_length=360)
+
+
+def _summarize_retrieval_evidence(record: dict[str, Any]) -> str:
+    parts: list[str] = []
+    perception_summary = _clip_text(record.get("perception_summary", ""), max_length=180)
+    if perception_summary:
+        parts.append(perception_summary)
+    learning_points = [
+        _clip_text(item, max_length=120)
+        for item in record.get("learning_points", [])[:2]
+        if str(item).strip()
+    ]
+    if learning_points:
+        parts.append("; ".join(learning_points))
+    confusion_pair = str(record.get("confusion_pair", "")).strip()
+    if confusion_pair:
+        parts.append(f"confusion_pair={confusion_pair}")
+    if not parts:
+        parts.append(str(record.get("source_id", "")).strip() or str(record.get("case_id", "")).strip())
+    return _clip_text(" | ".join(part for part in parts if part), max_length=360)

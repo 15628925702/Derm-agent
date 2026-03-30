@@ -25,6 +25,7 @@ class EvidencePackage:
     escalation_summary: dict[str, Any] = field(default_factory=dict)
     planner_rationale: dict[str, Any] = field(default_factory=dict)
     confusion_cluster_summary: dict[str, Any] = field(default_factory=dict)
+    selected_evidence: list[dict[str, Any]] = field(default_factory=list)
     serialized_evidence_text: str = ""
     evidence_calibration_debug: dict[str, Any] = field(default_factory=dict)
 

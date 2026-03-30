@@ -284,6 +284,8 @@ class DermOpenAIClient:
             prompt = (
                 "You are the only final diagnostic decision maker in DermAgent.\n"
                 "Use the evidence package as structured support, not as an overriding instruction.\n"
+                "Prioritize the `selected_evidence` block as the curated shortlist chosen by the evidence calibrator.\n"
+                "Use `serialized_evidence_text` as supporting narrative context when it agrees with the selected evidence.\n"
                 "Integrate image, metadata, and evidence, then return a structured final diagnosis result.\n"
                 "Include: final_diagnosis, differential_diagnoses, rationale, confidence, follow_up_considerations.\n"
                 f"Evidence package: {serialized_payload}"
@@ -617,6 +619,10 @@ class DermOpenAIClient:
                 serialized_evidence_text,
                 max_length=serialized_max_length,
             )
+        selected_evidence = DermOpenAIClient._compact_selected_evidence(
+            payload.get("selected_evidence", []),
+            top_k=max(4, min(max_skill_count, 8)),
+        )
 
         return {
             "compression_profile": profile_id,
@@ -632,6 +638,7 @@ class DermOpenAIClient:
             "escalation_summary": payload.get("escalation_summary", {}),
             "planner_rationale": compact_planner_rationale,
             "notes": notes,
+            "selected_evidence": selected_evidence,
             "serialized_evidence_text": serialized_evidence_text,
         }
 
@@ -715,6 +722,7 @@ class DermOpenAIClient:
             "escalation_summary": payload.get("escalation_summary", {}),
             "planner_rationale": DermOpenAIClient._canonicalize_planner_rationale(payload.get("planner_rationale", {})),
             "notes": normalized_notes,
+            "selected_evidence": DermOpenAIClient._canonicalize_selected_evidence(payload.get("selected_evidence", [])),
             "serialized_evidence_text": str(payload.get("serialized_evidence_text", "")).strip(),
         }
 
@@ -770,6 +778,50 @@ class DermOpenAIClient:
             else:
                 normalized[field_name] = str(value).strip()[:220]
         return normalized
+
+    @staticmethod
+    def _canonicalize_selected_evidence(items: Any) -> list[dict[str, Any]]:
+        if not isinstance(items, list):
+            return []
+        normalized: list[dict[str, Any]] = []
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            normalized.append(
+                {
+                    "source_type": str(item.get("source_type", "")).strip(),
+                    "source_name": str(item.get("source_name", "")).strip()[:160],
+                    "skill_name": str(item.get("skill_name", "")).strip()[:120],
+                    "retrieval_type": str(item.get("retrieval_type", "")).strip()[:120],
+                    "category": str(item.get("category", "")).strip()[:120],
+                    "summary": str(item.get("summary", "")).strip()[:360],
+                    "score": item.get("score"),
+                    "rank": item.get("rank"),
+                    "keep_reason": str(item.get("keep_reason", "")).strip()[:120],
+                    "section": str(item.get("section", "")).strip()[:120],
+                }
+            )
+        return normalized
+
+    @staticmethod
+    def _compact_selected_evidence(items: Any, *, top_k: int) -> list[dict[str, Any]]:
+        canonical = DermOpenAIClient._canonicalize_selected_evidence(items)
+        compacted: list[dict[str, Any]] = []
+        for item in canonical[:top_k]:
+            compacted.append(
+                {
+                    "source_type": item.get("source_type", ""),
+                    "source_name": str(item.get("source_name", ""))[:120],
+                    "skill_name": str(item.get("skill_name", ""))[:80],
+                    "retrieval_type": str(item.get("retrieval_type", ""))[:80],
+                    "category": str(item.get("category", ""))[:80],
+                    "summary": str(item.get("summary", ""))[:220],
+                    "score": item.get("score"),
+                    "rank": item.get("rank"),
+                    "keep_reason": str(item.get("keep_reason", ""))[:80],
+                }
+            )
+        return compacted
 
     @staticmethod
     def _compact_serialized_evidence_text(text: str, *, max_length: int) -> str:
