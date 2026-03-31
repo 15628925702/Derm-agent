@@ -57,6 +57,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--controller-examples-path", type=Path, default=None, help="Optional controller examples JSONL path for stage 1.")
     parser.add_argument("--controller-checkpoint-in", type=Path, default=None, help="Optional pre-trained controller checkpoint input.")
     parser.add_argument("--retrieval-checkpoint-in", type=Path, default=None, help="Optional pre-trained retrieval scorer checkpoint input.")
+    parser.add_argument("--evidence-calibrator-checkpoint-in", type=Path, default=None, help="Optional pre-trained evidence calibrator checkpoint input.")
     parser.add_argument("--client-timeout", type=float, default=None, help="Optional local Qwen client timeout for stage 3.")
     parser.add_argument("--client-max-retries", type=int, default=None, help="Optional local Qwen client retries for stage 3.")
     parser.add_argument("--dry-run", action="store_true", help="Prepare manifests/commands without running stage scripts.")
@@ -177,6 +178,15 @@ def resolve_retrieval_checkpoint(stage_context: dict[str, Any], args: argparse.N
     return ""
 
 
+def resolve_evidence_calibrator_checkpoint(stage_context: dict[str, Any], args: argparse.Namespace) -> str:
+    stage_ckpt = str(stage_context.get("evidence_calibrator_checkpoint_path", "")).strip()
+    if stage_ckpt:
+        return stage_ckpt
+    if args.evidence_calibrator_checkpoint_in:
+        return str(args.evidence_calibrator_checkpoint_in.expanduser())
+    return ""
+
+
 def hydrate_stage_context_from_existing_run(
     run_root: Path,
     *,
@@ -273,6 +283,7 @@ def build_initial_run_manifest(
             "controller_examples_path": str(args.controller_examples_path) if args.controller_examples_path else "",
             "controller_checkpoint_in": str(args.controller_checkpoint_in) if args.controller_checkpoint_in else "",
             "retrieval_checkpoint_in": str(args.retrieval_checkpoint_in) if args.retrieval_checkpoint_in else "",
+            "evidence_calibrator_checkpoint_in": str(args.evidence_calibrator_checkpoint_in) if args.evidence_calibrator_checkpoint_in else "",
             "checkpoint_out_dir": str(args.checkpoint_out_dir),
             "dry_run": bool(args.dry_run),
         },
@@ -549,6 +560,7 @@ def build_stage3_candidate_policy(
     run_id: str,
     controller_checkpoint_path: str,
     retrieval_checkpoint_path: str,
+    evidence_calibrator_checkpoint_path: str,
 ) -> dict[str, Any]:
     candidate = deepcopy(stable_policy)
     candidate["policy_id"] = f"candidate_stage4_step6_{run_id}"
@@ -575,6 +587,13 @@ def build_stage3_candidate_policy(
         retrieval_policy["enable_learned_retrieval_reranker"] = True
         retrieval_policy["retrieval_reranker_checkpoint_path"] = retrieval_checkpoint_path
     candidate["retrieval_policy"] = retrieval_policy
+
+    evidence_policy = dict(candidate.get("evidence_policy", {}))
+    if evidence_calibrator_checkpoint_path:
+        evidence_policy["enable_evidence_calibrator"] = True
+        evidence_policy["calibrator_mode"] = "hybrid"
+        evidence_policy["calibrator_checkpoint_path"] = evidence_calibrator_checkpoint_path
+    candidate["evidence_policy"] = evidence_policy
     return candidate
 
 
@@ -590,11 +609,13 @@ def run_stage3_policy_evaluation(args: argparse.Namespace, *, run_id: str, run_r
     stable_policy = load_policy(args.stable_policy_config).to_dict()
     controller_checkpoint_path = resolve_controller_checkpoint(stage_context, args)
     retrieval_checkpoint_path = resolve_retrieval_checkpoint(stage_context, args)
+    evidence_calibrator_checkpoint_path = resolve_evidence_calibrator_checkpoint(stage_context, args)
     candidate_policy = build_stage3_candidate_policy(
         stable_policy=stable_policy,
         run_id=run_id,
         controller_checkpoint_path=controller_checkpoint_path,
         retrieval_checkpoint_path=retrieval_checkpoint_path,
+        evidence_calibrator_checkpoint_path=evidence_calibrator_checkpoint_path,
     )
     candidate_policy_path = stage_dir / "candidate_policy.json"
     write_json(candidate_policy_path, candidate_policy)
@@ -650,6 +671,7 @@ def run_stage3_policy_evaluation(args: argparse.Namespace, *, run_id: str, run_r
             "candidate_policy_path": str(candidate_policy_path),
             "controller_checkpoint_path": controller_checkpoint_path,
             "retrieval_checkpoint_path": retrieval_checkpoint_path,
+            "evidence_calibrator_checkpoint_path": evidence_calibrator_checkpoint_path,
             "data_root": str(args.data_root),
             "limit": evaluation_limit,
             "case_offset": max(0, int(args.case_offset)),
@@ -682,6 +704,7 @@ def export_stable_checkpoints(
     checkpoint_out_dir: Path,
     controller_checkpoint_path: str,
     retrieval_checkpoint_path: str,
+    evidence_calibrator_checkpoint_path: str,
     candidate_policy_path: str,
     dry_run: bool,
     export_tier: str = "run_candidate_export",
@@ -697,6 +720,7 @@ def export_stable_checkpoints(
     component_sources = [
         ("controller_planner_scorer", controller_checkpoint_path),
         ("retrieval_reranker", retrieval_checkpoint_path),
+        ("evidence_calibrator", evidence_calibrator_checkpoint_path),
     ]
     for component_id, source in component_sources:
         source_path = Path(str(source).strip()) if str(source).strip() else None
@@ -753,6 +777,7 @@ def run_stage4_export(args: argparse.Namespace, *, run_id: str, run_root: Path, 
 
     controller_checkpoint_path = resolve_controller_checkpoint(stage_context, args)
     retrieval_checkpoint_path = resolve_retrieval_checkpoint(stage_context, args)
+    evidence_calibrator_checkpoint_path = resolve_evidence_calibrator_checkpoint(stage_context, args)
     candidate_policy_path = str(stage_context.get("stage3_candidate_policy_path", "")).strip()
     if not candidate_policy_path:
         fallback_candidate = build_stage_dir(run_root, 3) / "candidate_policy.json"
@@ -765,6 +790,7 @@ def run_stage4_export(args: argparse.Namespace, *, run_id: str, run_root: Path, 
         checkpoint_out_dir=args.checkpoint_out_dir,
         controller_checkpoint_path=controller_checkpoint_path,
         retrieval_checkpoint_path=retrieval_checkpoint_path,
+        evidence_calibrator_checkpoint_path=evidence_calibrator_checkpoint_path,
         candidate_policy_path=candidate_policy_path,
         dry_run=bool(args.dry_run),
         export_tier="run_candidate_export",
@@ -784,6 +810,7 @@ def run_stage4_export(args: argparse.Namespace, *, run_id: str, run_root: Path, 
         "inputs": {
             "controller_checkpoint_path": controller_checkpoint_path,
             "retrieval_checkpoint_path": retrieval_checkpoint_path,
+            "evidence_calibrator_checkpoint_path": evidence_calibrator_checkpoint_path,
             "candidate_policy_path": candidate_policy_path,
             "checkpoint_out_dir": str(args.checkpoint_out_dir),
         },
@@ -855,6 +882,7 @@ def main(argv: list[str] | None = None) -> int:
     run_manifest["resolved_checkpoints"] = {
         "controller_checkpoint_path": resolve_controller_checkpoint(stage_context, args),
         "retrieval_checkpoint_path": resolve_retrieval_checkpoint(stage_context, args),
+        "evidence_calibrator_checkpoint_path": resolve_evidence_calibrator_checkpoint(stage_context, args),
     }
     write_json(run_manifest_path, run_manifest)
     print(

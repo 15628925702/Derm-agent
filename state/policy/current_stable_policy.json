@@ -1,10 +1,10 @@
 {
-  "policy_id": "candidate_stage4_step6_reuse_medium_signal_10h_20260328T173214Z",
-  "version": 2,
+  "policy_id": "mainline_parameterized_agent_20260331",
+  "version": 3,
   "status": "stable",
-  "created_at": "2026-03-28T18:43:45Z",
-  "parent_policy_id": "stable_default_policy",
-  "description": "Current best validated runtime policy using learned controller, learned retrieval reranker, selected_evidence routing, and conservative override v2 runtime.",
+  "created_at": "2026-03-31T00:00:00Z",
+  "parent_policy_id": "candidate_stage4_step6_reuse_medium_signal_10h_20260328T173214Z",
+  "description": "Mainline parameterized agent using learned controller, learned retrieval reranker, and hybrid learned evidence calibrator.",
   "change_summary": {
     "planner": [
       "Baseline rule-based planner with structured evidence support."
@@ -15,7 +15,11 @@
     ],
     "cognition_defaults": [],
     "pipeline": [
-      "staged_training_run:reuse_medium_signal_10h_20260328T173214Z"
+      "staged_training_run:reuse_medium_signal_10h_20260328T173214Z",
+      "evidence_calibrator_medium_enablement:20260331"
+    ],
+    "evidence": [
+      "Enable hybrid learned evidence calibrator for mainline runtime."
     ]
   },
   "planner_policy": {
@@ -84,8 +88,8 @@
   },
   "evidence_policy": {
     "enable_evidence_calibrator": true,
-    "calibrator_mode": "heuristic",
-    "calibrator_checkpoint_path": "",
+    "calibrator_mode": "hybrid",
+    "calibrator_checkpoint_path": "/root/DermAgent/state/trainable_components/evidence_calibrator/candidates/evidence_calibrator_medium.pt",
     "learned_calibration_weight": 1.2,
     "max_total_items": 8,
     "max_observation_skills": 4,

@@ -83,6 +83,7 @@ def test_build_stage3_candidate_policy_wires_checkpoints() -> None:
         "version": 2,
         "planner_policy": {"controller_family": "heuristic", "controller_checkpoint_path": ""},
         "retrieval_policy": {"enable_learned_retrieval_reranker": False, "retrieval_reranker_checkpoint_path": ""},
+        "evidence_policy": {"enable_evidence_calibrator": True, "calibrator_mode": "heuristic", "calibrator_checkpoint_path": ""},
         "change_summary": {},
     }
     payload = build_stage3_candidate_policy(
@@ -90,6 +91,7 @@ def test_build_stage3_candidate_policy_wires_checkpoints() -> None:
         run_id="run_123",
         controller_checkpoint_path="/tmp/controller.pt",
         retrieval_checkpoint_path="/tmp/retrieval.pt",
+        evidence_calibrator_checkpoint_path="/tmp/evidence.pt",
     )
     assert payload["policy_id"] == "candidate_stage4_step6_run_123"
     assert payload["version"] == 3
@@ -97,6 +99,8 @@ def test_build_stage3_candidate_policy_wires_checkpoints() -> None:
     assert payload["planner_policy"]["controller_checkpoint_path"] == "/tmp/controller.pt"
     assert payload["retrieval_policy"]["enable_learned_retrieval_reranker"] is True
     assert payload["retrieval_policy"]["retrieval_reranker_checkpoint_path"] == "/tmp/retrieval.pt"
+    assert payload["evidence_policy"]["calibrator_mode"] == "hybrid"
+    assert payload["evidence_policy"]["calibrator_checkpoint_path"] == "/tmp/evidence.pt"
 
 
 def test_export_stable_checkpoints_writes_bundle(tmp_path) -> None:
@@ -104,9 +108,11 @@ def test_export_stable_checkpoints_writes_bundle(tmp_path) -> None:
     export_root = tmp_path / "checkpoints"
     controller_ckpt = tmp_path / "controller.pt"
     retrieval_ckpt = tmp_path / "retrieval.pt"
+    evidence_ckpt = tmp_path / "evidence.pt"
     policy_path = tmp_path / "candidate_policy.json"
     controller_ckpt.write_bytes(b"controller")
     retrieval_ckpt.write_bytes(b"retrieval")
+    evidence_ckpt.write_bytes(b"evidence")
     policy_path.write_text("{}", encoding="utf-8")
 
     bundle = export_stable_checkpoints(
@@ -115,9 +121,10 @@ def test_export_stable_checkpoints_writes_bundle(tmp_path) -> None:
         checkpoint_out_dir=export_root,
         controller_checkpoint_path=str(controller_ckpt),
         retrieval_checkpoint_path=str(retrieval_ckpt),
+        evidence_calibrator_checkpoint_path=str(evidence_ckpt),
         candidate_policy_path=str(policy_path),
         dry_run=False,
     )
-    assert len(bundle["components"]) == 2
+    assert len(bundle["components"]) == 3
     assert Path(bundle["global_export_dir"]).exists()
     assert Path(stage4_dir / "stable_checkpoint_bundle_manifest.json").exists()
