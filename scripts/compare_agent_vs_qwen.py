@@ -13,8 +13,6 @@ if str(PROJECT_ROOT) not in sys.path:
 from agent.evaluation_protocol import DEFAULT_EVAL_OUTPUT_ROOT, EvaluationTargetSpec, run_evaluation_suite
 from agent.policy_config import load_policy, load_stable_policy
 from integrations.openai_client import DermOpenAIClient
-
-
 DEFAULT_DATA_ROOT = PROJECT_ROOT / "data"
 DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "outputs" / "comparison"
 
