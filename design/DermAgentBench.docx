@@ -1,0 +1,234 @@
+面向皮肤科 agent 的完整评测系统
+
+	DermReasonBench：偏静态/半静态，测模型是否会做皮肤科 reasoning；
+	DermAgentBench：偏交互/agentic，测模型是否会在不完整信息下“问、查、缩小 differential、决定 referral、控制预算”。
+
+现在皮肤科大模型的发展已经从 SkinGPT-4 式的交互诊断，走到 PanDerm 这种多模态 foundation model（覆盖 differential diagnosis、risk stratification、longitudinal monitoring 等），再到 DermoGPT/DermoBench 强调 morphology、reasoning、fairness，DermaBench 强调 fine-grained dermatology VQA，DermCase 强调 rare disease 和 long-context reasoning。与此同时，医疗 agent benchmark 也在从单轮问答转向交互环境、must-ask rubric、action-based reasoning 和一致性评测；更关键的是，最新系统评测已经表明 agent 在医疗里往往只有有限精度收益，却伴随显著更高的 token/time 成本。所以我们的 benchmark 必须把安全、过程质量、groundedness、referral 与效率一起纳入。
+
+
+1.	DermAgentBench / DermReasonBench 测什么
+不是问“模型能不能猜中病名”，而是问：
+	它会不会做安全的 differential contraction 
+	它会不会在高风险病例上避免漏检和过早闭合 
+	它给出的证据是否真的来自图像/metadata/新获取信息，而不是胡编（最新li feifei论文也强调了这一点） 
+	它知不知道什么时候该 asking for more info，而不是硬猜 
+	它会不会给出正确 referral / triage 
+	它在多步 evidence acquisition 下，性能提升是否值得额外成本
+不再只看 closed-set classification，而是在看 morphology-grounded reasoning、clinical coverage、safety、fairness、rare cases、longitudinal context 和 workflow-level utility。
+
+2.	整体结构
+	主 benchmark A：DermReasonBench
+用途：测静态或半静态皮肤科推理能力。
+输入是固定的图像与部分 metadata，模型不能主动无限制问诊，只能在给定信息内完成 reasoning。
+它适合回答的问题是：
+	会不会看 morphology 
+	会不会生成合理 differential 
+	会不会收缩候选 
+	会不会写 grounded evidence 
+	会不会做 referral decision
+	主 benchmark B：DermAgentBench
+用途：测交互式皮肤科 agent。
+模型一开始只拿到不完整信息，可以通过允许的 action 去补充信息，然后再做诊断/转诊/停止。
+它适合回答的问题是：
+	会不会问对问题 
+	会不会请求对的额外 modality 
+	会不会在不确定时先 referral 而不是硬猜 
+	会不会在固定预算下做最优 evidence acquisition 
+	会不会在多条交互路径下保持稳定
+
+
+3.	输出格式
+要要求模型暴露完整 chain-of-thought，而是要求它输出可审计的structured diagnostic workspace。
+{
+  "observed_findings": [
+    {"claim": "...", "source": "image|metadata|acquired", "anchor": "..."}
+  ],
+  "current_differential": [
+    {"dx": "...", "confidence": 0.0, "status": "active|downranked|excluded"}
+  ],
+  "critical_do_not_miss": ["..."],
+  "missing_information": ["..."],
+  "requested_actions": ["..."],
+  "referral_level": "...",
+  "final_decision": "...",
+  "uncertainty": 0.0,
+  "stop_reason": "..."
+}
+这样做有五个好处：
+	能测 groundedness 
+	能测 candidate contraction 
+	能测 asking-for-more-info 
+	能测 referral consistency 
+	不依赖私有 CoT
+
+
+4.	DermReasonBench 具体任务设计
+R1. Morphology extraction
+输入：图像
+输出：lesion morphology、color、border、surface、distribution、anatomic site 等结构化描述
+目的：测模型是否真的“看到了什么”，不是直接猜病名。
+这与 SkinGPT-4 的两阶段设定、DermoGPT 的 morphology-first pipeline、DermaBench 的 VQA 任务方向是一致的。
+指标
+•	attribute F1 
+•	clinically weighted attribute score 
+•	contradiction rate（例如同时说边界清楚又不规则） 
+•	description precision 
+________________________________________
+R2. Differential generation
+输入：图像 + 初始 metadata
+输出：有序 differential list，不要求立刻唯一诊断
+指标
+	Top-k differential recall 
+	weighted differential recall（高风险候选权重更高） 
+	critical differential coverage（do-not-miss 候选是否被纳入） 
+	over-narrowing rate（过早只给 1 个） 
+________________________________________
+R3. Candidate contraction / safe narrowing
+输入：图像 + metadata + 给定初始候选集
+输出：收缩后的候选集，以及每次下调/排除的依据
+这是你的 benchmark 最有特色的一块。
+这里不是看“最后 list 变短了没有”，而是看收缩是否安全、是否有依据。
+关键定义
+令：
+D = 专家认可 differential 集 
+H⊂D= critical do-not-miss 集 
+Ct = 模型在第 t 步保留的候选集 
+我们关心的不是 Ct 多短，而是：
+	ground truth 或专家可接受主候选有没有被不合理删掉 
+	高风险候选有没有在证据不足时被过早删掉 
+	每次删掉候选时，有没有正确区分证据 
+核心指标
+	Safe Contraction Score (SCS) 
+	Premature Closure Rate (PCR)：证据不足时已宣告收敛 
+	Critical Candidate Drop Rate (CCDR)：高风险候选被过早排除 
+	Contraction Justification Accuracy (CJA)：排除依据是否正确 
+________________________________________
+R4. Evidence-grounded reasoning
+输入：固定 case
+输出：诊断 narrative，但必须显式标出每条证据来源
+指标
+	Claim Support Precision (CSP)：有多少 claim 被病例支持 
+	Unsupported Critical Claim Rate (UCCR)：用于决定 diagnosis/referral 的关键 claim 中，有多少是编造的 
+	Cross-modal attribution accuracy：claim 是否正确归因为 image / metadata / acquired info 
+	Medical Groundedness / Clinical Coverage / Reasoning Coherence / Description Precision：可借鉴 DermEval 的六维框架。 
+强 groundedness 子集:单独做一个 300–500 case 的高质量子集，给出 region-level 标注，用来测：
+	pointing accuracy 
+	region-text consistency 
+	lesion-feature grounding IoU 
+这样就不只是“语言 judge 评 groundedness”，而有一块真视觉 grounded 子集。
+________________________________________
+R5. Final diagnosis + uncertainty
+输入：固定 case
+输出：final diagnosis、uncertainty、是否建议 follow-up/referral
+指标
+	Top-1 / Top-k 
+	calibrated uncertainty 
+	abstention quality 
+	diagnosis–uncertainty consistency 
+________________________________________
+R6. Referral / triage
+不要只是 diagnosis 的附属项。
+	referral label 建议
+	Emergency 
+	Urgent dermatology / urgent biopsy 
+	Routine dermatology 
+	PCP / primary care follow-up 
+	Self-care / observe 
+	Insufficient info, request more data first 
+指标
+	referral accuracy 
+	under-triage rate（重罚） 
+	over-triage rate 
+	time-to-referral（在多步 setting 中） 
+	diagnosis–referral consistency 
+5.	 DermAgentBench 具体任务设计
+A1. Ask-for-more-info
+action 空间建议
+不要无限自由问句，正式评测最好用“自然语言 + 规范化 action ontology”双层方式。
+规范 action 例子：
+•	ASK_DURATION 
+•	ASK_GROWTH_CHANGE 
+•	ASK_BLEEDING 
+•	ASK_ITCH_PAIN 
+•	ASK_SUN_EXPOSURE 
+•	ASK_PRIOR_SKIN_CANCER 
+•	ASK_IMMUNOSUPPRESSION 
+•	ASK_NEW_OR_OLD 
+•	REQUEST_CLOSEUP 
+•	REQUEST_BODY_CONTEXT 
+•	REQUEST_DERMOSCOPY 
+•	REQUEST_PRIOR_PHOTO 
+•	FINALIZE 
+•	REFER_NOW 
+gold rubric
+每个 case 由专家标：
+•	must-ask items 
+•	useful-but-optional items 
+•	irrelevant items 
+•	misleading / low-value items 
+这部分可以直接借鉴 MedDialogRubrics 的“must-ask rubric”思想，但换成 dermatology-specific facts。
+指标
+•	Must-Ask Recall (MAR) 
+•	Must-Ask Precision (MAP) 
+•	Irrelevant Question Rate 
+•	Early Stop Rate 
+•	Late Stop Rate 
+•	Query Utility Score 
+________________________________________
+A2. Adaptive evidence acquisition
+PanDerm 已经把多模态和 longitudinal 证明成 dermatology 的重要能力，但 agent benchmark 现在缺的不是“是否支持多模态”，而是是否会在对的时候请求对的模态。
+指标
+•	modality request accuracy 
+•	evidence value-of-information gain 
+•	unnecessary modality request rate 
+•	cost-normalized gain 
+________________________________________
+A3. Differential trajectory tracking
+不是只评最后输出，而是评每一轮 differential 怎么变。要记录的中间轨迹
+•	当前保留候选 
+•	新增/移除候选 
+•	哪条新证据导致变化 
+•	是否出现 backtracking 
+指标
+•	trajectory alignment with expert graph 
+•	backtrack correctness 
+•	monotonic safety（高风险候选在证据不足前不应消失） 
+________________________________________
+A4. Stop / continue / refer 决策
+模型在每一步只能三选一：
+•	继续问/查 
+•	当前就给判断 
+•	当前就 referral 
+指标
+•	stopping optimality 
+•	unsafe stop rate 
+•	wasteful continuation rate 
+•	referral-before-certainty utility 
+________________________________________
+A5. Multi-path consistency
+EHR-ChatQA 的一个重要发现是 agent 经常出现 “Pass@5 很高，但 Pass∧5 很低”，说明不同对话路径下极不稳定。皮肤科 agent 也必须测这个，否则很容易出现“某一次问对了就成功，换条路径就崩”。
+指标
+•	Path Consistency 
+•	Pass@k vs Pass∧k 
+•	paraphrase robustness 
+•	patient-response-order robustness
+
+v1 范围建议
+•	40–60 个常见且高价值 condition 
+•	1,500–2,500 个 episode 
+•	其中 35–40% 为高风险或 do-not-miss 
+•	50% 为 confusable-pair / incomplete-info / referral-first hard cases 
+•	300–500 个 groundedness 重标子集 
+•	200–300 个 longitudinal / rare extension subset 
+v1 主任务
+•	morphology extraction 
+•	differential generation 
+•	safe contraction 
+•	grounded evidence 
+•	ask-for-more-info 
+•	referral 
+•	cost-aware interaction
+
+
+
+

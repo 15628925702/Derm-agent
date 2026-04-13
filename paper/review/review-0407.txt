@@ -1,0 +1,21 @@
+目前问题：
+1. morphology-grounded reasoning要作为设计skill的一个motivation；
+2. “技能—经验—记忆—认知”的分层和自演化方向没错，但也要突出test-time compute 的自适应分配，而不是一味多调用、多思考。
+3. 当前证据并没有支持“完整四层 agent”这个claim，看要不要去掉一些不重要的模块，模块不是核心，核心是我们自己创新的思路（证据增强、自演化、动作执行后的反思）。
+4. 实验外推性还不够，多补一些数据集（不紧急）。
+5. structured evidence要有明确的评价指标。最省事的方式，就是引入 dermatologist rubric 或 DermEval 风格的自动评测，对 evidence package 打分：visual grounding、differential completeness、uncertainty honesty、risk sensitivity。这样你的方法 claim 才闭环。
+
+优点：
+1. agent 只做 evidence scaffold符合临床场景。
+2. 高风险/恶性召回被放在核心指标位置比较好。
+
+后续内容组织形式：
+1. 现有 dermatology VLM 的瓶颈，不只是识别能力，而是会在高混淆/高风险病例中过早收缩 differential，并用语言先验替代视觉证据；
+2. 强调frozen dermatology VLM 的、低风险、可审计、预算敏感的 inference-time evidence routing layer。
+3. Novelty方面：
+	Confusion-aware evidence routing：经验库不要讲得太泛，改成围绕高混淆 disease pairs / disease groups 的经验组织，例如 BCC–SEK、ACK–dermatitis、NEV–MEL。
+	Risk-aware adaptive compute：把控制器的意义从“更聪明”改成“按不确定性/恶性风险分配技能调用预算”，这和当前 agent test-time compute 的趋势最一致。
+	Candidate-preserving differential evidence graph/package：不要只做收缩式证据堆叠，而要显式保留“支持 A 的证据、反驳 A 的证据、支持 B 的证据、仍然缺失的信息”，这样才能解释 top-k 下降问题，并更贴近临床 differential。
+
+
+
