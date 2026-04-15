@@ -7,6 +7,7 @@ from typing import Any
 
 from agent.state import CaseInput
 from dataio.case_schema import CaseSourceConfig, FieldCandidate, StandardizedCaseRecord
+from dataio.isic2019_loader import DEFAULT_ISIC2019_ROOT, load_isic2019_case_inputs
 
 
 IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".bmp", ".webp", ".tif", ".tiff"}
@@ -46,6 +47,12 @@ def discover_case_source(data_root: str | Path) -> CaseSourceConfig:
 
 
 def load_case_by_index(case_index: int, data_root: str | Path) -> CaseInput:
+    root = Path(data_root)
+    if root.resolve() == DEFAULT_ISIC2019_ROOT.resolve():
+        cases = load_isic2019_case_inputs(data_root=root)
+        if case_index < 0 or case_index >= len(cases):
+            raise IndexError(f"case-index {case_index} out of range for {len(cases)} rows")
+        return cases[case_index]
     config = discover_case_source(data_root)
     rows = _read_csv_rows(config.metadata_path)
     if case_index < 0 or case_index >= len(rows):
@@ -64,6 +71,15 @@ def load_case_by_index(case_index: int, data_root: str | Path) -> CaseInput:
 
 
 def sample_cases(count: int, data_root: str | Path, seed: int = 0) -> list[CaseInput]:
+    root = Path(data_root)
+    if root.resolve() == DEFAULT_ISIC2019_ROOT.resolve():
+        cases = load_isic2019_case_inputs(data_root=root)
+        if not cases:
+            return []
+        rng = random.Random(seed)
+        sample_size = min(count, len(cases))
+        indices = rng.sample(range(len(cases)), sample_size)
+        return [cases[index] for index in indices]
     config = discover_case_source(data_root)
     rows = _read_csv_rows(config.metadata_path)
     if not rows:

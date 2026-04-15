@@ -262,6 +262,231 @@ python scripts/debug_single_case.py --case-index 0 --data-split train --enable-w
 
 它可以初始化独立 `policy_root / split_state_root / outputs / checkpoints`，并把 bootstrap 后的 `train` 状态安全提升到 `val/test`。
 
+## 多数据集标签空间
+
+从当前版本开始，DermAgent 不再只假设唯一一套固定标签，而是逐步改成支持 dataset-specific label space。
+
+当前设计目标是：
+
+- 不同数据集可以保留各自原始标签
+- 不同数据集可以注册各自的 canonical label space
+- 不同数据集可以各自建立经验库、训练策略参数、做冻结评测
+- 评测、hard-case、experience writeback、policy summary 不再强依赖单一六类标签假设
+
+核心实现入口在：
+
+- [`agent/label_space.py`](/root/DermAgent/agent/label_space.py)
+
+这个模块负责统一处理：
+
+- `canonicalize_label(...)`
+- `is_malignant_label(...)`
+- `labels_match(...)`
+- `label_space_snapshot(...)`
+- `register_label_space(...)`
+
+### 当前默认行为
+
+默认仍然保留当前主线的 dermatology six-label behavior：
+
+- `BCC`
+- `ACK`
+- `NEV`
+- `SEK`
+- `SCC`
+- `MEL`
+
+也就是说，不改任何数据集配置时，主线 `Qwen` 实验与现有 `pad_ufes_20` 逻辑仍然按旧六类方式工作。
+
+### 新数据集接入原则
+
+以后接一个新数据集时，建议不要直接把它硬塞进现有六类逻辑，而是按下面顺序做：
+
+1. 保留原始标签字段。
+2. 为该数据集定义自己的 `label_space_id`。
+3. 在 [`agent/label_space.py`](/root/DermAgent/agent/label_space.py) 注册该数据集对应的 `LabelSpace`。
+4. 在该数据集的 loader/schema 中，把 `dataset_name` 与可选的 `label_space_id` 一起传进 [`CaseInput`](/root/DermAgent/agent/state.py)。
+5. 让该数据集的经验库、训练产物和评测结果使用独立资产仓，不与旧主线混用。
+
+推荐的数据结构至少包含：
+
+```json
+{
+  "original_label": "...",
+  "dataset_name": "...",
+  "label_space_id": "...",
+  "canonical_label": "...",
+  "risk_label": "malignant|benign|unknown"
+}
+```
+
+### 为什么要这样做
+
+这样做的好处是：
+
+- 新数据集不需要反复修改 `evaluation / reflection / hard_case / experience` 的核心逻辑
+- 每个数据集都可以有自己稳定的标签空间，而不是到处塞 `if dataset == ...`
+- 经验库和后续 consolidation 会知道自己属于哪套标签空间
+- 未来做多数据集建库、训练参数和冻结评测时，逻辑边界更清楚，也更容易审计
+
+### 目前已接入这套标签空间逻辑的主链
+
+当前已经开始改造成 dataset-specific label space 的模块包括：
+
+- [`agent/evaluation.py`](/root/DermAgent/agent/evaluation.py)
+- [`agent/execution_record.py`](/root/DermAgent/agent/execution_record.py)
+- [`agent/reflection.py`](/root/DermAgent/agent/reflection.py)
+- [`memory/experience_transform.py`](/root/DermAgent/memory/experience_transform.py)
+- [`memory/experience_consolidator.py`](/root/DermAgent/memory/experience_consolidator.py)
+- [`agent/hard_case_miner.py`](/root/DermAgent/agent/hard_case_miner.py)
+- [`agent/policy_evaluation.py`](/root/DermAgent/agent/policy_evaluation.py)
+
+### 实操建议
+
+如果未来你要针对一个新数据集单独做：
+
+- bootstrap 建经验库
+- 训练 controller / retrieval / evidence 相关参数
+- 最终在该数据集上做预测与冻结评测
+
+建议把它视为一条独立实验线，同时独立管理：
+
+- `DERMAGENT_POLICY_ROOT`
+- `DERMAGENT_SPLIT_STATE_ROOT`
+- `outputs`
+- `checkpoints`
+- `label_space_id`
+
+不要复用旧主线资产仓，也不要默认沿用旧六类标签解释。
+
+### 数据集专用经验库迁移流程
+
+如果你的目标是：
+
+- 为一个新数据集单独建立经验库
+- 用这套经验库做 stable agent 迁移测试
+- 后续再决定是否训练 learned controller / retrieval
+
+推荐按下面顺序执行。
+
+#### 第一步：初始化独立资产仓
+
+```bash
+cd /root/DermAgent
+
+python scripts/manage_dataset_experiment_assets.py init \
+  --experiment-id <dataset_experiment_id> \
+  --base-policy-config /root/DermAgent/state/policy/current_stable_policy.json
+```
+
+这一步会创建独立的：
+
+- `policy_root`
+- `split_state_root`
+- `outputs`
+- `checkpoints`
+
+#### 第二步：进入该实验线环境
+
+```bash
+source /root/DermAgent/state/dataset_adaptation/<dataset_experiment_id>/experiment.env
+```
+
+后续所有 bootstrap / compare / train 命令，都建议在这个环境下执行。
+
+#### 第三步：先在 train split 上 bootstrap 建库
+
+核心原则是：
+
+- 只在 `train` 上开启 writeback
+- 只写入当前数据集自己的隔离资产仓
+- 不碰旧主线仓
+
+例如：
+
+```bash
+cd /root/DermAgent
+
+START_INDEX=0 COUNT=24 \
+POLICY_ROOT="$DERMAGENT_POLICY_ROOT" \
+SPLIT_STATE_ROOT="$DERMAGENT_SPLIT_STATE_ROOT" \
+OUTPUT_DIR="$DERMAGENT_DATASET_EXPERIMENT_OUTPUT_ROOT/bootstrap" \
+bash scripts/bootstrap_<dataset>_train_cases.sh
+```
+
+#### 第四步：把 train 状态迁移到 val/test
+
+正式冻结评测不能直接读 train 写回中的在线状态，因此推荐在 bootstrap 之后，把 train 状态复制成 val/test 的冻结状态：
+
+```bash
+python scripts/manage_dataset_experiment_assets.py promote-state \
+  --split-state-root "$DERMAGENT_SPLIT_STATE_ROOT" \
+  --source-split train \
+  --target-splits val,test
+```
+
+这一步的作用是：
+
+- `train/experience` -> `val/experience`
+- `train/experience` -> `test/experience`
+- `train/cognition_state.json` -> `val/test`
+
+同时会重写 split-aware metadata，保证后续 frozen evaluation 一致。
+
+#### 第五步：先用 stable policy 做 frozen compare
+
+第一轮更推荐先观察：
+
+- `direct baseline`
+- `stable agent + dataset-specific experience`
+
+而不是立刻启用 learned candidate。
+
+例如：
+
+```bash
+DERMAGENT_SPLIT_STATE_ROOT=/root/DermAgent/state/dataset_adaptation/<dataset_experiment_id>/split_states \
+DERMAGENT_POLICY_ROOT=/root/DermAgent/state/dataset_adaptation/<dataset_experiment_id>/policy \
+python scripts/compare_agent_vs_qwen.py \
+  --data-root /root/DermAgent/data/<dataset_name> \
+  --split-json /root/DermAgent/outputs/dataset_adaptation/<dataset_experiment_id>/<dataset_split>.json \
+  --data-split test \
+  --output-dir /root/DermAgent/outputs/dataset_adaptation/<dataset_experiment_id>/compare_test \
+  --policy-config /root/DermAgent/state/dataset_adaptation/<dataset_experiment_id>/policy/current_stable_policy.json \
+  --policy-label "<dataset> stable policy"
+```
+
+#### 第六步：如果经验库太小，可以继续补 bootstrap
+
+一个常见流程是：
+
+1. 先 bootstrap 12 或 24 个 case
+2. 跑一次 `val/test` compare
+3. 如果效果不稳定，再补 12 个或更多 case
+4. 再次执行 `promote-state`
+5. 再跑 compare
+
+也就是说，这条迁移路径本身支持“逐步扩库”：
+
+- `bootstrap more train cases`
+- `promote train -> val/test`
+- `rerun frozen compare`
+
+#### 第七步：再决定是否训练 learned components
+
+推荐顺序是：
+
+1. 先验证 `stable agent + dataset-specific experience` 是否已经优于 direct baseline
+2. 如果已经有明确增益，再考虑 learned controller / retrieval
+3. 如果小样本下 candidate 不稳定，不要强行替换 stable heuristic
+
+目前经验表明，很多情况下：
+
+- 专用经验库会先带来收益
+- learned parameterization 在小样本新数据集上不一定稳定
+
+所以“先建库，再稳定 compare，最后再训练参数”通常更稳。
+
 ## 核心设计
 
 ### 1. Skills 不是分类器

@@ -9,7 +9,7 @@ from typing import Any
 
 from agent.controller_training import build_controller_training_example_from_record
 from agent.evaluation import build_agent_vs_baseline_delta, evaluate_diagnosis_output, is_malignant_label
-from agent.labels import canonicalize_label
+from agent.label_space import canonicalize_label, label_space_snapshot
 from agent.state import CaseInput, CaseState
 
 
@@ -60,8 +60,26 @@ def build_case_execution_record(
     baseline_qwen: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     selected_skills = _selected_skills(state)
-    agent_eval = evaluate_diagnosis_output(state.final_diagnosis, case_input.reference_label or case_input.label)
-    baseline_eval = evaluate_diagnosis_output(baseline_qwen, case_input.reference_label or case_input.label) if baseline_qwen else None
+    dataset_name = _infer_dataset_name(case_input)
+    label_space = label_space_snapshot(dataset_name=dataset_name, label_space_id=case_input.label_space_id, metadata=case_input.metadata)
+    agent_eval = evaluate_diagnosis_output(
+        state.final_diagnosis,
+        case_input.reference_label or case_input.label,
+        dataset_name=dataset_name,
+        label_space_id=case_input.label_space_id,
+        metadata=case_input.metadata,
+    )
+    baseline_eval = (
+        evaluate_diagnosis_output(
+            baseline_qwen,
+            case_input.reference_label or case_input.label,
+            dataset_name=dataset_name,
+            label_space_id=case_input.label_space_id,
+            metadata=case_input.metadata,
+        )
+        if baseline_qwen
+        else None
+    )
     ground_truth_raw = case_input.reference_label or case_input.label
     planned_writeback_bundle = state.reflection.get("writeback_bundle", {}) if isinstance(state.reflection, dict) else {}
     persisted_writeback_bundle = (
@@ -74,12 +92,14 @@ def build_case_execution_record(
         record_version=EXECUTION_RECORD_VERSION,
         timestamp=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         case_id=case_input.case_id,
-        dataset_name=_infer_dataset_name(case_input),
+        dataset_name=dataset_name,
         input_summary={
             "image_path": case_input.image_path,
             "metadata_path": case_input.source_metadata_path or "",
             "clinical_metadata": case_input.clinical_metadata(),
             "image_exists": Path(case_input.image_path).exists(),
+            "label_space": label_space,
+            "label_space_id": case_input.label_space_id or label_space.get("label_space_id", ""),
         },
         qwen_initial=deepcopy(state.perception),
         image_read_audit=deepcopy(state.image_read_audit),
@@ -95,8 +115,19 @@ def build_case_execution_record(
         qwen_final=deepcopy(state.final_diagnosis),
         ground_truth={
             "raw_label": ground_truth_raw,
-            "canonical_label": canonicalize_label(ground_truth_raw),
-            "malignant_flag": is_malignant_label(canonicalize_label(ground_truth_raw)),
+            "canonical_label": canonicalize_label(
+                ground_truth_raw,
+                dataset_name=dataset_name,
+                label_space_id=case_input.label_space_id,
+                metadata=case_input.metadata,
+            ),
+            "malignant_flag": is_malignant_label(
+                ground_truth_raw,
+                dataset_name=dataset_name,
+                label_space_id=case_input.label_space_id,
+                metadata=case_input.metadata,
+            ),
+            "label_space": label_space,
         },
         evaluation={
             "correct": agent_eval.get("correct"),
@@ -144,7 +175,16 @@ def enrich_execution_record_with_baseline(
 ) -> dict[str, Any]:
     enriched = deepcopy(record)
     ground_truth_label = enriched.get("ground_truth", {}).get("raw_label")
-    baseline_eval = evaluate_diagnosis_output(baseline_qwen, ground_truth_label)
+    dataset_name = str(enriched.get("dataset_name", "")).strip() or None
+    metadata = dict(enriched.get("input_summary", {}).get("clinical_metadata", {}) or {})
+    label_space_id = str(enriched.get("input_summary", {}).get("label_space_id", "")).strip() or None
+    baseline_eval = evaluate_diagnosis_output(
+        baseline_qwen,
+        ground_truth_label,
+        dataset_name=dataset_name,
+        label_space_id=label_space_id,
+        metadata=metadata,
+    )
     agent_eval = {
         "correct": enriched.get("evaluation", {}).get("correct"),
         "topk_hit": enriched.get("evaluation", {}).get("topk_hit"),
@@ -167,7 +207,15 @@ def build_baseline_case_execution_record(
     policy_snapshot: dict[str, Any] | None = None,
     evaluation_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    baseline_eval = evaluate_diagnosis_output(baseline_qwen, case_input.reference_label or case_input.label)
+    dataset_name = _infer_dataset_name(case_input)
+    label_space = label_space_snapshot(dataset_name=dataset_name, label_space_id=case_input.label_space_id, metadata=case_input.metadata)
+    baseline_eval = evaluate_diagnosis_output(
+        baseline_qwen,
+        case_input.reference_label or case_input.label,
+        dataset_name=dataset_name,
+        label_space_id=case_input.label_space_id,
+        metadata=case_input.metadata,
+    )
     ground_truth_raw = case_input.reference_label or case_input.label
     baseline_run_mode = str((evaluation_context or {}).get("run_mode", "baseline")).strip().lower() or "baseline"
     baseline_data_split = str((evaluation_context or {}).get("data_split", "unknown")).strip().lower() or "unknown"
@@ -175,12 +223,14 @@ def build_baseline_case_execution_record(
         record_version=EXECUTION_RECORD_VERSION,
         timestamp=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         case_id=case_input.case_id,
-        dataset_name=_infer_dataset_name(case_input),
+        dataset_name=dataset_name,
         input_summary={
             "image_path": case_input.image_path,
             "metadata_path": case_input.source_metadata_path or "",
             "clinical_metadata": case_input.clinical_metadata(),
             "image_exists": Path(case_input.image_path).exists(),
+            "label_space": label_space,
+            "label_space_id": case_input.label_space_id or label_space.get("label_space_id", ""),
         },
         qwen_initial={},
         image_read_audit={},
@@ -212,8 +262,19 @@ def build_baseline_case_execution_record(
         qwen_final=deepcopy(baseline_qwen),
         ground_truth={
             "raw_label": ground_truth_raw,
-            "canonical_label": canonicalize_label(ground_truth_raw),
-            "malignant_flag": is_malignant_label(canonicalize_label(ground_truth_raw)),
+            "canonical_label": canonicalize_label(
+                ground_truth_raw,
+                dataset_name=dataset_name,
+                label_space_id=case_input.label_space_id,
+                metadata=case_input.metadata,
+            ),
+            "malignant_flag": is_malignant_label(
+                ground_truth_raw,
+                dataset_name=dataset_name,
+                label_space_id=case_input.label_space_id,
+                metadata=case_input.metadata,
+            ),
+            "label_space": label_space,
         },
         evaluation={
             "correct": baseline_eval.get("correct"),

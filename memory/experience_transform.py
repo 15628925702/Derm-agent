@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from agent.labels import canonicalize_label, labels_match
+from agent.label_space import canonicalize_label, label_space_snapshot, labels_match
 from agent.state import CaseState
 from memory.experience_schema import (
     AbstractExperience,
@@ -85,7 +85,13 @@ def build_case_outcome(
     true_label = state.case_input.reference_label or state.case_input.label
     predicted_label = state.final_diagnosis.get("final_diagnosis")
     has_ground_truth = bool(true_label)
-    label_match = labels_match(predicted_label, true_label)
+    label_match = labels_match(
+        predicted_label,
+        true_label,
+        dataset_name=state.case_input.dataset_name,
+        label_space_id=state.case_input.label_space_id,
+        metadata=state.case_input.metadata,
+    )
     is_correct = bool(label_match) if label_match is not None else None
     uncertainty_level = _uncertainty_level(state)
     confidence_level = str(state.final_diagnosis.get("confidence", "unknown")).lower()
@@ -102,6 +108,11 @@ def build_case_outcome(
     else:
         status = "success"
 
+    label_space = label_space_snapshot(
+        dataset_name=state.case_input.dataset_name,
+        label_space_id=state.case_input.label_space_id,
+        metadata=state.case_input.metadata,
+    )
     return {
         "status": status,
         "has_ground_truth": has_ground_truth,
@@ -109,16 +120,37 @@ def build_case_outcome(
         "error_type": detected_errors[0] if detected_errors else None,
         "predicted_label": predicted_label,
         "reference_label": true_label,
-        "predicted_canonical_label": canonicalize_label(predicted_label),
-        "reference_canonical_label": canonicalize_label(true_label),
+        "predicted_canonical_label": canonicalize_label(
+            predicted_label,
+            dataset_name=state.case_input.dataset_name,
+            label_space_id=state.case_input.label_space_id,
+            metadata=state.case_input.metadata,
+        ),
+        "reference_canonical_label": canonicalize_label(
+            true_label,
+            dataset_name=state.case_input.dataset_name,
+            label_space_id=state.case_input.label_space_id,
+            metadata=state.case_input.metadata,
+        ),
         "confidence_level": confidence_level,
         "uncertainty_level": uncertainty_level,
         "malignant_flag": {
-            "ground_truth": is_malignant_label(true_label),
-            "predicted": is_malignant_label(predicted_label),
+            "ground_truth": is_malignant_label(
+                true_label,
+                dataset_name=state.case_input.dataset_name,
+                label_space_id=state.case_input.label_space_id,
+                metadata=state.case_input.metadata,
+            ),
+            "predicted": is_malignant_label(
+                predicted_label,
+                dataset_name=state.case_input.dataset_name,
+                label_space_id=state.case_input.label_space_id,
+                metadata=state.case_input.metadata,
+            ),
         },
         "confusion_pair": confusion_pair,
         "risk_flags": list(state.risk_flags),
+        "label_space": label_space,
     }
 
 
@@ -291,13 +323,20 @@ def build_raw_case_memory(
         case_id=state.case_input.case_id,
         image_paths=[state.case_input.image_path],
         metadata=dict(state.case_input.metadata),
+        dataset_name=state.case_input.dataset_name,
+        label_space_id=state.case_input.label_space_id or state.case_input.metadata.get("label_space_id"),
         true_label=true_label,
         qwen_output=dict(state.final_diagnosis),
         agent_output=agent_output,
         final_decision={
             "label": predicted_label,
             "source": "qwen_final_diagnosis",
-            "canonical_label": predicted_label,
+            "canonical_label": canonicalize_label(
+                predicted_label,
+                dataset_name=state.case_input.dataset_name,
+                label_space_id=state.case_input.label_space_id,
+                metadata=state.case_input.metadata,
+            ),
         },
         correctness={
             "has_ground_truth": case_outcome.get("has_ground_truth"),
@@ -574,6 +613,8 @@ def legacy_record_to_bundle(record: dict[str, Any]) -> dict[str, Any]:
         case_id=case_id,
         image_paths=[],
         metadata={},
+        dataset_name=None,
+        label_space_id=None,
         true_label=None,
         qwen_output={},
         agent_output={

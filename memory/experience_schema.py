@@ -6,6 +6,8 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
+from agent.label_space import is_malignant_label as _shared_is_malignant_label
+
 
 DEFAULT_EXPERIENCE_ROOT = Path("/root/DermAgent/state/experience")
 LEGACY_EXPERIENCE_JSON_PATH = Path("/root/DermAgent/state/experience_bank.json")
@@ -29,36 +31,19 @@ def dedupe_strings(values: list[Any]) -> list[str]:
     return result
 
 
-def is_malignant_label(label: str | None) -> bool | None:
-    if label is None:
-        return None
-    lowered = str(label).strip().lower()
-    if not lowered:
-        return None
-    malignant_keywords = (
-        "bcc",
-        "basal cell",
-        "ack",
-        "actinic keratos",
-        "scc",
-        "squamous cell",
-        "mel",
-        "melanoma",
+def is_malignant_label(
+    label: str | None,
+    *,
+    label_space_id: str | None = None,
+    dataset_name: str | None = None,
+    metadata: dict[str, Any] | None = None,
+) -> bool | None:
+    return _shared_is_malignant_label(
+        label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+        metadata=metadata,
     )
-    if any(keyword in lowered for keyword in malignant_keywords):
-        return True
-    benign_keywords = (
-        "nev",
-        "nevus",
-        "naevus",
-        "mole",
-        "sek",
-        "seborrheic keratos",
-        "seborrhoeic keratos",
-    )
-    if any(keyword in lowered for keyword in benign_keywords):
-        return False
-    return None
 
 
 @dataclass
@@ -81,6 +66,8 @@ class RawCaseMemory:
     case_id: str
     image_paths: list[str]
     metadata: dict[str, Any]
+    dataset_name: str | None
+    label_space_id: str | None
     true_label: str | None
     qwen_output: dict[str, Any]
     agent_output: dict[str, Any]

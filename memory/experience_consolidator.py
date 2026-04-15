@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from agent.labels import canonicalize_label
+from agent.label_space import canonicalize_label
 from memory.experience_schema import AbstractExperience, CompositeSkillSeed, dedupe_strings, stable_hash
 from memory.experience_store import ExperienceStore
 
@@ -125,7 +125,12 @@ def _consolidate_prototypes(
         correctness = record.get("correctness", {})
         if correctness.get("is_correct") is not True:
             continue
-        label = canonicalize_label(record.get("true_label") or record.get("final_decision", {}).get("canonical_label"))
+        label = canonicalize_label(
+            record.get("true_label") or record.get("final_decision", {}).get("canonical_label"),
+            dataset_name=record.get("dataset_name"),
+            label_space_id=record.get("label_space_id"),
+            metadata=record.get("metadata", {}),
+        )
         if not label:
             continue
         grouped[label].append(record)
@@ -478,13 +483,21 @@ def _prototype_counter_cases(
         case_id = str(record.get("case_id", "")).strip()
         if not case_id:
             continue
-        true_label = canonicalize_label(record.get("true_label"))
+        true_label = canonicalize_label(
+            record.get("true_label"),
+            dataset_name=record.get("dataset_name"),
+            label_space_id=record.get("label_space_id"),
+            metadata=record.get("metadata", {}),
+        )
         correctness = record.get("correctness", {})
         if true_label == label and correctness.get("is_correct") is not True:
             counter_cases.append(case_id)
     for record in hard_cases:
         case_id = str(record.get("case_id", "")).strip()
-        if canonicalize_label(record.get("ground_truth", {}).get("canonical_label")) == label and case_id:
+        if canonicalize_label(
+            record.get("ground_truth", {}).get("canonical_label"),
+            dataset_name=record.get("dataset_name"),
+        ) == label and case_id:
             counter_cases.append(case_id)
     return list(dict.fromkeys(counter_cases))[:10]
 
@@ -503,8 +516,18 @@ def _confusion_counter_cases(
         correctness = record.get("correctness", {})
         if correctness.get("is_correct") is not True:
             continue
-        raw_true = canonicalize_label(record.get("true_label"))
-        final_label = canonicalize_label(record.get("final_decision", {}).get("canonical_label"))
+        raw_true = canonicalize_label(
+            record.get("true_label"),
+            dataset_name=record.get("dataset_name"),
+            label_space_id=record.get("label_space_id"),
+            metadata=record.get("metadata", {}),
+        )
+        final_label = canonicalize_label(
+            record.get("final_decision", {}).get("canonical_label"),
+            dataset_name=record.get("dataset_name"),
+            label_space_id=record.get("label_space_id"),
+            metadata=record.get("metadata", {}),
+        )
         if raw_true in {predicted_label, true_label} or final_label in {predicted_label, true_label}:
             counter_cases.append(case_id)
     return list(dict.fromkeys(counter_cases))[:10]
@@ -554,9 +577,17 @@ def _composite_counter_cases(
 
 
 def _raw_confusion_pair(record: dict[str, Any]) -> str:
-    true_label = canonicalize_label(record.get("true_label"))
+    true_label = canonicalize_label(
+        record.get("true_label"),
+        dataset_name=record.get("dataset_name"),
+        label_space_id=record.get("label_space_id"),
+        metadata=record.get("metadata", {}),
+    )
     predicted_label = canonicalize_label(
-        record.get("qwen_output", {}).get("final_diagnosis") or record.get("final_decision", {}).get("label")
+        record.get("qwen_output", {}).get("final_diagnosis") or record.get("final_decision", {}).get("label"),
+        dataset_name=record.get("dataset_name"),
+        label_space_id=record.get("label_space_id"),
+        metadata=record.get("metadata", {}),
     )
     correctness = record.get("correctness", {})
     if correctness.get("is_correct") is False and predicted_label and true_label:

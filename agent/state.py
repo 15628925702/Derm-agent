@@ -27,6 +27,7 @@ class CaseInput:
     label: str | None = None
     reference_label: str | None = None
     dataset_name: str | None = None
+    label_space_id: str | None = None
     source_metadata_path: str | None = None
 
     def __post_init__(self) -> None:

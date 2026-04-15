@@ -2,28 +2,43 @@ from __future__ import annotations
 
 from typing import Any
 
-from agent.labels import canonicalize_label
-
-
-MALIGNANT_LABELS = {"BCC", "ACK", "SCC", "MEL"}
-
-
-def is_malignant_label(label: str | None) -> bool | None:
-    if label is None:
-        return None
-    return label in MALIGNANT_LABELS
+from agent.label_space import canonicalize_label, is_malignant_label, label_space_snapshot
 
 
 def evaluate_diagnosis_output(
     diagnosis_output: dict[str, Any],
     ground_truth_label: str | None,
+    *,
+    dataset_name: str | None = None,
+    label_space_id: str | None = None,
+    metadata: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    ground_truth_canonical = canonicalize_label(ground_truth_label)
-    final_label = canonicalize_label(diagnosis_output.get("final_diagnosis"))
+    ground_truth_canonical = canonicalize_label(
+        ground_truth_label,
+        dataset_name=dataset_name,
+        label_space_id=label_space_id,
+        metadata=metadata,
+    )
+    final_label = canonicalize_label(
+        diagnosis_output.get("final_diagnosis"),
+        dataset_name=dataset_name,
+        label_space_id=label_space_id,
+        metadata=metadata,
+    )
     differential_labels = [
-        canonicalize_label(item)
+        canonicalize_label(
+            item,
+            dataset_name=dataset_name,
+            label_space_id=label_space_id,
+            metadata=metadata,
+        )
         for item in diagnosis_output.get("differential_diagnoses", [])
-        if canonicalize_label(item)
+        if canonicalize_label(
+            item,
+            dataset_name=dataset_name,
+            label_space_id=label_space_id,
+            metadata=metadata,
+        )
     ]
     topk_candidates: list[str] = []
     if final_label:
@@ -32,10 +47,25 @@ def evaluate_diagnosis_output(
         if label and label not in topk_candidates:
             topk_candidates.append(label)
 
-    malignant_truth = is_malignant_label(ground_truth_canonical)
-    predicted_malignant = is_malignant_label(final_label)
+    malignant_truth = is_malignant_label(
+        ground_truth_canonical,
+        dataset_name=dataset_name,
+        label_space_id=label_space_id,
+        metadata=metadata,
+    )
+    predicted_malignant = is_malignant_label(
+        final_label,
+        dataset_name=dataset_name,
+        label_space_id=label_space_id,
+        metadata=metadata,
+    )
 
     return {
+        "label_space": label_space_snapshot(
+            dataset_name=dataset_name,
+            label_space_id=label_space_id,
+            metadata=metadata,
+        ),
         "ground_truth_canonical": ground_truth_canonical,
         "final_canonical_label": final_label,
         "differential_canonical_labels": differential_labels,

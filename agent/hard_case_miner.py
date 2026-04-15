@@ -8,7 +8,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
-from agent.labels import canonicalize_label
+from agent.label_space import canonicalize_label
 
 
 DEFAULT_MIN_IMPORTANCE = 3.0
@@ -152,13 +152,18 @@ def build_hard_case_candidate(record: dict[str, Any]) -> dict[str, Any]:
     case_outcome = reflection_summary.get("case_outcome", {})
     baseline_qwen = record.get("baseline_qwen") if isinstance(record.get("baseline_qwen"), dict) else {}
 
+    dataset_name = str(record.get("dataset_name", "")).strip() or None
     agent_correct = evaluation.get("correct")
     baseline_correct = evaluation.get("baseline_correct")
     malignant_recall_hit = evaluation.get("malignant_recall_hit")
     baseline_malignant_recall_hit = evaluation.get("baseline_malignant_recall_hit")
 
-    initial_ddx = [canonicalize_label(item) for item in qwen_initial.get("ddx_candidates", []) if canonicalize_label(item)]
-    final_label = canonicalize_label(qwen_final.get("final_diagnosis"))
+    initial_ddx = [
+        canonicalize_label(item, dataset_name=dataset_name)
+        for item in qwen_initial.get("ddx_candidates", [])
+        if canonicalize_label(item, dataset_name=dataset_name)
+    ]
+    final_label = canonicalize_label(qwen_final.get("final_diagnosis"), dataset_name=dataset_name)
     volatility = bool(final_label and initial_ddx and final_label not in initial_ddx)
 
     contradiction_count = _contradiction_count(contradiction_summary)
@@ -333,7 +338,7 @@ def passes_filters(
     if dataset_name and str(record.get("dataset_name", "")).strip() != str(dataset_name).strip():
         return False
     if label:
-        target_label = canonicalize_label(label) or str(label).strip()
+        target_label = canonicalize_label(label, dataset_name=str(record.get("dataset_name", "")).strip() or None) or str(label).strip()
         ground_truth_label = record.get("ground_truth", {}).get("canonical_label") or record.get("ground_truth", {}).get("raw_label")
         if str(ground_truth_label).strip() != str(target_label).strip():
             return False

@@ -89,6 +89,22 @@
 
 所以老习惯里那种“先随手跑底层 bootstrap，反正 compare 时会切仓”的做法现在不能再依赖了。底层写回本身就会进入当前仓。
 
+除了资产分仓之外，后续如果接入新数据集，还要把“标签空间”当成独立配置来管理：
+
+- 不同数据集可以保留各自原始标签
+- 不同数据集可以注册自己的 `label_space_id`
+- 经验库、训练产物和评测结果应该与对应 `label_space` 保持一致
+
+也就是说，未来新数据集实验线不只是：
+
+- 独立 `policy_root`
+- 独立 `split_state_root`
+
+还应该是：
+
+- 独立 `label_space_id`
+- 独立数据集 loader / schema
+
 ### 2. 不要同时跑多个模型服务
 
 推荐一次只保留一条模型线服务活着：
@@ -126,6 +142,7 @@
 - 用 `final-script/` 官方入口跑旧实验时，命令本身通常不用改
 - 只要你要手动跑 `scripts/` 里的底层命令，就先 `source` 对应模型线的 `.env`
 - 不要把 `Qwen` 线 shell 里加载过的根目录，继续拿去跑 `SkinVL` / `MedGemma` / 新数据集 bootstrap
+- 如果是新数据集实验，除了切资产根目录，还要先确认该数据集的 `label_space` 已经注册，不要默认复用旧主线标签解释
 
 ## 目录说明
 
@@ -478,3 +495,4 @@ bash final-script/exports/export_figures.sh
 - 旧实验官方入口尽量继续走 `final-script/`
 - 任何新数据集适配、手动 bootstrap、单病例写回调试，不要复用旧主线资产仓
 - 如果要新开一条独立实验线，优先使用 [`scripts/manage_dataset_experiment_assets.py`](/root/DermAgent/scripts/manage_dataset_experiment_assets.py) 初始化隔离资产
+- 新数据集实验线除了隔离资产，还应明确记录自己的 `label_space_id`，避免后续经验 consolidation、评测和导表时标签解释混乱

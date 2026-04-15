@@ -28,7 +28,13 @@ def build_reflection(state: CaseState, cognition: CognitionState) -> dict[str, A
     confusion_pair: str | None = None
     experience_type = "raw_case_experience"
 
-    label_match = labels_match(predicted, reference)
+    label_match = labels_match(
+        predicted,
+        reference,
+        dataset_name=state.case_input.dataset_name,
+        label_space_id=state.case_input.label_space_id,
+        metadata=state.case_input.metadata,
+    )
     if predicted and reference and label_match is False:
         detected_errors.append("final_diagnosis_mismatch_reference")
         confusion_pair = f"{predicted}->{reference}"

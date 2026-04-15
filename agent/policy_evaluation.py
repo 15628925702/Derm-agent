@@ -8,6 +8,13 @@ DEFAULT_KEY_CONFUSION_SUBSETS = ("melanoma->nev", "ack->scc")
 
 
 def build_policy_summary(case_results: list[dict[str, Any]]) -> dict[str, Any]:
+    dataset_names = sorted(
+        {
+            str(case.get("dataset_name", "")).strip()
+            for case in case_results
+            if str(case.get("dataset_name", "")).strip()
+        }
+    )
     cases_with_truth = [case for case in case_results if case.get("ground_truth", {}).get("canonical_label")]
     malignant_cases = [
         case for case in cases_with_truth if case.get("ground_truth", {}).get("malignant_flag") is True
@@ -18,6 +25,7 @@ def build_policy_summary(case_results: list[dict[str, Any]]) -> dict[str, Any]:
             confusion_groups.setdefault(tag, []).append(case)
 
     summary = {
+        "dataset_names": dataset_names,
         "num_cases": len(case_results),
         "num_with_ground_truth": len(cases_with_truth),
         "top1": _metric_block(cases_with_truth, "correct"),

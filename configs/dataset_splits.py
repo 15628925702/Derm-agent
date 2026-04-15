@@ -10,6 +10,7 @@ from typing import Any
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_DATA_ROOT = PROJECT_ROOT / "data"
 DEFAULT_SPLIT_ID = "pad_ufes_20_contiguous_v1"
+ISIC2019_SPLIT_ID = "isic2019_contiguous_v1"
 
 
 @dataclass(frozen=True)
@@ -36,6 +37,18 @@ FIXED_SPLITS: dict[str, FixedSplitDefinition] = {
         notes=(
             "Contiguous ranges keep case-offset/limit evaluation compatible with the current "
             "frozen evaluation scripts while remaining deterministic and reproducible."
+        ),
+    ),
+    ISIC2019_SPLIT_ID: FixedSplitDefinition(
+        split_id=ISIC2019_SPLIT_ID,
+        dataset_name="isic2019",
+        metadata_relpath="isic2019/ISIC_2019_Training_Metadata.csv",
+        train_ratio=0.70,
+        val_ratio=0.15,
+        test_ratio=0.15,
+        strategy="contiguous_by_metadata_index",
+        notes=(
+            "Contiguous split over ISIC2019 metadata rows for deterministic dataset-adaptation experiments."
         ),
     ),
 }
@@ -142,6 +155,9 @@ def write_fixed_split_json(
 
 
 def _build_case_id(row: dict[str, Any], *, row_index: int) -> str:
+    image = str(row.get("image", "")).strip()
+    if image:
+        return image
     patient_id = str(row.get("patient_id", "")).strip()
     lesion_id = str(row.get("lesion_id", "")).strip()
     if patient_id and lesion_id:
