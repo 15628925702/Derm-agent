@@ -69,6 +69,31 @@ def test_resolve_case_selection_auto_mode_uses_split_relative_offset_when_absolu
     assert selection.selection_mode == "split_offset"
 
 
+def test_resolve_case_selection_supports_explicit_case_index_lists() -> None:
+    split_payload = {
+        "split_id": "toy_balanced_v1",
+        "train": ["train_0", "train_1", "train_2"],
+        "val": ["val_0", "val_1"],
+        "test": ["test_0", "test_1"],
+        "train_case_indices": [10, 20, 30],
+        "val_case_indices": [40, 50],
+        "test_case_indices": [60, 70],
+    }
+
+    selection = resolve_case_selection(
+        data_split="test",
+        split_payload=split_payload,
+        limit=1,
+        case_offset=0,
+        strict=True,
+    )
+
+    assert selection.data_split == "test"
+    assert selection.case_indices == [60]
+    assert selection.case_ids == ["test_0"]
+    assert selection.selection_mode == "explicit_case_index_list"
+
+
 def test_resolve_split_state_paths_requires_split_specific_state_when_strict(tmp_path: Path) -> None:
     split_root = tmp_path / "split_states"
     test_root = split_root / "test"

@@ -4,6 +4,7 @@ import csv
 import random
 from collections import Counter
 from dataclasses import asdict, dataclass, field
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -59,6 +60,11 @@ class Isic2019DatasetSummary:
 
 
 def discover_isic2019_assets(data_root: str | Path = DEFAULT_ISIC2019_ROOT) -> Isic2019DatasetSummary:
+    return _discover_isic2019_assets_cached(str(Path(data_root)))
+
+
+@lru_cache(maxsize=16)
+def _discover_isic2019_assets_cached(data_root: str) -> Isic2019DatasetSummary:
     root = Path(data_root)
     metadata_csv = root / "ISIC_2019_Training_Metadata.csv"
     ground_truth_csv = root / "ISIC_2019_Training_GroundTruth.csv"
@@ -82,6 +88,11 @@ def discover_isic2019_assets(data_root: str | Path = DEFAULT_ISIC2019_ROOT) -> I
 
 
 def load_isic2019_rows(data_root: str | Path = DEFAULT_ISIC2019_ROOT) -> list[dict[str, Any]]:
+    return list(_load_isic2019_rows_cached(str(Path(data_root))))
+
+
+@lru_cache(maxsize=16)
+def _load_isic2019_rows_cached(data_root: str) -> tuple[dict[str, Any], ...]:
     root = Path(data_root)
     metadata_csv = root / "ISIC_2019_Training_Metadata.csv"
     ground_truth_csv = root / "ISIC_2019_Training_GroundTruth.csv"
@@ -103,7 +114,7 @@ def load_isic2019_rows(data_root: str | Path = DEFAULT_ISIC2019_ROOT) -> list[di
             merged.update(dict(row))
             merged["original_label"] = _extract_original_label(row)
             merged_rows.append(merged)
-    return merged_rows
+    return tuple(merged_rows)
 
 
 def standardize_isic2019_row(row: dict[str, Any], *, data_root: str | Path = DEFAULT_ISIC2019_ROOT) -> Isic2019CaseRecord:
@@ -124,6 +135,17 @@ def standardize_isic2019_row(row: dict[str, Any], *, data_root: str | Path = DEF
         metadata=metadata,
         original_label=str(row.get("original_label", "")).strip(),
     )
+
+
+def load_isic2019_record_by_index(
+    case_index: int,
+    *,
+    data_root: str | Path = DEFAULT_ISIC2019_ROOT,
+) -> Isic2019CaseRecord:
+    rows = load_isic2019_rows(data_root)
+    if case_index < 0 or case_index >= len(rows):
+        raise IndexError(f"case-index {case_index} out of range for {len(rows)} rows")
+    return standardize_isic2019_row(rows[case_index], data_root=data_root)
 
 
 def load_isic2019_records(
@@ -182,6 +204,25 @@ def load_isic2019_case_inputs(
         )
         for record in records
     ]
+
+
+def load_isic2019_case_input_by_index(
+    case_index: int,
+    *,
+    data_root: str | Path = DEFAULT_ISIC2019_ROOT,
+) -> CaseInput:
+    record = load_isic2019_record_by_index(case_index, data_root=data_root)
+    metadata_csv = Path(data_root) / "ISIC_2019_Training_Metadata.csv"
+    return CaseInput(
+        case_id=record.case_id,
+        image_path=record.image_path,
+        metadata=record.metadata,
+        label=record.original_label,
+        reference_label=record.original_label,
+        dataset_name=record.dataset_name,
+        label_space_id=record.label_space_id,
+        source_metadata_path=str(metadata_csv),
+    )
 
 
 def _extract_original_label(row: dict[str, Any]) -> str:

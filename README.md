@@ -231,6 +231,178 @@ bash final-script/runs/run_main_skinvl_vs_agent_skinvl.sh
 
 这条线更适合作为方法迁移与泛化验证，不替代 `Qwen` 主线。
 
+## 运行模式：手工规则 vs 参数化
+
+DermAgent 支持两种运行模式，通过 `--policy-config` 或 `QWEN_FINAL_POLICY_JSON` 环境变量切换，**不需要改代码**。
+
+### 模式一：手工规则（heuristic，默认推荐）
+
+全部使用规则驱动，不加载任何 learned checkpoint，零样本可部署：
+
+```bash
+cd /root/DermAgent
+source final-script/configs/final_assets_registry.env
+
+# 使用 heuristic_no_penalty（接近 v0 行为，无 penalty，无 adaptive budget）
+export QWEN_FINAL_POLICY_JSON=/root/DermAgent/state/policy/versions/heuristic_no_penalty.json
+export OUTPUT_DIR=/root/DermAgent/final-score/final_runs/heuristic_no_penalty
+bash final-script/runs/run_main_qwen_vs_agent_qwen.sh --smoke-10
+```
+
+```bash
+# 使用 heuristic_with_penalty（开启 penalty 和 adaptive budget）
+export QWEN_FINAL_POLICY_JSON=/root/DermAgent/state/policy/versions/heuristic_with_penalty.json
+export OUTPUT_DIR=/root/DermAgent/final-score/final_runs/heuristic_with_penalty
+bash final-script/runs/run_main_qwen_vs_agent_qwen.sh --smoke-10
+```
+
+两个 heuristic policy 文件的差异：
+
+| 配置 | penalty 权重 | adaptive budget | 适用场景 |
+|------|-------------|-----------------|---------|
+| `heuristic_no_penalty.json` | 0（关闭） | 关闭 | 最接近原始 v0 行为，基线对比 |
+| `heuristic_with_penalty.json` | 开启（4.0 / 2.0） | 开启 | 当前 heuristic 推荐默认值 |
+
+### 模式二：参数化 learned（主线配置）
+
+使用 learned controller + learned retrieval reranker + hybrid evidence calibrator：
+
+```bash
+cd /root/DermAgent
+source final-script/configs/final_assets_registry.env
+
+# 使用主线 learned 配置（final_assets_registry.env 已默认指向此文件）
+export QWEN_FINAL_POLICY_JSON=/root/DermAgent/state/policy/current_stable_policy.json
+export OUTPUT_DIR=/root/DermAgent/final-score/final_runs/learned_mainline
+bash final-script/runs/run_main_qwen_vs_agent_qwen.sh --smoke-10
+```
+
+或者直接用原始 final-script 入口（已默认读取 learned 主线配置，不需要额外 export）：
+
+```bash
+cd /root/DermAgent
+bash final-script/runs/run_main_qwen_vs_agent_qwen.sh --smoke-10
+```
+
+### 三种配置的指标对比（10-case）
+
+| 配置 | top-1 | top-k | malignant recall | error rate |
+|------|-------|-------|-----------------|------------|
+| Direct baseline (Qwen only) | 30% | 70% | 25% | 70% |
+| Heuristic no-penalty | 50% | **60%** | **87.5%** | 50% |
+| Heuristic with-penalty | 50% | 50% | **87.5%** | 50% |
+| Learned mainline (345-case full) | 39.7% | — | 82.2% | 60.3% |
+
+> heuristic 层本身已带来 malignant recall 25% → 87.5% 的显著提升，learned 在此基础上提供可选增益。
+
+---
+
+## 训练参数化组件
+
+> 训练组件之前，需要先通过 bootstrap 积累足够的执行记录（`outputs/` 目录下的 JSONL），用于提取训练样本。
+
+### 前提：确认训练数据已就绪
+
+```bash
+# 确认 controller 训练样本文件存在
+ls /root/DermAgent/outputs/controller_training_data/controller_training_examples.jsonl
+
+# 确认 retrieval / evidence calibrator 所需的 execution records 存在
+ls /root/DermAgent/outputs/
+```
+
+### 1. 训练 Controller（Planner Scorer）
+
+```bash
+cd /root/DermAgent
+python scripts/train_controller.py \
+  --examples-path outputs/controller_training_data/controller_training_examples.jsonl \
+  --output-dir state/trainable_components/controller_planner_scorer/candidates \
+  --epochs 40 \
+  --hidden-dim 128 \
+  --lr 1e-3 \
+  --selection-profile conservative_sparse
+```
+
+训练完成后，checkpoint 保存在：
+```
+state/trainable_components/controller_planner_scorer/candidates/<run_name>.pt
+```
+
+### 2. 训练 Retrieval Reranker
+
+```bash
+cd /root/DermAgent
+python scripts/train_retrieval_scorer.py \
+  --records-root outputs \
+  --output-dir state/trainable_components/retrieval_reranker/candidates \
+  --epochs 30 \
+  --hidden-dim 96 \
+  --lr 1e-3
+```
+
+训练完成后，checkpoint 保存在：
+```
+state/trainable_components/retrieval_reranker/candidates/<run_name>.pt
+```
+
+### 3. 训练 Evidence Calibrator
+
+```bash
+cd /root/DermAgent
+python scripts/train_evidence_calibrator.py \
+  --records-root outputs \
+  --output-dir state/trainable_components/evidence_calibrator/candidates \
+  --epochs 20 \
+  --hidden-dim 64 \
+  --lr 1e-3
+```
+
+训练完成后，checkpoint 保存在：
+```
+state/trainable_components/evidence_calibrator/candidates/<run_name>.pt
+```
+
+### 4. 把新 checkpoint 接入 policy
+
+训练好新 checkpoint 后，编辑（或新建）policy JSON，把路径填入对应字段：
+
+```json
+{
+  "planner_policy": {
+    "controller_family": "learned_supervised",
+    "controller_checkpoint_path": "/root/DermAgent/state/trainable_components/controller_planner_scorer/candidates/<your_run>.pt"
+  },
+  "retrieval_policy": {
+    "enable_learned_retrieval_reranker": true,
+    "retrieval_reranker_checkpoint_path": "/root/DermAgent/state/trainable_components/retrieval_reranker/candidates/<your_run>.pt"
+  },
+  "evidence_policy": {
+    "calibrator_mode": "hybrid",
+    "calibrator_checkpoint_path": "/root/DermAgent/state/trainable_components/evidence_calibrator/candidates/<your_run>.pt"
+  }
+}
+```
+
+然后通过环境变量指向这个新文件：
+
+```bash
+export QWEN_FINAL_POLICY_JSON=/root/DermAgent/state/policy/versions/<your_new_policy>.json
+bash final-script/runs/run_main_qwen_vs_agent_qwen.sh --smoke-10
+```
+
+### 5. 三个字段的开关对照
+
+| 组件 | 关闭（heuristic） | 开启（learned） |
+|------|------------------|----------------|
+| Controller | `"controller_family": "heuristic"` | `"controller_family": "learned_supervised"` + `controller_checkpoint_path` |
+| Retrieval Reranker | `"enable_learned_retrieval_reranker": false` | `"enable_learned_retrieval_reranker": true` + `retrieval_reranker_checkpoint_path` |
+| Evidence Calibrator | `"calibrator_mode": "heuristic"` | `"calibrator_mode": "hybrid"` 或 `"learned"` + `calibrator_checkpoint_path` |
+
+任意组合都可以，例如只开 controller 关 reranker、或只开 calibrator，每个组件独立控制。
+
+---
+
 ## 旧实验重跑注意事项
 
 如果你现在要重新启动仓库里原来的旧实验，建议按下面规则执行：
@@ -414,6 +586,41 @@ OUTPUT_DIR="$DERMAGENT_DATASET_EXPERIMENT_OUTPUT_ROOT/bootstrap" \
 bash scripts/bootstrap_<dataset>_train_cases.sh
 ```
 
+如果该数据集使用的是“分层均匀 split”，更推荐按 `train_case_indices` 来 bootstrap，而不是简单用 `START_INDEX=0` 连续取样。通用写法如下：
+
+```bash
+cd /root/DermAgent
+
+mapfile -t TRAIN_INDICES < <(
+python - <<'PY'
+import json
+from pathlib import Path
+split = Path('/root/DermAgent/outputs/dataset_adaptation/<dataset_experiment_id>/<dataset_split>.json')
+data = json.loads(split.read_text(encoding='utf-8'))
+for idx in data['train_case_indices'][:24]:
+    print(idx)
+PY
+)
+
+for idx in "${TRAIN_INDICES[@]}"; do
+  echo "[bootstrap] case-index=${idx}"
+  OPENAI_BASE_URL=http://127.0.0.1:8000/v1 \
+  OPENAI_API_KEY=EMPTY \
+  OPENAI_MODEL=Qwen2.5-VL-7B-Instruct \
+  DERMAGENT_POLICY_ROOT="$DERMAGENT_POLICY_ROOT" \
+  DERMAGENT_SPLIT_STATE_ROOT="$DERMAGENT_SPLIT_STATE_ROOT" \
+  python scripts/debug_single_case.py \
+    --case-index "${idx}" \
+    --data-root /root/DermAgent/data/<dataset_name> \
+    --output-dir "$DERMAGENT_DATASET_EXPERIMENT_OUTPUT_ROOT/bootstrap" \
+    --enable-writeback \
+    --data-split train \
+    --run-mode <dataset_name>_train_bootstrap \
+    --client-timeout 180 \
+    --client-max-retries 2
+done
+```
+
 #### 第四步：把 train 状态迁移到 val/test
 
 正式冻结评测不能直接读 train 写回中的在线状态，因此推荐在 bootstrap 之后，把 train 状态复制成 val/test 的冻结状态：
@@ -432,6 +639,36 @@ python scripts/manage_dataset_experiment_assets.py promote-state \
 - `train/cognition_state.json` -> `val/test`
 
 同时会重写 split-aware metadata，保证后续 frozen evaluation 一致。
+
+#### 第四步半：先确认 split 和 smoke slice 是否合理
+
+对于像 HAM10000 这类容易出现长段同类样本的数据集，强烈建议在 compare 之前先检查 `val[:10]` 和 `test[:10]` 的标签组成，避免出现 “前 10 个全是同一类” 的无效 smoke 切片：
+
+```bash
+cd /root/DermAgent
+
+python - <<'PY'
+import csv, json
+from pathlib import Path
+split = Path('/root/DermAgent/outputs/dataset_adaptation/<dataset_experiment_id>/<dataset_split>.json')
+meta = Path('/root/DermAgent/data/<dataset_name>/<metadata_csv>')
+data = json.loads(split.read_text(encoding='utf-8'))
+
+rows = {}
+with meta.open('r', encoding='utf-8', newline='') as f:
+    for row in csv.DictReader(f):
+        key = row.get('image') or row.get('image_id')
+        if key:
+            rows[key] = row
+
+label_field = '<label_field_name>'
+for name in ['val', 'test']:
+    print('===', name, 'first10 ===')
+    print([rows[cid][label_field] for cid in data[name][:10]])
+PY
+```
+
+如果发现 `first10` 仍然严重偏斜，应先修 split，再做 compare。
 
 #### 第五步：先用 stable policy 做 frozen compare
 
@@ -455,6 +692,44 @@ python scripts/compare_agent_vs_qwen.py \
   --policy-config /root/DermAgent/state/dataset_adaptation/<dataset_experiment_id>/policy/current_stable_policy.json \
   --policy-label "<dataset> stable policy"
 ```
+
+更完整的 `val/test` 对比模板如下：
+
+```bash
+cd /root/DermAgent
+
+DERMAGENT_SPLIT_STATE_ROOT=/root/DermAgent/state/dataset_adaptation/<dataset_experiment_id>/split_states \
+DERMAGENT_POLICY_ROOT=/root/DermAgent/state/dataset_adaptation/<dataset_experiment_id>/policy \
+python scripts/compare_agent_vs_qwen.py \
+  --data-root /root/DermAgent/data/<dataset_name> \
+  --split-json /root/DermAgent/outputs/dataset_adaptation/<dataset_experiment_id>/<dataset_split>.json \
+  --data-split val \
+  --output-dir /root/DermAgent/outputs/dataset_adaptation/<dataset_experiment_id>/compare_val_10 \
+  --policy-config /root/DermAgent/state/dataset_adaptation/<dataset_experiment_id>/policy/current_stable_policy.json \
+  --policy-label "<dataset> stable policy" \
+  --limit 10 \
+  --client-timeout 180 \
+  --client-max-retries 2
+
+DERMAGENT_SPLIT_STATE_ROOT=/root/DermAgent/state/dataset_adaptation/<dataset_experiment_id>/split_states \
+DERMAGENT_POLICY_ROOT=/root/DermAgent/state/dataset_adaptation/<dataset_experiment_id>/policy \
+python scripts/compare_agent_vs_qwen.py \
+  --data-root /root/DermAgent/data/<dataset_name> \
+  --split-json /root/DermAgent/outputs/dataset_adaptation/<dataset_experiment_id>/<dataset_split>.json \
+  --data-split test \
+  --output-dir /root/DermAgent/outputs/dataset_adaptation/<dataset_experiment_id>/compare_test_10 \
+  --policy-config /root/DermAgent/state/dataset_adaptation/<dataset_experiment_id>/policy/current_stable_policy.json \
+  --policy-label "<dataset> stable policy" \
+  --limit 10 \
+  --client-timeout 180 \
+  --client-max-retries 2
+```
+
+如果 `val/test` 的 10-case smoke 结果趋势不稳定，可以：
+
+1. 先补更多 bootstrap case。
+2. 再执行一次 `promote-state`。
+3. 再重新跑 `compare_val_10` / `compare_test_10`。
 
 #### 第六步：如果经验库太小，可以继续补 bootstrap
 
@@ -551,25 +826,23 @@ DermAgent 很强调评测公平性。正式比较时默认要求：
 
 ## 训练与优化
 
-DermAgent 优化的不是 backbone 本身，而是外围可训练组件。当前代码里主要包括：
+DermAgent 优化的不是 backbone 本身，而是外围三个可训练组件（controller、retrieval reranker、evidence calibrator）。
 
-- controller / planner scorer
-- retrieval reranker / scorer
-- evidence calibrator
+具体的训练命令和 checkpoint 接入方式见上方"[训练参数化组件](#训练参数化组件)"章节。
 
-相关脚本包括：
+核心原则：
+
+- 不训练 Qwen 权重，不做 end-to-end backbone finetuning
+- 只对外围策略层做 staged optimization
+- 三个组件可独立控制开关，每个组件有独立 checkpoint，heuristic 路径永远可用
+
+相关脚本：
 
 - [`scripts/train_controller.py`](/root/DermAgent/scripts/train_controller.py)
 - [`scripts/train_retrieval_scorer.py`](/root/DermAgent/scripts/train_retrieval_scorer.py)
 - [`scripts/train_evidence_calibrator.py`](/root/DermAgent/scripts/train_evidence_calibrator.py)
 - [`scripts/train_learned_components.py`](/root/DermAgent/scripts/train_learned_components.py)
 - [`scripts/evaluate_policy_candidate.py`](/root/DermAgent/scripts/evaluate_policy_candidate.py)
-
-主张是：
-
-- 不训练 Qwen 权重
-- 不做 end-to-end backbone finetuning
-- 只对外围策略层做 staged optimization
 
 ## 测试
 

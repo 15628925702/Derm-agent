@@ -67,15 +67,47 @@ ISIC2019_FULL_LABEL_SPACE = LabelSpace(
     benign_labels=("NV", "BKL", "DF", "VASC", "UNK"),
 )
 
+HAM10000_BINARY_LABEL_SPACE = LabelSpace(
+    label_space_id="ham10000_binary",
+    canonical_labels=("MALIGNANT", "BENIGN", "UNKNOWN"),
+    aliases=(
+        LabelAlias("MALIGNANT", ("malignant", "mel", "melanoma", "bcc", "basal cell", "akiec", "actinic keratosis", "ak")),
+        LabelAlias("BENIGN", ("benign", "nv", "nevus", "naevus", "bkl", "seborrheic keratosis", "df", "dermatofibroma", "vasc", "vascular")),
+        LabelAlias("UNKNOWN", ("unknown", "unk")),
+    ),
+    malignant_labels=("MALIGNANT",),
+    benign_labels=("BENIGN",),
+)
+
+HAM10000_FULL_LABEL_SPACE = LabelSpace(
+    label_space_id="ham10000_full",
+    canonical_labels=("MEL", "BCC", "NV", "BKL", "DF", "VASC", "AKIEC"),
+    aliases=(
+        LabelAlias("MEL", ("mel", "melanoma", "malignant melanoma")),
+        LabelAlias("BCC", ("bcc", "basal cell", "basal cell carcinoma")),
+        LabelAlias("NV", ("nv", "nevus", "naevus", "nevi", "mole")),
+        LabelAlias("BKL", ("bkl", "seborrheic keratosis", "seborrhoeic keratosis", "benign keratosis")),
+        LabelAlias("DF", ("df", "dermatofibroma")),
+        LabelAlias("VASC", ("vasc", "vascular lesion", "angioma", "hemangioma")),
+        LabelAlias("AKIEC", ("akiec", "actinic keratosis", "bowen disease", "intraepithelial carcinoma")),
+    ),
+    malignant_labels=("MEL", "BCC", "AKIEC"),
+    benign_labels=("NV", "BKL", "DF", "VASC"),
+)
+
 
 LABEL_SPACES: dict[str, LabelSpace] = {
     DEFAULT_LABEL_SPACE_ID: DERM_SIX_LABEL_SPACE,
     "isic2019_full": ISIC2019_FULL_LABEL_SPACE,
+    "ham10000_binary": HAM10000_BINARY_LABEL_SPACE,
+    "ham10000_full": HAM10000_FULL_LABEL_SPACE,
 }
 
 DATASET_LABEL_SPACE_ALIASES: dict[str, str] = {
     "pad_ufes_20": DEFAULT_LABEL_SPACE_ID,
-    "ham10000": DEFAULT_LABEL_SPACE_ID,
+    "ham10000": "ham10000_full",
+    "ham10000_binary": "ham10000_binary",
+    "ham10000_full": "ham10000_full",
     "ham10000_aligned": DEFAULT_LABEL_SPACE_ID,
     "isic2019": DEFAULT_LABEL_SPACE_ID,
     "isic2019_aligned": DEFAULT_LABEL_SPACE_ID,

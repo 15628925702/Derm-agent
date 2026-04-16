@@ -85,6 +85,40 @@ def resolve_case_selection(
     if not split_case_ids:
         raise ValueError(f"Split payload has no case ids for split `{normalized_split}`.")
 
+    explicit_indices = split_payload.get(f"{normalized_split}_case_indices")
+    if isinstance(explicit_indices, list) and explicit_indices:
+        normalized_offset_mode = str(case_offset_mode).strip().lower() or "auto"
+        if case_offset not in (None, 0):
+            if normalized_offset_mode not in {"auto", "split_relative"}:
+                raise ValueError(
+                    f"Explicit case-index split only supports split-relative offsets, got case_offset_mode={case_offset_mode}."
+                )
+        local_offset = max(0, int(case_offset or offset_within_split))
+        if local_offset >= len(explicit_indices):
+            raise ValueError(
+                f"offset_within_split={local_offset} is beyond available {normalized_split} cases={len(explicit_indices)}."
+            )
+        resolved_count = len(explicit_indices) - local_offset if limit <= 0 else min(int(limit), len(explicit_indices) - local_offset)
+        case_indices = [int(item) for item in explicit_indices[local_offset : local_offset + resolved_count]]
+        selected_case_ids = split_case_ids[local_offset : local_offset + resolved_count]
+        if strict and len(selected_case_ids) != len(case_indices):
+            raise ValueError(
+                f"Resolved count mismatch for explicit-index split `{normalized_split}`: "
+                f"indices={len(case_indices)} case_ids={len(selected_case_ids)}"
+            )
+        split_id = str(split_payload.get("split_id", DEFAULT_SPLIT_ID)).strip() or DEFAULT_SPLIT_ID
+        return CaseSelection(
+            split_id=split_id,
+            split_json_path=str(split_json_path) if split_json_path else "",
+            data_split=normalized_split,
+            selection_mode="explicit_case_index_list",
+            case_offset=local_offset,
+            offset_within_split=local_offset,
+            limit=len(case_indices),
+            case_indices=case_indices,
+            case_ids=selected_case_ids,
+        )
+
     raw_range = split_payload.get(f"{normalized_split}_range")
     if not isinstance(raw_range, list) or len(raw_range) != 2:
         raise ValueError(f"Split payload missing `{normalized_split}_range`.")

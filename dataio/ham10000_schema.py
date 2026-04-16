@@ -25,6 +25,7 @@ class Ham10000CaseRecord:
     original_label: str
     binary_label: str
     dataset_name: str = "HAM10000"
+    label_space_id: str = "ham10000_full"
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

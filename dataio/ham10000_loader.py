@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import random
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -24,6 +25,11 @@ HAM10000_METADATA_LEAKY_KEYS = {
 
 
 def discover_ham10000_assets(data_root: str | Path = DEFAULT_HAM10000_ROOT) -> Ham10000DatasetSummary:
+    return _discover_ham10000_assets_cached(str(Path(data_root)))
+
+
+@lru_cache(maxsize=16)
+def _discover_ham10000_assets_cached(data_root: str) -> Ham10000DatasetSummary:
     root = Path(data_root)
     metadata_csv = root / "HAM10000_metadata.csv"
     if not metadata_csv.exists():
@@ -48,8 +54,13 @@ def discover_ham10000_assets(data_root: str | Path = DEFAULT_HAM10000_ROOT) -> H
 
 
 def load_ham10000_rows(data_root: str | Path = DEFAULT_HAM10000_ROOT) -> list[dict[str, Any]]:
+    return list(_load_ham10000_rows_cached(str(Path(data_root))))
+
+
+@lru_cache(maxsize=16)
+def _load_ham10000_rows_cached(data_root: str) -> tuple[dict[str, Any], ...]:
     assets = discover_ham10000_assets(data_root)
-    return _read_csv_rows(Path(assets.metadata_csv))
+    return tuple(_read_csv_rows(Path(assets.metadata_csv)))
 
 
 def standardize_ham10000_row(row: dict[str, Any], *, data_root: str | Path = DEFAULT_HAM10000_ROOT) -> Ham10000CaseRecord:
@@ -57,6 +68,7 @@ def standardize_ham10000_row(row: dict[str, Any], *, data_root: str | Path = DEF
     image_path = _resolve_image_path(image_id=str(row.get("image_id", "")).strip(), image_dirs=[Path(path) for path in assets.image_dirs])
     original_label = str(row.get("dx", "")).strip().lower()
     metadata = _sanitize_ham10000_metadata(row)
+    metadata["label_space_id"] = "ham10000_full"
     return Ham10000CaseRecord(
         case_id=str(row.get("image_id", "")).strip(),
         image_path=str(image_path),
@@ -64,6 +76,17 @@ def standardize_ham10000_row(row: dict[str, Any], *, data_root: str | Path = DEF
         original_label=original_label,
         binary_label=binary_label_for_ham10000(original_label),
     )
+
+
+def load_ham10000_record_by_index(
+    case_index: int,
+    *,
+    data_root: str | Path = DEFAULT_HAM10000_ROOT,
+) -> Ham10000CaseRecord:
+    rows = load_ham10000_rows(data_root)
+    if case_index < 0 or case_index >= len(rows):
+        raise IndexError(f"case-index {case_index} out of range for {len(rows)} rows")
+    return standardize_ham10000_row(rows[case_index], data_root=data_root)
 
 
 def load_ham10000_records(
@@ -113,13 +136,32 @@ def load_ham10000_case_inputs(
             case_id=record.case_id,
             image_path=record.image_path,
             metadata=record.metadata,
-            label=record.binary_label,
-            reference_label=record.binary_label,
+            label=record.original_label,
+            reference_label=record.original_label,
             dataset_name=record.dataset_name,
+            label_space_id="ham10000_full",
             source_metadata_path=str(Path(data_root) / "HAM10000_metadata.csv"),
         )
         for record in records
     ]
+
+
+def load_ham10000_case_input_by_index(
+    case_index: int,
+    *,
+    data_root: str | Path = DEFAULT_HAM10000_ROOT,
+) -> CaseInput:
+    record = load_ham10000_record_by_index(case_index, data_root=data_root)
+    return CaseInput(
+        case_id=record.case_id,
+        image_path=record.image_path,
+        metadata=record.metadata,
+        label=record.original_label,
+        reference_label=record.original_label,
+        dataset_name=record.dataset_name,
+        label_space_id="ham10000_full",
+        source_metadata_path=str(Path(data_root) / "HAM10000_metadata.csv"),
+    )
 
 
 def _read_csv_rows(path: Path) -> list[dict[str, Any]]:
