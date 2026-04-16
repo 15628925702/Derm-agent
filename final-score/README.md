@@ -26,3 +26,9 @@ All wrappers under `final-script/` now write their outputs here by default.
 
 - Run experiments via `final-script/runs/*.sh`
 - Read final numbers and case bundles from this directory only during paper writing
+
+## Storage split
+
+- `final_runs/` is treated as a large-results store and is excluded from the main GitHub repo.
+- Keep the project source, scripts, and small reproducibility assets in GitHub.
+- Sync `final_runs/` to a private Hugging Face dataset repo with `scripts/upload_final_runs_to_hf.sh`.
