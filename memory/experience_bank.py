@@ -127,11 +127,19 @@ class ExperienceBank:
         ddx_candidates: list[str] | None = None,
         morphology_clues: list[str] | None = None,
         confusion_pair: str | None = None,
+        workflow_context: dict[str, Any] | None = None,
         top_k_raw: int = 2,
         top_k_tactical: int = 4,
         top_k_abstract: int = 4,
         top_k_merged: int = 6,
     ) -> dict[str, Any]:
+        effective = _compute_workflow_top_k(
+            workflow_context=workflow_context,
+            top_k_raw=top_k_raw,
+            top_k_tactical=top_k_tactical,
+            top_k_abstract=top_k_abstract,
+            top_k_merged=top_k_merged,
+        )
         return self.retriever.retrieve_bundle(
             case_state=case_state,
             perception=perception,
@@ -141,10 +149,10 @@ class ExperienceBank:
             ddx_candidates=ddx_candidates,
             morphology_clues=morphology_clues,
             confusion_pair=confusion_pair,
-            top_k_raw=top_k_raw,
-            top_k_tactical=top_k_tactical,
-            top_k_abstract=top_k_abstract,
-            top_k_merged=top_k_merged,
+            top_k_raw=effective["raw"],
+            top_k_tactical=effective["tactical"],
+            top_k_abstract=effective["abstract"],
+            top_k_merged=effective["merged"],
         )
 
     def retrieve_similar(self, case_state: CaseState, top_k: int = 3) -> list[dict[str, Any]]:
@@ -190,3 +198,41 @@ class ExperienceBank:
                 continue
             seen.add(record_key)
             self.writer.write_legacy_record(record)
+
+
+def _compute_workflow_top_k(
+    workflow_context: dict[str, Any] | None,
+    top_k_raw: int,
+    top_k_tactical: int,
+    top_k_abstract: int,
+    top_k_merged: int,
+) -> dict[str, int]:
+    if not workflow_context:
+        return {"raw": top_k_raw, "tactical": top_k_tactical, "abstract": top_k_abstract, "merged": top_k_merged}
+
+    hospital_type = str(workflow_context.get("hospital_type", "")).strip()
+    time_budget = str(workflow_context.get("time_budget", "")).strip()
+
+    raw, tactical, abstract = top_k_raw, top_k_tactical, top_k_abstract
+
+    if hospital_type == "primary_care":
+        abstract = min(abstract + 2, 8)
+        raw = max(raw - 1, 1)
+    elif hospital_type == "specialist_clinic":
+        raw = min(raw + 2, 6)
+        tactical = min(tactical + 1, 6)
+    elif hospital_type == "academic_center":
+        tactical = min(tactical + 2, 8)
+        abstract = min(abstract + 1, 6)
+
+    if time_budget == "screening":
+        raw = max(int(raw * 0.5), 1)
+        tactical = max(int(tactical * 0.5), 1)
+        abstract = max(int(abstract * 0.5), 1)
+    elif time_budget == "comprehensive":
+        raw = min(int(raw * 1.5), 8)
+        tactical = min(int(tactical * 1.5), 8)
+        abstract = min(int(abstract * 1.5), 8)
+
+    merged = min(raw + tactical + abstract, top_k_merged + 4)
+    return {"raw": raw, "tactical": tactical, "abstract": abstract, "merged": merged}

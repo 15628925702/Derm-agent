@@ -102,6 +102,7 @@ def build_reflection(state: CaseState, cognition: CognitionState) -> dict[str, A
         "useful_skills": useful_skills,
         "detected_errors": detected_errors,
         "experience_type": experience_type,
+        "diagnosis_correct": label_match is True,
         "write_experience": _should_write_experience(experience_type, useful_skills),
         "case_outcome": case_outcome,
         "skill_assessments": skill_assessments,
@@ -111,7 +112,7 @@ def build_reflection(state: CaseState, cognition: CognitionState) -> dict[str, A
     }
 
 
-def apply_cognition_update(cognition: CognitionState, reflection: dict[str, Any]) -> CognitionState:
+def apply_cognition_update(cognition: CognitionState, reflection: dict[str, Any], state: CaseState | None = None) -> CognitionState:
     update = reflection.get("cognition_update", {})
     cognition.update_failure_statistics(
         total_cases_increment=int(update.get("total_cases_increment", 0)),
@@ -122,6 +123,12 @@ def apply_cognition_update(cognition: CognitionState, reflection: dict[str, Any]
     cognition.update_known_confusion_patterns(update.get("confusion_pair"))
     cognition.update_preferred_skills(update.get("preferred_skills") or [])
     cognition.update_skill_statistics(reflection.get("writeback_bundle", {}).get("skill_stats_update", []))
+    if state is not None:
+        cognition.update_workflow_preferences(
+            workflow_context=state.case_input.workflow_context,
+            skills_used=list(state.skill_outputs.keys()),
+            correct=bool(reflection.get("diagnosis_correct", False)),
+        )
     return cognition
 
 

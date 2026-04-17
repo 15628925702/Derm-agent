@@ -157,6 +157,7 @@ def run_agent(
     if execution_config["enable_experience_retrieval"]:
         state.retrieval_bundle = bank.retrieve_bundle(
             case_state=state,
+            workflow_context=case_input.workflow_context,
             top_k_merged=int(retrieval_policy.get("top_k_experience", cognition_state.retrieval_preferences.get("top_k", 3))),
             top_k_tactical=max(3, int(retrieval_policy.get("top_k_tactical", cognition_state.retrieval_preferences.get("top_k", 3)))),
             top_k_abstract=max(3, int(retrieval_policy.get("top_k_abstract", cognition_state.retrieval_preferences.get("top_k", 3)))),
@@ -200,7 +201,7 @@ def run_agent(
             state.reflection["writeback_bundle"] = written_bundle
             if isinstance(written_bundle.get("reflection_extract"), dict):
                 state.reflection["reflection_extract"] = written_bundle["reflection_extract"]
-        apply_cognition_update(cognition_state, state.reflection)
+        apply_cognition_update(cognition_state, state.reflection, state)
         cognition_state.save(cognition_path)
     cognition_after = cognition_state.to_dict()
     state_versions = _build_state_versions(

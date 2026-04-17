@@ -38,6 +38,7 @@ class CognitionState:
         }
     )
     skill_statistics: dict[str, dict[str, Any]] = field(default_factory=dict)
+    workflow_preferences: dict[str, dict[str, Any]] = field(default_factory=dict)
     state_split: str = "global"
     state_version: str = ""
 
@@ -60,6 +61,7 @@ class CognitionState:
         for skill_name, payload in dict(self.skill_statistics or {}).items():
             normalized_skill_statistics[str(skill_name)] = self._normalize_skill_stats(payload)
         self.skill_statistics = normalized_skill_statistics
+        self.workflow_preferences = dict(self.workflow_preferences or {})
         self.state_split = normalize_split_name(self.state_split, default="global")
         if not str(self.state_version).strip():
             self.state_version = self._compute_state_version()
@@ -210,6 +212,32 @@ class CognitionState:
             "failure_rate": failure_rate,
         }
 
+    def update_workflow_preferences(
+        self,
+        workflow_context: dict[str, Any] | None,
+        skills_used: list[str],
+        correct: bool,
+    ) -> None:
+        if not workflow_context:
+            return
+        hospital_type = str(workflow_context.get("hospital_type", "")).strip()
+        preference = str(workflow_context.get("workflow_preference", "")).strip()
+        if not hospital_type:
+            return
+        key = f"{hospital_type}__{preference}" if preference else hospital_type
+        entry = self.workflow_preferences.setdefault(key, {
+            "preferred_skills": [],
+            "avg_accuracy": 0.0,
+            "case_count": 0,
+        })
+        n = entry["case_count"]
+        entry["avg_accuracy"] = (entry["avg_accuracy"] * n + int(correct)) / (n + 1)
+        entry["case_count"] = n + 1
+        skill_freq: dict[str, int] = {s: 1 for s in entry["preferred_skills"]}
+        for s in skills_used:
+            skill_freq[s] = skill_freq.get(s, 0) + 1
+        entry["preferred_skills"] = sorted(skill_freq, key=lambda x: -skill_freq[x])[:5]
+
     def _compute_state_version(self) -> str:
         payload = {
             "self_capability_summary": self.self_capability_summary,
@@ -218,6 +246,7 @@ class CognitionState:
             "retrieval_preferences": self.retrieval_preferences,
             "failure_statistics": self.failure_statistics,
             "skill_statistics": self.skill_statistics,
+            "workflow_preferences": self.workflow_preferences,
         }
         return build_split_state_version(
             component_id="cognition_state",

@@ -213,6 +213,7 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
         self._adjust_decisions_by_workflow_context(
             decisions=decisions,
             workflow_context=planner_input.workflow_context,
+            cognition=planner_input.cognition,
             policy=policy,
         )
 
@@ -658,6 +659,7 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
         *,
         decisions: list[SkillSelectionDecision],
         workflow_context: dict[str, Any] | None,
+        cognition: Any | None,
         policy: dict[str, Any],
     ) -> None:
         """根据 workflow_context 调整 skill 优先级和选择"""
@@ -667,6 +669,7 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
         preference = str(workflow_context.get("workflow_preference", "")).strip()
         available_tests = list(workflow_context.get("available_tests", []) or [])
         metadata_completeness = str(workflow_context.get("metadata_completeness", "")).strip()
+        hospital_type = str(workflow_context.get("hospital_type", "")).strip()
 
         # 场景1: risk_first workflow → 提前 malignancy_risk_assessment
         if preference == "risk_first":
@@ -721,6 +724,23 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
                     decision.matched_fields = dedupe_reasons(
                         decision.matched_fields + ["workflow_context.partial_metadata"]
                     )
+
+        # 从 cognition.workflow_preferences 读取历史有效 skill，加分
+        if cognition is not None:
+            workflow_prefs = getattr(cognition, "workflow_preferences", {}) or {}
+            key = f"{hospital_type}__{preference}" if preference else hospital_type
+            historical_skills = list((workflow_prefs.get(key) or {}).get("preferred_skills", []))
+            if historical_skills:
+                history_bonus = int(policy.get("workflow_history_bonus", 1) or 1)
+                for decision in decisions:
+                    if decision.skill_name in historical_skills:
+                        decision.score += history_bonus
+                        decision.reasons = dedupe_reasons(
+                            decision.reasons + [f"Boosted by workflow history ({key})."]
+                        )
+                        decision.matched_fields = dedupe_reasons(
+                            decision.matched_fields + ["workflow_context.history"]
+                        )
 
     def _apply_case_budget_gate(
         self,

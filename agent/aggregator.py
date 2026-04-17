@@ -92,6 +92,7 @@ def build_evidence_bundle(state: CaseState) -> dict[str, Any]:
 
     # 根据 workflow_context 调整证据排序
     selected_evidence = _reorder_evidence_by_workflow(selected_evidence, workflow_context)
+    selected_evidence = _filter_evidence_by_workflow(selected_evidence, workflow_context)
 
     evidence_decision_policy = _build_evidence_decision_policy(
         state=state,
@@ -978,4 +979,31 @@ def _reorder_evidence_by_workflow(
         return metadata_items + other_items
 
     return evidence_items
+
+
+def _filter_evidence_by_workflow(
+    evidence_items: list[dict[str, Any]],
+    workflow_context: dict[str, Any] | None,
+) -> list[dict[str, Any]]:
+    if not workflow_context or not evidence_items:
+        return evidence_items
+
+    time_budget = str(workflow_context.get("time_budget", "")).strip()
+    metadata_completeness = str(workflow_context.get("metadata_completeness", "")).strip()
+
+    result = list(evidence_items)
+
+    if time_budget == "screening":
+        high_conf = [e for e in result if float(e.get("calibration_score", 1.0)) >= 0.5]
+        result = high_conf[:6] if high_conf else result[:6]
+
+    if metadata_completeness == "minimal":
+        metadata_dependent = {"metadata_consistency_skill", "distribution_analysis_skill"}
+        result = [
+            e for e in result
+            if e.get("skill_name", "") not in metadata_dependent
+            or bool(str(e.get("content", "")).strip())
+        ]
+
+    return result
 
