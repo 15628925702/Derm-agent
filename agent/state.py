@@ -29,6 +29,13 @@ class CaseInput:
     dataset_name: str | None = None
     label_space_id: str | None = None
     source_metadata_path: str | None = None
+    workflow_context: dict[str, Any] | None = None
+    # workflow_context 包含：
+    # - hospital_type: str  # "primary_care" | "specialist_clinic" | "academic_center"
+    # - available_tests: list[str]  # ["dermoscopy", "biopsy", "patch_test", ...]
+    # - metadata_completeness: str  # "full" | "partial" | "minimal"
+    # - time_budget: str  # "screening" | "standard" | "comprehensive"
+    # - workflow_preference: str  # "morphology_first" | "risk_first" | "metadata_first"
 
     def __post_init__(self) -> None:
         if self.label is None and self.reference_label is not None:

@@ -75,6 +75,7 @@ class PlannerInput:
     retrieved_experience_bundle: dict[str, Any] = field(default_factory=dict)
     skill_retrieval_bundle: dict[str, Any] = field(default_factory=dict)
     policy_config: dict[str, Any] = field(default_factory=dict)
+    workflow_context: dict[str, Any] | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -85,6 +86,7 @@ class PlannerInput:
             "retrieved_experience_bundle": dict(self.retrieved_experience_bundle),
             "skill_retrieval_bundle": dict(self.skill_retrieval_bundle),
             "policy_config": dict(self.policy_config),
+            "workflow_context": dict(self.workflow_context or {}),
             "available_skills": [skill.to_dict() for skill in self.available_skills],
         }
 
@@ -207,6 +209,12 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
                 signals=signals,
                 budget_info=budget_info,
             )
+
+        self._adjust_decisions_by_workflow_context(
+            decisions=decisions,
+            workflow_context=planner_input.workflow_context,
+            policy=policy,
+        )
 
         self._apply_case_budget_gate(
             decisions=decisions,
@@ -644,6 +652,75 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
             budget_info["soft_bypass_remaining"] = max(0, int(budget_info.get("soft_bypass_remaining", 0)) - 1)
             decision.adaptive_budget_retain = True
         return allowed
+
+    def _adjust_decisions_by_workflow_context(
+        self,
+        *,
+        decisions: list[SkillSelectionDecision],
+        workflow_context: dict[str, Any] | None,
+        policy: dict[str, Any],
+    ) -> None:
+        """根据 workflow_context 调整 skill 优先级和选择"""
+        if not workflow_context:
+            return
+
+        preference = str(workflow_context.get("workflow_preference", "")).strip()
+        available_tests = list(workflow_context.get("available_tests", []) or [])
+        metadata_completeness = str(workflow_context.get("metadata_completeness", "")).strip()
+
+        # 场景1: risk_first workflow → 提前 malignancy_risk_assessment
+        if preference == "risk_first":
+            for decision in decisions:
+                if decision.skill_name == "malignancy_risk_assessment_skill":
+                    decision.score += int(policy.get("workflow_risk_first_bonus", 5) or 5)
+                    decision.ordering_hint = 5  # 提前到 morphology 之前
+                    decision.reasons = dedupe_reasons(
+                        decision.reasons + ["Prioritized by risk_first workflow preference."]
+                    )
+                    decision.matched_fields = dedupe_reasons(
+                        decision.matched_fields + ["workflow_context.risk_first"]
+                    )
+
+        # 场景2: 没有 dermoscopy → 降低 morphology 系列权重
+        if available_tests and "dermoscopy" not in available_tests:
+            morphology_skills = {
+                "morphology_analysis_skill",
+                "border_surface_analysis_skill",
+                "color_pattern_analysis_skill",
+            }
+            for decision in decisions:
+                if decision.skill_name in morphology_skills:
+                    penalty_factor = float(policy.get("workflow_no_dermoscopy_penalty", 0.7) or 0.7)
+                    decision.score = int(decision.score * penalty_factor)
+                    decision.reasons = dedupe_reasons(
+                        decision.reasons + ["Downweighted due to lack of dermoscopy in available tests."]
+                    )
+                    decision.matched_fields = dedupe_reasons(
+                        decision.matched_fields + ["workflow_context.no_dermoscopy"]
+                    )
+
+        # 场景3: metadata 不完整 → 提高 information_gap_detection 权重
+        if metadata_completeness == "minimal":
+            for decision in decisions:
+                if decision.skill_name == "information_gap_detection_skill":
+                    decision.score += int(policy.get("workflow_minimal_metadata_bonus", 3) or 3)
+                    decision.selected = True  # 强制选择
+                    decision.reasons = dedupe_reasons(
+                        decision.reasons + ["Forced selected due to minimal metadata completeness."]
+                    )
+                    decision.matched_fields = dedupe_reasons(
+                        decision.matched_fields + ["workflow_context.minimal_metadata"]
+                    )
+        elif metadata_completeness == "partial":
+            for decision in decisions:
+                if decision.skill_name == "information_gap_detection_skill":
+                    decision.score += int(policy.get("workflow_partial_metadata_bonus", 2) or 2)
+                    decision.reasons = dedupe_reasons(
+                        decision.reasons + ["Boosted due to partial metadata completeness."]
+                    )
+                    decision.matched_fields = dedupe_reasons(
+                        decision.matched_fields + ["workflow_context.partial_metadata"]
+                    )
 
     def _apply_case_budget_gate(
         self,

@@ -30,6 +30,7 @@ ESCALATION_SKILLS = ("escalation_recommendation_skill",)
 
 
 def build_evidence_bundle(state: CaseState) -> dict[str, Any]:
+    workflow_context = state.case_input.workflow_context or {}
     initial_perception_summary = _build_initial_perception_summary(state)
     retrieved_raw_cases_summary = _summarize_retrieval_records(state.retrieval_bundle.get("raw_case_results", []), top_k=3)
     retrieved_tactical_experiences_summary = _summarize_retrieval_records(
@@ -88,6 +89,10 @@ def build_evidence_bundle(state: CaseState) -> dict[str, Any]:
         retrieved_tactical_experiences_summary=retrieved_tactical_experiences_summary,
         retrieved_abstract_experiences_summary=retrieved_abstract_experiences_summary,
     )
+
+    # 根据 workflow_context 调整证据排序
+    selected_evidence = _reorder_evidence_by_workflow(selected_evidence, workflow_context)
+
     evidence_decision_policy = _build_evidence_decision_policy(
         state=state,
         selected_evidence=selected_evidence,
@@ -915,3 +920,62 @@ def _summarize_retrieval_evidence(record: dict[str, Any]) -> str:
     if not parts:
         parts.append(str(record.get("source_id", "")).strip() or str(record.get("case_id", "")).strip())
     return _clip_text(" | ".join(part for part in parts if part), max_length=360)
+
+
+def _reorder_evidence_by_workflow(
+    evidence_items: list[dict[str, Any]],
+    workflow_context: dict[str, Any],
+) -> list[dict[str, Any]]:
+    """根据 workflow_context 调整证据排序"""
+    if not workflow_context or not evidence_items:
+        return evidence_items
+
+    preference = str(workflow_context.get("workflow_preference", "")).strip()
+    metadata_completeness = str(workflow_context.get("metadata_completeness", "")).strip()
+
+    # 场景1: 信息缺失时，把 information_gap 和相关证据提到最前
+    if metadata_completeness == "minimal":
+        gap_items = [
+            e for e in evidence_items
+            if "information_gap" in e.get("skill_name", "").lower()
+            or "information_gap" in e.get("category", "").lower()
+        ]
+        other_items = [
+            e for e in evidence_items
+            if "information_gap" not in e.get("skill_name", "").lower()
+            and "information_gap" not in e.get("category", "").lower()
+        ]
+        return gap_items + other_items
+
+    # 场景2: 高风险场景时，把 malignancy_risk 相关证据提到最前
+    if preference == "risk_first":
+        risk_items = [
+            e for e in evidence_items
+            if any(kw in e.get("skill_name", "").lower() for kw in ["malignancy", "risk"])
+            or any(kw in e.get("category", "").lower() for kw in ["malignancy", "risk"])
+            or e.get("section", "") == "risk"
+        ]
+        other_items = [
+            e for e in evidence_items
+            if not any(kw in e.get("skill_name", "").lower() for kw in ["malignancy", "risk"])
+            and not any(kw in e.get("category", "").lower() for kw in ["malignancy", "risk"])
+            and e.get("section", "") != "risk"
+        ]
+        return risk_items + other_items
+
+    # 场景3: metadata_first 时，把 metadata_consistency 相关证据提到最前
+    if preference == "metadata_first":
+        metadata_items = [
+            e for e in evidence_items
+            if "metadata" in e.get("skill_name", "").lower()
+            or "metadata" in e.get("category", "").lower()
+        ]
+        other_items = [
+            e for e in evidence_items
+            if "metadata" not in e.get("skill_name", "").lower()
+            and "metadata" not in e.get("category", "").lower()
+        ]
+        return metadata_items + other_items
+
+    return evidence_items
+

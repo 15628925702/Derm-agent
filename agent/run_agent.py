@@ -148,6 +148,7 @@ def run_agent(
             skill_retrieval_bundle=state.skill_retrieval_bundle,
             policy_config=planner_policy,
             available_skills=available_skills,
+            workflow_context=case_input.workflow_context,
         )
     )
     state.planner_output = planner_output.to_dict()

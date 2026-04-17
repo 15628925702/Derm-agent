@@ -233,3 +233,48 @@ def _infer_dataset_name(config: CaseSourceConfig) -> str:
     if image_parent:
         return image_parent
     return config.data_root.name.strip() or "unknown_dataset"
+
+
+def load_case_with_masking(
+    case_index: int,
+    data_root: str | Path,
+    metadata_mask: list[str] | None = None,
+) -> CaseInput:
+    """
+    加载病例，支持 metadata masking
+
+    Args:
+        case_index: 病例索引
+        data_root: 数据根目录
+        metadata_mask: 要保留的字段列表，例如 ["region", "age"]
+                      如果为 None，保留所有字段
+                      如果为 []，mask 所有字段
+
+    Returns:
+        CaseInput with masked metadata and workflow_context set
+    """
+    case = load_case_by_index(case_index, data_root)
+
+    if metadata_mask is not None:
+        # 只保留 metadata_mask 中的字段，其余置为 None
+        masked_metadata = {}
+        for field in case.metadata.keys():
+            if field in metadata_mask:
+                masked_metadata[field] = case.metadata[field]
+            else:
+                masked_metadata[field] = None
+        case.metadata = masked_metadata
+
+        # 同时在 workflow_context 中标记 metadata_completeness
+        if not case.workflow_context:
+            case.workflow_context = {}
+
+        if len(metadata_mask) == 0:
+            case.workflow_context["metadata_completeness"] = "minimal"
+        elif len(metadata_mask) <= 2:
+            case.workflow_context["metadata_completeness"] = "partial"
+        else:
+            case.workflow_context["metadata_completeness"] = "full"
+
+    return case
+
