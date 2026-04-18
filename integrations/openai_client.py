@@ -398,8 +398,9 @@ class DermOpenAIClient:
         calibration_line = f"{calibration_note}\n" if calibration_note else ""
 
         # Check if this is a MEL vs NV confusion case
-        confusion_clusters = evidence_payload.get("confusion_cluster_summary", {}).get("active_clusters", [])
-        is_mel_nev_confusion = any("mel_nev" in str(cluster).lower() for cluster in confusion_clusters)
+        confusion_summary = evidence_package.confusion_cluster_summary or {}
+        active_clusters = confusion_summary.get("active_clusters", [])
+        is_mel_nev_confusion = any("mel_nev" in str(cluster).lower() for cluster in active_clusters)
         mel_nev_note = ""
         if is_mel_nev_confusion:
             mel_nev_note = (
