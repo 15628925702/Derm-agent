@@ -708,6 +708,9 @@ def _score_skill_output(
             score += float(policy.get("cluster_exclusion_bonus", 1.4) or 0.0)
         if skill_name in {"ack_scc_specialist_skill", "mel_nev_specialist_skill"} and _has_negative_evidence(output):
             score += float(policy.get("cluster_opposing_bonus", 1.8) or 0.0)
+            # Extra boost for mel_nev_specialist opposing evidence to combat MEL over-prediction
+            if skill_name == "mel_nev_specialist_skill" and "mel_nev" in confusion_clusters:
+                score += 2.5
     if category == "risk" and confusion_clusters:
         score -= float(policy.get("risk_overweight_penalty", 1.2) or 0.0)
     if category == "contradiction_gap" and confusion_clusters:

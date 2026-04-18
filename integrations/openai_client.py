@@ -396,6 +396,22 @@ class DermOpenAIClient:
         profile_sequence: list[dict[str, Any]] = [{"profile_id": FULL_CLINICAL_PROFILE_ID}] + list(COMPACT_PROFILE_PRESETS)
         calibration_note = _build_label_space_calibration_note(case_input)
         calibration_line = f"{calibration_note}\n" if calibration_note else ""
+
+        # Check if this is a MEL vs NV confusion case
+        confusion_clusters = evidence_payload.get("confusion_cluster_summary", {}).get("active_clusters", [])
+        is_mel_nev_confusion = any("mel_nev" in str(cluster).lower() for cluster in confusion_clusters)
+        mel_nev_note = ""
+        if is_mel_nev_confusion:
+            mel_nev_note = (
+                "\n"
+                "SPECIAL ATTENTION - Melanoma vs Nevus Confusion:\n"
+                "This case involves MEL vs NV differential. Pay special attention to opposing evidence in the evidence package.\n"
+                "When mel_nev_specialist_skill provides opposing_evidence (nevus-favoring features), weigh it carefully.\n"
+                "Do not diagnose Malignant Melanoma unless malignant-specific features clearly outweigh nevus-like patterns.\n"
+                "Benign features (symmetry, regular border, uniform pigmentation) should prevent MEL diagnosis when structural irregularity is weak.\n"
+                "\n"
+            )
+
         for profile in profile_sequence:
             prepared_evidence = self._prepare_evidence_for_profile(evidence_payload, profile)
             serialized_payload = json.dumps(prepared_evidence, ensure_ascii=False, separators=(",", ":"))
@@ -414,6 +430,7 @@ class DermOpenAIClient:
                 "Prioritize the `selected_evidence` block as the curated shortlist chosen by the evidence calibrator.\n"
                 "Use `serialized_evidence_text` as supporting narrative context when it agrees with the selected evidence.\n"
                 "When opposing evidence is present in the evidence package, consider it carefully but do not let it override strong malignant-specific features.\n"
+                f"{mel_nev_note}"
                 "Integrate image, metadata, and evidence, then return a structured final diagnosis result.\n"
                 "Include: final_diagnosis, differential_diagnoses, rationale, confidence, follow_up_considerations.\n"
                 "When override is not allowed, keep the diagnosis conservative but include risk, caution, follow-up, and why the evidence was not strong enough to override.\n"
