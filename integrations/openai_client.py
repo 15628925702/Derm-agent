@@ -405,11 +405,16 @@ class DermOpenAIClient:
         if is_mel_nev_confusion:
             mel_nev_note = (
                 "\n"
-                "SPECIAL ATTENTION - Melanoma vs Nevus Confusion:\n"
-                "This case involves MEL vs NV differential. Pay special attention to opposing evidence in the evidence package.\n"
-                "When mel_nev_specialist_skill provides opposing_evidence (nevus-favoring features), weigh it carefully.\n"
-                "Do not diagnose Malignant Melanoma unless malignant-specific features clearly outweigh nevus-like patterns.\n"
-                "Benign features (symmetry, regular border, uniform pigmentation) should prevent MEL diagnosis when structural irregularity is weak.\n"
+                "CRITICAL - Melanoma vs Nevus Confusion Detected:\n"
+                "This case involves MEL vs NV differential confusion.\n"
+                "The mel_nev_specialist_skill has provided opposing_evidence (nevus-favoring features).\n"
+                "REQUIREMENT: Do NOT diagnose Malignant Melanoma unless ALL of the following are true:\n"
+                "1. Structural irregularity is STRONG (not just color variation)\n"
+                "2. Asymmetry is CONVINCING (not just irregular border)\n"
+                "3. Opposing evidence (symmetry, regular border, uniform pigmentation) is WEAK or ABSENT\n"
+                "If opposing evidence shows symmetry, regular border, or uniform pigmentation, prefer Nevus diagnosis.\n"
+                "Color variation alone (dark brown to black) is NOT sufficient for MEL diagnosis without structural chaos.\n"
+                "When in doubt between MEL and NV, prefer NV to avoid false positive malignancy.\n"
                 "\n"
             )
 
