@@ -36,7 +36,7 @@ def _build_risk_calibration_note(state: CaseState) -> str:
 class MalignancyRiskAssessmentSkill(BaseSkill):
     name = "malignancy_risk_assessment_skill"
     description = "Assess malignant risk without assigning disease identity."
-    output_fields = ("risk_level", "risk_evidence", "alarm_signals")
+    output_fields = ("risk_level", "risk_evidence", "alarm_signals", "benign_reassuring_features")
     skill_object = make_skill_object(
         skill_id="skill.malignancy_risk_assessment.v1",
         name=name,
@@ -51,22 +51,26 @@ class MalignancyRiskAssessmentSkill(BaseSkill):
         workflow_text=(
             "Review the lesion as a risk-focused dermatologist would: integrate morphology, border, color, symptoms, and "
             "evolution cues to decide whether the lesion currently looks low, medium, or high risk. The routine must name "
-            "alarm signals explicitly but cannot convert risk into a final cancer diagnosis."
+            "alarm signals explicitly AND benign-reassuring features explicitly to provide balanced risk assessment. "
+            "Cannot convert risk into a final cancer diagnosis."
         ),
         steps=[
             SkillStep("collect_alarm_signals", "Collect Alarm Signals", "Gather visual and metadata cues that raise concern.", ["irregularity", "change", "bleeding", "symptoms"]),
-            SkillStep("weigh_risk", "Weigh Risk", "Combine the concerning cues into a low/medium/high risk judgement.", ["risk cue aggregation"]),
-            SkillStep("state_alarm_summary", "State Alarm Summary", "List explicit alarm signals and supporting evidence.", ["risk evidence", "alarm signals"]),
+            SkillStep("collect_benign_features", "Collect Benign Features", "Gather visual cues that suggest benign nature.", ["symmetry", "regular border", "uniform color", "stable size"]),
+            SkillStep("weigh_risk", "Weigh Risk", "Balance concerning cues against benign features for low/medium/high risk judgement.", ["risk cue aggregation", "benign feature weighting"]),
+            SkillStep("state_alarm_summary", "State Alarm Summary", "List explicit alarm signals, supporting evidence, and benign-reassuring features.", ["risk evidence", "alarm signals", "benign features"]),
         ],
         watch_outs=[
             "Risk level is not a final disease label.",
             "Do not suppress low-risk evidence when a single concerning cue appears.",
             "Symptoms can raise caution but are often nonspecific.",
+            "MUST list benign-reassuring features when present - do not ignore them.",
         ],
         output_schema=[
             SkillSchemaField("risk_level", "str", "Coarse malignant risk level."),
             SkillSchemaField("risk_evidence", "list[str]", "Structured evidence supporting the current risk estimate."),
             SkillSchemaField("alarm_signals", "list[str]", "Explicit alarm features worth highlighting to Qwen."),
+            SkillSchemaField("benign_reassuring_features", "list[str]", "Explicit benign-favoring features that argue against malignancy."),
         ],
     )
 
@@ -80,6 +84,19 @@ class MalignancyRiskAssessmentSkill(BaseSkill):
             "What evidence to inspect: border, color, evolution, bleeding, symptoms, and prior skill outputs.\n"
             "Common pitfalls: equating medium/high risk with a definitive malignant label.\n"
             f"{prior_section}"
+            "\n"
+            "CRITICAL REQUIREMENT - Benign-Reassuring Features:\n"
+            "You MUST explicitly list benign_reassuring_features when ANY of these are present in the lesion:\n"
+            "- Symmetry (bilateral or radial symmetry)\n"
+            "- Regular border (smooth, well-defined, circular or oval)\n"
+            "- Uniform color (single color, homogeneous distribution)\n"
+            "- Lack of structural chaos (no irregular networks, no regression areas)\n"
+            "- Small size (<6mm) with stable appearance\n"
+            "- Regular dermoscopic patterns (uniform network, regular globules)\n"
+            "Do NOT output empty benign_reassuring_features unless the lesion truly shows zero benign characteristics.\n"
+            "Risk assessment must balance alarm_signals against benign_reassuring_features.\n"
+            "This requirement applies universally to prevent over-estimation of malignancy risk.\n"
+            "\n"
             "Do NOT output any disease diagnosis or final class.\n"
             "Return JSON only with the following fields:\n"
             f"{self.output_schema_text()}\n"
@@ -89,7 +106,7 @@ class MalignancyRiskAssessmentSkill(BaseSkill):
         )
 
     def normalize_field(self, field_name: str, value: Any) -> Any:
-        if field_name in {"risk_evidence", "alarm_signals"}:
+        if field_name in {"risk_evidence", "alarm_signals", "benign_reassuring_features"}:
             if value in (None, ""):
                 return []
             if isinstance(value, list):
