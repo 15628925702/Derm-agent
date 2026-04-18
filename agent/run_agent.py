@@ -96,6 +96,7 @@ def run_agent(
             top_k_merged=int(retrieval_policy.get("top_k_experience", cognition_state.retrieval_preferences.get("top_k", 3))),
             top_k_tactical=max(3, int(retrieval_policy.get("top_k_tactical", cognition_state.retrieval_preferences.get("top_k", 3)))),
             top_k_abstract=max(3, int(retrieval_policy.get("top_k_abstract", cognition_state.retrieval_preferences.get("top_k", 3)))),
+            dataset_name=case_input.dataset_name,
         )
         state.retrieval_bundle = _rerank_experience_bundle_if_enabled(
             state=state,
@@ -149,6 +150,7 @@ def run_agent(
             policy_config=planner_policy,
             available_skills=available_skills,
             workflow_context=case_input.workflow_context,
+            dataset_name=case_input.dataset_name,
         )
     )
     state.planner_output = planner_output.to_dict()
@@ -161,6 +163,7 @@ def run_agent(
             top_k_merged=int(retrieval_policy.get("top_k_experience", cognition_state.retrieval_preferences.get("top_k", 3))),
             top_k_tactical=max(3, int(retrieval_policy.get("top_k_tactical", cognition_state.retrieval_preferences.get("top_k", 3)))),
             top_k_abstract=max(3, int(retrieval_policy.get("top_k_abstract", cognition_state.retrieval_preferences.get("top_k", 3)))),
+            dataset_name=case_input.dataset_name,
         )
         state.retrieval_bundle = _rerank_experience_bundle_if_enabled(
             state=state,

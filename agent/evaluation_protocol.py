@@ -43,7 +43,28 @@ FOUNDATIONAL_SKILLS = {
     "lesion_description_structuring_skill",
     "metadata_consistency_skill",
 }
+# Default specialist skills for PAD-UFES-20.  Use register_specialist_skills()
+# to override for other datasets.
 SPECIALIST_SKILLS = {"mel_nev_specialist_skill", "ack_scc_specialist_skill"}
+
+_DATASET_SPECIALIST_SKILLS: dict[str, set[str]] = {
+    "pad_ufes_20": {"mel_nev_specialist_skill", "ack_scc_specialist_skill"},
+    "isic2019": {"mel_nev_specialist_skill", "ack_scc_specialist_skill"},
+    "ham10000": {"mel_nev_specialist_skill"},
+}
+
+
+def register_specialist_skills(dataset_name: str, skills: set[str]) -> None:
+    """Register dataset-specific specialist skills for ablation experiments."""
+    _DATASET_SPECIALIST_SKILLS[str(dataset_name).strip().lower()] = skills
+
+
+def get_specialist_skills(dataset_name: str | None = None) -> set[str]:
+    if dataset_name:
+        key = str(dataset_name).strip().lower()
+        if key in _DATASET_SPECIALIST_SKILLS:
+            return _DATASET_SPECIALIST_SKILLS[key]
+    return SPECIALIST_SKILLS
 UNCERTAINTY_ESCALATION_SKILLS = {
     "uncertainty_assessment_skill",
     "contradiction_check_skill",
@@ -78,10 +99,11 @@ class EvaluationTargetSpec:
         return asdict(self)
 
 
-def default_ablation_target_specs() -> list[EvaluationTargetSpec]:
+def default_ablation_target_specs(dataset_name: str | None = None) -> list[EvaluationTargetSpec]:
     registry = build_default_registry()
     all_skill_names = registry.list_names()
     non_foundational = [skill for skill in all_skill_names if skill not in FOUNDATIONAL_SKILLS]
+    specialist_skills = get_specialist_skills(dataset_name)
     return [
         EvaluationTargetSpec(
             target_id="no_experience_retrieval",
@@ -107,7 +129,7 @@ def default_ablation_target_specs() -> list[EvaluationTargetSpec]:
             target_type="ablation",
             mode="agent",
             description="Disable specialist confusion-focused skills.",
-            policy_overrides={"planner_policy": {"force_disable_skills": sorted(SPECIALIST_SKILLS)}},
+            policy_overrides={"planner_policy": {"force_disable_skills": sorted(specialist_skills)}},
             ablation_tags=["specialist"],
         ),
         EvaluationTargetSpec(

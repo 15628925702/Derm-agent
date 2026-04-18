@@ -76,6 +76,7 @@ class PlannerInput:
     skill_retrieval_bundle: dict[str, Any] = field(default_factory=dict)
     policy_config: dict[str, Any] = field(default_factory=dict)
     workflow_context: dict[str, Any] | None = None
+    dataset_name: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -874,6 +875,7 @@ def _build_signal_profile(planner_input: PlannerInput) -> dict[str, Any]:
         known_confusion_text=known_confusion_text,
         image_summary=str(perception.get("image_summary", "")),
         notes=[str(item) for item in perception.get("notes", []) if str(item).strip()],
+        dataset_name=planner_input.dataset_name,
     )
     keratinocyte_precursor_present = any(
         any(term in candidate for term in ("ack", "actinic keratos", "scc", "squamous", "seborrheic", "sek"))

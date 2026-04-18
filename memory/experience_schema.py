@@ -56,6 +56,7 @@ class ExperienceRecord:
     error_type: str
     confusion_pair: str | None
     learning_points: list[str]
+    dataset_name: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

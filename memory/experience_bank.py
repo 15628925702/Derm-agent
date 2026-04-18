@@ -132,6 +132,7 @@ class ExperienceBank:
         top_k_tactical: int = 4,
         top_k_abstract: int = 4,
         top_k_merged: int = 6,
+        dataset_name: str | None = None,
     ) -> dict[str, Any]:
         effective = _compute_workflow_top_k(
             workflow_context=workflow_context,
@@ -153,6 +154,7 @@ class ExperienceBank:
             top_k_tactical=effective["tactical"],
             top_k_abstract=effective["abstract"],
             top_k_merged=effective["merged"],
+            dataset_name=dataset_name,
         )
 
     def retrieve_similar(self, case_state: CaseState, top_k: int = 3) -> list[dict[str, Any]]:

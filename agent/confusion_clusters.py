@@ -11,9 +11,35 @@ TERM_ALIASES: dict[str, tuple[str, ...]] = {
     "sek": ("sek", "seborrheic keratosis", "seborrheic keratos"),
     "mel": ("mel", "melanoma", "malignant melanoma"),
     "nev": ("nev", "nevus", "naevus", "mole"),
+    # HAM10000 / ISIC aliases
+    "nv": ("nv", "nevus", "naevus", "mole", "melanocytic nevus"),
+    "bkl": ("bkl", "benign keratosis", "seborrheic keratosis", "lichenoid keratosis"),
+    "df": ("df", "dermatofibroma"),
+    "vasc": ("vasc", "vascular lesion", "angioma", "hemangioma"),
+    "akiec": ("akiec", "actinic keratosis", "bowen", "intraepithelial carcinoma"),
 }
 
+# Registry for dataset-specific confusion cluster definitions.
+# Keys are dataset_name strings; values are dicts in the same format as
+# CONFUSION_CLUSTER_DEFINITIONS.  Populated via register_confusion_clusters().
+_DATASET_CLUSTER_REGISTRY: dict[str, dict[str, dict[str, Any]]] = {}
 
+
+def register_confusion_clusters(dataset_name: str, clusters: dict[str, dict[str, Any]]) -> None:
+    """Register dataset-specific confusion cluster definitions."""
+    _DATASET_CLUSTER_REGISTRY[str(dataset_name).strip().lower()] = clusters
+
+
+def get_confusion_cluster_definitions(dataset_name: str | None = None) -> dict[str, dict[str, Any]]:
+    """Return cluster definitions for the given dataset, falling back to the default PAD-UFES-20 set."""
+    if dataset_name:
+        key = str(dataset_name).strip().lower()
+        if key in _DATASET_CLUSTER_REGISTRY:
+            return _DATASET_CLUSTER_REGISTRY[key]
+    return CONFUSION_CLUSTER_DEFINITIONS
+
+
+# Default PAD-UFES-20 cluster definitions (kept for backward compatibility).
 CONFUSION_CLUSTER_DEFINITIONS: dict[str, dict[str, Any]] = {
     "ack_bcc_scc": {
         "label": "ACK / BCC / SCC",
@@ -216,6 +242,7 @@ def detect_confusion_clusters(
     known_confusion_text: str = "",
     image_summary: str = "",
     notes: list[str] | None = None,
+    dataset_name: str | None = None,
 ) -> list[str]:
     ddx = [str(item).strip().lower() for item in (ddx_candidates or []) if str(item).strip()]
     pair = str(confusion_pair or "").strip().lower()
@@ -223,7 +250,8 @@ def detect_confusion_clusters(
     if notes:
         evidence_text += " " + " ".join(str(item).strip().lower() for item in notes if str(item).strip())
     active: list[str] = []
-    for cluster_name, definition in CONFUSION_CLUSTER_DEFINITIONS.items():
+    cluster_defs = get_confusion_cluster_definitions(dataset_name)
+    for cluster_name, definition in cluster_defs.items():
         pairs = {str(item).strip().lower() for item in definition.get("pairs", ()) if str(item).strip()}
         if pair and pair in pairs:
             active.append(cluster_name)
@@ -237,10 +265,11 @@ def detect_confusion_clusters(
     return list(dict.fromkeys(active))
 
 
-def cluster_guidance_snapshot(cluster_names: list[str], *, max_items: int = 2) -> list[dict[str, Any]]:
+def cluster_guidance_snapshot(cluster_names: list[str], *, max_items: int = 2, dataset_name: str | None = None) -> list[dict[str, Any]]:
     snapshots: list[dict[str, Any]] = []
+    cluster_defs = get_confusion_cluster_definitions(dataset_name)
     for cluster_name in cluster_names:
-        definition = CONFUSION_CLUSTER_DEFINITIONS.get(cluster_name)
+        definition = cluster_defs.get(cluster_name)
         if not definition:
             continue
         snapshots.append(
@@ -256,28 +285,27 @@ def cluster_guidance_snapshot(cluster_names: list[str], *, max_items: int = 2) -
     return snapshots
 
 
-def cluster_priority_bonus(cluster_names: list[str], skill_name: str) -> float:
+def cluster_priority_bonus(cluster_names: list[str], skill_name: str, dataset_name: str | None = None) -> float:
     bonus = 0.0
+    cluster_defs = get_confusion_cluster_definitions(dataset_name)
     for cluster_name in cluster_names:
-        definition = CONFUSION_CLUSTER_DEFINITIONS.get(cluster_name, {})
+        definition = cluster_defs.get(cluster_name, {})
         bonus = max(bonus, float(dict(definition.get("priority_skills", {})).get(skill_name, 0.0) or 0.0))
     return bonus
 
 
-def cluster_ordering_hints(cluster_names: list[str]) -> dict[str, float]:
+def cluster_ordering_hints(cluster_names: list[str], dataset_name: str | None = None) -> dict[str, float]:
     hints: dict[str, float] = {}
     if not cluster_names:
         return hints
 
-    # Keep description and exclusion-oriented evidence near the front when a
-    # confusion cluster is active so later ordering logic can down-rank pure
-    # risk items without losing the main comparison signal.
     hints["lesion_description_structuring_skill"] = 0.6
     hints["differential_compare_skill"] = 0.9
     hints["exclusion_reasoning_skill"] = 1.2
 
+    cluster_defs = get_confusion_cluster_definitions(dataset_name)
     for cluster_name in cluster_names:
-        definition = CONFUSION_CLUSTER_DEFINITIONS.get(cluster_name, {})
+        definition = cluster_defs.get(cluster_name, {})
         for skill_name, bonus in dict(definition.get("priority_skills", {})).items():
             normalized_name = str(skill_name).strip()
             if not normalized_name:
@@ -286,10 +314,11 @@ def cluster_ordering_hints(cluster_names: list[str]) -> dict[str, float]:
     return hints
 
 
-def cluster_related_keywords(cluster_names: list[str]) -> tuple[str, ...]:
+def cluster_related_keywords(cluster_names: list[str], dataset_name: str | None = None) -> tuple[str, ...]:
     keywords: list[str] = []
+    cluster_defs = get_confusion_cluster_definitions(dataset_name)
     for cluster_name in cluster_names:
-        definition = CONFUSION_CLUSTER_DEFINITIONS.get(cluster_name, {})
+        definition = cluster_defs.get(cluster_name, {})
         for item in definition.get("keywords", ()):
             text = str(item).strip().lower()
             if text and text not in keywords:
@@ -297,10 +326,11 @@ def cluster_related_keywords(cluster_names: list[str]) -> tuple[str, ...]:
     return tuple(keywords)
 
 
-def cluster_pairs(cluster_names: list[str]) -> tuple[str, ...]:
+def cluster_pairs(cluster_names: list[str], dataset_name: str | None = None) -> tuple[str, ...]:
     pairs: list[str] = []
+    cluster_defs = get_confusion_cluster_definitions(dataset_name)
     for cluster_name in cluster_names:
-        definition = CONFUSION_CLUSTER_DEFINITIONS.get(cluster_name, {})
+        definition = cluster_defs.get(cluster_name, {})
         for item in definition.get("pairs", ()):
             text = str(item).strip().lower()
             if text and text not in pairs:
@@ -313,12 +343,14 @@ def cluster_match_bonus(
     cluster_names: list[str],
     text: str,
     subtype: str = "",
+    dataset_name: str | None = None,
 ) -> float:
     lowered = str(text or "").lower()
     subtype_lower = str(subtype or "").strip().lower()
     bonus = 0.0
+    cluster_defs = get_confusion_cluster_definitions(dataset_name)
     for cluster_name in cluster_names:
-        definition = CONFUSION_CLUSTER_DEFINITIONS.get(cluster_name, {})
+        definition = cluster_defs.get(cluster_name, {})
         pairs = {str(item).strip().lower() for item in definition.get("pairs", ()) if str(item).strip()}
         keywords = {str(item).strip().lower() for item in definition.get("keywords", ()) if str(item).strip()}
         if any(pair in lowered for pair in pairs):
@@ -336,6 +368,7 @@ def preferred_abstract_section(
     *,
     record: dict[str, Any],
     cluster_names: list[str],
+    dataset_name: str | None = None,
 ) -> str:
     subtype = str(record.get("experience_type", record.get("source_subtype", ""))).strip().lower()
     text = " ".join(
@@ -345,11 +378,131 @@ def preferred_abstract_section(
             " ".join(str(item) for item in record.get("learning_points", [])),
         ]
     )
-    if subtype in {"confusion_memory", "prototype"} and cluster_match_bonus(cluster_names=cluster_names, text=text, subtype=subtype) > 0:
+    if subtype in {"confusion_memory", "prototype"} and cluster_match_bonus(cluster_names=cluster_names, text=text, subtype=subtype, dataset_name=dataset_name) > 0:
         return "comparison"
     if subtype in {"rule", "rule_candidate"} and any(term in text.lower() for term in ("compare", "exclude", "confusion", "prototype")):
         return "comparison"
     return "risk"
+
+
+register_confusion_clusters("ham10000", {
+    "mel_nv": {
+        "label": "Melanoma / Nevus",
+        "pairs": (
+            "melanoma->nv",
+            "malignant melanoma->nv",
+            "mel->nv",
+        ),
+        "term_groups": (
+            ("mel", "nv"),
+            ("melanoma", "nv"),
+        ),
+        "keywords": (
+            "mel", "melanoma", "nv", "nevus", "naevus", "mole",
+            "pigmented", "asymmetry", "irregular border", "variegated",
+            "atypical network", "regression",
+        ),
+        "supporting_clues": (
+            "Contrast irregular pigment network, asymmetry, and color variation against uniform nevus pattern.",
+            "Dermoscopic atypical network or regression structures strongly support melanoma over nevus.",
+            "Preserve negative melanoma clues if symmetry or simpler pigment pattern is more convincing.",
+        ),
+        "opposing_clues": (
+            "Symmetric, uniform pigmentation and regular border weakens melanoma confidence.",
+            "Absence of atypical network, regression, or blue-white veil argues against melanoma.",
+            "Do not convert darker color alone into melanoma support without structural irregularity.",
+        ),
+        "missing_evidence": (
+            "Missing dermoscopic detail for atypical pigment network or additional structures.",
+            "Missing evolution history when growth or change is not documented.",
+            "Missing close border inspection to confirm true irregularity.",
+        ),
+        "watch_outs": (
+            "Do not call melanoma based on size or darkness alone.",
+            "NV is the dominant class (67%) — do not over-escalate to melanoma without clear structural evidence.",
+            "Do not ignore nevus-like opposing evidence when uncertainty remains high.",
+        ),
+        "priority_skills": {
+            "mel_nev_specialist_skill": 2.0,
+            "malignancy_risk_assessment_skill": 1.5,
+            "differential_compare_skill": 1.0,
+            "lesion_description_structuring_skill": 0.8,
+        },
+    },
+    "bkl_nv": {
+        "label": "Benign Keratosis / Nevus",
+        "pairs": (
+            "bkl->nv",
+            "benign keratosis->nv",
+            "seborrheic keratosis->nv",
+        ),
+        "term_groups": (
+            ("bkl", "nv"),
+            ("benign keratosis", "nv"),
+        ),
+        "keywords": (
+            "bkl", "benign keratosis", "seborrheic keratosis", "lichenoid keratosis",
+            "nv", "nevus", "mole",
+            "waxy", "stuck-on", "milia-like cysts", "comedo-like openings",
+        ),
+        "supporting_clues": (
+            "Milia-like cysts and comedo-like openings are strong BKL indicators over nevus.",
+            "Waxy or stuck-on surface texture with sharp demarcation favors BKL.",
+            "Absence of pigment network argues against melanocytic nevus.",
+        ),
+        "opposing_clues": (
+            "Presence of pigment network or globules weakens BKL and supports nevus.",
+            "Smooth, dome-shaped lesion without keratotic surface argues against BKL.",
+        ),
+        "missing_evidence": (
+            "Missing close surface texture detail to confirm milia-like cysts or comedo openings.",
+            "Missing dermoscopic detail to confirm or exclude pigment network.",
+        ),
+        "watch_outs": (
+            "Do not confuse flat seborrheic keratosis with melanocytic nevus based on color alone.",
+            "BKL and NV together account for ~78% of HAM10000 — careful differentiation is critical.",
+        ),
+        "priority_skills": {
+            "differential_compare_skill": 2.0,
+            "lesion_description_structuring_skill": 1.5,
+            "border_surface_analysis_skill": 1.2,
+            "exclusion_reasoning_skill": 1.0,
+        },
+    },
+    "mel_bkl": {
+        "label": "Melanoma / Benign Keratosis",
+        "pairs": (
+            "melanoma->bkl",
+            "mel->bkl",
+        ),
+        "term_groups": (
+            ("mel", "bkl"),
+        ),
+        "keywords": (
+            "mel", "melanoma", "bkl", "benign keratosis", "seborrheic keratosis",
+            "pigmented", "dark", "irregular",
+        ),
+        "supporting_clues": (
+            "Irregular pigmentation without keratotic surface features favors melanoma over BKL.",
+            "Atypical vascular structures or regression areas support melanoma.",
+        ),
+        "opposing_clues": (
+            "Milia-like cysts, comedo openings, or stuck-on appearance strongly argue against melanoma.",
+            "Sharp, well-demarcated border with keratotic surface favors BKL.",
+        ),
+        "missing_evidence": (
+            "Missing dermoscopic detail to confirm or exclude keratotic surface structures.",
+        ),
+        "watch_outs": (
+            "Pigmented BKL can mimic melanoma — do not escalate without explicit keratotic surface exclusion.",
+        ),
+        "priority_skills": {
+            "malignancy_risk_assessment_skill": 2.0,
+            "mel_nev_specialist_skill": 1.5,
+            "exclusion_reasoning_skill": 1.2,
+        },
+    },
+})
 
 
 def _contains_term(text: str, term: str) -> bool:

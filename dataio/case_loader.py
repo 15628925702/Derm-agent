@@ -3,7 +3,7 @@ from __future__ import annotations
 import csv
 import random
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 from agent.state import CaseInput
 from dataio.case_schema import CaseSourceConfig, FieldCandidate, StandardizedCaseRecord
@@ -12,6 +12,39 @@ from dataio.isic2019_loader import DEFAULT_ISIC2019_ROOT, load_isic2019_case_inp
 
 
 IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".bmp", ".webp", ".tif", ".tiff"}
+
+# Registry: dataset_name -> (load_by_index_fn, load_all_fn)
+# Populated via register_dataset_loader(); built-in datasets are pre-registered below.
+_LOADER_REGISTRY: dict[str, tuple[Callable, Callable]] = {}
+
+
+def register_dataset_loader(
+    dataset_name: str,
+    *,
+    load_by_index: Callable[[int], CaseInput],
+    load_all: Callable[[], list[CaseInput]],
+    data_root: str | Path | None = None,
+) -> None:
+    """Register a dataset loader so case_loader.py routes to it automatically.
+
+    Args:
+        dataset_name: Canonical dataset name (e.g. "my_dataset").
+        load_by_index: fn(case_index) -> CaseInput
+        load_all: fn() -> list[CaseInput]
+        data_root: Optional canonical data root path for path-based routing.
+    """
+    key = str(dataset_name).strip().lower()
+    _LOADER_REGISTRY[key] = (load_by_index, load_all)
+    if data_root is not None:
+        _PATH_LOADER_REGISTRY[str(Path(data_root).resolve())] = key
+
+
+# Path-based routing: resolved path string -> dataset_name key
+_PATH_LOADER_REGISTRY: dict[str, str] = {}
+
+
+def _route_dataset_name(root: Path) -> str | None:
+    return _PATH_LOADER_REGISTRY.get(str(root.resolve()))
 
 
 def discover_case_source(data_root: str | Path) -> CaseSourceConfig:
@@ -49,6 +82,12 @@ def discover_case_source(data_root: str | Path) -> CaseSourceConfig:
 
 def load_case_by_index(case_index: int, data_root: str | Path) -> CaseInput:
     root = Path(data_root)
+    # Registry-based routing (new datasets registered via register_dataset_loader)
+    dataset_key = _route_dataset_name(root)
+    if dataset_key and dataset_key in _LOADER_REGISTRY:
+        load_by_index_fn, _ = _LOADER_REGISTRY[dataset_key]
+        return load_by_index_fn(case_index)
+    # Legacy path-based routing for built-in datasets
     if root.resolve() == DEFAULT_HAM10000_ROOT.resolve():
         return load_ham10000_case_input_by_index(case_index, data_root=root)
     if root.resolve() == DEFAULT_ISIC2019_ROOT.resolve():
@@ -72,6 +111,16 @@ def load_case_by_index(case_index: int, data_root: str | Path) -> CaseInput:
 
 def sample_cases(count: int, data_root: str | Path, seed: int = 0) -> list[CaseInput]:
     root = Path(data_root)
+    # Registry-based routing
+    dataset_key = _route_dataset_name(root)
+    if dataset_key and dataset_key in _LOADER_REGISTRY:
+        _, load_all_fn = _LOADER_REGISTRY[dataset_key]
+        cases = load_all_fn()
+        if not cases:
+            return []
+        rng = random.Random(seed)
+        return [cases[i] for i in rng.sample(range(len(cases)), min(count, len(cases)))]
+    # Legacy path-based routing
     if root.resolve() == DEFAULT_HAM10000_ROOT.resolve():
         cases = load_ham10000_case_inputs(data_root=root)
         if not cases:
@@ -278,3 +327,17 @@ def load_case_with_masking(
 
     return case
 
+
+# Pre-register built-in datasets so new datasets can follow the same pattern.
+register_dataset_loader(
+    "ham10000",
+    load_by_index=lambda idx: load_ham10000_case_input_by_index(idx, data_root=DEFAULT_HAM10000_ROOT),
+    load_all=lambda: load_ham10000_case_inputs(data_root=DEFAULT_HAM10000_ROOT),
+    data_root=DEFAULT_HAM10000_ROOT,
+)
+register_dataset_loader(
+    "isic2019",
+    load_by_index=lambda idx: load_isic2019_case_input_by_index(idx, data_root=DEFAULT_ISIC2019_ROOT),
+    load_all=lambda: load_isic2019_case_inputs(data_root=DEFAULT_ISIC2019_ROOT),
+    data_root=DEFAULT_ISIC2019_ROOT,
+)

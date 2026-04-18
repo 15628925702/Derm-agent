@@ -52,6 +52,7 @@ class ExperienceRetriever:
         top_k_tactical: int = 4,
         top_k_abstract: int = 4,
         top_k_merged: int = 6,
+        dataset_name: str | None = None,
     ) -> RetrievalQuery:
         query_perception = perception or (case_state.perception if case_state else {})
         query_metadata = metadata or (case_state.clinical_metadata if case_state else {})
@@ -69,6 +70,7 @@ class ExperienceRetriever:
             confusion_pair=resolved_confusion_pair,
             image_summary=str(query_perception.get("image_summary", "")),
             notes=[str(item) for item in query_perception.get("notes", []) if str(item).strip()],
+            dataset_name=dataset_name,
         )
 
         return RetrievalQuery(
@@ -103,6 +105,7 @@ class ExperienceRetriever:
         top_k_tactical: int = 4,
         top_k_abstract: int = 4,
         top_k_merged: int = 6,
+        dataset_name: str | None = None,
     ) -> dict[str, Any]:
         query = self.build_query(
             case_state=case_state,
@@ -117,6 +120,7 @@ class ExperienceRetriever:
             top_k_tactical=top_k_tactical,
             top_k_abstract=top_k_abstract,
             top_k_merged=top_k_merged,
+            dataset_name=dataset_name,
         )
 
         abstract_results = self._retrieve_abstract(query)
@@ -252,6 +256,16 @@ class ExperienceRetriever:
             score += 2
         if record.get("reusable_scope", {}).get("priority") == "high":
             score += 1
+
+        # Penalize failure outcomes — failure experiences are less reliable as positive guidance
+        outcome = record.get("outcome", {})
+        if isinstance(outcome, dict):
+            case_status = str(outcome.get("case_status", outcome.get("result", ""))).lower()
+            if case_status == "failure":
+                score = max(0, score - 2)
+            elif case_status == "success":
+                score += 1
+
         return score
 
     @staticmethod
@@ -350,13 +364,29 @@ class ExperienceRetriever:
         tactical_results: list[dict[str, Any]],
         raw_case_results: list[dict[str, Any]],
         top_k: int,
+        confusion_pair_cap: int = 2,
     ) -> list[dict[str, Any]]:
         combined: list[dict[str, Any]] = []
         combined.extend(abstract_results)
         combined.extend(tactical_results)
         combined.extend(raw_case_results)
         scored = [(int(packet.get("retrieval_score", 0)), _layer_priority(packet), packet) for packet in combined]
-        return ExperienceRetriever._deduplicate_sorted_packets(scored, top_k=top_k)
+        all_sorted = ExperienceRetriever._deduplicate_sorted_packets(scored, top_k=len(scored))
+
+        # Diversity cap: limit how many results share the same confusion_pair
+        result: list[dict[str, Any]] = []
+        pair_counts: dict[str, int] = {}
+        for packet in all_sorted:
+            pair = str(packet.get("confusion_pair", "")).strip().lower()
+            if pair:
+                count = pair_counts.get(pair, 0)
+                if count >= confusion_pair_cap:
+                    continue
+                pair_counts[pair] = count + 1
+            result.append(packet)
+            if len(result) >= top_k:
+                break
+        return result
 
     @staticmethod
     def _build_summary_slice(

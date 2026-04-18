@@ -181,8 +181,22 @@ def _resolve_image_path(*, image_id: str, image_dirs: list[Path]) -> Path:
 
 
 def _sanitize_ham10000_metadata(row: dict[str, Any]) -> dict[str, Any]:
-    return {
+    metadata = {
         str(key): value
         for key, value in dict(row).items()
         if str(key).strip().lower() not in HAM10000_METADATA_LEAKY_KEYS
     }
+    # Map localization -> region for skill compatibility (metadata_consistency_skill expects "region")
+    if "localization" in metadata and "region" not in metadata:
+        metadata["region"] = metadata["localization"]
+    # Expose diagnosis confidence from dx_type
+    dx_type = str(row.get("dx_type", "")).strip().lower()
+    if dx_type:
+        metadata["diagnosis_confidence"] = {
+            "histo": "histopathology_confirmed",
+            "follow_up": "follow_up_confirmed",
+            "consensus": "expert_consensus",
+            "confocal": "confocal_confirmed",
+        }.get(dx_type, dx_type)
+        metadata["has_histopathology"] = dx_type == "histo"
+    return metadata
