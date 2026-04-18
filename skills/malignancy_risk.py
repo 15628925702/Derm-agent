@@ -2,10 +2,35 @@ from __future__ import annotations
 
 from typing import Any
 
+from agent.label_space import resolve_label_space
 from agent.state import CaseState
 from skills.base import BaseSkill
 from skills.catalog import make_skill_object
 from skills.schema import SkillSchemaField, SkillStep, SkillTrigger
+
+
+def _build_risk_calibration_note(state: CaseState) -> str:
+    """Derive a risk calibration note from the label space — no per-dataset hardcoding."""
+    case_input = state.case_input
+    ls = resolve_label_space(
+        label_space_id=getattr(case_input, "label_space_id", None),
+        dataset_name=getattr(case_input, "dataset_name", None),
+        metadata=getattr(case_input, "metadata", None),
+    )
+    nm = len(ls.malignant_labels)
+    nb = len(ls.benign_labels)
+    if nb > nm:
+        return (
+            f"Calibration: this label space has {nb} benign classes and {nm} malignant classes. "
+            "Benign lesions are more numerous. Only assign high risk when morphological evidence is strong and specific — "
+            "do not default to high risk for ambiguous lesions."
+        )
+    if nm > nb:
+        return (
+            f"Calibration: this label space has {nm} malignant classes and {nb} benign classes. "
+            "Malignant and pre-malignant classes are relatively common."
+        )
+    return ""
 
 
 class MalignancyRiskAssessmentSkill(BaseSkill):
@@ -46,12 +71,15 @@ class MalignancyRiskAssessmentSkill(BaseSkill):
     )
 
     def build_prompt(self, state: CaseState) -> str:
+        prior_note = _build_risk_calibration_note(state)
+        prior_section = f"Calibration note: {prior_note}\n" if prior_note else ""
         return (
             f"{self.workflow_text()}\n"
             "You are executing the malignancy risk assessment routine.\n"
             "When to use: use when malignancy remains plausible or when alarming visual/history cues are present.\n"
             "What evidence to inspect: border, color, evolution, bleeding, symptoms, and prior skill outputs.\n"
             "Common pitfalls: equating medium/high risk with a definitive malignant label.\n"
+            f"{prior_section}"
             "Do NOT output any disease diagnosis or final class.\n"
             "Return JSON only with the following fields:\n"
             f"{self.output_schema_text()}\n"

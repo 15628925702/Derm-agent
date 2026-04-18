@@ -85,18 +85,9 @@ class MelNevSpecialistSkill(BaseSkill):
         abstract_experiences: list[dict[str, object]],
     ) -> list[dict[str, object]]:
         cluster_names = self.active_confusion_clusters(state)
-        combined_pairs = tuple(
-            dict.fromkeys(
-                list(cluster_pairs(cluster_names))
-                + ["melanoma->nev", "malignant melanoma->nev", "malignant melanoma_vs_nev"]
-            )
-        )
-        combined_keywords = tuple(
-            dict.fromkeys(
-                list(cluster_related_keywords(cluster_names))
-                + ["mel", "melanoma", "nev", "naevus", "pigmented", "asymmetry", "variegated"]
-            )
-        )
+        dataset_name = getattr(state, "dataset_name", None)
+        combined_pairs = cluster_pairs(cluster_names, dataset_name=dataset_name)
+        combined_keywords = cluster_related_keywords(cluster_names, dataset_name=dataset_name)
         return self.filter_related_abstract_experiences(
             abstract_experiences,
             confusion_pairs=combined_pairs,

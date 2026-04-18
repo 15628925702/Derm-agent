@@ -4,6 +4,42 @@ import re
 from typing import Any
 
 
+# Dataset-aware metadata field registry.
+# Keys: dataset_name; values: dict with "temporal", "location_size", "risk" field tuples.
+_METADATA_FIELDS_REGISTRY: dict[str, dict[str, tuple[str, ...]]] = {
+    "pad_ufes_20": {
+        "temporal": ("grew", "changed", "bleed", "itch", "hurt", "elevation"),
+        "location_size": ("region", "age", "diameter_1", "diameter_2"),
+        "risk": ("changed", "bleed", "hurt"),
+    },
+    "isic2019": {
+        "temporal": (),
+        "location_size": ("anatom_site_general", "age_approx"),
+        "risk": (),
+    },
+    "ham10000": {
+        "temporal": (),
+        "location_size": ("localization", "age"),
+        "risk": (),
+    },
+}
+
+
+def get_metadata_fields(dataset_name: str | None, field_group: str) -> tuple[str, ...]:
+    """Return dataset-specific metadata field names for a given group (temporal/location_size/risk)."""
+    if dataset_name:
+        key = str(dataset_name).strip().lower()
+        registry = _METADATA_FIELDS_REGISTRY.get(key)
+        if registry is not None:
+            return registry.get(field_group, ())
+    return _METADATA_FIELDS_REGISTRY["pad_ufes_20"].get(field_group, ())
+
+
+def register_metadata_fields(dataset_name: str, fields: dict[str, tuple[str, ...]]) -> None:
+    """Register dataset-specific metadata field groups. Keys: temporal, location_size, risk."""
+    _METADATA_FIELDS_REGISTRY[str(dataset_name).strip().lower()] = fields
+
+
 TERM_ALIASES: dict[str, tuple[str, ...]] = {
     "ack": ("ack", "actinic keratosis", "actinic keratos"),
     "bcc": ("bcc", "basal cell", "basal cell carcinoma"),

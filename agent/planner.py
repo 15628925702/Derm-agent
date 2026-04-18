@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass, field
 from typing import Any
 
-from agent.confusion_clusters import cluster_priority_bonus, detect_confusion_clusters
+from agent.confusion_clusters import cluster_priority_bonus, detect_confusion_clusters, get_confusion_cluster_definitions, get_metadata_fields
 from cognition.cognition_state import CognitionState
 from skills.schema import SkillObject
 
@@ -859,7 +859,7 @@ def _build_signal_profile(planner_input: PlannerInput) -> dict[str, Any]:
             ]
         )
     retrieved_text = " ".join(retrieved_chunks).lower()
-    current_confusion_pair = detect_confusion_pair(ddx_candidates)
+    current_confusion_pair = detect_confusion_pair(ddx_candidates, dataset_name=planner_input.dataset_name)
     known_confusion_patterns = planner_input.cognition.known_confusion_patterns
     known_confusion_text = " ".join(str(key).strip().lower() for key in known_confusion_patterns.keys())
     known_confusion_match = bool(
@@ -907,23 +907,14 @@ def _build_signal_profile(planner_input: PlannerInput) -> dict[str, Any]:
         "ddx_count": len(ddx_candidates),
         "uncertainty_level": uncertainty_level,
         "multiple_ddx": len(ddx_candidates) >= 2,
-        "temporal_metadata": any(str(metadata.get(field, "")).strip() for field in ("grew", "changed", "bleed", "itch", "hurt", "elevation")),
+        "temporal_metadata": any(str(metadata.get(field, "")).strip() for field in get_metadata_fields(planner_input.dataset_name, "temporal")),
         "location_or_size_metadata": any(
-            str(metadata.get(field, "")).strip() for field in ("region", "age", "diameter_1", "diameter_2")
+            str(metadata.get(field, "")).strip() for field in get_metadata_fields(planner_input.dataset_name, "location_size")
         ),
         "malignancy_possible": has_malignancy_possibility(ddx_candidates),
-        "mel_nev_confusion": has_confusion_pair(ddx_candidates, ("mel", "melanoma"), ("nev", "nevus", "naevus", "mole")),
-        "ack_scc_confusion": has_confusion_pair(
-            ddx_candidates,
-            ("ack", "actinic keratosis", "actinic keratos"),
-            ("scc", "squamous cell", "squamous"),
-        ),
-        "ack_sek_confusion": has_confusion_pair(
-            ddx_candidates,
-            ("ack", "actinic keratosis", "actinic keratos"),
-            ("seborrheic keratosis", "sek"),
-        )
-        or "ack_sek" in active_confusion_clusters,
+        "mel_nev_confusion": any(c in active_confusion_clusters for c in ("mel_nev", "mel_nv")),
+        "ack_scc_confusion": any(c in active_confusion_clusters for c in ("ack_bcc_scc", "ack_scc")),
+        "ack_sek_confusion": "ack_sek" in active_confusion_clusters,
         "keratinocyte_bcc_confusion": keratinocyte_bcc_confusion,
         "experience_compare_pattern": any(
             pattern in retrieved_text for pattern in ("compare_then_audit_uncertainty", "confusion_memory", "differential")
@@ -945,27 +936,15 @@ def _build_signal_profile(planner_input: PlannerInput) -> dict[str, Any]:
     }
 
 
-def detect_confusion_pair(ddx_candidates: list[str]) -> str | None:
-    if has_confusion_pair(ddx_candidates, ("mel", "melanoma"), ("nev", "nevus", "naevus", "mole")):
-        return "melanoma->nev"
-    if has_confusion_pair(ddx_candidates, ("scc", "squamous cell", "squamous"), ("bcc", "basal cell")):
-        return "scc->bcc"
-    if has_confusion_pair(ddx_candidates, ("ack", "actinic keratosis", "actinic keratos"), ("bcc", "basal cell")):
-        return "ack->bcc"
-    if has_confusion_pair(ddx_candidates, ("seborrheic keratosis", "sek"), ("bcc", "basal cell")):
-        return "sek->bcc"
-    if has_confusion_pair(
-        ddx_candidates,
-        ("lichen simplex", "lichen planus", "psoriasis", "dermatitis", "eczema"),
-        ("ack", "actinic keratosis", "actinic keratos"),
-    ):
-        return "inflammatory->ack"
-    if has_confusion_pair(
-        ddx_candidates,
-        ("ack", "actinic keratosis", "actinic keratos"),
-        ("scc", "squamous cell", "squamous"),
-    ):
-        return "ack->scc"
+def detect_confusion_pair(ddx_candidates: list[str], dataset_name: str | None = None) -> str | None:
+    clusters = detect_confusion_clusters(ddx_candidates=ddx_candidates, dataset_name=dataset_name)
+    if not clusters:
+        return None
+    cluster_defs = get_confusion_cluster_definitions(dataset_name)
+    for cluster_name in clusters:
+        pairs = list(cluster_defs.get(cluster_name, {}).get("pairs", ()))
+        if pairs:
+            return str(pairs[0]).strip().lower()
     return None
 
 

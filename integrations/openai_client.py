@@ -36,10 +36,44 @@ except ModuleNotFoundError:  # pragma: no cover - optional dependency for offlin
     OpenAI = None  # type: ignore[assignment]
 
 from agent.evidence_package import EvidencePackage
+from agent.label_space import resolve_label_space
 from agent.state import CaseInput
 
 
 LOGGER = logging.getLogger(__name__)
+
+
+def _build_label_space_calibration_note(case_input: CaseInput) -> str:
+    """Derive a calibration note from the label space structure.
+
+    When benign classes outnumber malignant ones, warn Qwen not to let risk
+    caution flags alone shift the diagnosis toward malignant classes.
+    Works for any dataset with a registered label space — no hardcoding needed.
+    """
+    ls = resolve_label_space(
+        label_space_id=getattr(case_input, "label_space_id", None),
+        dataset_name=getattr(case_input, "dataset_name", None),
+        metadata=getattr(case_input, "metadata", None),
+    )
+    nm = len(ls.malignant_labels)
+    nb = len(ls.benign_labels)
+    if nb > nm:
+        benign_list = ", ".join(ls.benign_labels)
+        malignant_list = ", ".join(ls.malignant_labels)
+        return (
+            f"Label space calibration: this label space has {nb} benign classes ({benign_list}) "
+            f"and {nm} malignant classes ({malignant_list}). "
+            "Benign classes outnumber malignant ones. "
+            "When the override layer says risk_only (no subtype override allowed), "
+            "do NOT shift the diagnosis toward malignant classes based on risk caution flags alone — "
+            "stay close to the image-based baseline and note the risk concern only in follow_up_considerations."
+        )
+    if nm > nb:
+        return (
+            f"Label space calibration: this label space has {nm} malignant classes and {nb} benign classes. "
+            "Malignant and pre-malignant classes are relatively common in this label space."
+        )
+    return ""
 
 
 DEFAULT_TIMEOUT_SECONDS = 600.0
@@ -360,6 +394,8 @@ class DermOpenAIClient:
             raise RuntimeError(f"Failed final diagnosis for case: {case_input.case_id}")
 
         profile_sequence: list[dict[str, Any]] = [{"profile_id": FULL_CLINICAL_PROFILE_ID}] + list(COMPACT_PROFILE_PRESETS)
+        calibration_note = _build_label_space_calibration_note(case_input)
+        calibration_line = f"{calibration_note}\n" if calibration_note else ""
         for profile in profile_sequence:
             prepared_evidence = self._prepare_evidence_for_profile(evidence_payload, profile)
             serialized_payload = json.dumps(prepared_evidence, ensure_ascii=False, separators=(",", ":"))
@@ -380,6 +416,7 @@ class DermOpenAIClient:
                 "Integrate image, metadata, and evidence, then return a structured final diagnosis result.\n"
                 "Include: final_diagnosis, differential_diagnoses, rationale, confidence, follow_up_considerations.\n"
                 "When override is not allowed, keep the diagnosis conservative but include risk, caution, follow-up, and why the evidence was not strong enough to override.\n"
+                f"{calibration_line}"
                 f"Evidence package: {serialized_payload}"
             )
             messages: list[dict[str, Any]] = [

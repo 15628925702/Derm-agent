@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import asdict, dataclass, field
 from typing import Any
 
-from agent.confusion_clusters import cluster_match_bonus, detect_confusion_clusters
+from agent.confusion_clusters import cluster_match_bonus, cluster_pairs, detect_confusion_clusters, get_confusion_cluster_definitions, get_metadata_fields
 from agent.state import CaseState
 from memory.experience_store import ExperienceStore
 from memory.experience_transform import (
@@ -63,7 +64,9 @@ class ExperienceRetriever:
             if ddx_candidates is not None
             else [str(item) for item in query_perception.get("ddx_candidates", [])]
         )
-        resolved_confusion_pair = confusion_pair or self._detect_confusion_pair([item.lower() for item in resolved_ddx])
+        resolved_confusion_pair = confusion_pair or self._detect_confusion_pair(
+            [item.lower() for item in resolved_ddx], dataset_name=dataset_name
+        )
         resolved_morphology = morphology_clues or self._extract_morphology_clues(case_state=case_state, perception=query_perception)
         resolved_confusion_clusters = detect_confusion_clusters(
             ddx_candidates=[str(item).lower() for item in resolved_ddx],
@@ -76,8 +79,8 @@ class ExperienceRetriever:
         return RetrievalQuery(
             ddx_candidates=dedupe_strings(resolved_ddx),
             morphology_clues=dedupe_strings(resolved_morphology),
-            metadata_patterns=dedupe_strings(self._extract_metadata_patterns(query_metadata)),
-            risk_patterns=dedupe_strings(self._extract_risk_patterns(query_perception, query_metadata, query_risk_flags)),
+            metadata_patterns=dedupe_strings(self._extract_metadata_patterns(query_metadata, dataset_name=dataset_name)),
+            risk_patterns=dedupe_strings(self._extract_risk_patterns(query_perception, query_metadata, query_risk_flags, dataset_name=dataset_name)),
             confusion_pair=resolved_confusion_pair,
             confusion_clusters=resolved_confusion_clusters,
             uncertainty_level=str(
@@ -486,9 +489,10 @@ class ExperienceRetriever:
         return clues
 
     @staticmethod
-    def _extract_metadata_patterns(metadata: dict[str, Any]) -> list[str]:
+    def _extract_metadata_patterns(metadata: dict[str, Any], dataset_name: str | None = None) -> list[str]:
         patterns: list[str] = []
-        for field in ("region", "age", "diameter_1", "diameter_2", "grew", "changed", "bleed", "itch", "hurt", "elevation"):
+        fields = get_metadata_fields(dataset_name, "temporal") + get_metadata_fields(dataset_name, "location_size")
+        for field in fields:
             raw_value = metadata.get(field, "")
             value = str(raw_value).strip()
             if _is_meaningful_metadata_value(raw_value, value):
@@ -501,13 +505,14 @@ class ExperienceRetriever:
         perception: dict[str, Any],
         metadata: dict[str, Any],
         risk_flags: list[str],
+        dataset_name: str | None = None,
     ) -> list[str]:
         patterns = list(risk_flags)
         for candidate in perception.get("ddx_candidates", []):
             candidate_text = str(candidate).lower()
             if any(keyword in candidate_text for keyword in ("mel", "melanoma", "bcc", "scc", "ack", "carcinoma")):
                 patterns.append("malignancy_possible")
-        for field in ("changed", "bleed", "hurt"):
+        for field in get_metadata_fields(dataset_name, "risk"):
             raw_value = metadata.get(field, "")
             value = str(raw_value).strip()
             if _is_meaningful_metadata_value(raw_value, value):
@@ -515,46 +520,17 @@ class ExperienceRetriever:
         return patterns
 
     @staticmethod
-    def _detect_confusion_pair(ddx_candidates: list[str]) -> str | None:
-        if ExperienceRetriever._has_confusion_pair(ddx_candidates, ("mel", "melanoma"), ("nev", "nevus", "naevus", "mole")):
-            return "melanoma->nev"
-        if ExperienceRetriever._has_confusion_pair(ddx_candidates, ("scc", "squamous cell", "squamous"), ("bcc", "basal cell")):
-            return "scc->bcc"
-        if ExperienceRetriever._has_confusion_pair(
-            ddx_candidates,
-            ("ack", "actinic keratosis", "actinic keratos"),
-            ("bcc", "basal cell"),
-        ):
-            return "ack->bcc"
-        if ExperienceRetriever._has_confusion_pair(
-            ddx_candidates,
-            ("seborrheic keratosis", "sek"),
-            ("bcc", "basal cell"),
-        ):
-            return "sek->bcc"
-        if ExperienceRetriever._has_confusion_pair(
-            ddx_candidates,
-            ("lichen simplex", "lichen planus", "psoriasis", "dermatitis", "eczema"),
-            ("ack", "actinic keratosis", "actinic keratos"),
-        ):
-            return "inflammatory->ack"
-        if ExperienceRetriever._has_confusion_pair(
-            ddx_candidates,
-            ("ack", "actinic keratosis", "actinic keratos"),
-            ("scc", "squamous cell", "squamous"),
-        ):
-            return "ack->scc"
+    def _detect_confusion_pair(ddx_candidates: list[str], dataset_name: str | None = None) -> str | None:
+        clusters = detect_confusion_clusters(ddx_candidates=ddx_candidates, dataset_name=dataset_name)
+        if not clusters:
+            return None
+        cluster_defs = get_confusion_cluster_definitions(dataset_name)
+        for cluster_name in clusters:
+            pairs = list(cluster_defs.get(cluster_name, {}).get("pairs", ()))
+            if pairs:
+                return str(pairs[0]).strip().lower()
         return None
 
-    @staticmethod
-    def _has_confusion_pair(
-        ddx_candidates: list[str],
-        left_keywords: tuple[str, ...],
-        right_keywords: tuple[str, ...],
-    ) -> bool:
-        has_left = any(any(keyword in candidate for keyword in left_keywords) for candidate in ddx_candidates)
-        has_right = any(any(keyword in candidate for keyword in right_keywords) for candidate in ddx_candidates)
-        return has_left and has_right
 
 
 def _layer_priority(packet: dict[str, Any]) -> int:
@@ -568,6 +544,23 @@ def _layer_priority(packet: dict[str, Any]) -> int:
     return 0
 
 
+# Alias → canonical short code for confusion pair normalization.
+# Longer phrases must come before shorter ones to avoid partial replacement.
+_PAIR_TERM_NORMALIZATIONS: tuple[tuple[str, str], ...] = (
+    ("malignant melanoma", "melanoma"),
+    ("melanocytic nevus", "nv"),
+    ("squamous cell carcinoma", "scc"),
+    ("basal cell carcinoma", "bcc"),
+    ("actinic keratosis", "ack"),
+    ("benign keratosis", "bkl"),
+    ("lichenoid keratosis", "bkl"),
+    ("seborrheic keratosis", "sek"),
+    ("dermatofibroma", "df"),
+    ("vascular lesion", "vasc"),
+    ("intraepithelial carcinoma", "akiec"),
+)
+
+
 def _normalize_confusion_pair(value: str) -> str:
     text = str(value).strip().lower()
     if not text:
@@ -579,25 +572,46 @@ def _normalize_confusion_pair(value: str) -> str:
     if "->" not in text:
         return text
     left, right = [part.strip() for part in text.split("->", 1)]
+    for alias, canonical in _PAIR_TERM_NORMALIZATIONS:
+        if left == alias:
+            left = canonical
+        if right == alias:
+            right = canonical
     return f"{left}->{right}"
 
 
 def _confusion_family_tags(value: str) -> set[str]:
     text = str(value).strip().lower()
     tags: set[str] = set()
-    if any(term in text for term in ("mel", "melanoma")):
+    # Tokenize on non-alphanumeric chars for exact short-code matching (avoids "nv" in "invasive")
+    tokens = set(re.split(r"[^a-z0-9]+", text))
+
+    def has_token(*codes: str) -> bool:
+        return bool(tokens & set(codes))
+
+    def has_phrase(*phrases: str) -> bool:
+        return any(p in text for p in phrases)
+
+    if has_token("mel") or has_phrase("melanoma"):
         tags.add("mel")
-    if any(term in text for term in ("nev", "naevus", "mole")):
+    # Unified nevus group: nev (PAD) + nv (HAM/ISIC)
+    if has_token("nev", "nv") or has_phrase("naevus", "mole", "melanocytic nevus"):
         tags.add("nev")
-    if any(term in text for term in ("ack", "actinic keratos")):
+    # Unified actinic keratosis: ack (PAD) + akiec (HAM/ISIC)
+    if has_token("ack", "akiec") or has_phrase("actinic keratos", "bowen", "intraepithelial"):
         tags.add("ack")
-    if any(term in text for term in ("scc", "squamous")):
+    if has_token("scc") or has_phrase("squamous"):
         tags.add("scc")
-    if any(term in text for term in ("bcc", "basal cell")):
+    if has_token("bcc") or has_phrase("basal cell"):
         tags.add("bcc")
-    if any(term in text for term in ("seborrheic keratos", "sek")):
+    # Unified keratosis group: sek (PAD) + bkl (HAM/ISIC)
+    if has_token("sek", "bkl") or has_phrase("seborrheic keratos", "benign keratosis", "lichenoid keratosis"):
         tags.add("sek")
-    if any(term in text for term in ("lichen", "psoriasis", "dermatitis", "eczema", "rosacea")):
+    if has_token("df") or has_phrase("dermatofibroma"):
+        tags.add("df")
+    if has_token("vasc") or has_phrase("vascular", "angioma", "hemangioma"):
+        tags.add("vasc")
+    if has_phrase("lichen", "psoriasis", "dermatitis", "eczema", "rosacea"):
         tags.add("inflammatory")
     return tags
 

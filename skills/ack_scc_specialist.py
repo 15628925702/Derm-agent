@@ -87,28 +87,9 @@ class AckSccSpecialistSkill(BaseSkill):
         abstract_experiences: list[dict[str, object]],
     ) -> list[dict[str, object]]:
         cluster_names = self.active_confusion_clusters(state)
-        combined_pairs = tuple(
-            dict.fromkeys(
-                list(cluster_pairs(cluster_names))
-                + [
-                    "ack->scc",
-                    "scc->bcc",
-                    "squamous cell carcinoma->bcc",
-                    "ack->bcc",
-                    "actinic keratosis->bcc",
-                    "seborrheic keratosis->bcc",
-                    "ack->sek",
-                    "actinic keratosis->sek",
-                    "seborrheic keratosis->ack",
-                ]
-            )
-        )
-        combined_keywords = tuple(
-            dict.fromkeys(
-                list(cluster_related_keywords(cluster_names))
-                + ["ack", "scc", "bcc", "actinic", "keratin", "seborrheic", "sek", "waxy", "pearly"]
-            )
-        )
+        dataset_name = getattr(state, "dataset_name", None)
+        combined_pairs = cluster_pairs(cluster_names, dataset_name=dataset_name)
+        combined_keywords = cluster_related_keywords(cluster_names, dataset_name=dataset_name)
         return self.filter_related_abstract_experiences(
             abstract_experiences,
             confusion_pairs=combined_pairs,
