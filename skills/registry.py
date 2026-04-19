@@ -5,6 +5,7 @@ from integrations.openai_client import DermOpenAIClient
 from skills.base import BaseSkill
 from skills.schema import SkillObject
 from skills.ack_scc_specialist import AckSccSpecialistSkill
+from skills.benign_mimic_specialist import BenignMimicSpecialistSkill
 from skills.border_surface import BorderSurfaceAnalysisSkill
 from skills.color_pattern import ColorPatternAnalysisSkill
 from skills.contradiction_check import ContradictionCheckSkill
@@ -87,6 +88,7 @@ def build_default_registry() -> SkillRegistry:
         ContradictionCheckSkill(),
         MelNevSpecialistSkill(),
         AckSccSpecialistSkill(),
+        BenignMimicSpecialistSkill(),
         MalignancyRiskAssessmentSkill(),
         UncertaintyAssessmentSkill(),
         EscalationRecommendationSkill(),

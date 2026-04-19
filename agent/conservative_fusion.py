@@ -3,6 +3,13 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any
 
+KERATINOCYTE_FAMILY = {
+    "Actinic Keratosis",
+    "Basal Cell Carcinoma",
+    "Squamous Cell Carcinoma",
+    "Seborrheic Keratosis",
+}
+
 
 def apply_conservative_agent_fusion(
     *,
@@ -136,8 +143,21 @@ def decide_conservative_agent_fusion(
             use_agent_output = False
             reasons.append("missing_final_diagnosis")
         elif agent_label == baseline_label:
-            use_agent_output = True
-            reasons.append("agent_matches_baseline")
+            if (
+                selected_evidence_present
+                and consensus_candidates
+                and baseline_label not in consensus_candidates
+                and _all_in_family(consensus_candidates, KERATINOCYTE_FAMILY)
+                and support_margin >= 5.5
+                and uncertainty_level not in {"high", "unknown"}
+            ):
+                consensus_override_label = consensus_candidates[0]
+                use_agent_output = True
+                merge_baseline_differentials = True
+                reasons.append("hard_mode_keratinocyte_consensus_override")
+            else:
+                use_agent_output = True
+                reasons.append("agent_matches_baseline")
         elif not selected_evidence_present:
             use_agent_output = False
             reasons.append("no_selected_evidence")
@@ -210,6 +230,13 @@ def _merge_differentials(*, primary: list[Any], baseline: list[Any], final_label
         seen.add(text)
         merged.append(text)
     return merged[:5]
+
+
+def _all_in_family(values: list[str], family: set[str]) -> bool:
+    normalized = [str(item).strip() for item in values if str(item).strip()]
+    if not normalized:
+        return False
+    return all(item in family for item in normalized)
 
 
 def _consensus_candidates(

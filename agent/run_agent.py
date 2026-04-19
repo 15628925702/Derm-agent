@@ -121,6 +121,7 @@ def run_agent(
                 perception=state.perception,
                 metadata=state.clinical_metadata,
                 cognition=cognition_state,
+                dataset_name=case_input.dataset_name,
             ),
             all_skill_objects,
         )

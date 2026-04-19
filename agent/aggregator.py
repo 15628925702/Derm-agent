@@ -867,6 +867,26 @@ def _subtype_supporting_items(selected_evidence: list[dict[str, Any]]) -> list[d
 def _ham10000_fallback_selected_evidence(state: CaseState) -> list[dict[str, Any]]:
     if str(getattr(state.case_input, "dataset_name", "")).strip().lower() != "ham10000":
         return []
+    if state.skill_outputs.get("benign_mimic_specialist_skill"):
+        return [
+            {
+                "item_id": "benign_mimic_specialist_skill",
+                "item_type": "skill_output",
+                "source_type": "skill_output",
+                "source_name": "benign_mimic_specialist_skill",
+                "skill_name": "benign_mimic_specialist_skill",
+                "retrieval_type": "",
+                "section": "comparison",
+                "category": "differential_support",
+                "summary": _summarize_skill_evidence(
+                    "benign_mimic_specialist_skill",
+                    state.skill_outputs.get("benign_mimic_specialist_skill", {}),
+                ),
+                "score": 6.8,
+                "rank": 1,
+                "keep_reason": "ham10000_benign_mimic_fallback",
+            }
+        ]
     if state.skill_outputs.get("ack_scc_specialist_skill"):
         return [
             {

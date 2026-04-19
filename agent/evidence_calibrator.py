@@ -60,6 +60,7 @@ SKILL_SECTION_MAP = {
     "exclusion_reasoning_skill": "comparison",
     "mel_nev_specialist_skill": "comparison",
     "ack_scc_specialist_skill": "comparison",
+    "benign_mimic_specialist_skill": "comparison",
     "malignancy_risk_assessment_skill": "risk",
     "contradiction_check_skill": "conflict_uncertainty",
     "uncertainty_assessment_skill": "conflict_uncertainty",
@@ -79,6 +80,7 @@ SKILL_BASE_WEIGHT = {
     "exclusion_reasoning_skill": 4.3,
     "mel_nev_specialist_skill": 3.2,
     "ack_scc_specialist_skill": 3.8,
+    "benign_mimic_specialist_skill": 4.1,
     "malignancy_risk_assessment_skill": 4.5,
     "contradiction_check_skill": 4.0,
     "uncertainty_assessment_skill": 3.8,
@@ -890,7 +892,7 @@ def _infer_item_category(*, skill_name: str, output: dict[str, Any]) -> str:
         return "description"
     if skill_name in {"exclusion_reasoning_skill"} or _has_negative_evidence(output):
         return "exclusion_opposing"
-    if skill_name in {"differential_compare_skill", "metadata_consistency_skill", "ack_scc_specialist_skill", "mel_nev_specialist_skill"}:
+    if skill_name in {"differential_compare_skill", "metadata_consistency_skill", "ack_scc_specialist_skill", "mel_nev_specialist_skill", "benign_mimic_specialist_skill"}:
         return "differential_support"
     if skill_name == "malignancy_risk_assessment_skill":
         return "risk"
@@ -903,6 +905,9 @@ def _infer_retrieval_category(*, source_layer: str, record: dict[str, Any]) -> s
     if source_layer == "raw_case_memory":
         return "description"
     if source_layer == "tactical_experience":
+        return "experience_hint"
+    experience_type = str(record.get("experience_type", record.get("source_subtype", ""))).strip().lower()
+    if experience_type in {"confusion_memory", "prototype", "rule", "rule_candidate", "composite_skill_seed"}:
         return "experience_hint"
     if preferred_abstract_section(record=record, cluster_names=[]) == "comparison":
         return "experience_hint"

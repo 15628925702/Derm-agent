@@ -45,12 +45,12 @@ FOUNDATIONAL_SKILLS = {
 }
 # Default specialist skills for PAD-UFES-20.  Use register_specialist_skills()
 # to override for other datasets.
-SPECIALIST_SKILLS = {"mel_nev_specialist_skill", "ack_scc_specialist_skill"}
+SPECIALIST_SKILLS = {"mel_nev_specialist_skill", "ack_scc_specialist_skill", "benign_mimic_specialist_skill"}
 
 _DATASET_SPECIALIST_SKILLS: dict[str, set[str]] = {
     "pad_ufes_20": {"mel_nev_specialist_skill", "ack_scc_specialist_skill"},
     "isic2019": {"mel_nev_specialist_skill", "ack_scc_specialist_skill"},
-    "ham10000": {"mel_nev_specialist_skill"},
+    "ham10000": {"mel_nev_specialist_skill", "benign_mimic_specialist_skill"},
 }
 
 

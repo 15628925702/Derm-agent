@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-import math
 import re
 from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass, field
 from typing import Any
 
-from agent.confusion_clusters import cluster_priority_bonus, detect_confusion_clusters
+from agent.confusion_clusters import cluster_priority_bonus, detect_confusion_clusters, get_metadata_fields, get_confusion_cluster_definitions
 from cognition.cognition_state import CognitionState
 from skills.schema import SkillObject
 
@@ -44,6 +43,7 @@ SIGNAL_KEYWORD_MAP = {
     "ack_scc_confusion": ("ack", "scc", "specialist", "compare", "confusion"),
     "ack_sek_confusion": ("ack", "seborrheic", "sek", "waxy", "stuck-on", "compare", "confusion"),
     "keratinocyte_bcc_confusion": ("bcc", "basal cell", "scc", "ack", "actinic", "seborrheic", "keratin"),
+    "ham_benign_mimic_confusion": ("bkl", "benign keratosis", "nevus", "vascular", "dermatofibroma", "compare", "mimic"),
     "contradiction_rich": ("contradiction", "conflict", "audit", "inconsisten"),
     "information_gap": ("missing", "gap", "underdetermined", "need more information"),
     "escalation_needed": ("escalat", "dermoscopy", "biopsy", "further check", "closer exam"),
@@ -55,6 +55,7 @@ class SkillRetrievalQuery:
     perception: dict[str, Any]
     metadata: dict[str, Any]
     cognition: CognitionState
+    dataset_name: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -242,7 +243,7 @@ def _build_signal_profile(query: SkillRetrievalQuery) -> dict[str, Any]:
     notes = " ".join(str(item) for item in perception.get("notes", []))
     uncertainty_level = str(perception.get("uncertainty", {}).get("level", "unknown")).lower()
     morphology_clues = _extract_morphology_clues(image_summary, metadata, notes)
-    confusion_pair = detect_confusion_pair(ddx_candidates)
+    confusion_pair = detect_confusion_pair(ddx_candidates, dataset_name=query.dataset_name)
     known_confusion_text = " ".join(str(key).strip().lower() for key in query.cognition.known_confusion_patterns.keys())
     known_confusion_match = bool(
         confusion_pair
@@ -257,6 +258,7 @@ def _build_signal_profile(query: SkillRetrievalQuery) -> dict[str, Any]:
         known_confusion_text=known_confusion_text,
         image_summary=image_summary,
         notes=[str(item) for item in query.perception.get("notes", []) if str(item).strip()],
+        dataset_name=query.dataset_name,
     )
     keratinocyte_precursor_present = any(
         any(term in candidate for term in ("ack", "actinic keratos", "scc", "squamous", "seborrheic", "sek"))
@@ -282,6 +284,13 @@ def _build_signal_profile(query: SkillRetrievalQuery) -> dict[str, Any]:
             and (uncertainty_level in {"high", "medium"} or has_malignancy_possibility(ddx_candidates))
         )
     )
+    ham_benign_mimic_confusion = bool(
+        any(c in active_confusion_clusters for c in ("bkl_nv", "mel_bkl"))
+        or has_confusion_pair(ddx_candidates, ("bkl", "benign keratosis", "seborrheic keratosis"), ("nv", "nevus"))
+        or has_confusion_pair(ddx_candidates, ("bkl", "benign keratosis", "seborrheic keratosis"), ("mel", "melanoma"))
+        or has_confusion_pair(ddx_candidates, ("df", "dermatofibroma"), ("mel", "melanoma", "nv", "nevus"))
+        or has_confusion_pair(ddx_candidates, ("vasc", "vascular"), ("mel", "melanoma", "nv", "nevus"))
+    )
 
     contradiction_rich = any(term in image_summary for term in ("contradict", "conflict", "irregular", "asymmetry"))
     information_gap = any(term in notes.lower() for term in ("missing", "unknown", "not available")) or uncertainty_level in {"medium", "high"}
@@ -297,26 +306,18 @@ def _build_signal_profile(query: SkillRetrievalQuery) -> dict[str, Any]:
         "multiple_ddx": len(ddx_candidates) >= 2,
         "temporal_metadata": any(
             str(metadata.get(field, "")).strip()
-            for field in ("grew", "changed", "bleed", "itch", "hurt", "elevation")
+            for field in get_metadata_fields(query.dataset_name, "temporal")
         ),
         "location_or_size_metadata": any(
             str(metadata.get(field, "")).strip()
-            for field in ("region", "age", "diameter_1", "diameter_2")
+            for field in get_metadata_fields(query.dataset_name, "location_size")
         ),
         "malignancy_possible": has_malignancy_possibility(ddx_candidates),
-        "mel_nev_confusion": has_confusion_pair(ddx_candidates, ("mel", "melanoma"), ("nev", "nevus", "naevus", "mole")),
-        "ack_scc_confusion": has_confusion_pair(
-            ddx_candidates,
-            ("ack", "actinic keratosis", "actinic keratos"),
-            ("scc", "squamous cell", "squamous"),
-        ),
-        "ack_sek_confusion": has_confusion_pair(
-            ddx_candidates,
-            ("ack", "actinic keratosis", "actinic keratos"),
-            ("seborrheic keratosis", "sek"),
-        )
-        or "ack_sek" in active_confusion_clusters,
+        "mel_nev_confusion": any(c in active_confusion_clusters for c in ("mel_nev", "mel_nv")),
+        "ack_scc_confusion": any(c in active_confusion_clusters for c in ("ack_bcc_scc", "ack_scc")),
+        "ack_sek_confusion": "ack_sek" in active_confusion_clusters,
         "keratinocyte_bcc_confusion": keratinocyte_bcc_confusion,
+        "ham_benign_mimic_confusion": ham_benign_mimic_confusion,
         "contradiction_rich": contradiction_rich,
         "information_gap": information_gap,
         "escalation_needed": escalation_needed,
@@ -328,7 +329,10 @@ def _build_signal_profile(query: SkillRetrievalQuery) -> dict[str, Any]:
 def _query_summary(query: SkillRetrievalQuery, signal_profile: dict[str, Any]) -> dict[str, Any]:
     metadata_patterns = [
         field_name
-        for field_name in ("region", "age", "diameter_1", "diameter_2", "grew", "changed", "bleed", "itch", "hurt", "elevation")
+        for field_name in (
+            get_metadata_fields(query.dataset_name, "location_size")
+            + get_metadata_fields(query.dataset_name, "temporal")
+        )
         if str(query.metadata.get(field_name, "")).strip()
     ]
     risk_patterns = []
@@ -444,6 +448,11 @@ def _should_select_skill(skill_name: str, score: float, signal_profile: dict[str
             or signal_profile.get("keratinocyte_bcc_confusion", False)
             or (signal_profile["known_confusion_match"] and score >= 2.5)
         )
+    if skill_name == "benign_mimic_specialist_skill":
+        return bool(
+            signal_profile.get("ham_benign_mimic_confusion", False)
+            or (signal_profile["known_confusion_match"] and score >= 2.5)
+        )
     if skill_name == "uncertainty_assessment_skill":
         return bool(signal_profile["high_uncertainty"] or signal_profile["information_gap"] or score >= 3.5)
     if skill_name == "contradiction_check_skill":
@@ -453,27 +462,15 @@ def _should_select_skill(skill_name: str, score: float, signal_profile: dict[str
     return score >= 3.5
 
 
-def detect_confusion_pair(ddx_candidates: list[str]) -> str | None:
-    if has_confusion_pair(ddx_candidates, ("mel", "melanoma"), ("nev", "nevus", "naevus", "mole")):
-        return "melanoma->nev"
-    if has_confusion_pair(ddx_candidates, ("scc", "squamous cell", "squamous"), ("bcc", "basal cell")):
-        return "scc->bcc"
-    if has_confusion_pair(ddx_candidates, ("ack", "actinic keratosis", "actinic keratos"), ("bcc", "basal cell")):
-        return "ack->bcc"
-    if has_confusion_pair(ddx_candidates, ("seborrheic keratosis", "sek"), ("bcc", "basal cell")):
-        return "sek->bcc"
-    if has_confusion_pair(
-        ddx_candidates,
-        ("lichen simplex", "lichen planus", "psoriasis", "dermatitis", "eczema"),
-        ("ack", "actinic keratosis", "actinic keratos"),
-    ):
-        return "inflammatory->ack"
-    if has_confusion_pair(
-        ddx_candidates,
-        ("ack", "actinic keratosis", "actinic keratos"),
-        ("scc", "squamous cell", "squamous"),
-    ):
-        return "ack->scc"
+def detect_confusion_pair(ddx_candidates: list[str], dataset_name: str | None = None) -> str | None:
+    clusters = detect_confusion_clusters(ddx_candidates=ddx_candidates, dataset_name=dataset_name)
+    if not clusters:
+        return None
+    cluster_defs = get_confusion_cluster_definitions(dataset_name)
+    for cluster_name in clusters:
+        pairs = list(cluster_defs.get(cluster_name, {}).get("pairs", ()))
+        if pairs:
+            return str(pairs[0]).strip().lower()
     return None
 
 

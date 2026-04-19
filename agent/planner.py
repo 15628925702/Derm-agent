@@ -42,6 +42,7 @@ ORDERING_HINTS = {
     "information_gap_detection_skill": 98,
     "mel_nev_specialist_skill": 90,
     "ack_scc_specialist_skill": 91,
+    "benign_mimic_specialist_skill": 92,
     "uncertainty_assessment_skill": 100,
     "contradiction_check_skill": 110,
     "escalation_recommendation_skill": 120,
@@ -644,6 +645,11 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
                 or signals.get("ack_sek_confusion", False)
                 or signals.get("keratinocyte_bcc_confusion", False)
             ) and score >= protected_floor
+        elif skill_name == "benign_mimic_specialist_skill":
+            allowed = (
+                signals.get("ham_benign_mimic_confusion", False)
+                or (signals.get("known_confusion_match", False) and score >= protected_floor)
+            ) and score >= protected_floor
         else:
             allowed = score >= rule_floor and (
                 signals["malignancy_possible"]
@@ -823,6 +829,11 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
                 or signals.get("keratinocyte_bcc_confusion", False)
                 or (signals.get("known_confusion_match", False) and score >= max(2, min_score - 1))
             )
+        if skill_name == "benign_mimic_specialist_skill":
+            return (
+                signals.get("ham_benign_mimic_confusion", False)
+                or (signals.get("known_confusion_match", False) and score >= max(2, min_score - 1))
+            )
         if skill_name == "uncertainty_assessment_skill":
             return signals["high_uncertainty"] or score >= min_score
         if skill_name == "contradiction_check_skill":
@@ -901,6 +912,13 @@ def _build_signal_profile(planner_input: PlannerInput) -> dict[str, Any]:
             and (uncertainty_level in {"high", "medium"} or has_malignancy_possibility(ddx_candidates))
         )
     )
+    ham_benign_mimic_confusion = bool(
+        any(c in active_confusion_clusters for c in ("bkl_nv", "mel_bkl"))
+        or has_confusion_pair(ddx_candidates, ("bkl", "benign keratosis", "seborrheic keratosis"), ("nv", "nevus"))
+        or has_confusion_pair(ddx_candidates, ("bkl", "benign keratosis", "seborrheic keratosis"), ("mel", "melanoma"))
+        or has_confusion_pair(ddx_candidates, ("df", "dermatofibroma"), ("mel", "melanoma", "nv", "nevus"))
+        or has_confusion_pair(ddx_candidates, ("vasc", "vascular"), ("mel", "melanoma", "nv", "nevus"))
+    )
 
     return {
         "high_uncertainty": uncertainty_level == "high",
@@ -916,6 +934,7 @@ def _build_signal_profile(planner_input: PlannerInput) -> dict[str, Any]:
         "ack_scc_confusion": any(c in active_confusion_clusters for c in ("ack_bcc_scc", "ack_scc")),
         "ack_sek_confusion": "ack_sek" in active_confusion_clusters,
         "keratinocyte_bcc_confusion": keratinocyte_bcc_confusion,
+        "ham_benign_mimic_confusion": ham_benign_mimic_confusion,
         "experience_compare_pattern": any(
             pattern in retrieved_text for pattern in ("compare_then_audit_uncertainty", "confusion_memory", "differential")
         ),

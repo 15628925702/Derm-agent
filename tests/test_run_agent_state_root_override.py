@@ -25,6 +25,15 @@ class StubClient:
     def run_skill_prompt(self, case_input: CaseInput, skill_name: str, prompt: str, output_schema: str) -> dict:
         return {}
 
+    def baseline_diagnosis(self, case_input: CaseInput) -> dict:
+        return {
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+            "rationale": "stub baseline diagnosis",
+            "confidence": "medium",
+            "follow_up_considerations": [],
+        }
+
     def final_diagnosis(self, case_input: CaseInput, evidence_package) -> dict:
         return {
             "final_diagnosis": "Nevus",
