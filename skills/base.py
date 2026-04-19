@@ -255,21 +255,24 @@ class BaseSkill(ABC):
             for packet in related_packets
         )
         retrieval_query = (state.retrieval_bundle or {}).get("query", {})
+        dataset_name = getattr(state.case_input, "dataset_name", None)
         return detect_confusion_clusters(
             ddx_candidates=[str(item) for item in perception.get("ddx_candidates", []) if str(item).strip()],
             confusion_pair=str(retrieval_query.get("confusion_pair", "")).strip() or None,
             known_confusion_text=related_text,
             image_summary=str(perception.get("image_summary", "")),
             notes=[str(item) for item in perception.get("notes", []) if str(item).strip()],
+            dataset_name=dataset_name,
         )
 
     def confusion_cluster_prompt_payload(self, state: CaseState, *, max_items: int = 2) -> dict[str, Any]:
         cluster_names = self.active_confusion_clusters(state)
+        dataset_name = getattr(state.case_input, "dataset_name", None)
         return {
             "active_clusters": cluster_names,
-            "related_confusion_pairs": list(cluster_pairs(cluster_names)),
-            "related_keywords": list(cluster_related_keywords(cluster_names)),
-            "guidance": cluster_guidance_snapshot(cluster_names, max_items=max_items),
+            "related_confusion_pairs": list(cluster_pairs(cluster_names, dataset_name=dataset_name)),
+            "related_keywords": list(cluster_related_keywords(cluster_names, dataset_name=dataset_name)),
+            "guidance": cluster_guidance_snapshot(cluster_names, max_items=max_items, dataset_name=dataset_name),
         }
 
     def execution_context_text(self, execution_context: SkillExecutionContext) -> str:

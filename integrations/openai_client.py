@@ -423,6 +423,8 @@ class DermOpenAIClient:
             prompt = (
                 "You are the only final diagnostic decision maker in DermAgent.\n"
                 "Use the evidence package as structured support, not as an overriding instruction.\n"
+                f"{mel_nev_note}"
+                "Treat `risk_layer.baseline_preview` as the image-and-metadata-only anchor diagnosis.\n"
                 "The evidence package contains two layers:\n"
                 "1. `risk_layer`: malignant-risk warnings, caution flags, follow-up suggestions, and the supporting shortlist.\n"
                 "2. `diagnosis_override_layer`: whether the agent evidence is strong enough to justify changing the diagnosis direction.\n"
@@ -430,12 +432,14 @@ class DermOpenAIClient:
                 "- if `subtype_override_allowed` is true, you may output a specific diagnostic subtype.\n"
                 "- if only `malignancy_override_allowed` is true, prefer a suspicious-style subtype label such as `Suspicious for Basal Cell Carcinoma` instead of a fully confident subtype override.\n"
                 "- if neither override is allowed, stay close to a baseline-style diagnosis from the image and metadata, but preserve the risk warnings, caution, and follow-up context.\n"
+                "- if `selected_evidence` is empty, or there is no subtype-specific supporting evidence, do not drift away from `baseline_preview`.\n"
+                "- generic uncertainty, follow-up suggestions, or malignancy caution flags are not by themselves subtype evidence.\n"
+                "- when the evidence mostly says 'need more information', keep the baseline diagnosis and express uncertainty in the rationale/follow_up_considerations instead of changing the label.\n"
                 "Within the override layer, separately weigh `Supporting Evidence` against `Opposing / Exclusion Evidence`.\n"
                 "Do not let generic risk or descriptive evidence count as subtype-specific support unless the override layer says subtype support is sufficient.\n"
                 "Prioritize the `selected_evidence` block as the curated shortlist chosen by the evidence calibrator.\n"
                 "Use `serialized_evidence_text` as supporting narrative context when it agrees with the selected evidence.\n"
-                "When opposing evidence is present in the evidence package, consider it carefully but do not let it override strong malignant-specific features.\n"
-                f"{mel_nev_note}"
+                "When opposing evidence is present in the evidence package, weigh it carefully against supporting evidence.\n"
                 "Integrate image, metadata, and evidence, then return a structured final diagnosis result.\n"
                 "Include: final_diagnosis, differential_diagnoses, rationale, confidence, follow_up_considerations.\n"
                 "When override is not allowed, keep the diagnosis conservative but include risk, caution, follow-up, and why the evidence was not strong enough to override.\n"
@@ -1195,6 +1199,7 @@ class DermOpenAIClient:
                 "supporting_score": diagnosis_layer.get("supporting_score"),
                 "opposing_score": diagnosis_layer.get("opposing_score"),
                 "support_margin": diagnosis_layer.get("support_margin"),
+                "selected_evidence_present": bool(diagnosis_layer.get("selected_evidence_present", False)),
                 "subtype_support_score": diagnosis_layer.get("subtype_support_score"),
                 "subtype_support_margin": diagnosis_layer.get("subtype_support_margin"),
                 "specialist_support_present": bool(diagnosis_layer.get("specialist_support_present", False)),
@@ -1260,6 +1265,7 @@ class DermOpenAIClient:
                 "supporting_score": diagnosis_layer.get("supporting_score"),
                 "opposing_score": diagnosis_layer.get("opposing_score"),
                 "support_margin": diagnosis_layer.get("support_margin"),
+                "selected_evidence_present": bool(diagnosis_layer.get("selected_evidence_present", False)),
                 "subtype_support_score": diagnosis_layer.get("subtype_support_score"),
                 "subtype_support_margin": diagnosis_layer.get("subtype_support_margin"),
                 "specialist_support_present": bool(diagnosis_layer.get("specialist_support_present", False)),

@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import argparse
-import csv
+from dataclasses import replace
 import json
 import sys
 from pathlib import Path
@@ -15,6 +15,8 @@ if str(REPO_ROOT) not in sys.path:
 from agent.policy_config import load_policy
 from agent.run_agent import run_agent
 from agent.state import CaseInput
+from dataio.ham10000_loader import load_ham10000_case_inputs, load_ham10000_records
+from dataio.isic2019_loader import load_isic2019_case_inputs, load_isic2019_records
 from integrations.openai_client import DermOpenAIClient
 from utils.external_conservative_fusion import THREE_CLASS_LABEL_SPACE, build_conservative_fusion_output
 
@@ -53,67 +55,41 @@ def load_manifest(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def build_ham10000_cases(data_root: Path, case_ids: list[str]) -> list[CaseInput]:
-    metadata_path = data_root / "HAM10000_metadata.csv"
-    rows: dict[str, dict[str, str]] = {}
-    with metadata_path.open("r", encoding="utf-8", newline="") as handle:
-        for row in csv.DictReader(handle):
-            rows[row["image_id"]] = row
+def build_ham10000_cases(data_root: Path, case_ids: list[str]) -> tuple[list[CaseInput], dict[str, str]]:
+    records = load_ham10000_records(data_root=data_root, limit=None, offset=0)
+    inputs = load_ham10000_case_inputs(data_root=data_root, limit=None, offset=0)
+    record_by_case_id = {record.case_id: record for record in records}
+    input_by_case_id = {case.case_id: case for case in inputs}
 
-    cases: list[CaseInput] = []
+    resolved_cases: list[CaseInput] = []
+    aligned_truths: dict[str, str] = {}
     for case_id in case_ids:
-        row = rows[case_id]
-        image_path = next(data_root.glob(f"HAM10000_images_part_*/{case_id}.jpg"))
-        cases.append(
-            CaseInput(
-                case_id=case_id,
-                image_path=str(image_path),
-                metadata=dict(row),
-                label=HAM10000_LABEL_MAP[row["dx"]],
-                reference_label=HAM10000_LABEL_MAP[row["dx"]],
-                dataset_name="HAM10000",
-                source_metadata_path=str(metadata_path),
-            )
-        )
-    return cases
+        record = record_by_case_id.get(case_id)
+        case_input = input_by_case_id.get(case_id)
+        if record is None or case_input is None:
+            raise KeyError(f"Missing HAM10000 case `{case_id}` in loader output.")
+        resolved_cases.append(case_input)
+        aligned_truths[case_id] = HAM10000_LABEL_MAP.get(str(record.original_label).strip().lower(), "OTHER")
+    return resolved_cases, aligned_truths
 
 
-def build_isic2019_cases(data_root: Path, case_ids: list[str]) -> list[CaseInput]:
-    gt_csv = data_root / "ISIC_2019_Training_GroundTruth.csv"
-    metadata_csv = data_root / "ISIC_2019_Training_Metadata.csv"
-    image_dir = data_root / "images" / "ISIC_2019_Training_Input"
+def build_isic2019_cases(data_root: Path, case_ids: list[str]) -> tuple[list[CaseInput], dict[str, str]]:
+    records = load_isic2019_records(data_root=data_root, limit=None, offset=0)
+    inputs = load_isic2019_case_inputs(data_root=data_root, limit=None, offset=0)
+    record_by_case_id = {record.case_id: record for record in records}
+    input_by_case_id = {case.case_id: case for case in inputs}
 
-    metadata_rows: dict[str, dict[str, str]] = {}
-    with metadata_csv.open("r", encoding="utf-8", newline="") as handle:
-        for row in csv.DictReader(handle):
-            metadata_rows[row["image"]] = row
-
-    gt_rows: dict[str, str] = {}
-    with gt_csv.open("r", encoding="utf-8", newline="") as handle:
-        for row in csv.DictReader(handle):
-            image_id = row["image"]
-            for key, value in row.items():
-                if key == "image":
-                    continue
-                if value == "1.0" and key in ISIC2019_LABEL_MAP:
-                    gt_rows[image_id] = ISIC2019_LABEL_MAP[key]
-                    break
-
-    cases: list[CaseInput] = []
+    resolved_cases: list[CaseInput] = []
+    aligned_truths: dict[str, str] = {}
     for case_id in case_ids:
         base_case_id = case_id.removesuffix("_downsampled")
-        cases.append(
-            CaseInput(
-                case_id=case_id,
-                image_path=str(image_dir / f"{base_case_id}.jpg"),
-                metadata=dict(metadata_rows.get(base_case_id, {})),
-                label=gt_rows[base_case_id],
-                reference_label=gt_rows[base_case_id],
-                dataset_name="ISIC2019",
-                source_metadata_path=str(metadata_csv),
-            )
-        )
-    return cases
+        record = record_by_case_id.get(base_case_id)
+        case_input = input_by_case_id.get(base_case_id)
+        if record is None or case_input is None:
+            raise KeyError(f"Missing ISIC2019 case `{case_id}` (base `{base_case_id}`) in loader output.")
+        resolved_cases.append(replace(case_input, case_id=case_id))
+        aligned_truths[case_id] = ISIC2019_LABEL_MAP.get(str(record.original_label).strip().upper(), "OTHER")
+    return resolved_cases, aligned_truths
 
 
 def summarize(case_rows: list[dict[str, Any]]) -> dict[str, Any]:
@@ -152,10 +128,10 @@ def main() -> None:
     case_ids = list(manifest.get("selected_case_ids", []))
     data_root = Path(args.data_root)
     if args.dataset == "ham10000":
-        cases = build_ham10000_cases(data_root, case_ids)
+        cases, aligned_truths = build_ham10000_cases(data_root, case_ids)
         dataset_name = "HAM10000"
     else:
-        cases = build_isic2019_cases(data_root, case_ids)
+        cases, aligned_truths = build_isic2019_cases(data_root, case_ids)
         dataset_name = "ISIC2019"
 
     client = DermOpenAIClient(
@@ -203,7 +179,7 @@ def main() -> None:
                 "image_path": case.image_path,
                 "dataset_name": dataset_name,
                 "ground_truth_original_label": case.label,
-                "ground_truth_aligned_label": case.reference_label,
+                "ground_truth_aligned_label": aligned_truths[case.case_id],
                 "baseline_final_diagnosis": baseline.get("final_diagnosis", ""),
                 "baseline_final_aligned_label": align_label(baseline.get("final_diagnosis", "")),
                 "baseline_differential_diagnoses": baseline.get("differential_diagnoses", []),
@@ -213,10 +189,10 @@ def main() -> None:
                 "agent_differential_diagnoses": agent.get("differential_diagnoses", []),
                 "agent_topk_aligned_labels": agent_topk,
                 "agent_fusion_decision": agent.get("fusion_decision", {}),
-                "baseline_correct": align_label(baseline.get("final_diagnosis", "")) == case.reference_label,
-                "agent_correct": align_label(agent.get("final_diagnosis", "")) == case.reference_label,
-                "baseline_topk_hit": case.reference_label in baseline_topk,
-                "agent_topk_hit": case.reference_label in agent_topk,
+                "baseline_correct": align_label(baseline.get("final_diagnosis", "")) == aligned_truths[case.case_id],
+                "agent_correct": align_label(agent.get("final_diagnosis", "")) == aligned_truths[case.case_id],
+                "baseline_topk_hit": aligned_truths[case.case_id] in baseline_topk,
+                "agent_topk_hit": aligned_truths[case.case_id] in agent_topk,
             }
         )
 

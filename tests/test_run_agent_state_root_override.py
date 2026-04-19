@@ -10,6 +10,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from agent.run_agent import run_agent
 from agent.state import CaseInput
+from memory.experience_bank import ExperienceBank
 
 
 class StubClient:
@@ -72,3 +73,49 @@ def test_run_agent_uses_split_state_root_override(monkeypatch, tmp_path: Path) -
 
     cognition_payload = json.loads(cognition_path.read_text(encoding="utf-8"))
     assert cognition_payload["state_split"] == "train"
+
+
+def test_run_agent_passes_workflow_context_to_initial_and_followup_retrieval(monkeypatch, tmp_path: Path) -> None:
+    seen_workflow_contexts: list[dict | None] = []
+    original_retrieve_bundle = ExperienceBank.retrieve_bundle
+
+    def recording_retrieve_bundle(self, *args, **kwargs):  # type: ignore[no-untyped-def]
+        seen_workflow_contexts.append(kwargs.get("workflow_context"))
+        return original_retrieve_bundle(self, *args, **kwargs)
+
+    monkeypatch.setattr(ExperienceBank, "retrieve_bundle", recording_retrieve_bundle)
+
+    custom_split_root = tmp_path / "split_states"
+    custom_policy_root = tmp_path / "policy_root"
+    monkeypatch.setenv("DERMAGENT_SPLIT_STATE_ROOT", str(custom_split_root))
+    monkeypatch.setenv("DERMAGENT_POLICY_ROOT", str(custom_policy_root))
+
+    image_path = tmp_path / "case.png"
+    image_path.write_bytes(b"fake-image")
+    workflow_context = {
+        "hospital_type": "primary_care",
+        "metadata_completeness": "partial",
+        "time_budget": "screening",
+        "workflow_preference": "risk_first",
+    }
+    case_input = CaseInput(
+        case_id="CASE_WORKFLOW_CTX",
+        image_path=str(image_path),
+        metadata={"site": "arm"},
+        label="Nevus",
+        dataset_name="ham10000",
+        workflow_context=workflow_context,
+    )
+
+    run_agent(
+        case_input=case_input,
+        client=StubClient(),
+        output_dir=tmp_path / "outputs",
+        enable_writeback=False,
+        run_mode="toy_eval",
+        data_split="train",
+    )
+
+    assert len(seen_workflow_contexts) >= 2
+    assert seen_workflow_contexts[0] == workflow_context
+    assert seen_workflow_contexts[1] == workflow_context

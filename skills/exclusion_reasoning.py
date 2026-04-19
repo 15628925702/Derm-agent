@@ -66,10 +66,11 @@ class ExclusionReasoningSkill(BaseSkill):
         abstract_experiences: list[dict[str, object]],
     ) -> list[dict[str, object]]:
         cluster_names = self.active_confusion_clusters(state)
+        dataset_name = getattr(state.case_input, "dataset_name", None)
         return self.filter_related_abstract_experiences(
             abstract_experiences,
-            confusion_pairs=cluster_pairs(cluster_names),
-            keywords=cluster_related_keywords(cluster_names),
+            confusion_pairs=cluster_pairs(cluster_names, dataset_name=dataset_name),
+            keywords=cluster_related_keywords(cluster_names, dataset_name=dataset_name),
             allowed_types=("confusion_memory", "prototype", "rule"),
             top_k=3,
         )

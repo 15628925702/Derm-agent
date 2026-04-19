@@ -7,10 +7,31 @@ from typing import Any
 
 LEAKY_METADATA_KEYS = {
     "diagnostic",
+    "diagnosis",
     "label",
+    "original_label",
+    "aligned_label",
+    "binary_label",
+    "canonical_label",
+    "risk_label",
     "reference_label",
     "true_label",
+    "ground_truth",
     "final_decision",
+    "dx",
+    "diagnosis_label",
+    "target",
+    "class",
+    "mel",
+    "nv",
+    "bcc",
+    "ak",
+    "bkl",
+    "df",
+    "vasc",
+    "scc",
+    "unk",
+    "akiec",
     "patient_id",
     "lesion_id",
     "img_id",
@@ -58,6 +79,7 @@ class CaseInput:
 class CaseState:
     case_input: CaseInput
     perception: dict[str, Any] = field(default_factory=dict)
+    baseline_diagnosis: dict[str, Any] = field(default_factory=dict)
     image_read_audit: dict[str, Any] = field(default_factory=dict)
     retrieval_bundle: dict[str, Any] = field(default_factory=dict)
     skill_retrieval_bundle: dict[str, Any] = field(default_factory=dict)

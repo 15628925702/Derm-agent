@@ -252,15 +252,17 @@ def _build_planner_rationale(state: CaseState) -> dict[str, Any]:
 def _build_confusion_cluster_summary(state: CaseState) -> dict[str, Any]:
     perception = state.perception or {}
     retrieval_query = (state.retrieval_bundle or {}).get("query", {})
+    dataset_name = getattr(state.case_input, "dataset_name", None)
     active_clusters = detect_confusion_clusters(
         ddx_candidates=[str(item) for item in perception.get("ddx_candidates", []) if str(item).strip()],
         confusion_pair=str(retrieval_query.get("confusion_pair", "")).strip() or None,
         image_summary=str(perception.get("image_summary", "")),
         notes=[str(item) for item in perception.get("notes", []) if str(item).strip()],
+        dataset_name=dataset_name,
     )
     return {
         "active_clusters": active_clusters,
-        "guidance": cluster_guidance_snapshot(active_clusters, max_items=2),
+        "guidance": cluster_guidance_snapshot(active_clusters, max_items=2, dataset_name=dataset_name),
     }
 
 
@@ -700,6 +702,7 @@ def _build_evidence_decision_policy(
     supporting_score = round(sum(float(item.get("score", 0.0) or 0.0) for item in supporting_items), 6)
     opposing_score = round(sum(float(item.get("score", 0.0) or 0.0) for item in opposing_items), 6)
     subtype_supporting_items = _subtype_supporting_items(supporting_items)
+    selected_evidence_present = bool(selected_evidence)
 
     risk_output = dict(state.skill_outputs.get("malignancy_risk_assessment_skill", {}))
     risk_level = str(risk_output.get("risk_level", "unknown")).strip().lower() or "unknown"
@@ -720,6 +723,8 @@ def _build_evidence_decision_policy(
     subtype_support_quota_satisfied = len(subtype_supporting_items) >= 1
     subtype_support_margin = round(subtype_support_score - opposing_score, 6)
     malignancy_override_allowed = (
+        selected_evidence_present
+        and
         risk_level == "high"
         and support_margin >= 6.0
         and uncertainty_level not in {"high", "unknown"}
@@ -770,6 +775,8 @@ def _build_evidence_decision_policy(
     why_not_confident_enough: list[str] = []
     if risk_level != "high":
         why_not_confident_enough.append("malignancy risk is not high enough for a diagnosis override")
+    if not selected_evidence_present:
+        why_not_confident_enough.append("no curated selected evidence is available to justify overriding the baseline diagnosis")
     if support_margin < 6.0:
         why_not_confident_enough.append("supporting evidence does not sufficiently outweigh opposing or exclusion evidence")
     if not subtype_support_quota_satisfied:
@@ -790,7 +797,10 @@ def _build_evidence_decision_policy(
         "caution_flags": caution_flags,
         "follow_up_suggestion": _build_follow_up_suggestion(escalation_summary=escalation_summary, uncertainty_summary=uncertainty_summary),
         "selected_evidence": supporting_items[:4] + opposing_items[:2],
-        "baseline_preview": _build_baseline_preview(initial_perception_summary=initial_perception_summary),
+        "baseline_preview": _build_baseline_preview(
+            initial_perception_summary=initial_perception_summary,
+            baseline_diagnosis=state.baseline_diagnosis,
+        ),
     }
     diagnosis_override_layer = {
         "override_allowed": subtype_override_allowed,
@@ -804,6 +814,7 @@ def _build_evidence_decision_policy(
         "supporting_score": supporting_score,
         "opposing_score": opposing_score,
         "support_margin": support_margin,
+        "selected_evidence_present": selected_evidence_present,
         "subtype_support_score": subtype_support_score,
         "subtype_support_margin": subtype_support_margin,
         "specialist_support_present": specialist_support,
@@ -888,12 +899,25 @@ def _build_follow_up_suggestion(*, escalation_summary: dict[str, Any], uncertain
     return "clinical follow-up and closer inspection if concern persists"
 
 
-def _build_baseline_preview(*, initial_perception_summary: dict[str, Any]) -> dict[str, Any]:
+def _build_baseline_preview(
+    *,
+    initial_perception_summary: dict[str, Any],
+    baseline_diagnosis: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     ddx_candidates = [str(item).strip() for item in initial_perception_summary.get("ddx_candidates", []) if str(item).strip()]
-    return {
+    preview = {
         "early_ddx_candidates": ddx_candidates[:3],
         "image_summary": str(initial_perception_summary.get("image_summary", "")).strip()[:220],
     }
+    if isinstance(baseline_diagnosis, dict) and baseline_diagnosis:
+        preview["baseline_final_diagnosis"] = str(baseline_diagnosis.get("final_diagnosis", "")).strip()[:120]
+        preview["baseline_differential_diagnoses"] = [
+            str(item).strip()[:120]
+            for item in baseline_diagnosis.get("differential_diagnoses", [])[:4]
+            if str(item).strip()
+        ]
+        preview["baseline_confidence"] = str(baseline_diagnosis.get("confidence", "")).strip()[:60]
+    return preview
 
 
 def _summarize_skill_evidence(skill_name: str, output: dict[str, Any]) -> str:
@@ -1006,4 +1030,3 @@ def _filter_evidence_by_workflow(
         ]
 
     return result
-

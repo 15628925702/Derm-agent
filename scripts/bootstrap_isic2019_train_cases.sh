@@ -12,6 +12,9 @@ POLICY_ROOT="${POLICY_ROOT:-${PROJECT_ROOT}/state/dataset_adaptation/isic2019_v1
 SPLIT_STATE_ROOT="${SPLIT_STATE_ROOT:-${PROJECT_ROOT}/state/dataset_adaptation/isic2019_v1/split_states}"
 OUTPUT_DIR="${OUTPUT_DIR:-${PROJECT_ROOT}/outputs/dataset_adaptation/isic2019_v1/bootstrap}"
 RUN_MODE="${RUN_MODE:-isic2019_train_bootstrap}"
+DATA_SPLIT="${DATA_SPLIT:-train}"
+SPLIT_JSON="${SPLIT_JSON:-${PROJECT_ROOT}/outputs/dataset_adaptation/isic2019_v1/isic2019_split.json}"
+SPLIT_ID="${SPLIT_ID:-isic2019_contiguous_v1}"
 CLIENT_BASE_URL="${CLIENT_BASE_URL:-http://127.0.0.1:8000/v1}"
 CLIENT_API_KEY="${CLIENT_API_KEY:-EMPTY}"
 CLIENT_MODEL="${CLIENT_MODEL:-Qwen2.5-VL-7B-Instruct}"
@@ -27,9 +30,12 @@ echo "[info] data root         : ${DATA_ROOT}" | tee -a "${LOG_PATH}"
 echo "[info] output dir        : ${OUTPUT_DIR}" | tee -a "${LOG_PATH}"
 echo "[info] policy root       : ${POLICY_ROOT}" | tee -a "${LOG_PATH}"
 echo "[info] split state root  : ${SPLIT_STATE_ROOT}" | tee -a "${LOG_PATH}"
+echo "[info] data split        : ${DATA_SPLIT}" | tee -a "${LOG_PATH}"
+echo "[info] split json        : ${SPLIT_JSON}" | tee -a "${LOG_PATH}"
+echo "[info] split id          : ${SPLIT_ID}" | tee -a "${LOG_PATH}"
 echo "[info] client base url   : ${CLIENT_BASE_URL}" | tee -a "${LOG_PATH}"
 echo "[info] client model      : ${CLIENT_MODEL}" | tee -a "${LOG_PATH}"
-echo "[info] start index       : ${START_INDEX}" | tee -a "${LOG_PATH}"
+echo "[info] split offset      : ${START_INDEX}" | tee -a "${LOG_PATH}"
 echo "[info] count             : ${COUNT}" | tee -a "${LOG_PATH}"
 echo "[info] stop on error     : ${STOP_ON_ERROR}" | tee -a "${LOG_PATH}"
 
@@ -43,17 +49,65 @@ for name in ("train", "val", "test"):
     ensure_split_state_paths(data_split=name)
 PY
 
-end_index=$((START_INDEX + COUNT - 1))
-for i in $(seq "${START_INDEX}" "${end_index}"); do
-  current=$((i - START_INDEX + 1))
-  echo "[progress] case ${current}/${COUNT} (global_index=${i})" | tee -a "${LOG_PATH}"
+mapfile -t CASE_INDICES < <(
+  DATA_ROOT="${DATA_ROOT}" \
+  SPLIT_JSON="${SPLIT_JSON}" \
+  SPLIT_ID="${SPLIT_ID}" \
+  DATA_SPLIT="${DATA_SPLIT}" \
+  START_INDEX="${START_INDEX}" \
+  COUNT="${COUNT}" \
+  python - <<'PY'
+import json
+import os
+from pathlib import Path
+
+from configs.dataset_splits import build_fixed_split_payload
+
+data_root = Path(os.environ["DATA_ROOT"])
+split_json = Path(os.environ["SPLIT_JSON"])
+split_id = os.environ["SPLIT_ID"]
+data_split = os.environ["DATA_SPLIT"]
+start_index = max(0, int(os.environ["START_INDEX"]))
+count = max(0, int(os.environ["COUNT"]))
+
+if split_json.exists():
+    payload = json.loads(split_json.read_text(encoding="utf-8"))
+else:
+    payload = build_fixed_split_payload(split_id=split_id, data_root=data_root)
+
+indices = payload.get(f"{data_split}_case_indices")
+if not indices:
+    raw_range = payload.get(f"{data_split}_range")
+    if not isinstance(raw_range, list) or len(raw_range) != 2:
+        raise ValueError(f"Split payload missing `{data_split}_range` and `{data_split}_case_indices`.")
+    start, end = int(raw_range[0]), int(raw_range[1])
+    indices = list(range(start, end + 1))
+
+selected = indices[start_index : start_index + count]
+for item in selected:
+    print(int(item))
+PY
+)
+
+if [[ "${#CASE_INDICES[@]}" -eq 0 ]]; then
+  echo "[error] no case indices resolved for split=${DATA_SPLIT} offset=${START_INDEX} count=${COUNT}" | tee -a "${LOG_PATH}"
+  exit 1
+fi
+
+resolved_count="${#CASE_INDICES[@]}"
+echo "[info] resolved cases    : ${resolved_count}" | tee -a "${LOG_PATH}"
+
+for idx in "${!CASE_INDICES[@]}"; do
+  i="${CASE_INDICES[$idx]}"
+  current=$((idx + 1))
+  echo "[progress] case ${current}/${resolved_count} (metadata_index=${i})" | tee -a "${LOG_PATH}"
   cmd=(
     python scripts/debug_single_case.py
     --case-index "${i}"
     --data-root "${DATA_ROOT}"
     --output-dir "${OUTPUT_DIR}"
     --enable-writeback
-    --data-split train
+    --data-split "${DATA_SPLIT}"
     --run-mode "${RUN_MODE}"
     --client-base-url "${CLIENT_BASE_URL}"
     --client-api-key "${CLIENT_API_KEY}"

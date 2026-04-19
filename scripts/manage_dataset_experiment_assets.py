@@ -58,7 +58,7 @@ def _write_json(path: Path, payload: dict[str, Any]) -> None:
 
 def _copy_seed_policy(*, base_policy_config: Path, policy_root: Path) -> dict[str, Any]:
     policy_root.mkdir(parents=True, exist_ok=True)
-    source_policy = load_policy(base_policy_config).to_dict()
+    source_policy = _sanitize_policy_for_heuristic_only(load_policy(base_policy_config).to_dict())
     target_policy_path = policy_root / "current_stable_policy.json"
     source_policy["source_path"] = str(target_policy_path)
     _write_json(target_policy_path, source_policy)
@@ -78,6 +78,29 @@ def _copy_seed_policy(*, base_policy_config: Path, policy_root: Path) -> dict[st
     }
     _write_json(manifest_path, manifest_payload)
     return source_policy
+
+
+def _sanitize_policy_for_heuristic_only(policy: dict[str, Any]) -> dict[str, Any]:
+    sanitized = dict(policy)
+    planner_policy = dict(sanitized.get("planner_policy", {}) or {})
+    retrieval_policy = dict(sanitized.get("retrieval_policy", {}) or {})
+    evidence_policy = dict(sanitized.get("evidence_policy", {}) or {})
+
+    planner_policy["controller_family"] = "heuristic"
+    planner_policy["controller_checkpoint_path"] = ""
+    planner_policy["learned_controller_top_k"] = 0
+    planner_policy["learned_controller_force_top_k"] = 0
+
+    retrieval_policy["enable_learned_retrieval_reranker"] = False
+    retrieval_policy["retrieval_reranker_checkpoint_path"] = ""
+
+    evidence_policy["calibrator_mode"] = "heuristic"
+    evidence_policy["calibrator_checkpoint_path"] = ""
+
+    sanitized["planner_policy"] = planner_policy
+    sanitized["retrieval_policy"] = retrieval_policy
+    sanitized["evidence_policy"] = evidence_policy
+    return sanitized
 
 
 def init_experiment_assets(args: argparse.Namespace) -> dict[str, Any]:
@@ -105,7 +128,10 @@ def init_experiment_assets(args: argparse.Namespace) -> dict[str, Any]:
         os.environ["DERMAGENT_POLICY_ROOT"] = str(policy_root)
         try:
             ensure_policy_store()
-            seeded_policy = load_policy(policy_root / "current_stable_policy.json").to_dict()
+            seeded_policy = _sanitize_policy_for_heuristic_only(
+                load_policy(policy_root / "current_stable_policy.json").to_dict()
+            )
+            _write_json(policy_root / "current_stable_policy.json", seeded_policy)
         finally:
             if previous_root is None:
                 os.environ.pop("DERMAGENT_POLICY_ROOT", None)

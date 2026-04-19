@@ -22,8 +22,14 @@ fi
 
 if [[ "$EXTERNAL_DATASET" == "ham10000" ]]; then
   DATA_ROOT="${DATA_ROOT:-/root/DermAgent/data/ham10000}"
+  EXTERNAL_POLICY_ROOT="${EXTERNAL_POLICY_ROOT:-/root/DermAgent/state/dataset_adaptation/ham10000_v2/policy}"
+  EXTERNAL_SPLIT_STATE_ROOT="${EXTERNAL_SPLIT_STATE_ROOT:-/root/DermAgent/state/dataset_adaptation/ham10000_v2/split_states}"
+  EXTERNAL_POLICY_JSON="${EXTERNAL_POLICY_JSON:-/root/DermAgent/state/dataset_adaptation/ham10000_v2/policy/current_stable_policy.json}"
 elif [[ "$EXTERNAL_DATASET" == "isic2019" ]]; then
   DATA_ROOT="${DATA_ROOT:-/root/DermAgent/data/isic2019}"
+  EXTERNAL_POLICY_ROOT="${EXTERNAL_POLICY_ROOT:-/root/DermAgent/state/dataset_adaptation/isic2019_v1/policy}"
+  EXTERNAL_SPLIT_STATE_ROOT="${EXTERNAL_SPLIT_STATE_ROOT:-/root/DermAgent/state/dataset_adaptation/isic2019_v1/split_states}"
+  EXTERNAL_POLICY_JSON="${EXTERNAL_POLICY_JSON:-/root/DermAgent/state/dataset_adaptation/isic2019_v1/policy/current_stable_policy.json}"
 else
   echo "[error] Unsupported EXTERNAL_DATASET=$EXTERNAL_DATASET"
   exit 1
@@ -60,8 +66,8 @@ done
 
 curl -sS -H "Authorization: Bearer $FINAL_AGENT_API_KEY" "$FINAL_AGENT_BASE_URL/models" >/dev/null
 
-export DERMAGENT_POLICY_ROOT="$QWEN_FINAL_POLICY_ROOT"
-export DERMAGENT_SPLIT_STATE_ROOT="$QWEN_FINAL_FROZEN_STATE_ROOT"
+export DERMAGENT_POLICY_ROOT="$EXTERNAL_POLICY_ROOT"
+export DERMAGENT_SPLIT_STATE_ROOT="$EXTERNAL_SPLIT_STATE_ROOT"
 export DERMAGENT_CONSERVATIVE_GENERALIZATION_LAYER="$CONSERVATIVE_GENERALIZATION_LAYER"
 
 echo "[progress 1/2] running external evaluation"
@@ -73,8 +79,8 @@ python final-script/tools/external_final_runner.py \
   --client-base-url "$FINAL_AGENT_BASE_URL" \
   --client-api-key "$FINAL_AGENT_API_KEY" \
   --client-model "$FINAL_AGENT_MODEL" \
-  --policy-config "$QWEN_FINAL_POLICY_JSON" \
-  --policy-label "Qwen final stable-paper agent policy (conservative generalization)" \
+  --policy-config "$EXTERNAL_POLICY_JSON" \
+  --policy-label "Qwen dataset-specific heuristic agent policy (conservative generalization)" \
   --conservative-generalization-layer
 
 echo "[progress 2/2] completed"

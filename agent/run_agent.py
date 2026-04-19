@@ -82,6 +82,7 @@ def run_agent(
     state = CaseState(case_input=case_input)
     state.policy_snapshot = policy_snapshot
     state.perception = qwen_client.initial_perception(case_input)
+    state.baseline_diagnosis = qwen_client.baseline_diagnosis(case_input)
     if not state.uncertainty:
         perception_uncertainty = state.perception.get("uncertainty", {})
         state.uncertainty = {
@@ -93,6 +94,7 @@ def run_agent(
     if execution_config["enable_experience_retrieval"]:
         state.retrieval_bundle = bank.retrieve_bundle(
             case_state=state,
+            workflow_context=case_input.workflow_context,
             top_k_merged=int(retrieval_policy.get("top_k_experience", cognition_state.retrieval_preferences.get("top_k", 3))),
             top_k_tactical=max(3, int(retrieval_policy.get("top_k_tactical", cognition_state.retrieval_preferences.get("top_k", 3)))),
             top_k_abstract=max(3, int(retrieval_policy.get("top_k_abstract", cognition_state.retrieval_preferences.get("top_k", 3)))),

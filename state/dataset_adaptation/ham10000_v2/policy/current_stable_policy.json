@@ -1,10 +1,10 @@
 {
-  "policy_id": "mainline_parameterized_agent_20260331",
-  "version": 3,
+  "policy_id": "ham10000_v2_heuristic_stable",
+  "version": 4,
   "status": "stable",
   "created_at": "2026-03-31T00:00:00Z",
-  "parent_policy_id": "candidate_stage4_step6_reuse_medium_signal_10h_20260328T173214Z",
-  "description": "Mainline parameterized agent using learned controller, learned retrieval reranker, and hybrid learned evidence calibrator.",
+  "parent_policy_id": "mainline_parameterized_agent_20260331",
+  "description": "HAM10000 v2 isolated heuristic-only stable policy for dataset-specific bootstrap and evaluation.",
   "change_summary": {
     "planner": [
       "Baseline rule-based planner with structured evidence support."
@@ -14,12 +14,9 @@
       "Use cognition-guided retrieval with conservative top-k defaults."
     ],
     "cognition_defaults": [],
-    "pipeline": [
-      "staged_training_run:reuse_medium_signal_10h_20260328T173214Z",
-      "evidence_calibrator_medium_enablement:20260331"
-    ],
-    "evidence": [
-      "Enable hybrid learned evidence calibrator for mainline runtime."
+    "dataset_adaptation": [
+      "heuristic_only_runtime",
+      "dataset_specific_bootstrap_assets"
     ]
   },
   "planner_policy": {
