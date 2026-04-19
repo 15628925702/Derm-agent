@@ -89,6 +89,8 @@ def build_evidence_bundle(state: CaseState) -> dict[str, Any]:
         retrieved_tactical_experiences_summary=retrieved_tactical_experiences_summary,
         retrieved_abstract_experiences_summary=retrieved_abstract_experiences_summary,
     )
+    if not selected_evidence:
+        selected_evidence = _ham10000_fallback_selected_evidence(state)
 
     # 根据 workflow_context 调整证据排序
     selected_evidence = _reorder_evidence_by_workflow(selected_evidence, workflow_context)
@@ -860,6 +862,72 @@ def _subtype_supporting_items(selected_evidence: list[dict[str, Any]]) -> list[d
         if any(term in summary for term in ("basal cell", "squamous cell", "melanoma", "actinic keratos")):
             subtype_items.append(item)
     return subtype_items
+
+
+def _ham10000_fallback_selected_evidence(state: CaseState) -> list[dict[str, Any]]:
+    if str(getattr(state.case_input, "dataset_name", "")).strip().lower() != "ham10000":
+        return []
+    if state.skill_outputs.get("ack_scc_specialist_skill"):
+        return [
+            {
+                "item_id": "ack_scc_specialist_skill",
+                "item_type": "skill_output",
+                "source_type": "skill_output",
+                "source_name": "ack_scc_specialist_skill",
+                "skill_name": "ack_scc_specialist_skill",
+                "retrieval_type": "",
+                "section": "comparison",
+                "category": "differential_support",
+                "summary": _summarize_skill_evidence(
+                    "ack_scc_specialist_skill",
+                    state.skill_outputs.get("ack_scc_specialist_skill", {}),
+                ),
+                "score": 6.5,
+                "rank": 1,
+                "keep_reason": "ham10000_specialist_fallback",
+            }
+        ]
+    if state.skill_outputs.get("mel_nev_specialist_skill"):
+        return [
+            {
+                "item_id": "mel_nev_specialist_skill",
+                "item_type": "skill_output",
+                "source_type": "skill_output",
+                "source_name": "mel_nev_specialist_skill",
+                "skill_name": "mel_nev_specialist_skill",
+                "retrieval_type": "",
+                "section": "comparison",
+                "category": "differential_support",
+                "summary": _summarize_skill_evidence(
+                    "mel_nev_specialist_skill",
+                    state.skill_outputs.get("mel_nev_specialist_skill", {}),
+                ),
+                "score": 6.2,
+                "rank": 1,
+                "keep_reason": "ham10000_specialist_fallback",
+            }
+        ]
+    if state.skill_outputs.get("differential_compare_skill"):
+        return [
+            {
+                "item_id": "differential_compare_skill",
+                "item_type": "skill_output",
+                "source_type": "skill_output",
+                "source_name": "differential_compare_skill",
+                "skill_name": "differential_compare_skill",
+                "retrieval_type": "",
+                "section": "comparison",
+                "category": "differential_support",
+                "summary": _summarize_skill_evidence(
+                    "differential_compare_skill",
+                    state.skill_outputs.get("differential_compare_skill", {}),
+                ),
+                "score": 5.8,
+                "rank": 1,
+                "keep_reason": "ham10000_comparison_fallback",
+            }
+        ]
+    return []
 
 
 def _count_contradiction_items(summary: dict[str, Any]) -> int:

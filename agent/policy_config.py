@@ -175,6 +175,7 @@ def default_policy_payload() -> dict[str, Any]:
             "enable_evidence_calibrator": True,
             "calibrator_mode": "heuristic",
             "calibrator_checkpoint_path": "",
+            "conservative_fusion_mode": "soft",
             "learned_calibration_weight": 1.2,
             "max_total_items": 8,
             "max_observation_skills": 4,

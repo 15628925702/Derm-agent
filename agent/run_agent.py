@@ -9,6 +9,7 @@ from agent.contamination_guard import (
     infer_split_from_path,
     normalize_split_name,
 )
+from agent.conservative_fusion import apply_conservative_agent_fusion
 from agent.experiment_state import resolve_split_state_root
 from agent.image_read_audit import build_image_read_audit
 from agent.execution_record import build_case_execution_record, save_case_execution_record
@@ -179,7 +180,12 @@ def run_agent(
     state.notes = _build_notes(state)
 
     evidence_package = EvidencePackage.from_state(state)
-    state.final_diagnosis = qwen_client.final_diagnosis(case_input, evidence_package)
+    raw_final_diagnosis = qwen_client.final_diagnosis(case_input, evidence_package)
+    state.final_diagnosis = apply_conservative_agent_fusion(
+        baseline_output=state.baseline_diagnosis,
+        agent_output=raw_final_diagnosis,
+        evidence_bundle=evidence_package.to_dict(),
+    )
     if execution_config["enable_image_read_audit"]:
         counterfactual_state = _run_text_only_counterfactual(
             case_input=case_input,
