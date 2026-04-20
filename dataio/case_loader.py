@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import csv
+import inspect
 import random
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
 
@@ -9,13 +11,30 @@ from agent.state import CaseInput
 from dataio.case_schema import CaseSourceConfig, FieldCandidate, StandardizedCaseRecord
 from dataio.ham10000_loader import DEFAULT_HAM10000_ROOT, load_ham10000_case_input_by_index, load_ham10000_case_inputs
 from dataio.isic2019_loader import DEFAULT_ISIC2019_ROOT, load_isic2019_case_input_by_index, load_isic2019_case_inputs
+from dataio.scin_loader import DEFAULT_SCIN_ROOT, load_scin_case_input_by_index, load_scin_case_inputs
+from dataio.sd198_loader import (
+    DEFAULT_SD198_ROOT,
+    discover_sd198_case_source,
+    load_sd198_case_input_by_index,
+    load_sd198_case_inputs,
+)
 
 
 IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".bmp", ".webp", ".tif", ".tiff"}
 
-# Registry: dataset_name -> (load_by_index_fn, load_all_fn)
+
+@dataclass(frozen=True)
+class DatasetLoaderSpec:
+    dataset_name: str
+    load_by_index: Callable[..., CaseInput]
+    load_all: Callable[..., list[CaseInput]]
+    discover_source: Callable[..., CaseSourceConfig] | None = None
+    canonical_roots: tuple[str, ...] = ()
+
+
+# Registry: dataset_name -> DatasetLoaderSpec
 # Populated via register_dataset_loader(); built-in datasets are pre-registered below.
-_LOADER_REGISTRY: dict[str, tuple[Callable, Callable]] = {}
+_LOADER_REGISTRY: dict[str, DatasetLoaderSpec] = {}
 
 
 def register_dataset_loader(
@@ -23,32 +42,63 @@ def register_dataset_loader(
     *,
     load_by_index: Callable[[int], CaseInput],
     load_all: Callable[[], list[CaseInput]],
+    discover_source: Callable[..., CaseSourceConfig] | None = None,
     data_root: str | Path | None = None,
+    data_roots: list[str | Path] | tuple[str | Path, ...] | None = None,
 ) -> None:
     """Register a dataset loader so case_loader.py routes to it automatically.
 
     Args:
         dataset_name: Canonical dataset name (e.g. "my_dataset").
-        load_by_index: fn(case_index) -> CaseInput
-        load_all: fn() -> list[CaseInput]
+        load_by_index: fn(case_index, *, data_root=...) -> CaseInput
+        load_all: fn(*, data_root=...) -> list[CaseInput]
         data_root: Optional canonical data root path for path-based routing.
+        data_roots: Optional additional root aliases for the same dataset.
     """
-    key = str(dataset_name).strip().lower()
-    _LOADER_REGISTRY[key] = (load_by_index, load_all)
+    key = _normalize_dataset_key(dataset_name)
+    canonical_roots: list[str] = []
     if data_root is not None:
-        _PATH_LOADER_REGISTRY[str(Path(data_root).resolve())] = key
+        canonical_roots.append(_normalize_root_key(data_root))
+    for root in data_roots or ():
+        canonical_roots.append(_normalize_root_key(root))
+
+    spec = DatasetLoaderSpec(
+        dataset_name=key,
+        load_by_index=load_by_index,
+        load_all=load_all,
+        discover_source=discover_source,
+        canonical_roots=tuple(dict.fromkeys(canonical_roots)),
+    )
+    _LOADER_REGISTRY[key] = spec
+    for root_key in spec.canonical_roots:
+        _PATH_LOADER_REGISTRY[root_key] = key
 
 
 # Path-based routing: resolved path string -> dataset_name key
 _PATH_LOADER_REGISTRY: dict[str, str] = {}
 
 
-def _route_dataset_name(root: Path) -> str | None:
-    return _PATH_LOADER_REGISTRY.get(str(root.resolve()))
+def list_registered_dataset_loaders() -> list[DatasetLoaderSpec]:
+    return [spec for _, spec in sorted(_LOADER_REGISTRY.items(), key=lambda item: item[0])]
+
+
+def get_registered_dataset_loader(dataset_name: str) -> DatasetLoaderSpec | None:
+    return _LOADER_REGISTRY.get(_normalize_dataset_key(dataset_name))
+
+
+def resolve_registered_dataset_loader(root: str | Path) -> DatasetLoaderSpec | None:
+    dataset_key = _PATH_LOADER_REGISTRY.get(_normalize_root_key(root))
+    if not dataset_key:
+        return None
+    return _LOADER_REGISTRY.get(dataset_key)
 
 
 def discover_case_source(data_root: str | Path) -> CaseSourceConfig:
     root = Path(data_root)
+    spec = resolve_registered_dataset_loader(root)
+    if spec is not None and spec.discover_source is not None:
+        return _call_registered_discover_source(spec.discover_source, data_root=root)
+
     metadata_candidates = sorted(
         path for path in root.rglob("*") if path.is_file() and path.suffix.lower() == ".csv"
     )
@@ -82,16 +132,9 @@ def discover_case_source(data_root: str | Path) -> CaseSourceConfig:
 
 def load_case_by_index(case_index: int, data_root: str | Path) -> CaseInput:
     root = Path(data_root)
-    # Registry-based routing (new datasets registered via register_dataset_loader)
-    dataset_key = _route_dataset_name(root)
-    if dataset_key and dataset_key in _LOADER_REGISTRY:
-        load_by_index_fn, _ = _LOADER_REGISTRY[dataset_key]
-        return load_by_index_fn(case_index)
-    # Legacy path-based routing for built-in datasets
-    if root.resolve() == DEFAULT_HAM10000_ROOT.resolve():
-        return load_ham10000_case_input_by_index(case_index, data_root=root)
-    if root.resolve() == DEFAULT_ISIC2019_ROOT.resolve():
-        return load_isic2019_case_input_by_index(case_index, data_root=root)
+    spec = resolve_registered_dataset_loader(root)
+    if spec is not None:
+        return _call_registered_load_by_index(spec.load_by_index, case_index=case_index, data_root=root)
     config = discover_case_source(data_root)
     rows = _read_csv_rows(config.metadata_path)
     if case_index < 0 or case_index >= len(rows):
@@ -111,32 +154,13 @@ def load_case_by_index(case_index: int, data_root: str | Path) -> CaseInput:
 
 def sample_cases(count: int, data_root: str | Path, seed: int = 0) -> list[CaseInput]:
     root = Path(data_root)
-    # Registry-based routing
-    dataset_key = _route_dataset_name(root)
-    if dataset_key and dataset_key in _LOADER_REGISTRY:
-        _, load_all_fn = _LOADER_REGISTRY[dataset_key]
-        cases = load_all_fn()
+    spec = resolve_registered_dataset_loader(root)
+    if spec is not None:
+        cases = _call_registered_load_all(spec.load_all, data_root=root)
         if not cases:
             return []
         rng = random.Random(seed)
         return [cases[i] for i in rng.sample(range(len(cases)), min(count, len(cases)))]
-    # Legacy path-based routing
-    if root.resolve() == DEFAULT_HAM10000_ROOT.resolve():
-        cases = load_ham10000_case_inputs(data_root=root)
-        if not cases:
-            return []
-        rng = random.Random(seed)
-        sample_size = min(count, len(cases))
-        indices = rng.sample(range(len(cases)), sample_size)
-        return [cases[index] for index in indices]
-    if root.resolve() == DEFAULT_ISIC2019_ROOT.resolve():
-        cases = load_isic2019_case_inputs(data_root=root)
-        if not cases:
-            return []
-        rng = random.Random(seed)
-        sample_size = min(count, len(cases))
-        indices = rng.sample(range(len(cases)), sample_size)
-        return [cases[index] for index in indices]
     config = discover_case_source(data_root)
     rows = _read_csv_rows(config.metadata_path)
     if not rows:
@@ -328,16 +352,103 @@ def load_case_with_masking(
     return case
 
 
+def _normalize_dataset_key(dataset_name: str) -> str:
+    key = str(dataset_name).strip().lower()
+    if not key:
+        raise ValueError("dataset_name must be a non-empty string")
+    return key
+
+
+def _normalize_root_key(root: str | Path) -> str:
+    return str(Path(root).resolve())
+
+
+def _call_registered_load_by_index(
+    load_by_index: Callable[..., CaseInput],
+    *,
+    case_index: int,
+    data_root: Path,
+) -> CaseInput:
+    signature = _safe_signature(load_by_index)
+    if signature and _supports_keyword(signature, "data_root"):
+        return load_by_index(case_index, data_root=data_root)
+    if signature and _supports_positional_count(signature, minimum=2):
+        return load_by_index(case_index, data_root)
+    return load_by_index(case_index)
+
+
+def _call_registered_load_all(
+    load_all: Callable[..., list[CaseInput]],
+    *,
+    data_root: Path,
+) -> list[CaseInput]:
+    signature = _safe_signature(load_all)
+    if signature and _supports_keyword(signature, "data_root"):
+        return load_all(data_root=data_root)
+    if signature and _supports_positional_count(signature, minimum=1):
+        return load_all(data_root)
+    return load_all()
+
+
+def _call_registered_discover_source(
+    discover_source: Callable[..., CaseSourceConfig],
+    *,
+    data_root: Path,
+) -> CaseSourceConfig:
+    signature = _safe_signature(discover_source)
+    if signature and _supports_keyword(signature, "data_root"):
+        return discover_source(data_root=data_root)
+    if signature and _supports_positional_count(signature, minimum=1):
+        return discover_source(data_root)
+    return discover_source()
+
+
+def _safe_signature(func: Callable[..., Any]) -> inspect.Signature | None:
+    try:
+        return inspect.signature(func)
+    except (TypeError, ValueError):
+        return None
+
+
+def _supports_keyword(signature: inspect.Signature, parameter_name: str) -> bool:
+    if parameter_name in signature.parameters:
+        return True
+    return any(parameter.kind == inspect.Parameter.VAR_KEYWORD for parameter in signature.parameters.values())
+
+
+def _supports_positional_count(signature: inspect.Signature, *, minimum: int) -> bool:
+    positional_count = 0
+    for parameter in signature.parameters.values():
+        if parameter.kind in (inspect.Parameter.POSITIONAL_ONLY, inspect.Parameter.POSITIONAL_OR_KEYWORD):
+            positional_count += 1
+        elif parameter.kind == inspect.Parameter.VAR_POSITIONAL:
+            return True
+    return positional_count >= minimum
+
+
 # Pre-register built-in datasets so new datasets can follow the same pattern.
 register_dataset_loader(
     "ham10000",
-    load_by_index=lambda idx: load_ham10000_case_input_by_index(idx, data_root=DEFAULT_HAM10000_ROOT),
-    load_all=lambda: load_ham10000_case_inputs(data_root=DEFAULT_HAM10000_ROOT),
+    load_by_index=load_ham10000_case_input_by_index,
+    load_all=load_ham10000_case_inputs,
     data_root=DEFAULT_HAM10000_ROOT,
 )
 register_dataset_loader(
     "isic2019",
-    load_by_index=lambda idx: load_isic2019_case_input_by_index(idx, data_root=DEFAULT_ISIC2019_ROOT),
-    load_all=lambda: load_isic2019_case_inputs(data_root=DEFAULT_ISIC2019_ROOT),
+    load_by_index=load_isic2019_case_input_by_index,
+    load_all=load_isic2019_case_inputs,
     data_root=DEFAULT_ISIC2019_ROOT,
+)
+register_dataset_loader(
+    "scin",
+    load_by_index=load_scin_case_input_by_index,
+    load_all=load_scin_case_inputs,
+    data_root=DEFAULT_SCIN_ROOT,
+)
+register_dataset_loader(
+    "sd198",
+    load_by_index=load_sd198_case_input_by_index,
+    load_all=load_sd198_case_inputs,
+    discover_source=discover_sd198_case_source,
+    data_root=DEFAULT_SD198_ROOT,
 )

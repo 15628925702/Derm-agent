@@ -80,3 +80,36 @@ def test_registered_dataset_specific_label_space_is_used_by_evaluation_and_summa
 
     assert summary["dataset_names"] == ["ddi_toy"]
     assert summary["num_with_ground_truth"] == 1
+
+
+def test_scin_label_families_allow_name_granularity_matches() -> None:
+    assert labels_match("Contact Dermatitis", "Allergic Contact Dermatitis", dataset_name="scin") is True
+    assert labels_match("Acute dermatitis", "Acute dermatitis, NOS", dataset_name="scin") is True
+
+    evaluation = evaluate_diagnosis_output(
+        {
+            "final_diagnosis": "Contact Dermatitis",
+            "differential_diagnoses": ["Irritant Contact Dermatitis"],
+        },
+        "Allergic Contact Dermatitis",
+        dataset_name="scin",
+        label_space_id="scin_full",
+    )
+
+    assert evaluation["correct"] is True
+    assert evaluation["topk_hit"] is True
+
+
+def test_scin_grouped_label_space_maps_broad_model_outputs() -> None:
+    assert canonicalize_label("Contact Dermatitis", dataset_name="scin", label_space_id="scin_grouped") == "DERMATITIS_ECZEMA"
+    assert canonicalize_label("Herpes Zoster", dataset_name="scin", label_space_id="scin_grouped") == "INFECTION_VIRAL_FUNGAL"
+    assert canonicalize_label("Leukocytoclastic Vasculitis", dataset_name="scin", label_space_id="scin_grouped") == "VASCULAR_PURPURIC"
+    assert canonicalize_label("Nevus", dataset_name="scin", label_space_id="scin_grouped") == "PIGMENT_KERATOSIS_NEVUS"
+
+
+def test_sd198_full_label_space_accepts_raw_and_humanized_labels() -> None:
+    assert canonicalize_label("Basal_Cell_Carcinoma", dataset_name="sd198") == "BASAL CELL CARCINOMA"
+    assert canonicalize_label("Basal Cell Carcinoma", dataset_name="sd198") == "BASAL CELL CARCINOMA"
+    assert canonicalize_label("Malignant_Melanoma", dataset_name="sd198") == "MALIGNANT MELANOMA"
+    assert is_malignant_label("Basal_Cell_Carcinoma", dataset_name="sd198") is True
+    assert is_malignant_label("Acne_Vulgaris", dataset_name="sd198") is False

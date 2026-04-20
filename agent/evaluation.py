@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from agent.label_space import canonicalize_label, is_malignant_label, label_space_snapshot
+from agent.label_space import canonicalize_label, is_malignant_label, label_space_snapshot, labels_match
 
 
 def evaluate_diagnosis_output(
@@ -69,8 +69,31 @@ def evaluate_diagnosis_output(
         "ground_truth_canonical": ground_truth_canonical,
         "final_canonical_label": final_label,
         "differential_canonical_labels": differential_labels,
-        "correct": final_label == ground_truth_canonical if ground_truth_canonical else None,
-        "topk_hit": ground_truth_canonical in topk_candidates if ground_truth_canonical else None,
+        "correct": (
+            labels_match(
+                final_label or diagnosis_output.get("final_diagnosis"),
+                ground_truth_canonical or ground_truth_label,
+                dataset_name=dataset_name,
+                label_space_id=label_space_id,
+                metadata=metadata,
+            )
+            if ground_truth_canonical
+            else None
+        ),
+        "topk_hit": (
+            any(
+                labels_match(
+                    candidate,
+                    ground_truth_canonical or ground_truth_label,
+                    dataset_name=dataset_name,
+                    label_space_id=label_space_id,
+                    metadata=metadata,
+                )
+                for candidate in (topk_candidates or [diagnosis_output.get("final_diagnosis")])
+            )
+            if ground_truth_canonical
+            else None
+        ),
         "malignant_recall_hit": bool(malignant_truth and predicted_malignant) if ground_truth_canonical else None,
     }
 

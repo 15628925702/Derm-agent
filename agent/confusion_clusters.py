@@ -22,6 +22,11 @@ _METADATA_FIELDS_REGISTRY: dict[str, dict[str, tuple[str, ...]]] = {
         "location_size": ("localization", "age"),
         "risk": (),
     },
+    "scin": {
+        "temporal": ("condition_duration",),
+        "location_size": ("region", "body_sites", "age_group"),
+        "risk": ("symptoms_present", "related_category"),
+    },
 }
 
 

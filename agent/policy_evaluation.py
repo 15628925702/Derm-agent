@@ -12,6 +12,7 @@ _DATASET_KEY_CONFUSION_SUBSETS: dict[str, tuple[str, ...]] = {
     "pad_ufes_20": ("melanoma->nev", "ack->scc"),
     "isic2019": ("melanoma->nv", "ak->bcc"),
     "ham10000": ("melanoma->nv", "bkl->nv"),
+    "scin": (),
 }
 
 

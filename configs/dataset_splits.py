@@ -7,6 +7,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from dataio.sd198_loader import load_sd198_rows
+
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_DATA_ROOT = PROJECT_ROOT / "data"
@@ -14,6 +16,8 @@ DEFAULT_SPLIT_ID = "pad_ufes_20_contiguous_v1"
 ISIC2019_SPLIT_ID = "isic2019_contiguous_v1"
 HAM10000_SPLIT_ID = "ham10000_contiguous_v1"
 HAM10000_BALANCED_SPLIT_ID = "ham10000_balanced_v1"
+SCIN_SPLIT_ID = "scin_contiguous_v1"
+SD198_SPLIT_ID = "sd198_contiguous_v1"
 
 
 @dataclass(frozen=True)
@@ -78,6 +82,30 @@ FIXED_SPLITS: dict[str, FixedSplitDefinition] = {
             "Balanced split over HAM10000 original labels to avoid all-benign contiguous slices during adaptation smoke tests."
         ),
     ),
+    SCIN_SPLIT_ID: FixedSplitDefinition(
+        split_id=SCIN_SPLIT_ID,
+        dataset_name="scin",
+        metadata_relpath="scin/official_mirror/scin_cases.csv",
+        train_ratio=0.70,
+        val_ratio=0.15,
+        test_ratio=0.15,
+        strategy="contiguous_by_metadata_index",
+        notes=(
+            "Contiguous split over SCIN case rows for initial deterministic dataset-adaptation experiments."
+        ),
+    ),
+    SD198_SPLIT_ID: FixedSplitDefinition(
+        split_id=SD198_SPLIT_ID,
+        dataset_name="sd198",
+        metadata_relpath="sd198/sd-198/images.txt",
+        train_ratio=0.70,
+        val_ratio=0.15,
+        test_ratio=0.15,
+        strategy="contiguous_by_sd198_index",
+        notes=(
+            "Contiguous split over SD-198 image index rows for deterministic dataset-adaptation experiments."
+        ),
+    ),
 }
 
 
@@ -101,6 +129,8 @@ def build_fixed_split_payload(
     rows = list(csv.DictReader(metadata_path.open("r", encoding="utf-8", newline="")))
     if definition.strategy == "stratified_by_dx_group":
         return _build_stratified_dx_split_payload(definition=definition, metadata_path=metadata_path, rows=rows)
+    if definition.strategy == "contiguous_by_sd198_index":
+        return _build_sd198_contiguous_split_payload(definition=definition, data_root=data_root, metadata_path=metadata_path)
     case_ids = [_build_case_id(row, row_index=index) for index, row in enumerate(rows)]
     total_cases = len(case_ids)
     if total_cases == 0:
@@ -137,6 +167,55 @@ def build_fixed_split_payload(
         "test": case_ids[test_start : test_end + 1],
     }
     return payload
+
+
+def _build_sd198_contiguous_split_payload(
+    *,
+    definition: FixedSplitDefinition,
+    data_root: Path,
+    metadata_path: Path,
+) -> dict[str, Any]:
+    dataset_root = data_root / "sd198" / "sd-198"
+    rows = load_sd198_rows(dataset_root)
+    case_ids = [f"sd198_{int(row.get('image_id', 0)):06d}" for row in rows]
+    case_indices = list(range(len(rows)))
+    total_cases = len(case_ids)
+    if total_cases == 0:
+        raise ValueError(f"Split `{definition.split_id}` has no rows in index file: {metadata_path}")
+
+    train_count = int(total_cases * definition.train_ratio)
+    remaining = total_cases - train_count
+    val_count = remaining // 2
+    test_count = remaining - val_count
+
+    train_start = 0
+    train_end = train_start + train_count - 1
+    val_start = train_end + 1
+    val_end = val_start + val_count - 1
+    test_start = val_end + 1
+    test_end = total_cases - 1
+
+    return {
+        "dataset_name": definition.dataset_name,
+        "split_id": definition.split_id,
+        "split_version": definition.split_id,
+        "strategy": definition.strategy,
+        "notes": definition.notes,
+        "metadata_path": str(metadata_path),
+        "total_cases": total_cases,
+        "train_ratio": definition.train_ratio,
+        "val_ratio": definition.val_ratio,
+        "test_ratio": definition.test_ratio,
+        "train_range": [train_start, train_end],
+        "val_range": [val_start, val_end],
+        "test_range": [test_start, test_end],
+        "train": case_ids[train_start : train_end + 1],
+        "val": case_ids[val_start : val_end + 1],
+        "test": case_ids[test_start : test_end + 1],
+        "train_case_indices": case_indices[train_start : train_end + 1],
+        "val_case_indices": case_indices[val_start : val_end + 1],
+        "test_case_indices": case_indices[test_start : test_end + 1],
+    }
 
 
 def _build_stratified_dx_split_payload(
@@ -277,6 +356,9 @@ def write_fixed_split_json(
 
 
 def _build_case_id(row: dict[str, Any], *, row_index: int) -> str:
+    case_id = str(row.get("case_id", "")).strip()
+    if case_id:
+        return case_id
     image = str(row.get("image", "")).strip()
     if image:
         return image
