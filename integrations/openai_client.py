@@ -41,6 +41,7 @@ except ModuleNotFoundError:  # pragma: no cover - optional dependency for offlin
 from agent.evidence_package import EvidencePackage
 from agent.label_space import resolve_label_space
 from agent.state import CaseInput
+from agent.workflow_profiles import is_family_routing_case, is_full_taxonomy_case
 
 
 LOGGER = logging.getLogger(__name__)
@@ -90,8 +91,10 @@ def _build_label_space_prompt_hint(case_input: CaseInput) -> str:
     labels = [str(label).strip() for label in ls.canonical_labels if str(label).strip()]
     if not labels:
         return ""
-    dataset_name = str(getattr(case_input, "dataset_name", "") or "").strip().lower()
-    if dataset_name == "scin" or ls.label_space_id == "scin_full":
+    if is_full_taxonomy_case(
+        workflow_context=getattr(case_input, "workflow_context", None),
+        label_space_id=str(ls.label_space_id),
+    ) and "scin" in str(ls.label_space_id).strip().lower():
         metadata = dict(getattr(case_input, "metadata", {}) or {})
         related_category = str(metadata.get("related_category", "")).strip().upper()
         category_hint = ""
@@ -130,9 +133,8 @@ def _build_label_space_prompt_hint(case_input: CaseInput) -> str:
 
 
 def _build_scin_routing_hint(case_input: CaseInput) -> str:
-    dataset_name = str(getattr(case_input, "dataset_name", "") or "").strip().lower()
     label_space_id = str(getattr(case_input, "label_space_id", "") or "").strip().lower()
-    if dataset_name != "scin" and label_space_id != "scin_full":
+    if not is_full_taxonomy_case(workflow_context=case_input.workflow_context, label_space_id=label_space_id):
         return ""
 
     metadata = dict(getattr(case_input, "metadata", {}) or {})
@@ -184,9 +186,8 @@ def _build_scin_routing_hint(case_input: CaseInput) -> str:
 
 
 def _refine_scin_full_label_payload(case_input: CaseInput, payload: dict[str, Any]) -> dict[str, Any]:
-    dataset_name = str(getattr(case_input, "dataset_name", "") or "").strip().lower()
     label_space_id = str(getattr(case_input, "label_space_id", "") or "").strip().lower()
-    if dataset_name != "scin" and label_space_id != "scin_full":
+    if not is_full_taxonomy_case(workflow_context=case_input.workflow_context, label_space_id=label_space_id):
         return payload
 
     label_space = resolve_label_space(
@@ -310,9 +311,8 @@ def _refine_scin_grouped_agent_payload(
     payload: dict[str, Any],
     evidence_package: dict[str, Any],
 ) -> dict[str, Any]:
-    dataset_name = str(getattr(case_input, "dataset_name", "") or "").strip().lower()
     label_space_id = str(getattr(case_input, "label_space_id", "") or "").strip().lower()
-    if dataset_name != "scin" and label_space_id != "scin_grouped":
+    if not is_family_routing_case(workflow_context=case_input.workflow_context, label_space_id=label_space_id):
         return payload
 
     metadata = dict(getattr(case_input, "metadata", {}) or {})
@@ -418,9 +418,8 @@ def _refine_scin_payload_for_runtime(
     baseline_mode: bool = False,
     allow_grouped_baseline_refinement: bool = False,
 ) -> dict[str, Any]:
-    dataset_name = str(getattr(case_input, "dataset_name", "") or "").strip().lower()
     label_space_id = str(getattr(case_input, "label_space_id", "") or "").strip().lower()
-    if dataset_name != "scin":
+    if not is_family_routing_case(workflow_context=case_input.workflow_context, label_space_id=label_space_id) and label_space_id != "scin_full":
         return payload
 
     refined = dict(payload)

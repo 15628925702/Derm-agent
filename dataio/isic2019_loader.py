@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from agent.state import CaseInput
+from agent.workflow_profiles import ensure_workflow_context
 
 
 DEFAULT_ISIC2019_ROOT = Path("/root/DermAgent/data/isic2019")
@@ -201,6 +202,12 @@ def load_isic2019_case_inputs(
             dataset_name=record.dataset_name,
             label_space_id=record.label_space_id,
             source_metadata_path=str(metadata_csv),
+            workflow_context=ensure_workflow_context(
+                dataset_name=record.dataset_name,
+                metadata=record.metadata,
+                label_space_id=record.label_space_id,
+                workflow_context=None,
+            ),
         )
         for record in records
     ]
@@ -222,6 +229,12 @@ def load_isic2019_case_input_by_index(
         dataset_name=record.dataset_name,
         label_space_id=record.label_space_id,
         source_metadata_path=str(metadata_csv),
+        workflow_context=ensure_workflow_context(
+            dataset_name=record.dataset_name,
+            metadata=record.metadata,
+            label_space_id=record.label_space_id,
+            workflow_context=None,
+        ),
     )
 
 

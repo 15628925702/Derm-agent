@@ -5,6 +5,7 @@ from typing import Any
 from agent.confusion_clusters import cluster_guidance_snapshot, detect_confusion_clusters
 from agent.evidence_calibrator import build_default_evidence_calibrator
 from agent.state import CaseState
+from agent.workflow_profiles import is_family_routing_case, is_sparse_lesion_case
 
 
 OBSERVATION_SKILLS = (
@@ -878,9 +879,8 @@ def _subtype_supporting_items(selected_evidence: list[dict[str, Any]]) -> list[d
 
 
 def _family_override_allowed_for_state(state: CaseState) -> bool:
-    dataset_name = str(getattr(state.case_input, "dataset_name", "")).strip().lower()
     label_space_id = str(getattr(state.case_input, "label_space_id", "")).strip().lower()
-    if dataset_name != "scin" or label_space_id != "scin_grouped":
+    if not is_family_routing_case(workflow_context=state.case_input.workflow_context, label_space_id=label_space_id):
         return False
     snapshot = state.policy_snapshot or {}
     evidence_policy = dict(snapshot.get("evidence_policy", {}) or {})
@@ -888,7 +888,7 @@ def _family_override_allowed_for_state(state: CaseState) -> bool:
 
 
 def _ham10000_fallback_selected_evidence(state: CaseState) -> list[dict[str, Any]]:
-    if str(getattr(state.case_input, "dataset_name", "")).strip().lower() != "ham10000":
+    if not is_sparse_lesion_case(workflow_context=state.case_input.workflow_context):
         return []
     if state.skill_outputs.get("benign_mimic_specialist_skill"):
         return [

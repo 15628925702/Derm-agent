@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from agent.state import CaseInput
+from agent.workflow_profiles import ensure_workflow_context
 from dataio.ham10000_schema import Ham10000CaseRecord, Ham10000DatasetSummary, binary_label_for_ham10000
 
 
@@ -141,6 +142,12 @@ def load_ham10000_case_inputs(
             dataset_name=record.dataset_name,
             label_space_id="ham10000_full",
             source_metadata_path=str(Path(data_root) / "HAM10000_metadata.csv"),
+            workflow_context=ensure_workflow_context(
+                dataset_name=record.dataset_name,
+                metadata=record.metadata,
+                label_space_id="ham10000_full",
+                workflow_context=None,
+            ),
         )
         for record in records
     ]
@@ -161,6 +168,12 @@ def load_ham10000_case_input_by_index(
         dataset_name=record.dataset_name,
         label_space_id="ham10000_full",
         source_metadata_path=str(Path(data_root) / "HAM10000_metadata.csv"),
+        workflow_context=ensure_workflow_context(
+            dataset_name=record.dataset_name,
+            metadata=record.metadata,
+            label_space_id="ham10000_full",
+            workflow_context=None,
+        ),
     )
 
 

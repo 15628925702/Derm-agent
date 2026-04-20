@@ -9,6 +9,7 @@ from typing import Any
 
 from agent.sd198_label_catalog import SD198_RAW_TO_CANONICAL, sd198_grouped_label_for_text
 from agent.state import CaseInput
+from agent.workflow_profiles import ensure_workflow_context
 from dataio.case_schema import CaseSourceConfig
 
 
@@ -187,6 +188,12 @@ def load_sd198_case_inputs(
             dataset_name=record.dataset_name,
             label_space_id=record.label_space_id,
             source_metadata_path=str(source_path),
+            workflow_context=ensure_workflow_context(
+                dataset_name=record.dataset_name,
+                metadata=record.metadata,
+                label_space_id=record.label_space_id,
+                workflow_context=None,
+            ),
         )
         for record in records
     ]
@@ -208,6 +215,12 @@ def load_sd198_case_input_by_index(
         dataset_name=record.dataset_name,
         label_space_id=record.label_space_id,
         source_metadata_path=str(source_path),
+        workflow_context=ensure_workflow_context(
+            dataset_name=record.dataset_name,
+            metadata=record.metadata,
+            label_space_id=record.label_space_id,
+            workflow_context=None,
+        ),
     )
 
 

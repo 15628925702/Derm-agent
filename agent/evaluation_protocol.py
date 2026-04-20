@@ -26,8 +26,8 @@ from integrations.openai_client import DermOpenAIClient
 from memory.experience_schema import DEFAULT_EXPERIENCE_ROOT
 from memory.experience_store import ExperienceStore
 from memory.experience_bank import ExperienceBank
+from agent.workflow_profiles import get_workflow_specialist_skills
 from skills.registry import build_default_registry
-
 
 EVALUATION_PROTOCOL_VERSION = "paper_eval_protocol_v1"
 DEFAULT_EVAL_OUTPUT_ROOT = Path("/root/DermAgent/outputs/evaluation_protocol")
@@ -66,6 +66,13 @@ def get_specialist_skills(dataset_name: str | None = None) -> set[str]:
         if key in _DATASET_SPECIALIST_SKILLS:
             return _DATASET_SPECIALIST_SKILLS[key]
     return SPECIALIST_SKILLS
+
+
+def get_specialist_skills_for_case(*, dataset_name: str | None = None, workflow_context: dict[str, Any] | None = None) -> set[str]:
+    workflow_skills = get_workflow_specialist_skills(workflow_context)
+    if workflow_skills != SPECIALIST_SKILLS:
+        return workflow_skills
+    return get_specialist_skills(dataset_name)
 UNCERTAINTY_ESCALATION_SKILLS = {
     "uncertainty_assessment_skill",
     "contradiction_check_skill",
