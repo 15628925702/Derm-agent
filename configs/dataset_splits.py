@@ -18,6 +18,7 @@ HAM10000_SPLIT_ID = "ham10000_contiguous_v1"
 HAM10000_BALANCED_SPLIT_ID = "ham10000_balanced_v1"
 SCIN_SPLIT_ID = "scin_contiguous_v1"
 SD198_SPLIT_ID = "sd198_contiguous_v1"
+SD198_BALANCED_SPLIT_ID = "sd198_balanced_v1"
 
 
 @dataclass(frozen=True)
@@ -106,6 +107,18 @@ FIXED_SPLITS: dict[str, FixedSplitDefinition] = {
             "Contiguous split over SD-198 image index rows for deterministic dataset-adaptation experiments."
         ),
     ),
+    SD198_BALANCED_SPLIT_ID: FixedSplitDefinition(
+        split_id=SD198_BALANCED_SPLIT_ID,
+        dataset_name="sd198",
+        metadata_relpath="sd198/sd-198/images.txt",
+        train_ratio=0.70,
+        val_ratio=0.15,
+        test_ratio=0.15,
+        strategy="stratified_by_sd198_label",
+        notes=(
+            "Balanced split over SD-198 labels so train/val/test all contain mixed classes even though the source index is class-block ordered."
+        ),
+    ),
 }
 
 
@@ -131,6 +144,8 @@ def build_fixed_split_payload(
         return _build_stratified_dx_split_payload(definition=definition, metadata_path=metadata_path, rows=rows)
     if definition.strategy == "contiguous_by_sd198_index":
         return _build_sd198_contiguous_split_payload(definition=definition, data_root=data_root, metadata_path=metadata_path)
+    if definition.strategy == "stratified_by_sd198_label":
+        return _build_sd198_stratified_split_payload(definition=definition, data_root=data_root, metadata_path=metadata_path)
     case_ids = [_build_case_id(row, row_index=index) for index, row in enumerate(rows)]
     total_cases = len(case_ids)
     if total_cases == 0:
@@ -218,6 +233,82 @@ def _build_sd198_contiguous_split_payload(
     }
 
 
+def _build_sd198_stratified_split_payload(
+    *,
+    definition: FixedSplitDefinition,
+    data_root: Path,
+    metadata_path: Path,
+) -> dict[str, Any]:
+    dataset_root = data_root / "sd198" / "sd-198"
+    rows = load_sd198_rows(dataset_root)
+    case_rows = [
+        {
+            "case_id": f"sd198_{int(row.get('image_id', 0)):06d}",
+            "row_index": index,
+            "label": str(row.get("original_label", "")).strip(),
+        }
+        for index, row in enumerate(rows)
+    ]
+
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for item in case_rows:
+        grouped.setdefault(item["label"], []).append(item)
+
+    rng = random.Random(42)
+    train_cases: list[dict[str, Any]] = []
+    val_cases: list[dict[str, Any]] = []
+    test_cases: list[dict[str, Any]] = []
+
+    for label, items in sorted(grouped.items()):
+        shuffled = list(items)
+        rng.shuffle(shuffled)
+        total = len(shuffled)
+        train_count = int(total * definition.train_ratio)
+        remaining = total - train_count
+        val_count = remaining // 2
+        test_count = remaining - val_count
+        train_cases.extend(shuffled[:train_count])
+        val_cases.extend(shuffled[train_count : train_count + val_count])
+        test_cases.extend(shuffled[train_count + val_count : train_count + val_count + test_count])
+
+    train_cases = _interleave_sd198_cases_by_label(train_cases)
+    val_cases = _interleave_sd198_cases_by_label(val_cases)
+    test_cases = _interleave_sd198_cases_by_label(test_cases)
+
+    ordered = train_cases + val_cases + test_cases
+    train_ids = [item["case_id"] for item in train_cases]
+    val_ids = [item["case_id"] for item in val_cases]
+    test_ids = [item["case_id"] for item in test_cases]
+    total_cases = len(ordered)
+    train_end = len(train_ids) - 1
+    val_start = len(train_ids)
+    val_end = val_start + len(val_ids) - 1
+    test_start = val_end + 1
+    test_end = total_cases - 1
+
+    return {
+        "dataset_name": definition.dataset_name,
+        "split_id": definition.split_id,
+        "split_version": definition.split_id,
+        "strategy": definition.strategy,
+        "notes": definition.notes,
+        "metadata_path": str(metadata_path),
+        "total_cases": total_cases,
+        "train_ratio": definition.train_ratio,
+        "val_ratio": definition.val_ratio,
+        "test_ratio": definition.test_ratio,
+        "train_range": [0, train_end],
+        "val_range": [val_start, val_end],
+        "test_range": [test_start, test_end],
+        "train": train_ids,
+        "val": val_ids,
+        "test": test_ids,
+        "train_case_indices": [item["row_index"] for item in train_cases],
+        "val_case_indices": [item["row_index"] for item in val_cases],
+        "test_case_indices": [item["row_index"] for item in test_cases],
+    }
+
+
 def _build_stratified_dx_split_payload(
     *,
     definition: FixedSplitDefinition,
@@ -295,6 +386,26 @@ def _interleave_cases_by_label(items: list[dict[str, Any]]) -> list[dict[str, An
     grouped: dict[str, list[dict[str, Any]]] = {}
     for item in items:
         grouped.setdefault(str(item.get("dx", "")).strip().lower(), []).append(item)
+
+    ordered_labels = [label for label in sorted(grouped.keys()) if label]
+    result: list[dict[str, Any]] = []
+    while ordered_labels:
+        next_labels: list[str] = []
+        for label in ordered_labels:
+            bucket = grouped.get(label, [])
+            if not bucket:
+                continue
+            result.append(bucket.pop(0))
+            if bucket:
+                next_labels.append(label)
+        ordered_labels = next_labels
+    return result
+
+
+def _interleave_sd198_cases_by_label(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for item in items:
+        grouped.setdefault(str(item.get("label", "")).strip(), []).append(item)
 
     ordered_labels = [label for label in sorted(grouped.keys()) if label]
     result: list[dict[str, Any]] = []
