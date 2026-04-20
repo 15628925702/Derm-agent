@@ -213,4 +213,4 @@ def test_refine_scin_payload_for_runtime_can_group_baseline_when_requested() -> 
         allow_grouped_baseline_refinement=True,
     )
 
-    assert baseline_refined["final_diagnosis"] == "DERMATITIS_ECZEMA"
+    assert baseline_refined["final_diagnosis"] == "VASCULAR_PURPURIC"

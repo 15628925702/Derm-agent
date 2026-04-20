@@ -45,6 +45,7 @@ DEFAULT_EVIDENCE_POLICY = {
     "exclusion_priority_bonus": 1.2,
     "negative_evidence_priority_bonus": 1.0,
     "allow_family_override": False,
+    "allow_keratinocyte_subtype_override": False,
     "debug_output": True,
 }
 

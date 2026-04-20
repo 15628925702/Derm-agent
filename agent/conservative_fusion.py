@@ -10,6 +10,17 @@ KERATINOCYTE_FAMILY = {
     "Seborrheic Keratosis",
 }
 
+KERATINOCYTE_MALIGNANT_LABELS = {
+    "actinic keratosis",
+    "ack",
+    "akiec",
+    "basal cell carcinoma",
+    "bcc",
+    "squamous cell carcinoma",
+    "scc",
+    "bowen disease",
+}
+
 
 def apply_conservative_agent_fusion(
     *,
@@ -125,6 +136,18 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("family_override_allowed")
+        elif _allow_keratinocyte_subtype_override(
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            selected_evidence_present=selected_evidence_present,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            agent_confidence=agent_confidence,
+            evidence_policy=evidence_policy,
+        ):
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("keratinocyte_subtype_override_allowed")
         elif not malignancy_override_allowed:
             use_agent_output = False
             reasons.append("malignancy_override_not_allowed")
@@ -243,6 +266,38 @@ def _all_in_family(values: list[str], family: set[str]) -> bool:
     if not normalized:
         return False
     return all(item in family for item in normalized)
+
+
+def _is_keratinocyte_malignant_label(label: str) -> bool:
+    normalized = str(label or "").strip().lower()
+    if not normalized:
+        return False
+    return normalized in KERATINOCYTE_MALIGNANT_LABELS
+
+
+def _allow_keratinocyte_subtype_override(
+    *,
+    baseline_label: str,
+    agent_label: str,
+    selected_evidence_present: bool,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    agent_confidence: str,
+    evidence_policy: dict[str, Any],
+) -> bool:
+    if not bool(evidence_policy.get("allow_keratinocyte_subtype_override", False)):
+        return False
+    if not selected_evidence_present:
+        return False
+    if uncertainty_level in {"high", "unknown"}:
+        return False
+    if agent_confidence not in {"moderate", "medium", "high"}:
+        return False
+    if subtype_support_margin < 3.0:
+        return False
+    if baseline_label == agent_label:
+        return False
+    return _is_keratinocyte_malignant_label(baseline_label) and _is_keratinocyte_malignant_label(agent_label)
 
 
 def _consensus_candidates(

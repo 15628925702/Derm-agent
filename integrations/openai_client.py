@@ -375,9 +375,17 @@ def _refine_scin_grouped_agent_payload(
     if related_category == "RASH":
         boost("DERMATITIS_ECZEMA", 1.0)
         if "flat" in textures and "leg" in body_sites:
-            boost("VASCULAR_PURPURIC", 4.5)
+            boost("VASCULAR_PURPURIC", 6.0)
         if "flat" in textures and "arm" in body_sites and duration in {"ONE_DAY", "LESS_THAN_ONE_WEEK"} and "itching" not in symptoms:
-            boost("VASCULAR_PURPURIC", 3.5)
+            boost("VASCULAR_PURPURIC", 4.0)
+        if "flat" in textures and ("leg" in body_sites or "arm" in body_sites):
+            boost("VASCULAR_PURPURIC", 2.5)
+        if "patchy" in normalized and "flat" in textures and ("leg" in body_sites or "arm" in body_sites):
+            boost("VASCULAR_PURPURIC", 1.5)
+        if "purpuric" in normalized or "petech" in normalized or "erythema ab igne" in normalized:
+            boost("VASCULAR_PURPURIC", 3.0)
+        if "itching" not in symptoms and "bothersome appearance" not in normalized:
+            boost("VASCULAR_PURPURIC", 0.8)
         if duration in {"ONE_DAY", "LESS_THAN_ONE_WEEK"} and "clustered" in normalized and "back" in normalized:
             boost("INFECTION_VIRAL_FUNGAL", 5.0)
         if duration in {"ONE_DAY", "LESS_THAN_ONE_WEEK"} and ("burning" in symptoms or "pain" in symptoms):
