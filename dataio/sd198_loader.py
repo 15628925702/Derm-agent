@@ -1,18 +1,19 @@
 from __future__ import annotations
 
+import os
 import random
 from dataclasses import asdict, dataclass, field
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-from agent.sd198_label_catalog import SD198_RAW_TO_CANONICAL
+from agent.sd198_label_catalog import SD198_RAW_TO_CANONICAL, sd198_grouped_label_for_text
 from agent.state import CaseInput
 from dataio.case_schema import CaseSourceConfig
 
 
 DEFAULT_SD198_ROOT = Path("/root/DermAgent/data/sd198/sd-198")
-SD198_LABEL_SPACE_ID = "sd198_full"
+DEFAULT_SD198_LABEL_SPACE_ID = "sd198_full"
 SD198_METADATA_LEAKY_KEYS = {
     "class_id",
     "class_name",
@@ -32,7 +33,7 @@ class Sd198CaseRecord:
     metadata: dict[str, Any]
     original_label: str
     dataset_name: str = "sd198"
-    label_space_id: str = SD198_LABEL_SPACE_ID
+    label_space_id: str = DEFAULT_SD198_LABEL_SPACE_ID
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -237,14 +238,18 @@ def standardize_sd198_row(
     if not image_path.exists():
         raise FileNotFoundError(f"SD-198 image not found: {image_path}")
 
+    effective_label_space_id = _effective_sd198_label_space_id()
+    base_label = str(row.get("original_label", "")).strip()
+    effective_label = _map_sd198_label_for_space(base_label, effective_label_space_id)
     metadata = _sanitize_sd198_metadata(row)
-    metadata["label_space_id"] = SD198_LABEL_SPACE_ID
+    metadata["label_space_id"] = effective_label_space_id
     metadata["case_source"] = "sd198"
     return Sd198CaseRecord(
         case_id=f"sd198_{image_id:06d}",
         image_path=str(image_path),
         metadata=metadata,
-        original_label=str(row.get("original_label", "")).strip(),
+        original_label=effective_label,
+        label_space_id=effective_label_space_id,
     )
 
 
@@ -304,3 +309,16 @@ def _sanitize_sd198_metadata(row: dict[str, Any]) -> dict[str, Any]:
         metadata["image_basename"] = Path(relative_path).name
         metadata["class_dir"] = Path(relative_path).parent.name
     return metadata
+
+
+def _effective_sd198_label_space_id() -> str:
+    requested = str(os.getenv("DERMAGENT_SD198_LABEL_SPACE_ID", DEFAULT_SD198_LABEL_SPACE_ID)).strip().lower()
+    if requested in {"sd198_full", "sd198_grouped"}:
+        return requested
+    return DEFAULT_SD198_LABEL_SPACE_ID
+
+
+def _map_sd198_label_for_space(original_label: str, label_space_id: str) -> str:
+    if label_space_id == "sd198_grouped":
+        return sd198_grouped_label_for_text(original_label)
+    return original_label

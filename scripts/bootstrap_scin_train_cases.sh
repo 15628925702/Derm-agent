@@ -20,10 +20,12 @@ CLIENT_API_KEY="${CLIENT_API_KEY:-EMPTY}"
 CLIENT_MODEL="${CLIENT_MODEL:-Qwen2.5-VL-7B-Instruct}"
 CLIENT_TIMEOUT="${CLIENT_TIMEOUT:-}"
 CLIENT_MAX_RETRIES="${CLIENT_MAX_RETRIES:-}"
-STOP_ON_ERROR="${STOP_ON_ERROR:-1}"
+STOP_ON_ERROR="${STOP_ON_ERROR:-0}"
 
 mkdir -p "${OUTPUT_DIR}" "${POLICY_ROOT}" "${SPLIT_STATE_ROOT}"
 LOG_PATH="${OUTPUT_DIR}/${RUN_MODE}_$(date -u +%Y%m%dT%H%M%SZ).log"
+FAILED_CASES_TXT="${OUTPUT_DIR}/${RUN_MODE}_failed_cases.txt"
+FAILED_CASES_JSONL="${OUTPUT_DIR}/${RUN_MODE}_failed_cases.jsonl"
 
 echo "[info] project root      : ${PROJECT_ROOT}" | tee -a "${LOG_PATH}"
 echo "[info] data root         : ${DATA_ROOT}" | tee -a "${LOG_PATH}"
@@ -38,6 +40,11 @@ echo "[info] client model      : ${CLIENT_MODEL}" | tee -a "${LOG_PATH}"
 echo "[info] split offset      : ${START_INDEX}" | tee -a "${LOG_PATH}"
 echo "[info] count             : ${COUNT}" | tee -a "${LOG_PATH}"
 echo "[info] stop on error     : ${STOP_ON_ERROR}" | tee -a "${LOG_PATH}"
+echo "[info] failed cases txt  : ${FAILED_CASES_TXT}" | tee -a "${LOG_PATH}"
+echo "[info] failed cases jsonl: ${FAILED_CASES_JSONL}" | tee -a "${LOG_PATH}"
+
+: > "${FAILED_CASES_TXT}"
+: > "${FAILED_CASES_JSONL}"
 
 cd "${PROJECT_ROOT}"
 
@@ -120,8 +127,33 @@ for idx in "${!CASE_INDICES[@]}"; do
     cmd+=(--client-max-retries "${CLIENT_MAX_RETRIES}")
   fi
 
-  if ! DERMAGENT_POLICY_ROOT="${POLICY_ROOT}" DERMAGENT_SPLIT_STATE_ROOT="${SPLIT_STATE_ROOT}" "${cmd[@]}" >> "${LOG_PATH}" 2>&1; then
+  run_status=0
+  if env \
+    DERMAGENT_POLICY_ROOT="${POLICY_ROOT}" \
+    DERMAGENT_SPLIT_STATE_ROOT="${SPLIT_STATE_ROOT}" \
+    "${cmd[@]}" >> "${LOG_PATH}" 2>&1; then
+    run_status=0
+  else
+    run_status=$?
+  fi
+
+  if [[ "${run_status}" -ne 0 ]]; then
     echo "[error] failed at case-index=${i}. see ${LOG_PATH}" | tee -a "${LOG_PATH}"
+    echo "${i}" >> "${FAILED_CASES_TXT}"
+    CASE_INDEX="${i}" \
+    CASE_POSITION="${current}" \
+    RESOLVED_COUNT="${resolved_count}" \
+    FAILED_LOG_PATH="${LOG_PATH}" \
+    FAILED_RUN_MODE="${RUN_MODE}" \
+    FAILED_DATA_SPLIT="${DATA_SPLIT}" \
+    python -c 'import json, os; print(json.dumps({
+        "case_index": int(os.environ["CASE_INDEX"]),
+        "case_position": int(os.environ["CASE_POSITION"]),
+        "resolved_count": int(os.environ["RESOLVED_COUNT"]),
+        "log_path": os.environ["FAILED_LOG_PATH"],
+        "run_mode": os.environ["FAILED_RUN_MODE"],
+        "data_split": os.environ["FAILED_DATA_SPLIT"],
+    }))' >> "${FAILED_CASES_JSONL}"
     if [[ "${STOP_ON_ERROR}" == "1" ]]; then
       exit 1
     fi

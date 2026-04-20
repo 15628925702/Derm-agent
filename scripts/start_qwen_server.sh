@@ -23,8 +23,8 @@ LOG_FILE="${LOG_FILE:-${LOG_DIR}/qwen_server.log}"
 PID_FILE="${PID_FILE:-${PROJECT_ROOT}/state/qwen_server.pid}"
 FORCE_RESTART="${FORCE_RESTART:-0}"
 
-GPU_MEMORY_UTILIZATION="${GPU_MEMORY_UTILIZATION:-0.92}"
-MAX_MODEL_LEN="${MAX_MODEL_LEN:-24576}"
+GPU_MEMORY_UTILIZATION="${GPU_MEMORY_UTILIZATION:-0.82}"
+MAX_MODEL_LEN="${MAX_MODEL_LEN:-16384}"
 MAX_NUM_SEQS="${MAX_NUM_SEQS:-}"
 CPU_OFFLOAD_GB="${CPU_OFFLOAD_GB:-0}"
 ENFORCE_EAGER="${ENFORCE_EAGER:-0}"
@@ -32,6 +32,8 @@ COMPILATION_CONFIG="${COMPILATION_CONFIG:-{\"mode\":0,\"cudagraph_mode\":0}}"
 WAIT_SECONDS="${WAIT_SECONDS:-300}"
 CHECK_INTERVAL_SECONDS="${CHECK_INTERVAL_SECONDS:-5}"
 PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
+MM_LIMIT_IMAGE="${MM_LIMIT_IMAGE:-1}"
+MM_LIMIT_VIDEO="${MM_LIMIT_VIDEO:-0}"
 
 resolve_vllm_bin() {
   if command -v vllm >/dev/null 2>&1; then
@@ -58,7 +60,7 @@ resolve_default_max_num_seqs() {
     echo "1"
     return 0
   fi
-  echo "2"
+  echo "1"
 }
 
 detect_model_path() {
@@ -153,10 +155,13 @@ echo "Force restart     : ${FORCE_RESTART}"
 echo "GPU mem util      : ${GPU_MEMORY_UTILIZATION}"
 echo "Max model len     : ${MAX_MODEL_LEN}"
 echo "Max num seqs      : ${MAX_NUM_SEQS}"
-echo "MM limit          : image=1 video=0"
+echo "MM limit          : image=${MM_LIMIT_IMAGE} video=${MM_LIMIT_VIDEO}"
 echo "CPU offload (GB)  : ${CPU_OFFLOAD_GB}"
 echo "Enforce eager     : ${ENFORCE_EAGER}"
 echo "Compilation config: ${COMPILATION_CONFIG}"
+echo "CUDA alloc conf   : ${PYTORCH_CUDA_ALLOC_CONF}"
+echo "[info] defaults are tuned for stability on heavy multimodal cases."
+echo "[info] if you need longer context later, raise MAX_MODEL_LEN and GPU_MEMORY_UTILIZATION gradually."
 
 export PYTORCH_CUDA_ALLOC_CONF
 
@@ -170,8 +175,8 @@ vllm_args=(
   --max-model-len "${MAX_MODEL_LEN}"
   --max-num-seqs "${MAX_NUM_SEQS}"
   --compilation-config "${COMPILATION_CONFIG}"
-  --limit-mm-per-prompt.image 1
-  --limit-mm-per-prompt.video 0
+  --limit-mm-per-prompt.image "${MM_LIMIT_IMAGE}"
+  --limit-mm-per-prompt.video "${MM_LIMIT_VIDEO}"
   --skip-mm-profiling
 )
 

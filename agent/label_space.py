@@ -8,7 +8,14 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-from agent.sd198_label_catalog import SD198_FULL_LABELS, SD198_MALIGNANT_LABELS, SD198_RAW_TO_CANONICAL
+from agent.sd198_label_catalog import (
+    SD198_FULL_LABELS,
+    SD198_GROUPED_CANONICAL_LABELS,
+    SD198_GROUPED_KEYWORDS,
+    SD198_GROUPED_MALIGNANT_LABELS,
+    SD198_MALIGNANT_LABELS,
+    SD198_RAW_TO_CANONICAL,
+)
 from agent.scin_full_label_catalog import (
     SCIN_FULL_LABELS,
     SCIN_GROUPED_CANONICAL_LABELS,
@@ -115,6 +122,7 @@ LABEL_SPACES: dict[str, LabelSpace] = {
     "scin_full": None,  # type: ignore[dict-item]
     "scin_grouped": None,  # type: ignore[dict-item]
     "sd198_full": None,  # type: ignore[dict-item]
+    "sd198_grouped": None,  # type: ignore[dict-item]
 }
 
 DATASET_LABEL_SPACE_ALIASES: dict[str, str] = {
@@ -131,6 +139,7 @@ DATASET_LABEL_SPACE_ALIASES: dict[str, str] = {
     "scin_grouped": "scin_grouped",
     "sd198": "sd198_full",
     "sd198_full": "sd198_full",
+    "sd198_grouped": "sd198_grouped",
 }
 
 _SCIN_EQUIVALENCE_FAMILIES: tuple[frozenset[str], ...] = (
@@ -173,6 +182,8 @@ def resolve_label_space(
             return _get_scin_grouped_label_space()
         if explicit_id == "sd198_full":
             return _get_sd198_full_label_space()
+        if explicit_id == "sd198_grouped":
+            return _get_sd198_grouped_label_space()
         return LABEL_SPACES.get(explicit_id, DERM_SIX_LABEL_SPACE)
 
     dataset_key = str(dataset_name or "").strip().lower()
@@ -185,6 +196,8 @@ def resolve_label_space(
                 return _get_scin_grouped_label_space()
             if mapped_id == "sd198_full":
                 return _get_sd198_full_label_space()
+            if mapped_id == "sd198_grouped":
+                return _get_sd198_grouped_label_space()
             return LABEL_SPACES.get(mapped_id, DERM_SIX_LABEL_SPACE)
 
     metadata_payload = dict(metadata or {})
@@ -196,6 +209,8 @@ def resolve_label_space(
             return _get_scin_grouped_label_space()
         if metadata_label_space == "sd198_full":
             return _get_sd198_full_label_space()
+        if metadata_label_space == "sd198_grouped":
+            return _get_sd198_grouped_label_space()
         return LABEL_SPACES.get(metadata_label_space, DERM_SIX_LABEL_SPACE)
 
     return DERM_SIX_LABEL_SPACE
@@ -416,6 +431,24 @@ def _get_sd198_full_label_space() -> LabelSpace:
         aliases=aliases,
         malignant_labels=malignant_labels,
         benign_labels=benign_labels,
+    )
+
+
+@lru_cache(maxsize=1)
+def _get_sd198_grouped_label_space() -> LabelSpace:
+    aliases: list[LabelAlias] = []
+    for grouped_label in SD198_GROUPED_CANONICAL_LABELS:
+        keywords = [grouped_label.lower()]
+        keywords.extend(SD198_GROUPED_KEYWORDS.get(grouped_label, ()))
+        aliases.append(LabelAlias(grouped_label, tuple(dict.fromkeys(keywords))))
+    return LabelSpace(
+        label_space_id="sd198_grouped",
+        canonical_labels=tuple(SD198_GROUPED_CANONICAL_LABELS),
+        aliases=tuple(aliases),
+        malignant_labels=tuple(sorted(SD198_GROUPED_MALIGNANT_LABELS)),
+        benign_labels=tuple(
+            label for label in SD198_GROUPED_CANONICAL_LABELS if label not in SD198_GROUPED_MALIGNANT_LABELS
+        ),
     )
 
 

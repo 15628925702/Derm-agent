@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import base64
+import io
 import json
 import logging
 import mimetypes
@@ -9,6 +10,8 @@ import re
 import time
 from pathlib import Path
 from typing import Any
+
+from PIL import Image
 
 try:
     from openai import APIConnectionError
@@ -41,6 +44,8 @@ from agent.state import CaseInput
 
 
 LOGGER = logging.getLogger(__name__)
+MAX_INLINE_IMAGE_EDGE = int(os.getenv("DERMAGENT_MAX_INLINE_IMAGE_EDGE", "1024") or "1024")
+INLINE_IMAGE_JPEG_QUALITY = int(os.getenv("DERMAGENT_INLINE_IMAGE_JPEG_QUALITY", "80") or "80")
 
 
 def _build_label_space_calibration_note(case_input: CaseInput) -> str:
@@ -985,9 +990,7 @@ class DermOpenAIClient:
     def _build_multimodal_content(image_path: str, prompt_text: str) -> list[dict[str, Any]]:
         path = Path(image_path)
         if path.exists():
-            mime_type, _ = mimetypes.guess_type(path.name)
-            detected_mime_type = mime_type or "image/png"
-            encoded_image = base64.b64encode(path.read_bytes()).decode("utf-8")
+            detected_mime_type, encoded_image = DermOpenAIClient._encode_image_for_prompt(path)
             image_url = f"data:{detected_mime_type};base64,{encoded_image}"
             return [
                 {"type": "text", "text": prompt_text},
@@ -1034,12 +1037,36 @@ class DermOpenAIClient:
             if normalized in seen:
                 continue
             seen.add(normalized)
-            mime_type, _ = mimetypes.guess_type(path.name)
-            detected_mime_type = mime_type or "image/png"
-            encoded_image = base64.b64encode(path.read_bytes()).decode("utf-8")
+            detected_mime_type, encoded_image = self._encode_image_for_prompt(path)
             image_url = f"data:{detected_mime_type};base64,{encoded_image}"
             content.append({"type": "image_url", "image_url": {"url": image_url}})
         return content
+
+    @staticmethod
+    def _encode_image_for_prompt(path: Path) -> tuple[str, str]:
+        mime_type, _ = mimetypes.guess_type(path.name)
+        detected_mime_type = mime_type or "image/png"
+        try:
+            with Image.open(path) as image:
+                image.load()
+                width, height = image.size
+                if max(width, height) <= MAX_INLINE_IMAGE_EDGE:
+                    return detected_mime_type, base64.b64encode(path.read_bytes()).decode("utf-8")
+
+                converted = image.convert("RGB")
+                resized = converted.copy()
+                resized.thumbnail((MAX_INLINE_IMAGE_EDGE, MAX_INLINE_IMAGE_EDGE), Image.Resampling.LANCZOS)
+                buffer = io.BytesIO()
+                resized.save(
+                    buffer,
+                    format="JPEG",
+                    quality=INLINE_IMAGE_JPEG_QUALITY,
+                    optimize=True,
+                )
+                return "image/jpeg", base64.b64encode(buffer.getvalue()).decode("utf-8")
+        except Exception as exc:
+            LOGGER.warning("Falling back to raw image bytes for %s after preprocessing failure: %s", path, exc)
+            return detected_mime_type, base64.b64encode(path.read_bytes()).decode("utf-8")
 
     @staticmethod
     def _parse_json_response(content: str | None) -> dict[str, Any]:

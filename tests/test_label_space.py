@@ -113,3 +113,12 @@ def test_sd198_full_label_space_accepts_raw_and_humanized_labels() -> None:
     assert canonicalize_label("Malignant_Melanoma", dataset_name="sd198") == "MALIGNANT MELANOMA"
     assert is_malignant_label("Basal_Cell_Carcinoma", dataset_name="sd198") is True
     assert is_malignant_label("Acne_Vulgaris", dataset_name="sd198") is False
+
+
+def test_sd198_grouped_label_space_maps_to_coarse_categories() -> None:
+    assert canonicalize_label("Basal Cell Carcinoma", dataset_name="sd198", label_space_id="sd198_grouped") == "MALIGNANT_SKIN_CANCER"
+    assert canonicalize_label("Acne Vulgaris", dataset_name="sd198", label_space_id="sd198_grouped") == "ACNE_FOLLICULITIS_ROSACEA"
+    assert canonicalize_label("Allergic Contact Dermatitis", dataset_name="sd198", label_space_id="sd198_grouped") == "DERMATITIS_ECZEMA"
+    assert canonicalize_label("Onychomycosis", dataset_name="sd198", label_space_id="sd198_grouped") == "INFECTION_INFESTATION"
+    assert is_malignant_label("Basal Cell Carcinoma", dataset_name="sd198", label_space_id="sd198_grouped") is True
+    assert is_malignant_label("Acne Vulgaris", dataset_name="sd198", label_space_id="sd198_grouped") is False

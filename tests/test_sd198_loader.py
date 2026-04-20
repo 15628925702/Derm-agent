@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
@@ -103,3 +104,46 @@ def test_sd198_case_loader_registration_and_label_space(tmp_path: Path) -> None:
     assert canonicalize_label("Basal Cell Carcinoma", dataset_name="sd198") == "BASAL CELL CARCINOMA"
     assert is_malignant_label("Basal_Cell_Carcinoma", dataset_name="sd198") is True
     assert label_space_snapshot(dataset_name="sd198")["label_space_id"] == "sd198_full"
+
+
+def test_sd198_loader_can_switch_to_grouped_label_space_via_env(tmp_path: Path) -> None:
+    data_root = tmp_path / "sd-198"
+    _write_lines(
+        data_root / "classes.txt",
+        [
+            "1 Basal_Cell_Carcinoma",
+            "2 Acne_Vulgaris",
+        ],
+    )
+    _write_lines(
+        data_root / "images.txt",
+        [
+            "1 Basal_Cell_Carcinoma/case_001.jpg",
+            "2 Acne_Vulgaris/case_002.jpg",
+        ],
+    )
+    _write_lines(
+        data_root / "image_class_labels.txt",
+        [
+            "1 1",
+            "2 2",
+        ],
+    )
+    (data_root / "images" / "Basal_Cell_Carcinoma").mkdir(parents=True, exist_ok=True)
+    (data_root / "images" / "Acne_Vulgaris").mkdir(parents=True, exist_ok=True)
+    (data_root / "images" / "Basal_Cell_Carcinoma" / "case_001.jpg").write_bytes(b"img1")
+    (data_root / "images" / "Acne_Vulgaris" / "case_002.jpg").write_bytes(b"img2")
+
+    previous = os.environ.get("DERMAGENT_SD198_LABEL_SPACE_ID")
+    os.environ["DERMAGENT_SD198_LABEL_SPACE_ID"] = "sd198_grouped"
+    try:
+        case = load_sd198_case_input_by_index(0, data_root=data_root)
+    finally:
+        if previous is None:
+            os.environ.pop("DERMAGENT_SD198_LABEL_SPACE_ID", None)
+        else:
+            os.environ["DERMAGENT_SD198_LABEL_SPACE_ID"] = previous
+
+    assert case.label_space_id == "sd198_grouped"
+    assert case.label == "MALIGNANT_SKIN_CANCER"
+    assert case.metadata["label_space_id"] == "sd198_grouped"
