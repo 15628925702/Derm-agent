@@ -724,6 +724,12 @@ def _build_evidence_decision_policy(
     opposing_quota_satisfied = len(opposing_items) >= 1
     subtype_support_quota_satisfied = len(subtype_supporting_items) >= 1
     subtype_support_margin = round(subtype_support_score - opposing_score, 6)
+    family_override_allowed = (
+        _family_override_allowed_for_state(state)
+        and selected_evidence_present
+        and support_margin >= 2.0
+        and uncertainty_level not in {"high", "unknown"}
+    )
     malignancy_override_allowed = (
         selected_evidence_present
         and
@@ -743,6 +749,8 @@ def _build_evidence_decision_policy(
     override_mode = "risk_only"
     if subtype_override_allowed:
         override_mode = "subtype_override"
+    elif family_override_allowed:
+        override_mode = "family_override"
     elif malignancy_override_allowed:
         override_mode = "suspicious_subtype"
 
@@ -753,6 +761,8 @@ def _build_evidence_decision_policy(
         override_reasons.append("supporting_evidence_outweighs_opposition")
     if subtype_support_margin >= 4.0 and subtype_support_quota_satisfied:
         override_reasons.append("subtype_specific_support_present")
+    if family_override_allowed:
+        override_reasons.append("family_level_override_allowed")
     if specialist_support:
         override_reasons.append("specialist_support_present")
     if uncertainty_level not in {"high", "unknown"}:
@@ -783,6 +793,8 @@ def _build_evidence_decision_policy(
         why_not_confident_enough.append("supporting evidence does not sufficiently outweigh opposing or exclusion evidence")
     if not subtype_support_quota_satisfied:
         why_not_confident_enough.append("supporting evidence is not specific enough to justify a subtype override")
+    if _family_override_allowed_for_state(state) and not family_override_allowed:
+        why_not_confident_enough.append("family-level evidence support is still too weak for a grouped-label override")
     if not specialist_support:
         why_not_confident_enough.append("no specialist evidence strongly supports the override direction")
     if uncertainty_level in {"high", "unknown"}:
@@ -805,9 +817,10 @@ def _build_evidence_decision_policy(
         ),
     }
     diagnosis_override_layer = {
-        "override_allowed": subtype_override_allowed,
-        "malignancy_override_allowed": malignancy_override_allowed,
+        "override_allowed": subtype_override_allowed or family_override_allowed,
+        "malignancy_override_allowed": malignancy_override_allowed or family_override_allowed,
         "subtype_override_allowed": subtype_override_allowed,
+        "family_override_allowed": family_override_allowed,
         "override_mode": override_mode,
         "override_reasons": override_reasons,
         "why_not_confident_enough_to_override": why_not_confident_enough,
@@ -862,6 +875,16 @@ def _subtype_supporting_items(selected_evidence: list[dict[str, Any]]) -> list[d
         if any(term in summary for term in ("basal cell", "squamous cell", "melanoma", "actinic keratos")):
             subtype_items.append(item)
     return subtype_items
+
+
+def _family_override_allowed_for_state(state: CaseState) -> bool:
+    dataset_name = str(getattr(state.case_input, "dataset_name", "")).strip().lower()
+    label_space_id = str(getattr(state.case_input, "label_space_id", "")).strip().lower()
+    if dataset_name != "scin" or label_space_id != "scin_grouped":
+        return False
+    snapshot = state.policy_snapshot or {}
+    evidence_policy = dict(snapshot.get("evidence_policy", {}) or {})
+    return bool(evidence_policy.get("allow_family_override", False))
 
 
 def _ham10000_fallback_selected_evidence(state: CaseState) -> list[dict[str, Any]]:

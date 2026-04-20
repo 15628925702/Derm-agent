@@ -72,6 +72,7 @@ def decide_conservative_agent_fusion(
     override_allowed = bool(diagnosis_layer.get("override_allowed", False))
     malignancy_override_allowed = bool(diagnosis_layer.get("malignancy_override_allowed", False))
     subtype_override_allowed = bool(diagnosis_layer.get("subtype_override_allowed", False))
+    family_override_allowed = bool(diagnosis_layer.get("family_override_allowed", False))
     support_margin = _safe_float(diagnosis_layer.get("support_margin"))
     subtype_support_margin = _safe_float(diagnosis_layer.get("subtype_support_margin"))
     uncertainty_level = str(diagnosis_layer.get("uncertainty_level", "")).strip().lower()
@@ -120,6 +121,10 @@ def decide_conservative_agent_fusion(
         elif not selected_evidence_present:
             use_agent_output = False
             reasons.append("no_selected_evidence")
+        elif family_override_allowed and override_mode == "family_override":
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("family_override_allowed")
         elif not malignancy_override_allowed:
             use_agent_output = False
             reasons.append("malignancy_override_not_allowed")
@@ -196,6 +201,7 @@ def decide_conservative_agent_fusion(
         "override_allowed": override_allowed,
         "malignancy_override_allowed": malignancy_override_allowed,
         "subtype_override_allowed": subtype_override_allowed,
+        "family_override_allowed": family_override_allowed,
         "override_mode": override_mode,
         "support_margin": support_margin,
         "subtype_support_margin": subtype_support_margin,

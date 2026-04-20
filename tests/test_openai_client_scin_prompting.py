@@ -181,3 +181,36 @@ def test_refine_scin_payload_for_runtime_only_routes_grouped_agent_not_grouped_b
 
     assert baseline_refined["final_diagnosis"] == "Contact Dermatitis"
     assert agent_refined["final_diagnosis"] == "VASCULAR_PURPURIC"
+
+
+def test_refine_scin_payload_for_runtime_can_group_baseline_when_requested() -> None:
+    case = CaseInput(
+        case_id="scin_case",
+        image_path="/tmp/missing.png",
+        metadata={
+            "label_space_id": "scin_grouped",
+            "related_category": "RASH",
+            "condition_duration": "ONE_DAY",
+            "body_sites": ["leg"],
+            "textures_present": ["flat"],
+        },
+        dataset_name="scin",
+        label_space_id="scin_grouped",
+    )
+    payload = {
+        "final_diagnosis": "Contact Dermatitis",
+        "differential_diagnoses": ["Contact Dermatitis"],
+        "rationale": "Flat red lesions on the leg.",
+        "confidence": "Moderate",
+        "follow_up_considerations": [],
+    }
+
+    baseline_refined = _refine_scin_payload_for_runtime(
+        case_input=case,
+        payload=payload,
+        evidence_package=None,
+        baseline_mode=True,
+        allow_grouped_baseline_refinement=True,
+    )
+
+    assert baseline_refined["final_diagnosis"] == "DERMATITIS_ECZEMA"

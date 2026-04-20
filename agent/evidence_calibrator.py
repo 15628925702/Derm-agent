@@ -44,6 +44,7 @@ DEFAULT_EVIDENCE_POLICY = {
     "description_priority_bonus": 0.6,
     "exclusion_priority_bonus": 1.2,
     "negative_evidence_priority_bonus": 1.0,
+    "allow_family_override": False,
     "debug_output": True,
 }
 

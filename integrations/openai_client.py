@@ -408,6 +408,7 @@ def _refine_scin_payload_for_runtime(
     payload: dict[str, Any],
     evidence_package: dict[str, Any] | None = None,
     baseline_mode: bool = False,
+    allow_grouped_baseline_refinement: bool = False,
 ) -> dict[str, Any]:
     dataset_name = str(getattr(case_input, "dataset_name", "") or "").strip().lower()
     label_space_id = str(getattr(case_input, "label_space_id", "") or "").strip().lower()
@@ -419,6 +420,12 @@ def _refine_scin_payload_for_runtime(
         return _refine_scin_full_label_payload(case_input, refined)
     if label_space_id == "scin_grouped":
         if baseline_mode:
+            if allow_grouped_baseline_refinement:
+                return _refine_scin_grouped_agent_payload(
+                    case_input=case_input,
+                    payload=refined,
+                    evidence_package=evidence_package or {},
+                )
             return refined
         return _refine_scin_grouped_agent_payload(
             case_input=case_input,
