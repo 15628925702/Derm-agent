@@ -91,7 +91,7 @@ def build_evidence_bundle(state: CaseState) -> dict[str, Any]:
         retrieved_abstract_experiences_summary=retrieved_abstract_experiences_summary,
     )
     if not selected_evidence:
-        selected_evidence = _ham10000_fallback_selected_evidence(state)
+        selected_evidence = _sparse_lesion_fallback_selected_evidence(state)
 
     # 根据 workflow_context 调整证据排序
     selected_evidence = _reorder_evidence_by_workflow(selected_evidence, workflow_context)
@@ -818,6 +818,7 @@ def _build_evidence_decision_policy(
         ),
     }
     diagnosis_override_layer = {
+        "workflow_context": dict(state.case_input.workflow_context or {}),
         "override_allowed": subtype_override_allowed or family_override_allowed,
         "malignancy_override_allowed": malignancy_override_allowed or family_override_allowed,
         "subtype_override_allowed": subtype_override_allowed,
@@ -887,7 +888,7 @@ def _family_override_allowed_for_state(state: CaseState) -> bool:
     return bool(evidence_policy.get("allow_family_override", False))
 
 
-def _ham10000_fallback_selected_evidence(state: CaseState) -> list[dict[str, Any]]:
+def _sparse_lesion_fallback_selected_evidence(state: CaseState) -> list[dict[str, Any]]:
     if not is_sparse_lesion_case(workflow_context=state.case_input.workflow_context):
         return []
     if state.skill_outputs.get("benign_mimic_specialist_skill"):
@@ -907,7 +908,7 @@ def _ham10000_fallback_selected_evidence(state: CaseState) -> list[dict[str, Any
                 ),
                 "score": 6.8,
                 "rank": 1,
-                "keep_reason": "ham10000_benign_mimic_fallback",
+                "keep_reason": "sparse_lesion_benign_mimic_fallback",
             }
         ]
     if state.skill_outputs.get("ack_scc_specialist_skill"):
@@ -927,7 +928,7 @@ def _ham10000_fallback_selected_evidence(state: CaseState) -> list[dict[str, Any
                 ),
                 "score": 6.5,
                 "rank": 1,
-                "keep_reason": "ham10000_specialist_fallback",
+                "keep_reason": "sparse_lesion_specialist_fallback",
             }
         ]
     if state.skill_outputs.get("mel_nev_specialist_skill"):
@@ -947,7 +948,7 @@ def _ham10000_fallback_selected_evidence(state: CaseState) -> list[dict[str, Any
                 ),
                 "score": 6.2,
                 "rank": 1,
-                "keep_reason": "ham10000_specialist_fallback",
+                "keep_reason": "sparse_lesion_specialist_fallback",
             }
         ]
     if state.skill_outputs.get("differential_compare_skill"):
@@ -967,7 +968,7 @@ def _ham10000_fallback_selected_evidence(state: CaseState) -> list[dict[str, Any
                 ),
                 "score": 5.8,
                 "rank": 1,
-                "keep_reason": "ham10000_comparison_fallback",
+                "keep_reason": "sparse_lesion_comparison_fallback",
             }
         ]
     return []

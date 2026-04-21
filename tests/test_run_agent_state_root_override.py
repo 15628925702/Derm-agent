@@ -44,6 +44,11 @@ class StubClient:
         }
 
 
+class BaselineShouldNotBeCalledClient(StubClient):
+    def baseline_diagnosis(self, case_input: CaseInput) -> dict:
+        raise AssertionError("baseline_diagnosis should not be called when override is provided")
+
+
 def test_run_agent_uses_split_state_root_override(monkeypatch, tmp_path: Path) -> None:
     custom_split_root = tmp_path / "isolated_split_states"
     custom_policy_root = tmp_path / "isolated_policy_root"
@@ -128,3 +133,40 @@ def test_run_agent_passes_workflow_context_to_initial_and_followup_retrieval(mon
     assert len(seen_workflow_contexts) >= 2
     assert seen_workflow_contexts[0] == workflow_context
     assert seen_workflow_contexts[1] == workflow_context
+
+
+def test_run_agent_uses_baseline_diagnosis_override(monkeypatch, tmp_path: Path) -> None:
+    custom_split_root = tmp_path / "split_states"
+    custom_policy_root = tmp_path / "policy_root"
+    monkeypatch.setenv("DERMAGENT_SPLIT_STATE_ROOT", str(custom_split_root))
+    monkeypatch.setenv("DERMAGENT_POLICY_ROOT", str(custom_policy_root))
+
+    image_path = tmp_path / "case.png"
+    image_path.write_bytes(b"fake-image")
+    case_input = CaseInput(
+        case_id="CASE_BASELINE_OVERRIDE",
+        image_path=str(image_path),
+        metadata={"site": "arm"},
+        label="Nevus",
+        dataset_name="toy_dataset",
+    )
+    frozen_baseline = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus"],
+        "rationale": "frozen direct baseline",
+        "confidence": "medium",
+        "follow_up_considerations": [],
+    }
+
+    state, _ = run_agent(
+        case_input=case_input,
+        client=BaselineShouldNotBeCalledClient(),
+        output_dir=tmp_path / "outputs",
+        enable_writeback=False,
+        run_mode="toy_eval",
+        data_split="train",
+        baseline_diagnosis_override=frozen_baseline,
+    )
+
+    assert state.baseline_diagnosis == frozen_baseline
+    assert state.execution_record["baseline_qwen"] is None

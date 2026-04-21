@@ -97,6 +97,7 @@ def build_case_execution_record(
             "image_path": case_input.image_path,
             "metadata_path": case_input.source_metadata_path or "",
             "clinical_metadata": case_input.clinical_metadata(),
+            "workflow_context": deepcopy(case_input.workflow_context or {}),
             "image_exists": Path(case_input.image_path).exists(),
             "label_space": label_space,
             "label_space_id": case_input.label_space_id or label_space.get("label_space_id", ""),

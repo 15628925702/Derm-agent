@@ -80,6 +80,7 @@ def decide_conservative_agent_fusion(
     fusion_mode = str(evidence_policy.get("conservative_fusion_mode", "soft")).strip().lower() or "soft"
 
     selected_evidence_present = bool(diagnosis_layer.get("selected_evidence_present", False))
+    workflow_context = dict(diagnosis_layer.get("workflow_context", {}) or {})
     override_allowed = bool(diagnosis_layer.get("override_allowed", False))
     malignancy_override_allowed = bool(diagnosis_layer.get("malignancy_override_allowed", False))
     subtype_override_allowed = bool(diagnosis_layer.get("subtype_override_allowed", False))
@@ -124,14 +125,50 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("soft_mode_high_support_consensus_override")
-        elif not selected_evidence_present and consensus_candidates:
-            consensus_override_label = consensus_candidates[0]
+        elif (
+            not selected_evidence_present
+            and _allow_clinical_bcc_consensus_override(
+                workflow_context=workflow_context,
+                baseline_label=baseline_label,
+                agent_label=agent_label,
+                consensus_candidates=consensus_candidates,
+                agent_confidence=agent_confidence,
+            )
+        ):
+            consensus_override_label = "Basal Cell Carcinoma"
             use_agent_output = True
             merge_baseline_differentials = True
-            reasons.append("soft_mode_consensus_override_without_selected_evidence")
+            reasons.append("clinical_bcc_consensus_override_without_selected_evidence")
+        elif (
+            not selected_evidence_present
+            and _allow_image_archive_consensus_override(
+                workflow_context=workflow_context,
+                baseline_label=baseline_label,
+                agent_label=agent_label,
+                consensus_candidates=consensus_candidates,
+                initial_ddx=initial_ddx,
+                agent_confidence=agent_confidence,
+            )
+        ):
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("image_archive_consensus_override_without_selected_evidence")
         elif not selected_evidence_present:
             use_agent_output = False
             reasons.append("no_selected_evidence")
+        elif _allow_sparse_lesion_safe_override(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            initial_ddx=initial_ddx,
+            selected_evidence_present=selected_evidence_present,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            agent_confidence=agent_confidence,
+        ):
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("sparse_lesion_safe_override")
         elif family_override_allowed and override_mode == "family_override":
             use_agent_output = True
             merge_baseline_differentials = True
@@ -229,6 +266,7 @@ def decide_conservative_agent_fusion(
         "support_margin": support_margin,
         "subtype_support_margin": subtype_support_margin,
         "uncertainty_level": uncertainty_level,
+        "workflow_profile": str(workflow_context.get("workflow_profile", "")).strip(),
         "baseline_preview": deepcopy(baseline_preview),
         "reasons": reasons,
     }
@@ -298,6 +336,131 @@ def _allow_keratinocyte_subtype_override(
     if baseline_label == agent_label:
         return False
     return _is_keratinocyte_malignant_label(baseline_label) and _is_keratinocyte_malignant_label(agent_label)
+
+
+def _allow_clinical_bcc_consensus_override(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    consensus_candidates: list[str],
+    agent_confidence: str,
+) -> bool:
+    capabilities = {
+        str(item).strip().lower()
+        for item in (workflow_context.get("workflow_capabilities") or [])
+        if str(item).strip()
+    }
+    if "clinical_metadata_reasoning" not in capabilities:
+        return False
+    if agent_confidence not in {"moderate", "medium", "high"}:
+        return False
+    if str(agent_label).strip().lower() != "basal cell carcinoma":
+        return False
+    if str(baseline_label).strip().lower() == "basal cell carcinoma":
+        return False
+    return any(str(item).strip().lower() == "basal cell carcinoma" for item in consensus_candidates + [agent_label])
+
+
+def _allow_image_archive_consensus_override(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    consensus_candidates: list[str],
+    initial_ddx: list[str],
+    agent_confidence: str,
+) -> bool:
+    capabilities = {
+        str(item).strip().lower()
+        for item in (workflow_context.get("workflow_capabilities") or [])
+        if str(item).strip()
+    }
+    if "image_archive_reasoning" not in capabilities:
+        return False
+    if agent_confidence not in {"moderate", "medium", "high"}:
+        return False
+    normalized_agent = str(agent_label).strip().lower()
+    normalized_baseline = str(baseline_label).strip().lower()
+    normalized_ddx = " | ".join(str(item).strip().lower() for item in initial_ddx if str(item).strip())
+    normalized_consensus = {str(item).strip().lower() for item in consensus_candidates}
+    if not initial_ddx:
+        return False
+
+    if normalized_agent == "basal cell carcinoma":
+        if normalized_agent not in normalized_consensus:
+            return False
+        return "basal cell carcinoma" in normalized_ddx and normalized_baseline in {
+            "actinic keratosis",
+            "seborrheic keratosis",
+            "nevus",
+        }
+
+    if normalized_agent == "malignant melanoma":
+        melanoma_subtype_signal = any(
+            term in normalized_ddx
+            for term in (
+                "superficial spreading melanoma",
+                "lentigo maligna",
+                "acral melanoma",
+                "nodular melanoma",
+            )
+        )
+        if not melanoma_subtype_signal:
+            return False
+        # Keep this path narrow: only permit upgrade from nevus-like baselines.
+        # We explicitly do not flip BCC/SCC-style baselines to melanoma without
+        # selected evidence, because that caused recent regressions.
+        return normalized_baseline in {
+            "nevus",
+            "atypical nevus",
+            "seborrheic keratosis",
+        }
+
+    return False
+
+
+def _allow_sparse_lesion_safe_override(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    initial_ddx: list[str],
+    selected_evidence_present: bool,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    agent_confidence: str,
+) -> bool:
+    capabilities = {
+        str(item).strip().lower()
+        for item in (workflow_context.get("workflow_capabilities") or [])
+        if str(item).strip()
+    }
+    if "sparse_lesion_reasoning" not in capabilities:
+        return False
+    if not selected_evidence_present:
+        return False
+    if uncertainty_level in {"high", "unknown"}:
+        return False
+    if agent_confidence not in {"moderate", "medium", "high"}:
+        return False
+    if subtype_support_margin < 3.0:
+        return False
+
+    baseline_norm = str(baseline_label).strip().lower()
+    agent_norm = str(agent_label).strip().lower()
+    ddx_text = " | ".join(str(item).strip().lower() for item in initial_ddx if str(item).strip())
+
+    if baseline_norm != "basal cell carcinoma":
+        return False
+
+    if agent_norm == "actinic keratosis":
+        return "actinic keratosis" in ddx_text or "actinic" in ddx_text or "ack" in ddx_text
+
+    if agent_norm == "nevus":
+        return "nevus" in ddx_text or "atypical nevus" in ddx_text or "melanocytic nevus" in ddx_text
+
+    return False
 
 
 def _consensus_candidates(

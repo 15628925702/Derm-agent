@@ -19,6 +19,7 @@ from agent.policy_config import load_stable_policy, snapshot_policy
 from agent.reflection import apply_cognition_update, build_reflection
 from agent.skill_retriever import SkillRetrievalQuery, build_default_skill_retriever
 from agent.state import CaseInput, CaseState
+from agent.workflow_profiles import has_workflow_capability, uses_legacy_agent_final_path
 from cognition.cognition_state import CognitionState
 from integrations.openai_client import DermOpenAIClient
 from memory.experience_bank import ExperienceBank
@@ -42,6 +43,7 @@ def run_agent(
     data_split: str = "train",
     strict_frozen_writeback_guard: bool = True,
     execution_overrides: dict | None = None,
+    baseline_diagnosis_override: dict | None = None,
 ) -> tuple[CaseState, EvidencePackage]:
     qwen_client = client or DermOpenAIClient()
     normalized_split = normalize_split_name(data_split, default="train")
@@ -83,7 +85,7 @@ def run_agent(
     state = CaseState(case_input=case_input)
     state.policy_snapshot = policy_snapshot
     state.perception = qwen_client.initial_perception(case_input)
-    state.baseline_diagnosis = qwen_client.baseline_diagnosis(case_input)
+    state.baseline_diagnosis = dict(baseline_diagnosis_override or {}) or qwen_client.baseline_diagnosis(case_input)
     if not state.uncertainty:
         perception_uncertainty = state.perception.get("uncertainty", {})
         state.uncertainty = {
@@ -182,11 +184,15 @@ def run_agent(
 
     evidence_package = EvidencePackage.from_state(state)
     raw_final_diagnosis = qwen_client.final_diagnosis(case_input, evidence_package)
-    state.final_diagnosis = apply_conservative_agent_fusion(
-        baseline_output=state.baseline_diagnosis,
-        agent_output=raw_final_diagnosis,
-        evidence_bundle=evidence_package.to_dict(),
-    )
+    workflow_context = case_input.workflow_context or {}
+    if uses_legacy_agent_final_path(workflow_context):
+        state.final_diagnosis = dict(raw_final_diagnosis)
+    else:
+        state.final_diagnosis = apply_conservative_agent_fusion(
+            baseline_output=state.baseline_diagnosis,
+            agent_output=raw_final_diagnosis,
+            evidence_bundle=evidence_package.to_dict(),
+        )
     if execution_config["enable_image_read_audit"]:
         counterfactual_state = _run_text_only_counterfactual(
             case_input=case_input,

@@ -287,7 +287,11 @@ def detect_confusion_clusters(
 ) -> list[str]:
     ddx = [str(item).strip().lower() for item in (ddx_candidates or []) if str(item).strip()]
     pair = str(confusion_pair or "").strip().lower()
-    evidence_text = " ".join(ddx + [pair, str(known_confusion_text or "").lower(), str(image_summary or "").lower()])
+    # `known_confusion_text` is a global prior, not current-case evidence.
+    # Keep it out of term matching so old memories do not activate unrelated
+    # clusters for the current image. Callers can still use it separately for
+    # known-confusion bonuses.
+    evidence_text = " ".join(ddx + [pair, str(image_summary or "").lower()])
     if notes:
         evidence_text += " " + " ".join(str(item).strip().lower() for item in notes if str(item).strip())
     active: list[str] = []
@@ -295,9 +299,6 @@ def detect_confusion_clusters(
     for cluster_name, definition in cluster_defs.items():
         pairs = {str(item).strip().lower() for item in definition.get("pairs", ()) if str(item).strip()}
         if pair and pair in pairs:
-            active.append(cluster_name)
-            continue
-        if any(candidate in str(known_confusion_text or "").lower() for candidate in pairs):
             active.append(cluster_name)
             continue
         term_groups = definition.get("term_groups", ())

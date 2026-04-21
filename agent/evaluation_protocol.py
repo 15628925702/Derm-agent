@@ -769,6 +769,8 @@ def run_agent_target(
             flush=True,
         )
         baseline_qwen = dict(baseline_outputs.get(case_input.case_id, {}))
+        if not baseline_qwen:
+            baseline_qwen = client.baseline_diagnosis(case_input)
         cognition_state = CognitionState.load(cognition_path)
         cognition_state.state_split = normalized_split
         agent_state, _ = run_agent(
@@ -782,6 +784,7 @@ def run_agent_target(
             run_mode=f"{normalized_split}_frozen_inference",
             data_split=normalized_split,
             execution_overrides=target_spec.execution_overrides,
+            baseline_diagnosis_override=baseline_qwen,
         )
         enriched_record = enrich_execution_record_with_baseline(
             agent_state.execution_record,

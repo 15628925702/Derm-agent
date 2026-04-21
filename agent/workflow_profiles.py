@@ -15,16 +15,16 @@ def ensure_workflow_context(
     dataset_key = str(dataset_name or "").strip().lower()
     label_space_key = str(label_space_id or metadata.get("label_space_id", "")).strip().lower()
 
-    context.setdefault("workflow_profile", _infer_workflow_profile(dataset_key=dataset_key, metadata=metadata, label_space_id=label_space_key))
-    context.setdefault("workflow_capabilities", _infer_workflow_capabilities(context))
     context.setdefault("label_granularity", _infer_label_granularity(label_space_key))
-    context.setdefault("presentation_mode", _infer_presentation_mode(dataset_key=dataset_key, metadata=metadata))
-    context.setdefault("available_tests", _infer_available_tests(dataset_key=dataset_key, metadata=metadata))
+    context.setdefault("presentation_mode", _infer_presentation_mode(metadata=metadata))
+    context.setdefault("workflow_profile", _infer_workflow_profile(metadata=metadata, label_space_id=label_space_key))
+    context.setdefault("available_tests", _infer_available_tests(metadata=metadata, presentation_mode=context.get("presentation_mode")))
     context.setdefault("workflow_preference", _infer_workflow_preference(context))
     context.setdefault("hospital_type", "specialist_clinic")
     context.setdefault("time_budget", "standard")
     if "metadata_completeness" not in context:
         context["metadata_completeness"] = _infer_metadata_completeness(metadata)
+    context.setdefault("workflow_capabilities", _infer_workflow_capabilities(context))
     return context
 
 
@@ -46,13 +46,19 @@ def has_workflow_capability(context: dict[str, Any] | None, capability_name: str
 
 
 def is_family_routing_case(*, workflow_context: dict[str, Any] | None, label_space_id: str | None = None) -> bool:
-    if has_workflow_capability(workflow_context, "family_routing"):
-        return True
-    return "grouped" in str(label_space_id or "").strip().lower()
+    return has_workflow_capability(workflow_context, "family_routing")
 
 
 def is_sparse_lesion_case(*, workflow_context: dict[str, Any] | None) -> bool:
     return has_workflow_capability(workflow_context, "sparse_lesion_reasoning")
+
+
+def is_coarse_taxonomy_case(*, workflow_context: dict[str, Any] | None) -> bool:
+    return has_workflow_capability(workflow_context, "coarse_taxonomy_reasoning")
+
+
+def uses_legacy_agent_final_path(workflow_context: dict[str, Any] | None) -> bool:
+    return has_workflow_capability(workflow_context, "legacy_agent_final_reasoning")
 
 
 def is_full_taxonomy_case(*, workflow_context: dict[str, Any] | None, label_space_id: str | None = None) -> bool:
@@ -70,13 +76,21 @@ def get_workflow_specialist_skills(workflow_context: dict[str, Any] | None) -> s
     return {"mel_nev_specialist_skill", "ack_scc_specialist_skill", "benign_mimic_specialist_skill"}
 
 
-def _infer_workflow_profile(*, dataset_key: str, metadata: dict[str, Any], label_space_id: str) -> str:
-    presentation_mode = _infer_presentation_mode(dataset_key=dataset_key, metadata=metadata)
+def _infer_workflow_profile(*, metadata: dict[str, Any], label_space_id: str) -> str:
+    presentation_mode = _infer_presentation_mode(metadata=metadata)
     granularity = _infer_label_granularity(label_space_id)
     if presentation_mode == "diffuse_rash" and granularity == "grouped":
         return "family_routing_workflow"
-    if presentation_mode == "focal_lesion":
+    if granularity == "grouped":
+        return "coarse_taxonomy_workflow"
+    if _has_sparse_lesion_signature(metadata=metadata, label_space_id=label_space_id):
         return "sparse_lesion_workflow"
+    if _has_clinical_lesion_metadata(metadata):
+        return "clinical_full_taxonomy_lesion_workflow"
+    if _has_image_archive_metadata(metadata):
+        return "image_archive_full_taxonomy_lesion_workflow"
+    if presentation_mode == "focal_lesion":
+        return "full_taxonomy_lesion_workflow"
     return "default_workflow"
 
 
@@ -88,7 +102,7 @@ def _infer_label_granularity(label_space_id: str) -> str:
     return "unknown"
 
 
-def _infer_presentation_mode(*, dataset_key: str, metadata: dict[str, Any]) -> str:
+def _infer_presentation_mode(*, metadata: dict[str, Any]) -> str:
     body_sites = metadata.get("body_sites")
     textures = metadata.get("textures_present")
     related_category = str(metadata.get("related_category", "")).strip().upper()
@@ -99,14 +113,12 @@ def _infer_presentation_mode(*, dataset_key: str, metadata: dict[str, Any]) -> s
         return "diffuse_rash"
     if isinstance(textures, list) and "flat" in {str(item).strip().lower() for item in textures} and related_category == "RASH":
         return "diffuse_rash"
-    if dataset_key == "ham10000":
-        return "focal_lesion"
     return "focal_lesion"
 
 
-def _infer_available_tests(*, dataset_key: str, metadata: dict[str, Any]) -> list[str]:
+def _infer_available_tests(*, metadata: dict[str, Any], presentation_mode: Any = "") -> list[str]:
     tests = ["clinical_photo_only"]
-    if dataset_key in {"pad_ufes_20", "isic2019", "ham10000"}:
+    if str(presentation_mode or "").strip().lower() == "focal_lesion":
         tests.append("lesion_photo")
     if metadata.get("has_histopathology"):
         tests.append("histopathology_reference_hidden")
@@ -128,8 +140,16 @@ def _infer_workflow_capabilities(context: dict[str, Any]) -> list[str]:
     capabilities: list[str] = []
     if profile == "family_routing_workflow":
         capabilities.extend(["family_routing", "grouped_label_reasoning"])
+    if profile == "coarse_taxonomy_workflow":
+        capabilities.extend(["coarse_taxonomy_reasoning", "grouped_label_reasoning"])
     if profile == "sparse_lesion_workflow":
         capabilities.extend(["sparse_lesion_reasoning", "focal_lesion_reasoning"])
+    if profile == "clinical_full_taxonomy_lesion_workflow":
+        capabilities.extend(["clinical_metadata_reasoning", "full_taxonomy_reasoning", "focal_lesion_reasoning", "legacy_agent_final_reasoning"])
+    if profile == "image_archive_full_taxonomy_lesion_workflow":
+        capabilities.extend(["image_archive_reasoning", "full_taxonomy_reasoning", "focal_lesion_reasoning", "legacy_agent_final_reasoning"])
+    if profile == "full_taxonomy_lesion_workflow":
+        capabilities.extend(["full_taxonomy_reasoning", "focal_lesion_reasoning"])
     if presentation_mode == "diffuse_rash":
         capabilities.append("rash_reasoning")
     if presentation_mode == "focal_lesion":
@@ -150,3 +170,20 @@ def _infer_metadata_completeness(metadata: dict[str, Any]) -> str:
     if visible_values <= 8:
         return "partial"
     return "full"
+
+
+def _has_sparse_lesion_signature(*, metadata: dict[str, Any], label_space_id: str) -> bool:
+    label_space_key = str(label_space_id or metadata.get("label_space_id", "")).strip().lower()
+    if label_space_key == "ham10000_full":
+        return True
+    return any(key in metadata for key in ("diagnosis_confidence", "has_histopathology", "localization"))
+
+
+def _has_clinical_lesion_metadata(metadata: dict[str, Any]) -> bool:
+    clinical_fields = {"grew", "changed", "bleed", "itch", "hurt", "diameter_1", "diameter_2", "elevation"}
+    return bool(clinical_fields.intersection(metadata.keys()))
+
+
+def _has_image_archive_metadata(metadata: dict[str, Any]) -> bool:
+    archive_fields = {"anatom_site_general", "age_approx", "image"}
+    return bool(archive_fields.intersection(metadata.keys()))
