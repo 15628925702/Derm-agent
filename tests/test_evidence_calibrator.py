@@ -187,3 +187,118 @@ def test_aggregator_includes_calibration_debug_and_serialized_text() -> None:
     assert evidence_bundle["evidence_calibration_debug"].get("calibrator_version") == "v1"
     assert "[Observation Evidence]" in evidence_bundle["serialized_evidence_text"]
     assert "Active confusion clusters" in evidence_bundle["serialized_evidence_text"]
+
+
+def test_sparse_lesion_evidence_policy_counts_benign_mimic_specialist_as_subtype_support() -> None:
+    state = CaseState(
+        case_input=CaseInput(
+            case_id="HAM_CASE_001",
+            image_path="/tmp/nonexistent.png",
+            metadata={
+                "age": "70",
+                "localization": "scalp",
+                "diagnosis_confidence": "histopathology_confirmed",
+                "has_histopathology": True,
+                "label_space_id": "ham10000_full",
+            },
+            dataset_name="HAM10000",
+            label_space_id="ham10000_full",
+            workflow_context={
+                "workflow_profile": "sparse_lesion_workflow",
+                "workflow_capabilities": ["sparse_lesion_reasoning", "focal_lesion_reasoning"],
+                "workflow_preference": "morphology_first",
+                "metadata_completeness": "partial",
+                "available_tests": ["clinical_photo_only", "lesion_photo", "histopathology_reference_hidden"],
+                "hospital_type": "specialist_clinic",
+                "time_budget": "standard",
+            },
+        )
+    )
+    state.perception = {
+        "image_summary": "well-circumscribed scalp lesion with central hypopigmentation",
+        "ddx_candidates": ["Atypical nevus", "Dermatofibroma", "Seborrheic keratosis"],
+        "uncertainty": {"level": "medium", "reasons": ["benign mimic remains plausible"]},
+        "notes": ["central hypopigmented area", "slight elevation"],
+    }
+    state.skill_outputs = {
+        "lesion_description_structuring_skill": {
+            "primary_lesion_morphology": "slightly elevated plaque",
+            "color": "brown with central hypopigmented area",
+            "border": "irregular, slightly raised",
+            "surface": "smooth",
+            "size_count": "small to medium, solitary",
+            "distribution": "scalp, localized",
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence",
+        },
+        "color_pattern_analysis_skill": {
+            "primary_color": "brown",
+            "color_variation": "marked",
+            "pigmentation_pattern": "reticular",
+            "asymmetry_color": "present",
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence",
+        },
+        "malignancy_risk_assessment_skill": {
+            "risk_level": "medium",
+            "risk_evidence": ["irregular border", "central hypopigmented area"],
+            "alarm_signals": ["irregular border", "central hypopigmented area"],
+            "benign_reassuring_features": ["well-circumscribed plaque"],
+            "evidence_strength": "medium",
+            "recommendation_type": "risk_signal",
+        },
+        "benign_mimic_specialist_skill": {
+            "differentiation_features": ["nevus-like symmetry", "absence of pearly translucency"],
+            "supporting_evidence": ["central hypopigmented area can fit atypical nevus"],
+            "opposing_evidence": ["lack of classic BCC translucency"],
+            "required_missing_evidence": ["dermoscopic pigment network detail"],
+            "uncertainty_under_current_evidence": "medium",
+            "critical_supporting_evidence": ["nevus-like competing explanation remains active"],
+            "counterexample_watchouts": ["do not over-read pigmentation alone as melanoma"],
+            "evidence_strength": "medium",
+            "recommendation_type": "comparative_support",
+        },
+        "exclusion_reasoning_skill": {
+            "unlikely_candidates": ["Dermatofibroma"],
+            "exclusion_evidence": ["lesion lacks classic dermatofibroma scar-like center"],
+            "required_missing_evidence": ["close surface detail"],
+            "exclusion_confidence": "medium",
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence",
+        },
+    }
+    state.retrieval_bundle = {
+        "raw_case_results": [],
+        "tactical_results": [{"source_id": "tac_sparse_1", "source_layer": "tactical_experience", "retrieval_score": 4.0}],
+        "abstract_results": [{"source_id": "abs_sparse_1", "source_layer": "abstract_experience", "retrieval_score": 5.0, "experience_type": "confusion_memory", "confusion_pair": "melanoma->nv"}],
+        "query": {"confusion_pair": "melanoma->nv"},
+    }
+    state.skill_retrieval_bundle = {
+        "retrieval_scores": {
+            "lesion_description_structuring_skill": 8.0,
+            "color_pattern_analysis_skill": 7.5,
+            "malignancy_risk_assessment_skill": 7.0,
+            "benign_mimic_specialist_skill": 9.0,
+            "exclusion_reasoning_skill": 6.0,
+        }
+    }
+    state.risk_flags = ["malignancy_risk:medium"]
+    state.uncertainty = {
+        "uncertainty_level": "medium",
+        "reasons": ["benign mimic remains plausible"],
+        "missing_information": ["dermoscopy"],
+    }
+    state.planner_output = {"selected_skills": list(state.skill_outputs.keys()), "selection_reasons": {}}
+    state.policy_snapshot = {"evidence_policy": {"enable_evidence_calibrator": True, "calibrator_mode": "heuristic"}}
+    state.baseline_diagnosis = {
+        "final_diagnosis": "Basal Cell Carcinoma",
+        "differential_diagnoses": ["Basal Cell Carcinoma"],
+        "confidence": "High",
+    }
+
+    evidence_bundle = build_evidence_bundle(state)
+    diagnosis_layer = evidence_bundle["evidence_decision_policy"]["diagnosis_override_layer"]
+
+    assert diagnosis_layer["specialist_support_present"] is True
+    assert diagnosis_layer["subtype_support_quota_satisfied"] is True
+    assert diagnosis_layer["subtype_support_score"] > 0

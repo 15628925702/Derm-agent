@@ -9,7 +9,10 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from agent.planner import build_default_planner
+from agent.planner import PlannerInput, build_default_planner
+from cognition.cognition_state import CognitionState
+from skills.catalog import make_skill_object
+from skills.schema import SkillSchemaField, SkillStep, SkillTrigger
 from agent.supervised_controller import (
     ControllerSelectionPolicy,
     ControllerMLP,
@@ -145,3 +148,58 @@ def test_planner_falls_back_when_learned_checkpoint_missing() -> None:
         }
     )
     assert planner is not None
+
+
+def test_planner_prioritizes_benign_mimic_guard_for_sparse_lesion_workflow() -> None:
+    planner = build_default_planner({"controller_family": "heuristic"})
+    available_skills = [
+        _skill("morphology_analysis_skill", "Use morphology evidence."),
+        _skill("color_pattern_analysis_skill", "Use color evidence."),
+        _skill("lesion_description_structuring_skill", "Structure lesion description."),
+        _skill("malignancy_risk_assessment_skill", "Assess malignancy risk."),
+        _skill("differential_compare_skill", "Compare differential candidates."),
+        _skill("exclusion_reasoning_skill", "Use exclusion and negative evidence."),
+        _skill("mel_nev_specialist_skill", "Use when melanoma versus nevus confusion is active."),
+        _skill("benign_mimic_specialist_skill", "Use when benign keratosis, dermatofibroma, vascular lesion, or nevus-like mimics compete with malignancy."),
+    ]
+
+    output = planner.plan(
+        PlannerInput(
+            perception={
+                "image_summary": "A well-circumscribed slightly elevated plaque with central hypopigmentation and surrounding hyperpigmentation.",
+                "ddx_candidates": ["BCC", "NV", "AKIEC"],
+                "uncertainty": {"level": "low"},
+                "notes": ["BCC concern remains, but benign mimic features are visible."],
+            },
+            metadata={"localization": "lower extremity", "age": "68"},
+            cognition=CognitionState(),
+            retrieved_experience_summary=[],
+            available_skills=available_skills,
+            workflow_context={
+                "workflow_profile": "sparse_lesion_workflow",
+                "workflow_capabilities": ["sparse_lesion_reasoning", "focal_lesion_reasoning"],
+                "benign_mimic_like_signature": True,
+                "available_tests": ["clinical_photo_only", "lesion_photo"],
+                "metadata_completeness": "partial",
+            },
+            dataset_name="HAM10000",
+        )
+    )
+
+    assert "benign_mimic_specialist_skill" in output.selected_skills
+    assert "exclusion_reasoning_skill" in output.selected_skills
+    assert "mel_nev_specialist_skill" not in output.selected_skills
+
+
+def _skill(name: str, trigger_text: str):
+    return make_skill_object(
+        skill_id=f"skill.{name}.v1",
+        name=name,
+        description=trigger_text,
+        skill_type="specialist" if "specialist" in name else "reasoning",
+        triggers=[SkillTrigger(condition=trigger_text, rationale=trigger_text)],
+        workflow_text=trigger_text,
+        steps=[SkillStep(step_id="s1", title="Step", instruction=trigger_text)],
+        watch_outs=["Do not provide final diagnosis."],
+        output_schema=[SkillSchemaField(name="evidence", field_type="str", description="Evidence.")],
+    )

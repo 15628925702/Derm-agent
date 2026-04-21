@@ -18,6 +18,7 @@ ROOT_CAUSE_MAP: dict[str, list[str]] = {
     "scc_bcc_family": ["specialist_insufficient", "abstract_retrieval_insufficient", "evidence_ordering_insufficient"],
     "ak_bcc_family": ["exclusion_reasoning_insufficient", "evidence_ordering_insufficient"],
     "sek_bcc_family": ["exclusion_reasoning_insufficient", "abstract_retrieval_insufficient"],
+    "bcc_benign_mimic_family": ["specialist_trigger_insufficient", "benign_mimic_routing_insufficient", "abstract_retrieval_insufficient"],
     "inflammatory_ack_family": ["metadata_consistency_handling_insufficient", "exclusion_reasoning_insufficient"],
     "mel_nev_family": ["specialist_trigger_insufficient", "abstract_retrieval_insufficient"],
 }
@@ -41,6 +42,12 @@ PATCH_PLAN: list[dict[str, Any]] = [
         "target_case_type": "ak_bcc_family",
         "update_types": ["exclusion_rule_enhancement"],
         "files": ["/root/DermAgent/skills/exclusion_reasoning.py"],
+    },
+    {
+        "patch_id": "step5_patch_bcc_benign_mimic_routing",
+        "target_case_type": "bcc_benign_mimic_family",
+        "update_types": ["specialist_trigger_refinement", "workflow_routing_refinement"],
+        "files": ["/root/DermAgent/agent/skill_retriever.py", "/root/DermAgent/agent/planner.py", "/root/DermAgent/skills/benign_mimic_specialist.py"],
     },
     {
         "patch_id": "step5_patch_metadata_inflammatory_guard",
@@ -84,6 +91,8 @@ def _load_json(path: Path) -> dict[str, Any]:
 
 def _cluster_family(tag: str) -> str:
     text = str(tag).strip().lower()
+    if "bcc_benign_mimic" in text:
+        return "bcc_benign_mimic_family"
     if ("scc" in text or "squamous" in text) and "bcc" in text:
         return "scc_bcc_family"
     if ("ack" in text or "actinic" in text) and "bcc" in text:

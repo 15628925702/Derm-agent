@@ -261,9 +261,11 @@ def _record_passes_filters(
         if label.strip().lower() not in candidate_labels:
             return False
     if confusion_pair:
+        lowered = confusion_pair.strip().lower()
+        record_tags = _record_confusion_tags(record)
         case_outcome = record.get("reflection_summary", {}).get("case_outcome", {})
         confusion_text = str(case_outcome.get("confusion_pair", "")).strip().lower()
-        if confusion_pair.strip().lower() not in confusion_text:
+        if lowered not in confusion_text and not any(lowered in tag for tag in record_tags):
             return False
     if skill_name:
         available = {
@@ -278,6 +280,37 @@ def _record_passes_filters(
         if skill_name not in available:
             return False
     return True
+
+
+def _record_confusion_tags(record: dict[str, Any]) -> list[str]:
+    tags: list[str] = []
+    case_outcome = record.get("reflection_summary", {}).get("case_outcome", {})
+    confusion_pair = str(case_outcome.get("confusion_pair", "")).strip()
+    if confusion_pair:
+        tags.append(confusion_pair.lower())
+        parts = confusion_pair.split("->")
+        if len(parts) == 2:
+            tags.append(f"{parts[0].strip().lower()}_vs_{parts[1].strip().lower()}")
+
+    ground_truth = dict(record.get("ground_truth", {}) or {})
+    gt_label = str(ground_truth.get("canonical_label") or ground_truth.get("raw_label") or "").strip().lower()
+    baseline_output = dict(record.get("baseline_qwen", {}) or {})
+    qwen_final = dict(record.get("qwen_final", {}) or {})
+    fusion = dict(qwen_final.get("fusion_decision", {}) or {})
+    baseline_label = str(
+        baseline_output.get("final_diagnosis")
+        or fusion.get("baseline_label", "")
+        or qwen_final.get("final_diagnosis", "")
+    ).strip().lower()
+    agent_label = str(fusion.get("agent_label", "")).strip().lower()
+
+    benign_mimic_terms = ("nev", "nevus", "bkl", "seborrheic keratosis", "df", "dermatofibroma", "vasc", "vascular")
+    if ("bcc" in baseline_label or "basal cell" in baseline_label) and any(term in agent_label for term in benign_mimic_terms):
+        tags.append("bcc_benign_mimic")
+    if ("bcc" in baseline_label or "basal cell" in baseline_label) and gt_label in {"nv", "bkl", "df", "vasc"}:
+        tags.append("bcc_benign_mimic")
+
+    return _dedupe_strings(tags)
 
 
 def _new_bucket(skill_name: str) -> dict[str, Any]:

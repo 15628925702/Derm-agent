@@ -141,6 +141,29 @@ def _build_label_space_prompt_hint(case_input: CaseInput) -> str:
     )
 
 
+def _build_sparse_lesion_prompt_hint(case_input: CaseInput) -> str:
+    workflow_context = _case_workflow_context(case_input)
+    if str(workflow_context.get("workflow_profile", "")).strip().lower() != "sparse_lesion_workflow":
+        return ""
+    label_space = resolve_label_space(
+        label_space_id=getattr(case_input, "label_space_id", None),
+        dataset_name=getattr(case_input, "dataset_name", None),
+        metadata=getattr(case_input, "metadata", None),
+    )
+    if str(label_space.label_space_id).strip().lower() != "ham10000_full":
+        return ""
+    return (
+        "HAM10000 sparse-lesion note: keep reasoning inside the HAM10000 label space. "
+        "Do not drift to open-set inflammatory or infectious labels such as rosacea, erythema migrans, perioral dermatitis, eczema, or psoriasis. "
+        "When morphology is ambiguous, prefer the closest HAM10000 label among MEL, BCC, NV, BKL, DF, VASC, and AKIEC. "
+        "In the early differential (`ddx_candidates`), keep benign-mimic alternatives visible instead of collapsing immediately to only melanoma or BCC. "
+        "For rough, keratotic, or actinic-looking facial lesions, explicitly keep AKIEC in consideration. "
+        "For stuck-on or benign-keratosis-like lesions, explicitly keep BKL in consideration. "
+        "For scar-like firm plaques or nodules, explicitly keep DF in consideration. "
+        "For vascular-looking red-purple lesions, explicitly keep VASC in consideration."
+    )
+
+
 def _build_scin_routing_hint(case_input: CaseInput) -> str:
     label_space_id = str(getattr(case_input, "label_space_id", "") or "").strip().lower()
     if not is_full_taxonomy_case(workflow_context=_case_workflow_context(case_input), label_space_id=label_space_id):
@@ -656,6 +679,10 @@ class DermOpenAIClient:
         }
 
     def initial_perception(self, case_input: CaseInput) -> dict[str, Any]:
+        label_space_hint = _build_label_space_prompt_hint(case_input)
+        label_space_line = f"{label_space_hint}\n" if label_space_hint else ""
+        sparse_hint = _build_sparse_lesion_prompt_hint(case_input)
+        sparse_line = f"{sparse_hint}\n" if sparse_hint else ""
         user_text = (
             "You are the initial perception stage in DermAgent.\n"
             "Return structured observation only. Do not produce a final diagnosis label.\n"
@@ -666,6 +693,8 @@ class DermOpenAIClient:
             "- ddx_candidates: list of a few candidate diagnoses considered at the perception stage\n"
             "- uncertainty: { level: low/medium/high, reasons: [..] }\n"
             "- notes: list of short observation notes\n"
+            f"{label_space_line}"
+            f"{sparse_line}"
             f"Metadata: {case_input.clinical_metadata()}"
         )
         messages: list[dict[str, Any]] = [
@@ -900,6 +929,8 @@ class DermOpenAIClient:
         else:
             label_space_hint = _build_label_space_prompt_hint(case_input)
             label_space_line = f"{label_space_hint}\n" if label_space_hint else ""
+            sparse_hint = _build_sparse_lesion_prompt_hint(case_input)
+            sparse_line = f"{sparse_hint}\n" if sparse_hint else ""
             scin_routing_hint = _build_scin_routing_hint(case_input)
             scin_routing_line = f"{scin_routing_hint}\n" if scin_routing_hint else ""
             prompt = (
@@ -908,6 +939,7 @@ class DermOpenAIClient:
                 "Use only the image and metadata to produce a structured diagnosis result.\n"
                 "Include: final_diagnosis, differential_diagnoses, rationale, confidence, follow_up_considerations.\n"
                 f"{label_space_line}"
+                f"{sparse_line}"
                 f"{scin_routing_line}"
                 f"Metadata: {case_input.clinical_metadata()}"
             )

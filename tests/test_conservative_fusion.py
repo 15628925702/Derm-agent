@@ -407,3 +407,54 @@ def test_soft_fusion_blocks_sparse_lesion_override_to_melanoma() -> None:
 
     assert decision["use_agent_output"] is False
     assert "malignancy_override_not_allowed" in decision["reasons"] or "risk_only_mode_without_subtype_override" in decision["reasons"] or "subtype_support_margin_too_low" in decision["reasons"] or "agent_confidence_below_baseline" in decision["reasons"] or "fallback_to_baseline" in decision["reasons"]
+
+
+def test_soft_fusion_allows_sparse_lesion_safe_override_for_bcc_to_nevus() -> None:
+    baseline_output = {
+        "final_diagnosis": "Basal Cell Carcinoma",
+        "differential_diagnoses": ["Basal Cell Carcinoma"],
+        "confidence": "High",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Dermatofibroma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": ["Atypical nevus", "Dermatofibroma", "Seborrheic keratosis"],
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_profile": "sparse_lesion_workflow",
+                    "workflow_capabilities": ["sparse_lesion_reasoning", "focal_lesion_reasoning"],
+                },
+                "selected_evidence_present": True,
+                "override_allowed": True,
+                "malignancy_override_allowed": False,
+                "subtype_override_allowed": True,
+                "family_override_allowed": False,
+                "override_mode": "risk_only",
+                "support_margin": 39.68,
+                "subtype_support_margin": 7.54,
+                "uncertainty_level": "medium",
+            },
+        },
+        "evidence_calibration_debug": {
+            "policy": {
+                "conservative_fusion_mode": "soft",
+            }
+        },
+    }
+
+    decision = decide_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert decision["use_agent_output"] is True
+    assert "sparse_lesion_safe_override" in decision["reasons"]

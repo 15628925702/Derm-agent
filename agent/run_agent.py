@@ -85,6 +85,10 @@ def run_agent(
     state = CaseState(case_input=case_input)
     state.policy_snapshot = policy_snapshot
     state.perception = qwen_client.initial_perception(case_input)
+    state.case_input.workflow_context = _augment_workflow_context_for_runtime(
+        case_input=state.case_input,
+        perception=state.perception,
+    )
     state.baseline_diagnosis = dict(baseline_diagnosis_override or {}) or qwen_client.baseline_diagnosis(case_input)
     if not state.uncertainty:
         perception_uncertainty = state.perception.get("uncertainty", {})
@@ -124,6 +128,7 @@ def run_agent(
                 metadata=state.clinical_metadata,
                 cognition=cognition_state,
                 dataset_name=case_input.dataset_name,
+                workflow_context=case_input.workflow_context,
             ),
             all_skill_objects,
         )
@@ -269,6 +274,35 @@ def _build_notes(state: CaseState) -> list[str]:
     if state.uncertainty.get("uncertainty_level") == "high" or state.perception.get("uncertainty", {}).get("level") == "high":
         notes.append("High uncertainty detected in MVP skeleton.")
     return notes
+
+
+def _augment_workflow_context_for_runtime(*, case_input: CaseInput, perception: dict[str, Any]) -> dict[str, Any]:
+    workflow_context = dict(case_input.workflow_context or {})
+    if str(workflow_context.get("workflow_profile", "")).strip().lower() != "sparse_lesion_workflow":
+        return workflow_context
+    image_summary = str(perception.get("image_summary", "")).lower()
+    notes = " ".join(str(item) for item in perception.get("notes", []))
+    combined = f"{image_summary} {notes}".lower()
+    benign_surface_terms = (
+        "well-circumscribed",
+        "slightly elevated",
+        "smooth",
+        "plaque",
+        "nodule",
+        "central hypopigmentation",
+        "surrounding hyperpigmentation",
+        "stuck-on",
+        "waxy",
+        "scar-like",
+        "firm",
+        "red-purple",
+        "vascular",
+    )
+    malignant_anchor_terms = ("bcc", "basal cell", "melanoma", "akiec", "actinic keratosis")
+    benign_hits = sum(1 for term in benign_surface_terms if term in combined)
+    malignant_hits = sum(1 for term in malignant_anchor_terms if term in combined)
+    workflow_context["benign_mimic_like_signature"] = bool(benign_hits >= 2 and malignant_hits >= 1)
+    return workflow_context
 
 
 def _build_state_versions(

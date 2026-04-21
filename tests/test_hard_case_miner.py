@@ -118,3 +118,54 @@ def test_build_hard_case_candidate_tolerates_null_baseline_qwen() -> None:
     assert candidate["baseline_result"]["final_diagnosis"] is None
     assert candidate["failure_type"] == "agent_failure_no_baseline"
     assert candidate["agent_result"]["uncertainty_level"] == "high"
+
+
+def test_build_hard_case_candidate_tags_bcc_benign_mimic_confusion_family() -> None:
+    record = {
+        "case_id": "case_bcc_bkl",
+        "dataset_name": "HAM10000",
+        "baseline_qwen": {
+            "final_diagnosis": "Basal Cell Carcinoma",
+        },
+        "ground_truth": {
+            "raw_label": "bkl",
+            "canonical_label": "BKL",
+            "malignant_flag": False,
+        },
+        "evaluation": {
+            "correct": False,
+            "baseline_correct": False,
+            "topk_hit": False,
+            "malignant_recall_hit": None,
+            "baseline_malignant_recall_hit": None,
+        },
+        "qwen_initial": {
+            "ddx_candidates": ["BCC", "NV", "AKIEC"],
+        },
+        "qwen_final": {
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "fusion_decision": {
+                "baseline_label": "Basal Cell Carcinoma",
+                "agent_label": "Seborrheic Keratosis",
+            },
+        },
+        "evidence_bundle": {
+            "contradiction_summary": {},
+            "uncertainty_summary": {
+                "uncertainty_level": "medium",
+            },
+        },
+        "reflection_summary": {
+            "case_outcome": {
+                "uncertainty_level": "medium",
+            }
+        },
+        "planner_decision": {
+            "selected_skills": ["differential_compare_skill"],
+        },
+        "timestamp": "2026-03-26T03:30:00Z",
+    }
+
+    candidate = build_hard_case_candidate(record)
+
+    assert "bcc_benign_mimic" in candidate["confusion_tags"]

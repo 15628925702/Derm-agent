@@ -185,6 +185,54 @@ def test_skill_retriever_boosts_ack_sek_cluster_and_exclusion_reasoning() -> Non
     assert bundle.retrieval_scores["ack_scc_specialist_skill"] >= bundle.retrieval_scores["malignancy_risk_assessment_skill"]
 
 
+def test_skill_retriever_surfaces_benign_mimic_specialist_for_ham_morphology_signature() -> None:
+    retriever = build_default_skill_retriever()
+    skills = [
+        _skill(
+            skill_id="skill.benign_mimic_specialist.v1",
+            name="benign_mimic_specialist_skill",
+            skill_type="specialist",
+            trigger_condition="Use when benign keratosis, dermatofibroma, vascular lesion, or nevus-like mimics compete with melanoma or keratinocyte malignancy in the differential.",
+            trigger_rationale="Benign mimics frequently absorb diagnostic mass in HAM10000-like label spaces.",
+        ),
+        _skill(
+            skill_id="skill.differential_compare.v1",
+            name="differential_compare_skill",
+            skill_type="reasoning",
+            trigger_condition="Use when multiple differential candidates need explicit pairwise comparison.",
+            trigger_rationale="Comparison keeps the differential open.",
+        ),
+    ]
+    bundle = retriever.retrieve(
+        SkillRetrievalQuery(
+            perception={
+                "image_summary": "A well-circumscribed slightly elevated plaque with central hypopigmentation and surrounding hyperpigmentation on the lower extremity.",
+                "ddx_candidates": ["BCC", "NV", "AKIEC"],
+                "uncertainty": {"level": "low"},
+                "notes": ["The lesion is smooth and could still reflect a benign-mimic pathway despite concern for BCC or AKIEC."],
+            },
+            metadata={
+                "localization": "lower extremity",
+                "age": "68",
+                "diagnosis_confidence": "histopathology_confirmed",
+                "has_histopathology": True,
+                "label_space_id": "ham10000_full",
+            },
+            cognition=CognitionState(),
+            dataset_name="HAM10000",
+            workflow_context={
+                "workflow_profile": "sparse_lesion_workflow",
+                "workflow_capabilities": ["sparse_lesion_reasoning", "focal_lesion_reasoning"],
+            },
+        ),
+        skills,
+    )
+
+    assert "benign_mimic_specialist_skill" in bundle.candidate_skill_names
+    assert "ham_benign_mimic_confusion" in bundle.trigger_hits["benign_mimic_specialist_skill"]
+    assert "workflow_benign_mimic_guard" in bundle.trigger_hits["benign_mimic_specialist_skill"]
+
+
 def _skill(
     *,
     skill_id: str,

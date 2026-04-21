@@ -749,6 +749,48 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
                             decision.matched_fields + ["workflow_context.history"]
                         )
 
+        if (
+            str(workflow_context.get("workflow_profile", "")).strip().lower() == "sparse_lesion_workflow"
+            and bool(workflow_context.get("benign_mimic_like_signature", False))
+        ):
+            for decision in decisions:
+                if decision.skill_name == "mel_nev_specialist_skill":
+                    decision.selected = False
+                    decision.score = min(int(decision.score), 4)
+                    decision.reasons = dedupe_reasons(
+                        decision.reasons + ["Suppressed by sparse benign-mimic workflow guard."]
+                    )
+                    decision.matched_fields = dedupe_reasons(
+                        decision.matched_fields + ["workflow_context.benign_mimic_guard_suppress_mel_nev"]
+                    )
+                    continue
+                if decision.skill_name == "exclusion_reasoning_skill":
+                    decision.selected = True
+                    decision.score += 3
+                    decision.ordering_hint = min(decision.ordering_hint, 78)
+                    decision.adaptive_budget_retain = True
+                    decision.adaptive_budget_reason = "Retained by sparse benign-mimic workflow guard."
+                    decision.reasons = dedupe_reasons(
+                        decision.reasons + ["Prioritized by sparse_lesion_workflow benign-mimic guard."]
+                    )
+                    decision.matched_fields = dedupe_reasons(
+                        decision.matched_fields + ["workflow_context.benign_mimic_guard_prioritize_exclusion"]
+                    )
+                    continue
+                if decision.skill_name != "benign_mimic_specialist_skill":
+                    continue
+                decision.selected = True
+                decision.score = max(int(decision.score), 9)
+                decision.ordering_hint = min(decision.ordering_hint, 89)
+                decision.adaptive_budget_retain = True
+                decision.adaptive_budget_reason = "Retained by sparse benign-mimic workflow guard."
+                decision.reasons = dedupe_reasons(
+                    decision.reasons + ["Forced selected by sparse_lesion_workflow benign-mimic guard."]
+                )
+                decision.matched_fields = dedupe_reasons(
+                    decision.matched_fields + ["workflow_context.benign_mimic_guard"]
+                )
+
     def _apply_case_budget_gate(
         self,
         *,
@@ -858,6 +900,13 @@ def _build_signal_profile(planner_input: PlannerInput) -> dict[str, Any]:
     metadata = planner_input.metadata
     ddx_candidates = [str(item).lower() for item in perception.get("ddx_candidates", [])]
     uncertainty_level = str(perception.get("uncertainty", {}).get("level", "unknown")).lower()
+    workflow_context = dict(planner_input.workflow_context or {})
+    workflow_profile = str(workflow_context.get("workflow_profile", "")).strip().lower()
+    morphology_clues = _extract_morphology_clues(
+        str(perception.get("image_summary", "")),
+        metadata,
+        " ".join(str(item) for item in perception.get("notes", [])),
+    )
     retrieved_source = planner_input.retrieved_experience_bundle.get("planner_summary") or planner_input.retrieved_experience_summary
     retrieved_chunks = []
     for record in retrieved_source:
@@ -887,6 +936,14 @@ def _build_signal_profile(planner_input: PlannerInput) -> dict[str, Any]:
         image_summary=str(perception.get("image_summary", "")),
         notes=[str(item) for item in perception.get("notes", []) if str(item).strip()],
         dataset_name=planner_input.dataset_name,
+    )
+    benign_mimic_signature = _has_ham_benign_mimic_signature(
+        image_summary=str(perception.get("image_summary", "")),
+        notes=" ".join(str(item) for item in perception.get("notes", [])),
+        metadata=metadata,
+        morphology_clues=morphology_clues,
+        dataset_name=planner_input.dataset_name,
+        workflow_profile=workflow_profile,
     )
     keratinocyte_precursor_present = any(
         any(term in candidate for term in ("ack", "actinic keratos", "scc", "squamous", "seborrheic", "sek"))
@@ -918,6 +975,7 @@ def _build_signal_profile(planner_input: PlannerInput) -> dict[str, Any]:
         or has_confusion_pair(ddx_candidates, ("bkl", "benign keratosis", "seborrheic keratosis"), ("mel", "melanoma"))
         or has_confusion_pair(ddx_candidates, ("df", "dermatofibroma"), ("mel", "melanoma", "nv", "nevus"))
         or has_confusion_pair(ddx_candidates, ("vasc", "vascular"), ("mel", "melanoma", "nv", "nevus"))
+        or benign_mimic_signature
     )
 
     return {
@@ -953,6 +1011,99 @@ def _build_signal_profile(planner_input: PlannerInput) -> dict[str, Any]:
         "known_confusion_match": known_confusion_match,
         "active_confusion_clusters": active_confusion_clusters,
     }
+
+
+def _has_ham_benign_mimic_signature(
+    *,
+    image_summary: str,
+    notes: str,
+    metadata: dict[str, Any],
+    morphology_clues: list[str],
+    dataset_name: str | None,
+    workflow_profile: str = "",
+) -> bool:
+    if str(workflow_profile or "").strip().lower() != "sparse_lesion_workflow":
+        return False
+    if str(dataset_name or "").strip().lower() != "ham10000":
+        return False
+    combined = " ".join(
+        [
+            str(image_summary or "").lower(),
+            str(notes or "").lower(),
+            " ".join(str(item).strip().lower() for item in morphology_clues if str(item).strip()),
+            " ".join(f"{key}:{value}" for key, value in metadata.items() if str(value).strip()),
+        ]
+    )
+    if not combined.strip():
+        return False
+
+    benign_surface_terms = (
+        "well-circumscribed",
+        "slightly elevated",
+        "smooth",
+        "plaque",
+        "nodule",
+        "central hypopigmentation",
+        "surrounding hyperpigmentation",
+        "stuck-on",
+        "waxy",
+        "scar-like",
+        "firm",
+        "red-purple",
+        "vascular",
+    )
+    ambiguous_malignant_terms = (
+        "bcc",
+        "basal cell",
+        "mel",
+        "melanoma",
+        "akiec",
+        "actinic keratosis",
+    )
+    benign_context_hits = sum(1 for term in benign_surface_terms if term in combined)
+    malignant_context_hits = sum(1 for term in ambiguous_malignant_terms if term in combined)
+    return benign_context_hits >= 2 and malignant_context_hits >= 1
+
+
+def _extract_morphology_clues(image_summary: str, metadata: dict[str, Any], notes: str) -> list[str]:
+    source = f"{image_summary} {' '.join(f'{key}:{value}' for key, value in metadata.items() if str(value).strip())} {notes}".lower()
+    clue_terms = (
+        "flat",
+        "raised",
+        "papule",
+        "plaque",
+        "nodule",
+        "macule",
+        "brown",
+        "black",
+        "pink",
+        "red",
+        "irregular",
+        "regular",
+        "asymmetric",
+        "symmetric",
+        "border",
+        "surface",
+        "scale",
+        "keratotic",
+        "ulcer",
+        "smooth",
+        "waxy",
+        "stuck-on",
+        "well-circumscribed",
+        "solitary",
+        "multiple",
+        "arm",
+        "face",
+        "trunk",
+        "leg",
+        "scalp",
+        "back",
+        "hypopigmentation",
+        "hyperpigmentation",
+        "vascular",
+    )
+    return [term for term in clue_terms if term in source]
 
 
 def detect_confusion_pair(ddx_candidates: list[str], dataset_name: str | None = None) -> str | None:

@@ -8,7 +8,8 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from integrations.openai_client import DermOpenAIClient, FULL_CLINICAL_PROFILE_ID
+from integrations.openai_client import DermOpenAIClient, FULL_CLINICAL_PROFILE_ID, _build_sparse_lesion_prompt_hint
+from agent.state import CaseInput
 
 
 def _mock_payload() -> dict:
@@ -143,3 +144,32 @@ def test_compact_serialized_evidence_text_preserves_section_headers() -> None:
     assert "[Observation Evidence]" in compact_text
     assert "[Risk Evidence]" in compact_text
     assert len(compact_text) <= 140
+
+
+def test_build_sparse_lesion_prompt_hint_for_ham10000_blocks_open_set_drift() -> None:
+    case_input = CaseInput(
+        case_id="HAM_CASE_001",
+        image_path="/tmp/nonexistent.png",
+        metadata={
+            "age": "70",
+            "localization": "face",
+            "diagnosis_confidence": "histopathology_confirmed",
+            "has_histopathology": True,
+            "label_space_id": "ham10000_full",
+        },
+        dataset_name="HAM10000",
+        label_space_id="ham10000_full",
+        workflow_context={
+            "workflow_profile": "sparse_lesion_workflow",
+            "workflow_capabilities": ["sparse_lesion_reasoning", "focal_lesion_reasoning"],
+        },
+    )
+
+    hint = _build_sparse_lesion_prompt_hint(case_input)
+
+    assert "Do not drift to open-set inflammatory or infectious labels" in hint
+    assert "keep benign-mimic alternatives visible" in hint
+    assert "AKIEC" in hint
+    assert "BKL" in hint
+    assert "DF" in hint
+    assert "VASC" in hint

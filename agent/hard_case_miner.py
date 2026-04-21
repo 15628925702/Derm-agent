@@ -534,6 +534,17 @@ def _extract_confusion_tags(record: dict[str, Any]) -> list[str]:
         parts = str(confusion_pair).split("->")
         if len(parts) == 2:
             tags.append(f"{parts[0].strip().lower()}_vs_{parts[1].strip().lower()}")
+    baseline_label = str(
+        (record.get("baseline_qwen") or {}).get("final_diagnosis")
+        or (record.get("qwen_final") or {}).get("fusion_decision", {}).get("baseline_label", "")
+    ).strip().lower()
+    agent_label = str(
+        (record.get("qwen_final") or {}).get("fusion_decision", {}).get("agent_label", "")
+        or (record.get("qwen_final") or {}).get("final_diagnosis", "")
+    ).strip().lower()
+    benign_mimic_terms = ("nev", "nevus", "bkl", "seborrheic keratosis", "df", "dermatofibroma", "vasc", "vascular")
+    if ("bcc" in baseline_label or "basal cell" in baseline_label) and any(term in agent_label for term in benign_mimic_terms):
+        tags.append("bcc_benign_mimic")
     return _dedupe_strings(tags)
 
 

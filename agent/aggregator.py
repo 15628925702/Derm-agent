@@ -92,6 +92,7 @@ def build_evidence_bundle(state: CaseState) -> dict[str, Any]:
     )
     if not selected_evidence:
         selected_evidence = _sparse_lesion_fallback_selected_evidence(state)
+    selected_evidence = _ensure_sparse_lesion_specialist_evidence(state, selected_evidence)
 
     # 根据 workflow_context 调整证据排序
     selected_evidence = _reorder_evidence_by_workflow(selected_evidence, workflow_context)
@@ -704,7 +705,8 @@ def _build_evidence_decision_policy(
     supporting_items, opposing_items = _split_selected_evidence(selected_evidence)
     supporting_score = round(sum(float(item.get("score", 0.0) or 0.0) for item in supporting_items), 6)
     opposing_score = round(sum(float(item.get("score", 0.0) or 0.0) for item in opposing_items), 6)
-    subtype_supporting_items = _subtype_supporting_items(supporting_items)
+    sparse_lesion_case = is_sparse_lesion_case(workflow_context=state.case_input.workflow_context)
+    subtype_supporting_items = _subtype_supporting_items(selected_evidence if sparse_lesion_case else supporting_items)
     selected_evidence_present = bool(selected_evidence)
 
     risk_output = dict(state.skill_outputs.get("malignancy_risk_assessment_skill", {}))
@@ -712,7 +714,10 @@ def _build_evidence_decision_policy(
     contradiction_count = _count_contradiction_items(contradiction_summary)
     uncertainty_level = str(uncertainty_summary.get("uncertainty_level", "unknown")).strip().lower() or "unknown"
     specialist_items = [
-        item for item in supporting_items if str(item.get("skill_name", "")).strip() in {"ack_scc_specialist_skill", "mel_nev_specialist_skill"}
+        item
+        for item in (selected_evidence if sparse_lesion_case else supporting_items)
+        if str(item.get("skill_name", "")).strip()
+        in {"ack_scc_specialist_skill", "mel_nev_specialist_skill", "benign_mimic_specialist_skill"}
     ]
     specialist_support = bool(specialist_items)
     consistent_retrieval_count = _count_consistent_retrieval_support(
@@ -747,6 +752,18 @@ def _build_evidence_decision_policy(
         and opposing_quota_satisfied
         and subtype_support_quota_satisfied
     )
+    if sparse_lesion_case and not subtype_override_allowed:
+        # Sparse HAM-style cases often surface subtype direction through
+        # benign-mimic or keratinocytic comparison evidence before the global
+        # malignancy gate becomes strong enough for a full override.
+        subtype_override_allowed = (
+            selected_evidence_present
+            and subtype_support_margin >= 3.0
+            and specialist_support
+            and opposing_quota_satisfied
+            and subtype_support_quota_satisfied
+            and uncertainty_level not in {"high", "unknown"}
+        )
     override_mode = "risk_only"
     if subtype_override_allowed:
         override_mode = "subtype_override"
@@ -786,7 +803,7 @@ def _build_evidence_decision_policy(
         caution_flags.append("follow_up_or_biopsy_consideration")
 
     why_not_confident_enough: list[str] = []
-    if risk_level != "high":
+    if risk_level != "high" and not sparse_lesion_case:
         why_not_confident_enough.append("malignancy risk is not high enough for a diagnosis override")
     if not selected_evidence_present:
         why_not_confident_enough.append("no curated selected evidence is available to justify overriding the baseline diagnosis")
@@ -863,7 +880,12 @@ def _split_selected_evidence(selected_evidence: list[dict[str, Any]]) -> tuple[l
 
 def _subtype_supporting_items(selected_evidence: list[dict[str, Any]]) -> list[dict[str, Any]]:
     subtype_items: list[dict[str, Any]] = []
-    subtype_skill_names = {"ack_scc_specialist_skill", "mel_nev_specialist_skill", "differential_compare_skill"}
+    subtype_skill_names = {
+        "ack_scc_specialist_skill",
+        "mel_nev_specialist_skill",
+        "benign_mimic_specialist_skill",
+        "differential_compare_skill",
+    }
     for item in selected_evidence:
         skill_name = str(item.get("skill_name", "")).strip()
         category = str(item.get("category", "")).strip().lower()
@@ -972,6 +994,34 @@ def _sparse_lesion_fallback_selected_evidence(state: CaseState) -> list[dict[str
             }
         ]
     return []
+
+
+def _ensure_sparse_lesion_specialist_evidence(
+    state: CaseState,
+    selected_evidence: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    if not is_sparse_lesion_case(workflow_context=state.case_input.workflow_context):
+        return selected_evidence
+    skill_name = "benign_mimic_specialist_skill"
+    if not state.skill_outputs.get(skill_name):
+        return selected_evidence
+    if any(str(item.get("skill_name", "")).strip() == skill_name for item in selected_evidence):
+        return selected_evidence
+    injected = {
+        "item_id": skill_name,
+        "item_type": "skill_output",
+        "source_type": "skill_output",
+        "source_name": skill_name,
+        "skill_name": skill_name,
+        "retrieval_type": "",
+        "section": "comparison",
+        "category": "differential_support",
+        "summary": _summarize_skill_evidence(skill_name, state.skill_outputs.get(skill_name, {})),
+        "score": 6.6,
+        "rank": max([int(item.get("rank", 0) or 0) for item in selected_evidence] + [0]) + 1,
+        "keep_reason": "sparse_lesion_specialist_injected",
+    }
+    return [*selected_evidence, injected]
 
 
 def _count_contradiction_items(summary: dict[str, Any]) -> int:

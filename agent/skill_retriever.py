@@ -56,6 +56,7 @@ class SkillRetrievalQuery:
     metadata: dict[str, Any]
     cognition: CognitionState
     dataset_name: str | None = None
+    workflow_context: dict[str, Any] | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -112,6 +113,7 @@ class RuleMetadataHybridSkillRetriever(BaseSkillRetriever):
         signal_profile = _build_signal_profile(query)
         query_text = _build_query_text(query, signal_profile)
         decisions = [self._evaluate_skill(skill, query, signal_profile, query_text) for skill in skills]
+        self._apply_workflow_benign_mimic_guard(decisions=decisions, signal_profile=signal_profile)
 
         selected = [decision for decision in decisions if decision.selected]
         if not selected:
@@ -137,6 +139,26 @@ class RuleMetadataHybridSkillRetriever(BaseSkillRetriever):
             retriever_type=self.retriever_type,
             retriever_version=self.retriever_version,
         )
+
+    @staticmethod
+    def _apply_workflow_benign_mimic_guard(
+        *,
+        decisions: list[SkillRetrievalDecision],
+        signal_profile: dict[str, Any],
+    ) -> None:
+        if not signal_profile.get("workflow_benign_mimic_guard", False):
+            return
+        target = next((item for item in decisions if item.skill_name == "benign_mimic_specialist_skill"), None)
+        if target is None:
+            return
+        target.selected = True
+        target.score = max(float(target.score), 8.5)
+        target.trigger_hits = _dedupe(list(target.trigger_hits) + ["workflow_benign_mimic_guard"])
+        target.reasons = _dedupe(
+            list(target.reasons)
+            + ["Retained by sparse_lesion_workflow benign-mimic guard from morphology signature."]
+        )
+        target.matched_fields = _dedupe(list(target.matched_fields) + ["workflow_guard.benign_mimic"])
 
     def _evaluate_skill(
         self,
@@ -243,6 +265,16 @@ def _build_signal_profile(query: SkillRetrievalQuery) -> dict[str, Any]:
     notes = " ".join(str(item) for item in perception.get("notes", []))
     uncertainty_level = str(perception.get("uncertainty", {}).get("level", "unknown")).lower()
     morphology_clues = _extract_morphology_clues(image_summary, metadata, notes)
+    workflow_context = dict(query.workflow_context or {})
+    workflow_profile = str(workflow_context.get("workflow_profile", "")).strip().lower()
+    benign_mimic_signature = _has_ham_benign_mimic_signature(
+        image_summary=image_summary,
+        notes=notes,
+        metadata=metadata,
+        morphology_clues=morphology_clues,
+        dataset_name=query.dataset_name,
+        workflow_profile=workflow_profile,
+    )
     confusion_pair = detect_confusion_pair(ddx_candidates, dataset_name=query.dataset_name)
     known_confusion_text = " ".join(str(key).strip().lower() for key in query.cognition.known_confusion_patterns.keys())
     known_confusion_match = bool(
@@ -290,6 +322,7 @@ def _build_signal_profile(query: SkillRetrievalQuery) -> dict[str, Any]:
         or has_confusion_pair(ddx_candidates, ("bkl", "benign keratosis", "seborrheic keratosis"), ("mel", "melanoma"))
         or has_confusion_pair(ddx_candidates, ("df", "dermatofibroma"), ("mel", "melanoma", "nv", "nevus"))
         or has_confusion_pair(ddx_candidates, ("vasc", "vascular"), ("mel", "melanoma", "nv", "nevus"))
+        or benign_mimic_signature
     )
 
     contradiction_rich = any(term in image_summary for term in ("contradict", "conflict", "irregular", "asymmetry"))
@@ -323,6 +356,7 @@ def _build_signal_profile(query: SkillRetrievalQuery) -> dict[str, Any]:
         "escalation_needed": escalation_needed,
         "known_confusion_match": known_confusion_match,
         "active_confusion_clusters": active_confusion_clusters,
+        "workflow_benign_mimic_guard": benign_mimic_signature,
     }
 
 
@@ -393,6 +427,58 @@ def _extract_morphology_clues(image_summary: str, metadata: dict[str, Any], note
         "leg",
     )
     return [term for term in clue_terms if term in source]
+
+
+def _has_ham_benign_mimic_signature(
+    *,
+    image_summary: str,
+    notes: str,
+    metadata: dict[str, Any],
+    morphology_clues: list[str],
+    dataset_name: str | None,
+    workflow_profile: str = "",
+) -> bool:
+    if str(workflow_profile or "").strip().lower() != "sparse_lesion_workflow":
+        return False
+    if str(dataset_name or "").strip().lower() != "ham10000":
+        return False
+    combined = " ".join(
+        [
+            str(image_summary or "").lower(),
+            str(notes or "").lower(),
+            " ".join(str(item).strip().lower() for item in morphology_clues if str(item).strip()),
+            " ".join(f"{key}:{value}" for key, value in metadata.items() if str(value).strip()),
+        ]
+    )
+    if not combined.strip():
+        return False
+
+    benign_surface_terms = (
+        "well-circumscribed",
+        "slightly elevated",
+        "smooth",
+        "plaque",
+        "nodule",
+        "central hypopigmentation",
+        "surrounding hyperpigmentation",
+        "stuck-on",
+        "waxy",
+        "scar-like",
+        "firm",
+        "red-purple",
+        "vascular",
+    )
+    ambiguous_malignant_terms = (
+        "bcc",
+        "basal cell",
+        "mel",
+        "melanoma",
+        "akiec",
+        "actinic keratosis",
+    )
+    benign_context_hits = sum(1 for term in benign_surface_terms if term in combined)
+    malignant_context_hits = sum(1 for term in ambiguous_malignant_terms if term in combined)
+    return benign_context_hits >= 2 and malignant_context_hits >= 1
 
 
 def _metadata_match_count(skill_text: str, metadata: dict[str, Any]) -> int:
