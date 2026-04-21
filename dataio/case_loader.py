@@ -19,6 +19,12 @@ from dataio.sd198_loader import (
     load_sd198_case_input_by_index,
     load_sd198_case_inputs,
 )
+from dataio.xiangya_sft_loader import (
+    DEFAULT_XIANGYA_SFT_ROOT,
+    discover_xiangya_sft_case_source,
+    load_xiangya_sft_case_input_by_index,
+    load_xiangya_sft_case_inputs,
+)
 
 
 IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".bmp", ".webp", ".tif", ".tiff"}
@@ -479,4 +485,11 @@ register_dataset_loader(
     load_all=load_sd198_case_inputs,
     discover_source=discover_sd198_case_source,
     data_root=DEFAULT_SD198_ROOT,
+)
+register_dataset_loader(
+    "xiangya_sft",
+    load_by_index=load_xiangya_sft_case_input_by_index,
+    load_all=load_xiangya_sft_case_inputs,
+    discover_source=discover_xiangya_sft_case_source,
+    data_root=DEFAULT_XIANGYA_SFT_ROOT,
 )

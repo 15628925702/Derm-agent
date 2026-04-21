@@ -33,9 +33,11 @@ def test_builtin_loader_registry_exposes_known_datasets() -> None:
     assert "ham10000" in specs
     assert "isic2019" in specs
     assert "sd198" in specs
+    assert "xiangya_sft" in specs
     assert get_registered_dataset_loader("ham10000") is not None
     assert get_registered_dataset_loader("isic2019") is not None
     assert get_registered_dataset_loader("sd198") is not None
+    assert get_registered_dataset_loader("xiangya_sft") is not None
 
 
 def test_registered_loader_routes_by_root_and_passes_data_root(tmp_path: Path) -> None:

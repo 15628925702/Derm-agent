@@ -114,11 +114,102 @@ HAM10000_FULL_LABEL_SPACE = LabelSpace(
     benign_labels=("NV", "BKL", "DF", "VASC"),
 )
 
+XIANGYA_SFT_GROUPED_LABEL_SPACE = LabelSpace(
+    label_space_id="xiangya_sft_grouped",
+    canonical_labels=(
+        "CONTACT_DERMATITIS",
+        "ATOPIC_DERMATITIS",
+        "ECZEMA_DERMATITIS",
+        "PERIORAL_DERMATITIS",
+        "HERPETIC_ECZEMA",
+        "HAIR_DISORDER",
+        "OTHER_INFLAMMATORY",
+    ),
+    aliases=(
+        LabelAlias(
+            "CONTACT_DERMATITIS",
+            (
+                "contact dermatitis",
+                "接触性皮炎",
+                "allergic contact dermatitis",
+                "irritant contact dermatitis",
+                "甲板接触性皮炎",
+                "接触性皮炎并感染",
+            ),
+        ),
+        LabelAlias(
+            "ATOPIC_DERMATITIS",
+            (
+                "atopic dermatitis",
+                "特应性皮炎",
+                "特应性皮炎 ad",
+                "ad患儿",
+            ),
+        ),
+        LabelAlias(
+            "ECZEMA_DERMATITIS",
+            (
+                "eczema",
+                "湿疹",
+                "传染性湿疹样皮炎",
+                "infectious eczematoid dermatitis",
+                "自身敏感性皮炎",
+                "autoeczematization",
+            ),
+        ),
+        LabelAlias(
+            "PERIORAL_DERMATITIS",
+            (
+                "perioral dermatitis",
+                "口周皮炎",
+            ),
+        ),
+        LabelAlias(
+            "HERPETIC_ECZEMA",
+            (
+                "eczema herpeticum",
+                "herpetic eczema",
+                "疱疹性湿疹",
+            ),
+        ),
+        LabelAlias(
+            "HAIR_DISORDER",
+            (
+                "alopecia",
+                "hair loss",
+                "脱发",
+                "女性脱发",
+            ),
+        ),
+        LabelAlias(
+            "OTHER_INFLAMMATORY",
+            (
+                "paederus dermatitis",
+                "隐翅虫皮炎",
+                "rosacea",
+                "玫瑰痤疮",
+                "other inflammatory dermatitis",
+            ),
+        ),
+    ),
+    malignant_labels=(),
+    benign_labels=(
+        "CONTACT_DERMATITIS",
+        "ATOPIC_DERMATITIS",
+        "ECZEMA_DERMATITIS",
+        "PERIORAL_DERMATITIS",
+        "HERPETIC_ECZEMA",
+        "HAIR_DISORDER",
+        "OTHER_INFLAMMATORY",
+    ),
+)
+
 LABEL_SPACES: dict[str, LabelSpace] = {
     DEFAULT_LABEL_SPACE_ID: DERM_SIX_LABEL_SPACE,
     "isic2019_full": ISIC2019_FULL_LABEL_SPACE,
     "ham10000_binary": HAM10000_BINARY_LABEL_SPACE,
     "ham10000_full": HAM10000_FULL_LABEL_SPACE,
+    "xiangya_sft_grouped": XIANGYA_SFT_GROUPED_LABEL_SPACE,
     "scin_full": None,  # type: ignore[dict-item]
     "scin_grouped": None,  # type: ignore[dict-item]
     "sd198_full": None,  # type: ignore[dict-item]
@@ -140,6 +231,7 @@ DATASET_LABEL_SPACE_ALIASES: dict[str, str] = {
     "sd198": "sd198_full",
     "sd198_full": "sd198_full",
     "sd198_grouped": "sd198_grouped",
+    "xiangya_sft": "xiangya_sft_grouped",
 }
 
 _SCIN_EQUIVALENCE_FAMILIES: tuple[frozenset[str], ...] = (

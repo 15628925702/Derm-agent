@@ -122,3 +122,11 @@ def test_sd198_grouped_label_space_maps_to_coarse_categories() -> None:
     assert canonicalize_label("Onychomycosis", dataset_name="sd198", label_space_id="sd198_grouped") == "INFECTION_INFESTATION"
     assert is_malignant_label("Basal Cell Carcinoma", dataset_name="sd198", label_space_id="sd198_grouped") is True
     assert is_malignant_label("Acne Vulgaris", dataset_name="sd198", label_space_id="sd198_grouped") is False
+
+
+def test_xiangya_sft_grouped_label_space_maps_common_chinese_labels() -> None:
+    assert canonicalize_label("接触性皮炎", dataset_name="xiangya_sft") == "CONTACT_DERMATITIS"
+    assert canonicalize_label("特应性皮炎（AD）", dataset_name="xiangya_sft") == "ATOPIC_DERMATITIS"
+    assert canonicalize_label("口周皮炎", dataset_name="xiangya_sft") == "PERIORAL_DERMATITIS"
+    assert canonicalize_label("疱疹性湿疹", dataset_name="xiangya_sft") == "HERPETIC_ECZEMA"
+    assert is_malignant_label("接触性皮炎", dataset_name="xiangya_sft") is False

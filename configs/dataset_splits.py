@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from dataio.sd198_loader import load_sd198_rows
+from dataio.xiangya_sft_loader import load_xiangya_sft_records
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -19,6 +20,7 @@ HAM10000_BALANCED_SPLIT_ID = "ham10000_balanced_v1"
 SCIN_SPLIT_ID = "scin_contiguous_v1"
 SD198_SPLIT_ID = "sd198_contiguous_v1"
 SD198_BALANCED_SPLIT_ID = "sd198_balanced_v1"
+XIANGYA_SFT_SPLIT_ID = "xiangya_sft_grouped_v1"
 
 
 @dataclass(frozen=True)
@@ -119,6 +121,19 @@ FIXED_SPLITS: dict[str, FixedSplitDefinition] = {
             "Balanced split over SD-198 labels so train/val/test all contain mixed classes even though the source index is class-block ordered."
         ),
     ),
+    XIANGYA_SFT_SPLIT_ID: FixedSplitDefinition(
+        split_id=XIANGYA_SFT_SPLIT_ID,
+        dataset_name="xiangya_sft",
+        metadata_relpath="sft数据/skin_xiangya.jsonl",
+        train_ratio=0.70,
+        val_ratio=0.15,
+        test_ratio=0.15,
+        strategy="stratified_by_xiangya_grouped_label",
+        notes=(
+            "Balanced split over Xiangya grouped inflammatory labels. "
+            "Rare classes are kept in train when val/test allocation would otherwise be empty."
+        ),
+    ),
 }
 
 
@@ -146,6 +161,8 @@ def build_fixed_split_payload(
         return _build_sd198_contiguous_split_payload(definition=definition, data_root=data_root, metadata_path=metadata_path)
     if definition.strategy == "stratified_by_sd198_label":
         return _build_sd198_stratified_split_payload(definition=definition, data_root=data_root, metadata_path=metadata_path)
+    if definition.strategy == "stratified_by_xiangya_grouped_label":
+        return _build_xiangya_stratified_split_payload(definition=definition, data_root=data_root, metadata_path=metadata_path)
     case_ids = [_build_case_id(row, row_index=index) for index, row in enumerate(rows)]
     total_cases = len(case_ids)
     if total_cases == 0:
@@ -309,6 +326,104 @@ def _build_sd198_stratified_split_payload(
     }
 
 
+def _build_xiangya_stratified_split_payload(
+    *,
+    definition: FixedSplitDefinition,
+    data_root: Path,
+    metadata_path: Path,
+) -> dict[str, Any]:
+    dataset_root = data_root / "sft数据"
+    records = load_xiangya_sft_records(data_root=dataset_root)
+    case_rows = [
+        {
+            "case_id": record.case_id,
+            "row_index": index,
+            "label": record.label,
+        }
+        for index, record in enumerate(records)
+    ]
+    if not case_rows:
+        raise ValueError(f"Split `{definition.split_id}` has no rows in metadata: {metadata_path}")
+
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for item in case_rows:
+        grouped.setdefault(item["label"], []).append(item)
+
+    rng = random.Random(42)
+    train_cases: list[dict[str, Any]] = []
+    val_cases: list[dict[str, Any]] = []
+    test_cases: list[dict[str, Any]] = []
+
+    for label, items in sorted(grouped.items()):
+        shuffled = list(items)
+        rng.shuffle(shuffled)
+        total = len(shuffled)
+        if total == 1:
+            train_count, val_count, test_count = 1, 0, 0
+        elif total == 2:
+            train_count, val_count, test_count = 1, 0, 1
+        elif total == 3:
+            train_count, val_count, test_count = 2, 0, 1
+        else:
+            train_count = max(1, int(total * definition.train_ratio))
+            remaining = total - train_count
+            val_count = int(total * definition.val_ratio)
+            val_count = min(val_count, remaining)
+            test_count = total - train_count - val_count
+            if test_count == 0 and remaining > 0:
+                test_count = 1
+                if val_count > 0:
+                    val_count -= 1
+                else:
+                    train_count = max(1, train_count - 1)
+            if val_count == 0 and total >= 6 and (total - train_count - test_count) > 0:
+                val_count = 1
+                if train_count > test_count:
+                    train_count -= 1
+                else:
+                    test_count = max(1, test_count - 1)
+        train_cases.extend(shuffled[:train_count])
+        val_cases.extend(shuffled[train_count : train_count + val_count])
+        test_cases.extend(shuffled[train_count + val_count : train_count + val_count + test_count])
+
+    train_cases = _interleave_xiangya_cases_by_label(train_cases)
+    val_cases = _interleave_xiangya_cases_by_label(val_cases)
+    test_cases = _interleave_xiangya_cases_by_label(test_cases)
+
+    ordered = train_cases + val_cases + test_cases
+    train_ids = [item["case_id"] for item in train_cases]
+    val_ids = [item["case_id"] for item in val_cases]
+    test_ids = [item["case_id"] for item in test_cases]
+    total_cases = len(ordered)
+    train_end = len(train_ids) - 1
+    val_start = len(train_ids)
+    val_end = val_start + len(val_ids) - 1
+    test_start = val_end + 1
+    test_end = total_cases - 1
+
+    return {
+        "dataset_name": definition.dataset_name,
+        "split_id": definition.split_id,
+        "split_version": definition.split_id,
+        "strategy": definition.strategy,
+        "notes": definition.notes,
+        "metadata_path": str(metadata_path),
+        "total_cases": total_cases,
+        "train_ratio": definition.train_ratio,
+        "val_ratio": definition.val_ratio,
+        "test_ratio": definition.test_ratio,
+        "train_range": [0, train_end],
+        "val_range": [val_start, val_end] if val_ids else [val_start, val_start - 1],
+        "test_range": [test_start, test_end] if test_ids else [test_start, test_start - 1],
+        "train": train_ids,
+        "val": val_ids,
+        "test": test_ids,
+        "train_case_indices": [item["row_index"] for item in train_cases],
+        "val_case_indices": [item["row_index"] for item in val_cases],
+        "test_case_indices": [item["row_index"] for item in test_cases],
+    }
+
+
 def _build_stratified_dx_split_payload(
     *,
     definition: FixedSplitDefinition,
@@ -403,6 +518,26 @@ def _interleave_cases_by_label(items: list[dict[str, Any]]) -> list[dict[str, An
 
 
 def _interleave_sd198_cases_by_label(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for item in items:
+        grouped.setdefault(str(item.get("label", "")).strip(), []).append(item)
+
+    ordered_labels = [label for label in sorted(grouped.keys()) if label]
+    result: list[dict[str, Any]] = []
+    while ordered_labels:
+        next_labels: list[str] = []
+        for label in ordered_labels:
+            bucket = grouped.get(label, [])
+            if not bucket:
+                continue
+            result.append(bucket.pop(0))
+            if bucket:
+                next_labels.append(label)
+        ordered_labels = next_labels
+    return result
+
+
+def _interleave_xiangya_cases_by_label(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
     grouped: dict[str, list[dict[str, Any]]] = {}
     for item in items:
         grouped.setdefault(str(item.get("label", "")).strip(), []).append(item)

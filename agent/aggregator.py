@@ -903,8 +903,12 @@ def _subtype_supporting_items(selected_evidence: list[dict[str, Any]]) -> list[d
 
 def _family_override_allowed_for_state(state: CaseState) -> bool:
     label_space_id = str(getattr(state.case_input, "label_space_id", "")).strip().lower()
-    if not is_family_routing_case(workflow_context=state.case_input.workflow_context, label_space_id=label_space_id):
+    workflow_context = state.case_input.workflow_context
+    if not is_family_routing_case(workflow_context=workflow_context, label_space_id=label_space_id):
         return False
+    workflow_profile = str((workflow_context or {}).get("workflow_profile", "")).strip().lower()
+    if workflow_profile == "eczematous_family_routing_workflow" and label_space_id == "xiangya_sft_grouped":
+        return True
     snapshot = state.policy_snapshot or {}
     evidence_policy = dict(snapshot.get("evidence_policy", {}) or {})
     return bool(evidence_policy.get("allow_family_override", False))

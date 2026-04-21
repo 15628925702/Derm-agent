@@ -100,8 +100,32 @@ def _build_label_space_prompt_hint(case_input: CaseInput) -> str:
     labels = [str(label).strip() for label in ls.canonical_labels if str(label).strip()]
     if not labels:
         return ""
+    dataset_name = str(getattr(case_input, "dataset_name", "") or "").strip().lower()
+    workflow_context = _case_workflow_context(case_input)
+    workflow_profile = str(workflow_context.get("workflow_profile", "")).strip().lower()
+    if dataset_name == "xiangya_sft" or workflow_profile == "eczematous_family_routing_workflow":
+        return (
+            "Xiangya grouped-family note: this dataset currently focuses on inflammatory eczematous-family reasoning. "
+            "Prefer one grouped label among `CONTACT_DERMATITIS`, `ATOPIC_DERMATITIS`, `ECZEMA_DERMATITIS`, "
+            "`PERIORAL_DERMATITIS`, `HERPETIC_ECZEMA`, `HAIR_DISORDER`, and `OTHER_INFLAMMATORY`.\n"
+            "Do not collapse every erythematous rash into `CONTACT_DERMATITIS`.\n"
+            "Use these distinctions:\n"
+            "- `ATOPIC_DERMATITIS`: chronic or recurrent eczematous process, symmetric or widespread distribution, flexural or pediatric pattern, xerosis/lichenification, repeated flare history.\n"
+            "- `ECZEMA_DERMATITIS`: eczematous inflammatory rash when the evidence supports eczema-like morphology but is not specific enough for atopic/contact subtype.\n"
+            "- `CONTACT_DERMATITIS`: localized or exposure-pattern dermatitis, linear/contact-distribution clues, periocular/perioral/hairline/cosmetic/topical exposure pattern, sharper trigger-linked presentation.\n"
+            "- `PERIORAL_DERMATITIS`: concentrated around the mouth/nasolabial/perioral region.\n"
+            "- `HERPETIC_ECZEMA`: acute erosive/crusted painful monomorphic eruption on top of eczematous skin.\n"
+            "When evidence is mixed between contact and atopic/eczema, prefer `ECZEMA_DERMATITIS` rather than defaulting to `CONTACT_DERMATITIS`."
+        )
+    if workflow_profile == "image_archive_full_taxonomy_lesion_workflow":
+        return (
+            "Image-archive full-taxonomy note: this is an archive-style dermoscopy/lesion-photo workflow with a fixed lesion label space. "
+            "Do not let generic caution flags or ambiguous risk wording override the dominant morphology.\n"
+            "When lesion evidence is mixed, keep benign archive alternatives such as `NV`, `BKL`, and `DF` active instead of drifting to melanoma by default.\n"
+            "Use metadata like `anatom_site_general` and `age_approx` only as secondary context, not as primary override evidence."
+        )
     if is_full_taxonomy_case(
-        workflow_context=_case_workflow_context(case_input),
+        workflow_context=workflow_context,
         label_space_id=str(ls.label_space_id),
     ) and "scin" in str(ls.label_space_id).strip().lower():
         metadata = dict(getattr(case_input, "metadata", {}) or {})
@@ -229,6 +253,233 @@ def _build_scin_routing_hint(case_input: CaseInput) -> str:
     if deduped_shortlist:
         parts.append("Shortlist to discriminate carefully: " + ", ".join(deduped_shortlist[:10]) + ".")
     return " ".join(parts)
+
+
+def _build_xiangya_family_routing_hint(case_input: CaseInput) -> str:
+    workflow_context = _case_workflow_context(case_input)
+    if str(workflow_context.get("workflow_profile", "")).strip().lower() != "eczematous_family_routing_workflow":
+        return ""
+
+    metadata = dict(getattr(case_input, "metadata", {}) or {})
+    body_sites = {str(item).strip().lower() for item in metadata.get("body_sites", []) if str(item).strip()}
+    related_category = str(metadata.get("related_category", "")).strip().upper()
+
+    notes = [
+        "Xiangya family-routing note: explicitly discriminate contact dermatitis vs atopic dermatitis vs non-specific eczema before committing to a final label.",
+        "If the rash is diffuse, recurrent, symmetric, pediatric, xerotic, or flexural-patterned, increase `ATOPIC_DERMATITIS` / `ECZEMA_DERMATITIS` weight.",
+        "If the rash is localized to a likely exposure zone such as periocular, perioral, face edge, hairline, or a linear/contact-shaped distribution, increase `CONTACT_DERMATITIS` weight.",
+        "If the image shows eczematous morphology but exposure specificity is weak, prefer `ECZEMA_DERMATITIS` instead of defaulting to `CONTACT_DERMATITIS`.",
+        "Negative cues matter: phrases like `no clear linear/contact distribution`, `widespread symmetric eruption`, or `not sharply demarcated` should reduce `CONTACT_DERMATITIS` confidence.",
+    ]
+    if {"mouth", "lip", "cheek"} & body_sites:
+        notes.append("Perioral/periorificial localization should keep `PERIORAL_DERMATITIS` active.")
+    if related_category == "RASH":
+        notes.append("This is a rash-family case, so grouped inflammatory family reasoning should dominate over lesion-style subtype guessing.")
+    return " ".join(notes)
+
+
+def _xiangya_grouped_label_for_text(text: str) -> str:
+    normalized = re.sub(r"[^a-z0-9\u4e00-\u9fff]+", " ", str(text).strip().lower())
+    normalized = " ".join(normalized.split())
+    if not normalized:
+        return "OTHER_INFLAMMATORY"
+    if any(token in normalized for token in ("perioral dermatitis", "口周皮炎")):
+        return "PERIORAL_DERMATITIS"
+    if any(token in normalized for token in ("eczema herpeticum", "herpetic eczema", "疱疹性湿疹")):
+        return "HERPETIC_ECZEMA"
+    if any(token in normalized for token in ("atopic dermatitis", "特应性皮炎", " ad ", "ad患儿")):
+        return "ATOPIC_DERMATITIS"
+    if any(token in normalized for token in ("allergic contact dermatitis", "irritant contact dermatitis", "contact dermatitis", "接触性皮炎", "隐翅虫皮炎")):
+        return "CONTACT_DERMATITIS"
+    if any(token in normalized for token in ("eczema", "湿疹", "自身敏感性皮炎", "传染性湿疹样皮炎")):
+        return "ECZEMA_DERMATITIS"
+    if any(token in normalized for token in ("alopecia", "hair loss", "脱发")):
+        return "HAIR_DISORDER"
+    return "OTHER_INFLAMMATORY"
+
+
+def _refine_xiangya_grouped_payload(
+    *,
+    case_input: CaseInput,
+    payload: dict[str, Any],
+    evidence_package: dict[str, Any] | None = None,
+    baseline_mode: bool = False,
+) -> dict[str, Any]:
+    workflow_context = _case_workflow_context(case_input)
+    if str(workflow_context.get("workflow_profile", "")).strip().lower() != "eczematous_family_routing_workflow":
+        return payload
+
+    metadata = dict(getattr(case_input, "metadata", {}) or {})
+    final_label = str(payload.get("final_diagnosis", "")).strip()
+    differentials = payload.get("differential_diagnoses", [])
+    if not isinstance(differentials, list):
+        differentials = []
+    rationale = str(payload.get("rationale", "")).strip()
+    follow_up = payload.get("follow_up_considerations", [])
+    follow_up_text = " ".join(str(item).strip() for item in follow_up) if isinstance(follow_up, list) else str(follow_up).strip()
+    selected_evidence = list((evidence_package or {}).get("selected_evidence", []) or [])
+    evidence_text = " ".join(str(item.get("summary", "")).strip() for item in selected_evidence if isinstance(item, dict))
+    serialized = str((evidence_package or {}).get("serialized_evidence_text", "")).strip()
+    combined = " \n".join(
+        [final_label]
+        + [str(item).strip() for item in differentials if str(item).strip()]
+        + [rationale, follow_up_text, evidence_text, serialized]
+    )
+    normalized = re.sub(r"[^a-z0-9\u4e00-\u9fff]+", " ", combined.lower())
+    normalized = " ".join(normalized.split())
+
+    scores: dict[str, float] = {
+        "CONTACT_DERMATITIS": 0.0,
+        "ATOPIC_DERMATITIS": 0.0,
+        "ECZEMA_DERMATITIS": 0.0,
+        "PERIORAL_DERMATITIS": 0.0,
+        "HERPETIC_ECZEMA": 0.0,
+        "HAIR_DISORDER": 0.0,
+        "OTHER_INFLAMMATORY": 0.0,
+    }
+
+    def boost(bucket: str, value: float) -> None:
+        scores[bucket] = scores.get(bucket, 0.0) + float(value)
+
+    def has_any(*phrases: str) -> bool:
+        return any(phrase in normalized for phrase in phrases if phrase)
+
+    mapped_initial = _xiangya_grouped_label_for_text(final_label)
+    boost(mapped_initial, 4.0 if mapped_initial != "OTHER_INFLAMMATORY" else 1.0)
+
+    if has_any("perioral dermatitis", "口周皮炎", "perioral region", "nasolabial", "around the mouth area", "mouth area"):
+        boost("PERIORAL_DERMATITIS", 3.2)
+    if has_any("not concentrated around the mouth", "rules out perioral dermatitis", "rule out perioral dermatitis", "not perioral dermatitis"):
+        boost("PERIORAL_DERMATITIS", -5.0)
+    if has_any("eczema herpeticum", "herpetic eczema", "疱疹性湿疹", "erosive", "糜烂", "painful", "疼痛"):
+        boost("HERPETIC_ECZEMA", 5.5)
+    if has_any(
+        "atopic dermatitis",
+        "特应性皮炎",
+        "recurrent",
+        "chronic",
+        "反复",
+        "慢性",
+        "lichenification",
+        "苔藓样变",
+        "xerosis",
+        "dryness",
+        "aligns with the characteristics of atopic dermatitis",
+        "supports the diagnosis of atopic dermatitis",
+        "flexural",
+        "儿童",
+        "患儿",
+        "child",
+        "pediatric",
+    ):
+        boost("ATOPIC_DERMATITIS", 5.0)
+    if has_any(
+        "eczema",
+        "湿疹",
+        "eczematous",
+        "scaly",
+        "scaling",
+        "脱屑",
+        "crusted",
+        "结痂",
+        "more consistent with eczema",
+        "supports the diagnosis of eczema",
+        "widespread eczematous",
+    ):
+        boost("ECZEMA_DERMATITIS", 4.2)
+    if has_any(
+        "contact dermatitis",
+        "接触性皮炎",
+        "allergic contact dermatitis",
+        "irritant",
+        "linear streak",
+        "linear distribution",
+        "linearly",
+        "线状",
+        "exposure",
+        "allergen",
+        "irritant exposure",
+        "clinical diagnosis is contact dermatitis",
+        "typical findings in contact dermatitis",
+        "localized around the eye",
+        "possible contact allergen exposure",
+    ):
+        boost("CONTACT_DERMATITIS", 4.0)
+    if has_any("alopecia", "hair loss", "脱发"):
+        boost("HAIR_DISORDER", 8.0)
+
+    if has_any("localized", "局部", "solitary", "single lesion", "localized, cheek", "around the eye", "eye area", "hairline"):
+        boost("CONTACT_DERMATITIS", 1.8)
+    if has_any("generalized", "diffuse", "widespread", "symmetric", "双侧", "全身", "四肢屈侧", "肘窝", "腘窝", "inner forearm"):
+        boost("ATOPIC_DERMATITIS", 2.8)
+        boost("ECZEMA_DERMATITIS", 1.6)
+    if has_any(
+        "no clear linear or contact distribution",
+        "lack of specific contact related triggers",
+        "lack of specific contact related patterns",
+        "there is no clear evidence of a specific contact allergen or irritant",
+        "there are no clear signs of a localized or exposure patterned distribution",
+        "no clear signs of a localized or exposure patterned distribution",
+        "not sharply demarcated",
+        "less likely to be contact dermatitis",
+        "rules out contact dermatitis",
+    ):
+        boost("CONTACT_DERMATITIS", -4.2)
+        boost("ATOPIC_DERMATITIS", 1.8)
+        boost("ECZEMA_DERMATITIS", 2.2)
+    if has_any(
+        "widespread, symmetric distribution",
+        "widespread distribution",
+        "diffuse, erythematous rash",
+        "more characteristic of eczema",
+        "generalized eczematous process",
+    ):
+        boost("ATOPIC_DERMATITIS", 2.0)
+        boost("ECZEMA_DERMATITIS", 2.6)
+
+    if "unlikely_candidates=contact_dermatitis" in normalized or "unlikely_candidates= contact_dermatitis" in normalized:
+        boost("CONTACT_DERMATITIS", -3.0)
+    if "unlikely_candidates=eczema_dermatitis" in normalized or "unlikely_candidates= eczema_dermatitis" in normalized:
+        boost("ECZEMA_DERMATITIS", -2.5)
+    if "unlikely_candidates=perioral_dermatitis" in normalized or "unlikely_candidates= perioral_dermatitis" in normalized:
+        boost("PERIORAL_DERMATITIS", -4.0)
+
+    if baseline_mode:
+        # For baseline keep direct prompting semantics: only normalize the model's explicit final label.
+        best_label = _xiangya_grouped_label_for_text(final_label or "")
+        refined = dict(payload)
+        refined["raw_final_diagnosis"] = final_label or refined.get("raw_final_diagnosis", "")
+        refined["final_diagnosis"] = best_label
+        refined["differential_diagnoses"] = [best_label] + [
+            str(item).strip() for item in differentials if str(item).strip() and str(item).strip() != best_label
+        ][:4]
+        return refined
+
+    if scores["CONTACT_DERMATITIS"] > 0 and scores["ATOPIC_DERMATITIS"] == 0 and scores["ECZEMA_DERMATITIS"] == 0:
+        best_label = "CONTACT_DERMATITIS"
+    else:
+        best_label = max(scores, key=lambda key: scores[key])
+
+    if best_label == "CONTACT_DERMATITIS":
+        if scores["ATOPIC_DERMATITIS"] >= scores["CONTACT_DERMATITIS"] - 0.8:
+            best_label = "ATOPIC_DERMATITIS"
+        elif scores["ECZEMA_DERMATITIS"] >= scores["CONTACT_DERMATITIS"] - 0.5:
+            best_label = "ECZEMA_DERMATITIS"
+
+    refined = dict(payload)
+    refined["raw_final_diagnosis"] = final_label or refined.get("raw_final_diagnosis", "")
+    refined["final_diagnosis"] = best_label
+    ordered = [best_label] + [str(item).strip() for item in differentials if str(item).strip()]
+    deduped: list[str] = []
+    seen: set[str] = set()
+    for item in ordered:
+        mapped = _xiangya_grouped_label_for_text(item)
+        if mapped in seen:
+            continue
+        seen.add(mapped)
+        deduped.append(mapped)
+    refined["differential_diagnoses"] = deduped[:5] or [best_label]
+    return refined
 
 
 def _refine_scin_full_label_payload(case_input: CaseInput, payload: dict[str, Any]) -> dict[str, Any]:
@@ -466,6 +717,13 @@ def _refine_scin_payload_for_runtime(
 ) -> dict[str, Any]:
     label_space_id = str(getattr(case_input, "label_space_id", "") or "").strip().lower()
     workflow_context = _case_workflow_context(case_input)
+    if label_space_id == "xiangya_sft_grouped":
+        return _refine_xiangya_grouped_payload(
+            case_input=case_input,
+            payload=dict(payload),
+            evidence_package=evidence_package,
+            baseline_mode=baseline_mode,
+        )
     if not is_family_routing_case(workflow_context=workflow_context, label_space_id=label_space_id) and label_space_id != "scin_full":
         return payload
 
@@ -487,8 +745,6 @@ def _refine_scin_payload_for_runtime(
             evidence_package=evidence_package or {},
         )
     return refined
-
-
 DEFAULT_TIMEOUT_SECONDS = 600.0
 DEFAULT_MAX_RETRIES = 2
 DEFAULT_MAX_IMAGES_PER_PROMPT = 1
@@ -947,7 +1203,14 @@ class DermOpenAIClient:
                 f"Metadata: {case_input.clinical_metadata()}"
             )
         else:
-            label_space_hint = _build_label_space_prompt_hint(case_input)
+            workflow_profile = str(_case_workflow_context(case_input).get("workflow_profile", "")).strip().lower()
+            if workflow_profile == "eczematous_family_routing_workflow":
+                label_space_hint = (
+                    "Dataset label-space note: return one grouped label from `CONTACT_DERMATITIS`, `ATOPIC_DERMATITIS`, "
+                    "`ECZEMA_DERMATITIS`, `PERIORAL_DERMATITIS`, `HERPETIC_ECZEMA`, `HAIR_DISORDER`, or `OTHER_INFLAMMATORY`."
+                )
+            else:
+                label_space_hint = _build_label_space_prompt_hint(case_input)
             label_space_line = f"{label_space_hint}\n" if label_space_hint else ""
             sparse_hint = _build_sparse_lesion_prompt_hint(case_input)
             sparse_line = f"{sparse_hint}\n" if sparse_hint else ""

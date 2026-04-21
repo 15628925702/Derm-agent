@@ -13,6 +13,7 @@ from integrations.openai_client import (
     DermOpenAIClient,
     _build_label_space_prompt_hint,
     _build_scin_routing_hint,
+    _build_xiangya_family_routing_hint,
     _refine_scin_full_label_payload,
     _refine_scin_payload_for_runtime,
 )
@@ -214,3 +215,79 @@ def test_refine_scin_payload_for_runtime_can_group_baseline_when_requested() -> 
     )
 
     assert baseline_refined["final_diagnosis"] == "VASCULAR_PURPURIC"
+
+
+def test_xiangya_label_hint_mentions_grouped_eczematous_family_distinctions() -> None:
+    case = CaseInput(
+        case_id="xiangya_case",
+        image_path="/tmp/missing.png",
+        metadata={"label_space_id": "xiangya_sft_grouped", "case_source": "xiangya_sft", "related_category": "RASH"},
+        dataset_name="xiangya_sft",
+        label_space_id="xiangya_sft_grouped",
+        workflow_context={"workflow_profile": "eczematous_family_routing_workflow"},
+    )
+    hint = _build_label_space_prompt_hint(case)
+    assert "Xiangya grouped-family note" in hint
+    assert "ATOPIC_DERMATITIS" in hint
+    assert "ECZEMA_DERMATITIS" in hint
+
+
+def test_xiangya_routing_hint_is_emitted_for_specialized_workflow() -> None:
+    case = CaseInput(
+        case_id="xiangya_case",
+        image_path="/tmp/missing.png",
+        metadata={"label_space_id": "xiangya_sft_grouped", "case_source": "xiangya_sft", "related_category": "RASH"},
+        dataset_name="xiangya_sft",
+        label_space_id="xiangya_sft_grouped",
+        workflow_context={"workflow_profile": "eczematous_family_routing_workflow"},
+    )
+    hint = _build_xiangya_family_routing_hint(case)
+    assert "contact dermatitis vs atopic dermatitis vs non-specific eczema" in hint
+
+
+def test_refine_xiangya_payload_prefers_atopic_over_contact_when_evidence_is_diffuse_and_recurrent() -> None:
+    case = CaseInput(
+        case_id="xiangya_case",
+        image_path="/tmp/missing.png",
+        metadata={"label_space_id": "xiangya_sft_grouped", "case_source": "xiangya_sft", "related_category": "RASH"},
+        dataset_name="xiangya_sft",
+        label_space_id="xiangya_sft_grouped",
+        workflow_context={"workflow_profile": "eczematous_family_routing_workflow"},
+    )
+    payload = {
+        "final_diagnosis": "Contact Dermatitis",
+        "differential_diagnoses": ["Contact Dermatitis", "Eczema Dermatitis"],
+        "rationale": "Diffuse recurrent symmetric eczematous eruption in a child with xerosis and flexural involvement.",
+        "confidence": "Moderate",
+        "follow_up_considerations": [],
+    }
+    evidence_package = {
+        "selected_evidence": [
+            {"summary": "generalized symmetric rash with chronic recurrent course and xerosis"},
+            {"summary": "unlikely_candidates=CONTACT_DERMATITIS"},
+        ],
+        "serialized_evidence_text": "childhood recurrent diffuse eczematous dermatitis with xerosis and flexural pattern",
+    }
+
+    refined = _refine_scin_payload_for_runtime(
+        case_input=case,
+        payload=payload,
+        evidence_package=evidence_package,
+        baseline_mode=False,
+    )
+
+    assert refined["final_diagnosis"] == "ATOPIC_DERMATITIS"
+
+
+def test_image_archive_label_hint_adds_archive_specific_guardrails() -> None:
+    case = CaseInput(
+        case_id="isic_case",
+        image_path="/tmp/missing.png",
+        metadata={"label_space_id": "isic2019_full", "anatom_site_general": "torso", "age_approx": "55"},
+        dataset_name="ISIC2019",
+        label_space_id="isic2019_full",
+        workflow_context={"workflow_profile": "image_archive_full_taxonomy_lesion_workflow"},
+    )
+    hint = _build_label_space_prompt_hint(case)
+    assert "Image-archive full-taxonomy note" in hint
+    assert "NV" in hint

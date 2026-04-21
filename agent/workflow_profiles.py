@@ -79,6 +79,9 @@ def get_workflow_specialist_skills(workflow_context: dict[str, Any] | None) -> s
 def _infer_workflow_profile(*, metadata: dict[str, Any], label_space_id: str) -> str:
     presentation_mode = _infer_presentation_mode(metadata=metadata)
     granularity = _infer_label_granularity(label_space_id)
+    case_source = str(metadata.get("case_source", "")).strip().lower()
+    if case_source == "xiangya_sft":
+        return "eczematous_family_routing_workflow"
     if presentation_mode == "diffuse_rash" and granularity == "grouped":
         return "family_routing_workflow"
     if granularity == "grouped":
@@ -138,6 +141,15 @@ def _infer_workflow_capabilities(context: dict[str, Any]) -> list[str]:
     label_granularity = str(context.get("label_granularity", "")).strip().lower()
 
     capabilities: list[str] = []
+    if profile == "eczematous_family_routing_workflow":
+        capabilities.extend(
+            [
+                "family_routing",
+                "grouped_label_reasoning",
+                "rash_reasoning",
+                "eczematous_family_reasoning",
+            ]
+        )
     if profile == "family_routing_workflow":
         capabilities.extend(["family_routing", "grouped_label_reasoning"])
     if profile == "coarse_taxonomy_workflow":

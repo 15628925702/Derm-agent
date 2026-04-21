@@ -36,6 +36,7 @@ LEAKY_METADATA_KEYS = {
     "lesion_id",
     "img_id",
     "image_id",
+    "image_paths",
     "biopsed",
 }
 
