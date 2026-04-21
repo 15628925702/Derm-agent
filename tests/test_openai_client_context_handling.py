@@ -8,7 +8,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from integrations.openai_client import DermOpenAIClient, FULL_CLINICAL_PROFILE_ID, _build_sparse_lesion_prompt_hint
+from integrations.openai_client import DermOpenAIClient, FULL_CLINICAL_PROFILE_ID, _build_sparse_benign_mimic_guard_hint, _build_sparse_lesion_prompt_hint
 from agent.state import CaseInput
 
 
@@ -173,3 +173,23 @@ def test_build_sparse_lesion_prompt_hint_for_ham10000_blocks_open_set_drift() ->
     assert "BKL" in hint
     assert "DF" in hint
     assert "VASC" in hint
+
+
+def test_build_sparse_benign_mimic_guard_hint_requires_workflow_signature() -> None:
+    case_input = CaseInput(
+        case_id="HAM_CASE_002",
+        image_path="/tmp/nonexistent.png",
+        metadata={"label_space_id": "ham10000_full"},
+        dataset_name="HAM10000",
+        label_space_id="ham10000_full",
+        workflow_context={
+            "workflow_profile": "sparse_lesion_workflow",
+            "workflow_capabilities": ["sparse_lesion_reasoning", "focal_lesion_reasoning"],
+            "benign_mimic_like_signature": True,
+        },
+    )
+
+    hint = _build_sparse_benign_mimic_guard_hint(case_input)
+
+    assert "Do not default to Basal Cell Carcinoma" in hint
+    assert "keep BKL, DF, VASC, or NV-style benign mimic alternatives active" in hint

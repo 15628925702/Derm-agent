@@ -164,6 +164,20 @@ def _build_sparse_lesion_prompt_hint(case_input: CaseInput) -> str:
     )
 
 
+def _build_sparse_benign_mimic_guard_hint(case_input: CaseInput) -> str:
+    workflow_context = _case_workflow_context(case_input)
+    if str(workflow_context.get("workflow_profile", "")).strip().lower() != "sparse_lesion_workflow":
+        return ""
+    if not bool(workflow_context.get("benign_mimic_like_signature", False)):
+        return ""
+    return (
+        "Sparse benign-mimic guard: this lesion shows benign-mimic-like morphology under the sparse lesion workflow. "
+        "Do not default to Basal Cell Carcinoma from a central dark area, central hypopigmentation, or irregular border alone. "
+        "Only favor BCC when you can point to lesion-specific BCC evidence such as pearly/translucent quality, rolled border, shiny papule/nodule morphology, arborizing vessels, or focal ulceration. "
+        "If those classic BCC cues are not explicit, keep BKL, DF, VASC, or NV-style benign mimic alternatives active and avoid over-calling malignancy from generic irregularity alone."
+    )
+
+
 def _build_scin_routing_hint(case_input: CaseInput) -> str:
     label_space_id = str(getattr(case_input, "label_space_id", "") or "").strip().lower()
     if not is_full_taxonomy_case(workflow_context=_case_workflow_context(case_input), label_space_id=label_space_id):
@@ -683,6 +697,8 @@ class DermOpenAIClient:
         label_space_line = f"{label_space_hint}\n" if label_space_hint else ""
         sparse_hint = _build_sparse_lesion_prompt_hint(case_input)
         sparse_line = f"{sparse_hint}\n" if sparse_hint else ""
+        benign_mimic_guard_hint = _build_sparse_benign_mimic_guard_hint(case_input)
+        benign_mimic_guard_line = f"{benign_mimic_guard_hint}\n" if benign_mimic_guard_hint else ""
         user_text = (
             "You are the initial perception stage in DermAgent.\n"
             "Return structured observation only. Do not produce a final diagnosis label.\n"
@@ -695,6 +711,7 @@ class DermOpenAIClient:
             "- notes: list of short observation notes\n"
             f"{label_space_line}"
             f"{sparse_line}"
+            f"{benign_mimic_guard_line}"
             f"Metadata: {case_input.clinical_metadata()}"
         )
         messages: list[dict[str, Any]] = [
@@ -817,6 +834,8 @@ class DermOpenAIClient:
         label_space_line = f"{label_space_hint}\n" if label_space_hint else ""
         scin_routing_hint = _build_scin_routing_hint(case_input)
         scin_routing_line = f"{scin_routing_hint}\n" if scin_routing_hint else ""
+        benign_mimic_guard_hint = _build_sparse_benign_mimic_guard_hint(case_input)
+        benign_mimic_guard_line = f"{benign_mimic_guard_hint}\n" if benign_mimic_guard_hint else ""
 
         # Check if this is a MEL vs NV confusion case
         confusion_summary = evidence_package.confusion_cluster_summary or {}
@@ -867,6 +886,7 @@ class DermOpenAIClient:
                 f"{calibration_line}"
                 f"{label_space_line}"
                 f"{scin_routing_line}"
+                f"{benign_mimic_guard_line}"
                 f"Evidence package: {serialized_payload}"
             )
             messages: list[dict[str, Any]] = [
@@ -931,6 +951,8 @@ class DermOpenAIClient:
             label_space_line = f"{label_space_hint}\n" if label_space_hint else ""
             sparse_hint = _build_sparse_lesion_prompt_hint(case_input)
             sparse_line = f"{sparse_hint}\n" if sparse_hint else ""
+            benign_mimic_guard_hint = _build_sparse_benign_mimic_guard_hint(case_input)
+            benign_mimic_guard_line = f"{benign_mimic_guard_hint}\n" if benign_mimic_guard_hint else ""
             scin_routing_hint = _build_scin_routing_hint(case_input)
             scin_routing_line = f"{scin_routing_hint}\n" if scin_routing_hint else ""
             prompt = (
@@ -940,6 +962,7 @@ class DermOpenAIClient:
                 "Include: final_diagnosis, differential_diagnoses, rationale, confidence, follow_up_considerations.\n"
                 f"{label_space_line}"
                 f"{sparse_line}"
+                f"{benign_mimic_guard_line}"
                 f"{scin_routing_line}"
                 f"Metadata: {case_input.clinical_metadata()}"
             )
