@@ -20,6 +20,7 @@ FINAL_SCRIPTS = [
     PROJECT_ROOT / "scripts" / "run_scin_final_round.sh",
     PROJECT_ROOT / "scripts" / "run_sd198_final_round.sh",
     PROJECT_ROOT / "scripts" / "run_xiangya_sft_final_round.sh",
+    PROJECT_ROOT / "scripts" / "run_all_final_rounds.sh",
 ]
 
 
@@ -50,3 +51,25 @@ def test_final_round_wrappers_support_dry_run() -> None:
         )
         assert "[final-round] dataset" in completed.stdout
         assert "[dry-run]" in completed.stdout
+        assert "[final-round] server timeout" in completed.stdout
+        assert "[final-round] model wait" in completed.stdout
+        assert "[final-round] chat check" in completed.stdout
+
+
+def test_all_final_rounds_support_dry_run_and_print_totals() -> None:
+    env = os.environ.copy()
+    env["DRY_RUN"] = "1"
+    env["CLEAN_FINAL_ROUND"] = "1"
+    completed = subprocess.run(
+        ["bash", str(PROJECT_ROOT / "scripts" / "run_all_final_rounds.sh")],
+        check=True,
+        cwd=PROJECT_ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+    )
+    assert "[all-final] bootstrap total" in completed.stdout
+    assert "[all-final] compare total" in completed.stdout
+    assert "[all-final] total case steps" in completed.stdout
+    assert "[all-final] >>> 1/6 PAD-UFES-20" in completed.stdout
+    assert "[all-final] >>> 6/6 HAM10000" in completed.stdout
