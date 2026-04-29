@@ -9,6 +9,8 @@ from pathlib import Path
 from typing import Any
 
 from agent.hard_case_miner import build_hard_case_candidate, load_execution_records
+from agent.skill_fitness_snapshot import DEFAULT_SNAPSHOT_DIR, save_skill_fitness_snapshot
+from cognition.cognition_state import CognitionState
 from memory.experience_schema import dedupe_strings, stable_hash
 
 
@@ -86,6 +88,8 @@ def save_batch_reflection_outputs(
     critique: BatchCritique | dict[str, Any],
     *,
     output_dir: str | Path = DEFAULT_OUTPUT_DIR,
+    cognition: CognitionState | None = None,
+    snapshot_dir: Path = DEFAULT_SNAPSHOT_DIR,
 ) -> dict[str, str]:
     payload = critique.to_dict() if isinstance(critique, BatchCritique) else deepcopy(critique)
     root = Path(output_dir)
@@ -106,10 +110,17 @@ def save_batch_reflection_outputs(
     }
     summary_path = root / "summary.json"
     summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
-    return {
+
+    result = {
         "critique_path": str(critique_path),
         "summary_path": str(summary_path),
     }
+
+    if cognition is not None:
+        snapshot_path = save_skill_fitness_snapshot(cognition.to_dict(), output_dir=snapshot_dir)
+        result["skill_fitness_snapshot_path"] = str(snapshot_path)
+
+    return result
 
 
 def _source_summary(

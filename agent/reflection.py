@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+from copy import deepcopy
 from typing import Any
 
+from agent.evolution_logger import append_evolution_log, compute_cognition_diff
 from agent.labels import labels_match
 from agent.state import CaseState
 from cognition.cognition_state import CognitionState
@@ -114,6 +116,7 @@ def build_reflection(state: CaseState, cognition: CognitionState) -> dict[str, A
 
 def apply_cognition_update(cognition: CognitionState, reflection: dict[str, Any], state: CaseState | None = None) -> CognitionState:
     update = reflection.get("cognition_update", {})
+    before_snapshot = deepcopy(cognition.to_dict())
     cognition.update_failure_statistics(
         total_cases_increment=int(update.get("total_cases_increment", 0)),
         failed_cases_increment=int(update.get("failed_cases_increment", 0)),
@@ -129,6 +132,9 @@ def apply_cognition_update(cognition: CognitionState, reflection: dict[str, Any]
             skills_used=list(state.skill_outputs.keys()),
             correct=bool(reflection.get("diagnosis_correct", False)),
         )
+    cognition.increment_evolution_generation()
+    diff = compute_cognition_diff(before_snapshot, cognition.to_dict())
+    append_evolution_log(diff, generation=cognition.evolution_generation)
     return cognition
 
 

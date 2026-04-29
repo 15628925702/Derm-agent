@@ -242,6 +242,24 @@ class RuleMetadataHybridSkillRetriever(BaseSkillRetriever):
                 matched_fields.append("optional_embedding")
 
         selected = _should_select_skill(skill.name, score, signal_profile)
+
+        # Meta-learning bias (only when DERMAGENT_META_LEARNING_ENABLED=1)
+        import os
+        if os.getenv("DERMAGENT_META_LEARNING_ENABLED", "").strip() in {"1", "true", "yes"}:
+            try:
+                from meta_learning.few_shot_adapter import FewShotAdapter
+                dataset_name = str(query.metadata.get("dataset_name", "") or "").strip()
+                adaptation = FewShotAdapter.load_adaptation(dataset_name) if dataset_name else None
+                if adaptation:
+                    bias = float(adaptation.get("retrieval_bias", {}).get(skill.name, 0.0))
+                    if bias > 0.6:
+                        bonus = 0.5 if bias < 0.8 else 1.0
+                        score += bonus
+                        reasons.append(f"Meta-learning retrieval bias: helpful_rate={bias:.2f} on {dataset_name}.")
+                        matched_fields.append("meta_learning.retrieval_bias")
+            except Exception:
+                pass
+
         return SkillRetrievalDecision(
             skill_id=skill.skill_id,
             skill_name=skill.name,

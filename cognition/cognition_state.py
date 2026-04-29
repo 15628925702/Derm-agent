@@ -41,6 +41,7 @@ class CognitionState:
     workflow_preferences: dict[str, dict[str, Any]] = field(default_factory=dict)
     state_split: str = "global"
     state_version: str = ""
+    evolution_generation: int = 0
 
     def __post_init__(self) -> None:
         self.known_confusion_patterns = dict(self.known_confusion_patterns or {})
@@ -63,6 +64,7 @@ class CognitionState:
         self.skill_statistics = normalized_skill_statistics
         self.workflow_preferences = dict(self.workflow_preferences or {})
         self.state_split = normalize_split_name(self.state_split, default="global")
+        self.evolution_generation = int(self.evolution_generation or 0)
         if not str(self.state_version).strip():
             self.state_version = self._compute_state_version()
 
@@ -238,6 +240,9 @@ class CognitionState:
             skill_freq[s] = skill_freq.get(s, 0) + 1
         entry["preferred_skills"] = sorted(skill_freq, key=lambda x: -skill_freq[x])[:5]
 
+    def increment_evolution_generation(self) -> None:
+        self.evolution_generation += 1
+
     def _compute_state_version(self) -> str:
         payload = {
             "self_capability_summary": self.self_capability_summary,
@@ -247,6 +252,7 @@ class CognitionState:
             "failure_statistics": self.failure_statistics,
             "skill_statistics": self.skill_statistics,
             "workflow_preferences": self.workflow_preferences,
+            "evolution_generation": self.evolution_generation,
         }
         return build_split_state_version(
             component_id="cognition_state",

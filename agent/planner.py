@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass, field
 from typing import Any
@@ -540,6 +541,21 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
 
         if selected and not reasons:
             reasons.append("Selected by default rule-based planner policy.")
+
+        # Meta-learning bias (only when DERMAGENT_META_LEARNING_ENABLED=1)
+        if os.getenv("DERMAGENT_META_LEARNING_ENABLED", "").strip() in {"1", "true", "yes"}:
+            try:
+                from meta_learning.few_shot_adapter import FewShotAdapter
+                adaptation = FewShotAdapter.load_adaptation(planner_input.dataset_name or "")
+                if adaptation:
+                    bias = float(adaptation.get("retrieval_bias", {}).get(skill.name, 0.0))
+                    if bias > 0.6:
+                        bonus = 1 if bias < 0.8 else 2
+                        score += bonus
+                        reasons.append(f"Meta-learning bias: helpful_rate={bias:.2f} on {planner_input.dataset_name}.")
+                        matched_fields.append("meta_learning.retrieval_bias")
+            except Exception:
+                pass
 
         return SkillSelectionDecision(
             skill_name=skill.name,
