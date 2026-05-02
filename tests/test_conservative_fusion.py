@@ -8,7 +8,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from agent.conservative_fusion import decide_conservative_agent_fusion
+from agent.conservative_fusion import apply_conservative_agent_fusion, decide_conservative_agent_fusion
 
 
 def test_soft_fusion_allows_scin_grouped_family_override() -> None:
@@ -56,6 +56,43 @@ def test_soft_fusion_allows_scin_grouped_family_override() -> None:
 
     assert decision["use_agent_output"] is True
     assert "family_override_allowed" in decision["reasons"]
+
+
+def test_conservative_fusion_keeps_string_follow_up_as_single_item() -> None:
+    baseline_output = {
+        "final_diagnosis": "Contact Dermatitis",
+        "differential_diagnoses": ["Contact Dermatitis"],
+        "confidence": "Moderate",
+        "rationale": "Baseline rationale.",
+        "follow_up_considerations": "Recheck if persistent.",
+    }
+    agent_output = {
+        "final_diagnosis": "DERMATITIS_ECZEMA",
+        "differential_diagnoses": ["DERMATITIS_ECZEMA"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "evidence_decision_policy": {
+            "risk_layer": {"baseline_preview": {}},
+            "diagnosis_override_layer": {
+                "selected_evidence_present": False,
+                "override_allowed": False,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    fused = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert fused["final_diagnosis"] == "Contact Dermatitis"
+    assert fused["follow_up_considerations"] == [
+        "Recheck if persistent.",
+        "Fusion note: no_selected_evidence; fallback_to_baseline",
+    ]
 
 
 def test_soft_fusion_allows_keratinocyte_subtype_override() -> None:

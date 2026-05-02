@@ -755,7 +755,7 @@ FINAL_DIAGNOSIS_PROMPT_VERSION = "final_diagnosis_v1"
 BASELINE_DIAGNOSIS_PROMPT_VERSION = "direct_baseline_v1"
 INITIAL_PERCEPTION_MAX_TOKENS = 320
 SKILL_MAX_TOKENS = 640
-FINAL_DIAGNOSIS_MAX_TOKENS = 680
+FINAL_DIAGNOSIS_MAX_TOKENS = 900
 BASELINE_DIAGNOSIS_MAX_TOKENS = 420
 SKINVL_MODEL_NAME_HINT = "skinvl"
 SKINVL_ALLOWED_LABELS = (
@@ -1292,7 +1292,9 @@ class DermOpenAIClient:
         request_name: str,
     ) -> dict[str, Any]:
         token_budget = max_tokens
-        max_parse_attempts = 3 if request_name.startswith("skill:") else 2
+        is_diagnosis_request = request_name.startswith("baseline_diagnosis:") or request_name.startswith("final_diagnosis:")
+        max_parse_attempts = 3 if (request_name.startswith("skill:") or is_diagnosis_request) else 2
+        last_valid_payload: dict[str, Any] | None = None
         for parse_attempt in range(max_parse_attempts):
             response = self._create_json_completion(
                 messages=messages,
@@ -1303,7 +1305,14 @@ class DermOpenAIClient:
             finish_reason = getattr(response.choices[0], "finish_reason", None)
             try:
                 payload = self._parse_json_response(content)
-            except json.JSONDecodeError:
+            except json.JSONDecodeError as exc:
+                if last_valid_payload is not None and parse_attempt >= max_parse_attempts - 1:
+                    LOGGER.warning(
+                        "Using last valid JSON payload for %s after malformed retry response: %s.",
+                        request_name,
+                        exc,
+                    )
+                    return last_valid_payload
                 if parse_attempt >= max_parse_attempts - 1:
                     raise
                 token_budget += max(160, max_tokens // 2, token_budget // 3)
@@ -1315,6 +1324,8 @@ class DermOpenAIClient:
                 continue
 
             payload = self._normalize_diagnosis_payload(payload, request_name=request_name)
+            if payload and (not is_diagnosis_request or payload.get("final_diagnosis")):
+                last_valid_payload = dict(payload)
 
             if finish_reason == "length" and parse_attempt < max_parse_attempts - 1:
                 token_budget += max(160, max_tokens // 2, token_budget // 3)
@@ -1326,6 +1337,8 @@ class DermOpenAIClient:
                 continue
             return payload
 
+        if last_valid_payload is not None:
+            return last_valid_payload
         raise RuntimeError(f"Failed to parse JSON payload for request: {request_name}")
 
     @staticmethod
@@ -1440,6 +1453,9 @@ class DermOpenAIClient:
             return {}
         if not (request_name.startswith("baseline_diagnosis:") or request_name.startswith("final_diagnosis:")):
             return payload
+        payload["follow_up_considerations"] = DermOpenAIClient._normalize_follow_up_considerations(
+            payload.get("follow_up_considerations", [])
+        )
         if payload.get("final_diagnosis"):
             final_diagnosis = DermOpenAIClient._normalize_diagnosis_label(str(payload.get("final_diagnosis", "")).strip())
             payload["final_diagnosis"] = final_diagnosis
@@ -1497,6 +1513,23 @@ class DermOpenAIClient:
             "confidence": "unknown",
             "follow_up_considerations": [],
         }
+
+    @staticmethod
+    def _normalize_follow_up_considerations(value: Any) -> list[str]:
+        if value is None:
+            return []
+        if isinstance(value, str):
+            item = value.strip()
+            return [item] if item else []
+        if isinstance(value, list):
+            normalized: list[str] = []
+            for item in value:
+                text = str(item).strip()
+                if text:
+                    normalized.append(text)
+            return normalized
+        text = str(value).strip()
+        return [text] if text else []
 
     @staticmethod
     def _normalize_diagnosis_label(text: str) -> str:

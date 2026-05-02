@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
 
+from agent.label_space import DATASET_LABEL_SPACE_ALIASES
 from agent.state import CaseInput
 from agent.workflow_profiles import ensure_workflow_context
 from dataio.case_schema import CaseSourceConfig, FieldCandidate, StandardizedCaseRecord
@@ -156,17 +157,20 @@ def load_case_by_index(case_index: int, data_root: str | Path) -> CaseInput:
 
     row = rows[case_index]
     standardized = standardize_row(row=row, config=config)
+    dataset_name = _infer_dataset_name(config)
+    label_space_id = _infer_label_space_id(config=config, metadata=standardized.metadata)
     return CaseInput(
         case_id=standardized.case_id,
         image_path=standardized.image_path,
         metadata=standardized.metadata,
         label=standardized.label,
-        dataset_name=_infer_dataset_name(config),
+        dataset_name=dataset_name,
+        label_space_id=label_space_id,
         source_metadata_path=str(config.metadata_path),
         workflow_context=ensure_workflow_context(
-            dataset_name=_infer_dataset_name(config),
+            dataset_name=dataset_name,
             metadata=standardized.metadata,
-            label_space_id=str(standardized.metadata.get("label_space_id", "")).strip() or None,
+            label_space_id=label_space_id,
             workflow_context=None,
         ),
     )
@@ -198,20 +202,23 @@ def sample_cases(count: int, data_root: str | Path, seed: int = 0) -> list[CaseI
     sample_size = min(count, len(rows))
     indices = rng.sample(range(len(rows)), sample_size)
     cases: list[CaseInput] = []
+    dataset_name = _infer_dataset_name(config)
     for index in indices:
         standardized = standardize_row(rows[index], config)
+        label_space_id = _infer_label_space_id(config=config, metadata=standardized.metadata)
         cases.append(
             CaseInput(
                 case_id=standardized.case_id,
                 image_path=standardized.image_path,
                 metadata=standardized.metadata,
                 label=standardized.label,
-                dataset_name=_infer_dataset_name(config),
+                dataset_name=dataset_name,
+                label_space_id=label_space_id,
                 source_metadata_path=str(config.metadata_path),
                 workflow_context=ensure_workflow_context(
-                    dataset_name=_infer_dataset_name(config),
+                    dataset_name=dataset_name,
                     metadata=standardized.metadata,
-                    label_space_id=str(standardized.metadata.get("label_space_id", "")).strip() or None,
+                    label_space_id=label_space_id,
                     workflow_context=None,
                 ),
             )
@@ -340,6 +347,14 @@ def _infer_dataset_name(config: CaseSourceConfig) -> str:
     if image_parent:
         return image_parent
     return config.data_root.name.strip() or "unknown_dataset"
+
+
+def _infer_label_space_id(*, config: CaseSourceConfig, metadata: dict[str, Any]) -> str | None:
+    metadata_label_space = str(metadata.get("label_space_id", "")).strip()
+    if metadata_label_space:
+        return metadata_label_space
+    dataset_key = _infer_dataset_name(config).strip().lower()
+    return DATASET_LABEL_SPACE_ALIASES.get(dataset_key)
 
 
 def load_case_with_masking(

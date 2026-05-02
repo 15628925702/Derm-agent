@@ -141,6 +141,29 @@ def available_split_ids() -> list[str]:
     return sorted(FIXED_SPLITS.keys())
 
 
+def infer_split_id_from_data_root(data_root: Path) -> str:
+    """
+    Infer the appropriate split_id based on the data_root path.
+    Returns the default split_id if no match is found.
+    """
+    data_root_str = str(data_root).lower()
+
+    if "ham10000" in data_root_str:
+        return HAM10000_SPLIT_ID
+    elif "isic2019" in data_root_str or "isic_2019" in data_root_str:
+        return ISIC2019_SPLIT_ID
+    elif "scin" in data_root_str:
+        return SCIN_SPLIT_ID
+    elif "sd198" in data_root_str or "sd-198" in data_root_str:
+        return SD198_SPLIT_ID
+    elif "xiangya" in data_root_str or "sft" in data_root_str:
+        return XIANGYA_SFT_SPLIT_ID
+    elif "pad" in data_root_str or "ufes" in data_root_str:
+        return DEFAULT_SPLIT_ID
+
+    return DEFAULT_SPLIT_ID
+
+
 def build_fixed_split_payload(
     split_id: str = DEFAULT_SPLIT_ID,
     *,

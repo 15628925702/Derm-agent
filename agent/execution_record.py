@@ -23,6 +23,9 @@ class CaseExecutionRecord:
     timestamp: str
     case_id: str
     dataset_name: str
+    workflow_profile: str | None = None
+    label_granularity: str | None = None
+    workflow_context: dict[str, Any] | None = None
     input_summary: dict[str, Any] = field(default_factory=dict)
     qwen_initial: dict[str, Any] = field(default_factory=dict)
     image_read_audit: dict[str, Any] = field(default_factory=dict)
@@ -62,6 +65,12 @@ def build_case_execution_record(
     selected_skills = _selected_skills(state)
     dataset_name = _infer_dataset_name(case_input)
     label_space = label_space_snapshot(dataset_name=dataset_name, label_space_id=case_input.label_space_id, metadata=case_input.metadata)
+    workflow_context = deepcopy(case_input.workflow_context or {})
+    workflow_profile = workflow_context.get("workflow_profile")
+    label_granularity = _record_label_granularity(
+        workflow_context=workflow_context,
+        label_space_id=case_input.label_space_id or label_space.get("label_space_id", ""),
+    )
     agent_eval = evaluate_diagnosis_output(
         state.final_diagnosis,
         case_input.reference_label or case_input.label,
@@ -93,11 +102,14 @@ def build_case_execution_record(
         timestamp=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         case_id=case_input.case_id,
         dataset_name=dataset_name,
+        workflow_profile=workflow_profile,
+        label_granularity=label_granularity,
+        workflow_context=workflow_context,
         input_summary={
             "image_path": case_input.image_path,
             "metadata_path": case_input.source_metadata_path or "",
             "clinical_metadata": case_input.clinical_metadata(),
-            "workflow_context": deepcopy(case_input.workflow_context or {}),
+            "workflow_context": deepcopy(workflow_context),
             "image_exists": Path(case_input.image_path).exists(),
             "label_space": label_space,
             "label_space_id": case_input.label_space_id or label_space.get("label_space_id", ""),
@@ -210,6 +222,12 @@ def build_baseline_case_execution_record(
 ) -> dict[str, Any]:
     dataset_name = _infer_dataset_name(case_input)
     label_space = label_space_snapshot(dataset_name=dataset_name, label_space_id=case_input.label_space_id, metadata=case_input.metadata)
+    workflow_context = deepcopy(case_input.workflow_context or {})
+    workflow_profile = workflow_context.get("workflow_profile")
+    label_granularity = _record_label_granularity(
+        workflow_context=workflow_context,
+        label_space_id=case_input.label_space_id or label_space.get("label_space_id", ""),
+    )
     baseline_eval = evaluate_diagnosis_output(
         baseline_qwen,
         case_input.reference_label or case_input.label,
@@ -225,10 +243,14 @@ def build_baseline_case_execution_record(
         timestamp=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         case_id=case_input.case_id,
         dataset_name=dataset_name,
+        workflow_profile=workflow_profile,
+        label_granularity=label_granularity,
+        workflow_context=workflow_context,
         input_summary={
             "image_path": case_input.image_path,
             "metadata_path": case_input.source_metadata_path or "",
             "clinical_metadata": case_input.clinical_metadata(),
+            "workflow_context": deepcopy(workflow_context),
             "image_exists": Path(case_input.image_path).exists(),
             "label_space": label_space,
             "label_space_id": case_input.label_space_id or label_space.get("label_space_id", ""),
@@ -407,6 +429,30 @@ def _infer_dataset_name(case_input: CaseInput) -> str:
         if metadata_parent:
             return metadata_parent
     return path.parent.name.strip() or "unknown_dataset"
+
+
+def _record_label_granularity(*, workflow_context: dict[str, Any], label_space_id: Any) -> str | None:
+    raw_granularity = str(workflow_context.get("label_granularity", "")).strip().lower()
+    if raw_granularity and raw_granularity != "unknown":
+        return raw_granularity
+
+    label_space_key = str(label_space_id or "").strip().lower()
+    if "grouped" in label_space_key:
+        return "grouped"
+    if label_space_key:
+        return "fine"
+
+    profile = str(workflow_context.get("workflow_profile", "")).strip().lower()
+    if profile in {
+        "sparse_lesion_workflow",
+        "clinical_full_taxonomy_lesion_workflow",
+        "image_archive_full_taxonomy_lesion_workflow",
+        "full_taxonomy_lesion_workflow",
+    }:
+        return "fine"
+    if profile in {"family_routing_workflow", "coarse_taxonomy_workflow", "eczematous_family_routing_workflow"}:
+        return "grouped"
+    return raw_granularity or None
 
 
 def _infer_skill_judgement_version(skill_assessments: Any) -> str:

@@ -14,8 +14,9 @@ def ensure_workflow_context(
     metadata = dict(metadata or {})
     dataset_key = str(dataset_name or "").strip().lower()
     label_space_key = str(label_space_id or metadata.get("label_space_id", "")).strip().lower()
+    case_source = str(metadata.get("case_source", "") or dataset_key).strip().lower()
 
-    context.setdefault("label_granularity", _infer_label_granularity(label_space_key))
+    context.setdefault("label_granularity", _infer_label_granularity(label_space_key, case_source=case_source))
     context.setdefault("presentation_mode", _infer_presentation_mode(metadata=metadata))
     context.setdefault("workflow_profile", _infer_workflow_profile(metadata=metadata, label_space_id=label_space_key))
     context.setdefault("available_tests", _infer_available_tests(metadata=metadata, presentation_mode=context.get("presentation_mode")))
@@ -78,8 +79,8 @@ def get_workflow_specialist_skills(workflow_context: dict[str, Any] | None) -> s
 
 def _infer_workflow_profile(*, metadata: dict[str, Any], label_space_id: str) -> str:
     presentation_mode = _infer_presentation_mode(metadata=metadata)
-    granularity = _infer_label_granularity(label_space_id)
     case_source = str(metadata.get("case_source", "")).strip().lower()
+    granularity = _infer_label_granularity(label_space_id, case_source=case_source)
     if case_source == "xiangya_sft":
         return "eczematous_family_routing_workflow"
     if presentation_mode == "diffuse_rash" and granularity == "grouped":
@@ -97,8 +98,11 @@ def _infer_workflow_profile(*, metadata: dict[str, Any], label_space_id: str) ->
     return "default_workflow"
 
 
-def _infer_label_granularity(label_space_id: str) -> str:
+def _infer_label_granularity(label_space_id: str, case_source: str = "") -> str:
     if "grouped" in label_space_id:
+        return "grouped"
+    # Auto-detect grouped label spaces for SCIN and SD-198
+    if case_source in ("scin", "sd198"):
         return "grouped"
     if label_space_id:
         return "fine"

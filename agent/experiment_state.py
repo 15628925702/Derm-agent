@@ -63,6 +63,13 @@ def load_split_payload(
     if split_json is not None:
         payload = json.loads(split_json.read_text(encoding="utf-8"))
         return payload, split_json
+
+    # Auto-infer split_id from data_root if using default split_id
+    from configs.dataset_splits import infer_split_id_from_data_root
+    if split_id == DEFAULT_SPLIT_ID:
+        inferred_split_id = infer_split_id_from_data_root(data_root)
+        split_id = inferred_split_id
+
     return build_fixed_split_payload(split_id=split_id, data_root=data_root), None
 
 

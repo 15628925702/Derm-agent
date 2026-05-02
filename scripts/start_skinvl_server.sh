@@ -84,15 +84,15 @@ service_ready() {
 
 stop_stale_processes() {
   local existing_pids
-  existing_pids="$(pgrep -f "vllm serve .*--port ${PORT}" || true)"
+  existing_pids="$(pgrep -f "serve_skinvl_openai.py.*--port ${PORT}" || true)"
   if [[ -n "${existing_pids}" ]]; then
-    echo "[warn] found stale vLLM process(es): ${existing_pids}"
-    pkill -f "vllm serve .*--port ${PORT}" || true
+    echo "[warn] found stale SkinVL process(es): ${existing_pids}"
+    pkill -f "serve_skinvl_openai.py.*--port ${PORT}" || true
     sleep 3
   fi
 
-  if pgrep -f "vllm serve .*--port ${PORT}" >/dev/null 2>&1; then
-    echo "[error] stale vLLM process is still alive after kill attempt."
+  if pgrep -f "serve_skinvl_openai.py.*--port ${PORT}" >/dev/null 2>&1; then
+    echo "[error] stale SkinVL process is still alive after kill attempt."
     exit 1
   fi
 }

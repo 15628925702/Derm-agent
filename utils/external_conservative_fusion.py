@@ -26,7 +26,7 @@ def build_conservative_fusion_output(
     note = build_fusion_note(decision)
     if note:
         rationale = f"{rationale} {note}".strip() if rationale else note
-    follow_up = list(chosen.get("follow_up_considerations", []) or [])
+    follow_up = normalize_follow_up_considerations(chosen.get("follow_up_considerations", []))
     caution_line = build_caution_line(decision)
     if caution_line and caution_line not in follow_up:
         follow_up.append(caution_line)
@@ -34,6 +34,23 @@ def build_conservative_fusion_output(
     chosen["follow_up_considerations"] = follow_up
     chosen["fusion_decision"] = decision
     return chosen
+
+
+def normalize_follow_up_considerations(value: Any) -> list[str]:
+    if value is None:
+        return []
+    if isinstance(value, str):
+        item = value.strip()
+        return [item] if item else []
+    if isinstance(value, list):
+        normalized: list[str] = []
+        for item in value:
+            text = str(item).strip()
+            if text:
+                normalized.append(text)
+        return normalized
+    text = str(value).strip()
+    return [text] if text else []
 
 
 def decide_external_conservative_fusion(
