@@ -1,0 +1,19 @@
+## 6 Discussion
+
+DermAgent 的核心贡献并不只在于增加了一组中间模块，而在于对医学 agent 在诊断任务中的角色边界作出了明确限定。本文选择保持单一最终诊断者，即始终由 backbone 负责最终诊断，而让 agent 只承担结构化证据增强与中间推理组织。这一设计首先体现为一种安全边界。对于皮肤科诊断这类高风险、多混淆的任务而言，如果外围模块同时拥有独立诊断权，再通过投票、加权或 override 决定最终输出，系统将很难回答“最终诊断究竟由谁负责”这一问题，也难以在错误分析中清晰定位失败来自 backbone 还是来自中间模块。相反，单一最终诊断者架构将责任边界维持在 backbone 一侧，而把 agent 的价值限定在证据生产、证据排序与证据组织上，从而使系统在解释性、审计性与公平比较上都更可控。
+
+这一边界也解释了本文为什么坚持将 skill 设计为 reasoning action，而不是 disease classifier。若 skill 被设计为外围病种分类器，那么即便其局部性能较强，整个系统也会迅速滑向“多个模块共同猜病”的结构，导致中间层与 backbone 之间出现职责重叠。更重要的是，disease-specific 子分类器往往容易退化为刚性的 heuristic attachment：它们也许在部分标签上有效，却难以保留临床动作本身的通用语义。与之相比，将 skill 定义为 atomic clinical reasoning actions 可以更自然地对应真实诊断过程中的观察、比较、排除、风险评估与不确定性审计，使外围能力的优化对象从“病种输出”转变为“中间推理动作质量”。这不仅提升了模块级可解释性，也使 planner、reflection 和 downstream training 更容易围绕 help/harm、evidence utility 与 routing quality 等中间信号展开。
+
+本文的另一项核心设计，是将 experience、cognition 与 policy 分层。这样做的意义并不只是软件架构上的整洁，而在于它为持续演化提供了更清晰的状态语义。experience 更偏向知识内容，回答的是系统从历史病例中保留了哪些具体案例、局部战术和抽象模式；cognition 更偏向策略状态，记录系统在跨病例尺度上形成了哪些偏好、混淆先验与行为统计；policy 则进一步把可训练、可版本化、可回滚的外围控制参数从经验内容和策略记忆中分离出来。若缺少这种分层，系统很容易把所有长期变化都混入一个统一记忆池中，既不利于诊断错误归因，也不利于 formal evaluation。相反，这种分层使“知识增长”“策略偏移”和“参数更新”能够被分别记录、分别冻结、分别比较，从而为 agent 的认知自进化提供了受控接口。
+
+在本文看来，same-backbone frozen comparison 对 agent 论文尤其重要。对于传统模型论文而言，更换 backbone 或增加训练数据往往本身就是主要创新来源；但对于 DermAgent 这类以中间推理结构为研究对象的工作，如果比较时同时改变 backbone、病例列表、在线状态或评测协议，则任何性能变化都很难被可靠归因。因此，本文将 fairness、state isolation、writeback disabling 与 matched-case comparison 视为方法定义的一部分，而不是附属实验技巧。只有在 direct baseline 与 full-agent 共享同一 backbone/service、同一 case list、同一 split state 且正式比较中不允许 online writeback 的前提下，研究者才有可能较为严谨地回答“structured agent reasoning 本身是否有价值”这一问题。
+
+皮肤科之所以是适合研究 structured agent reasoning 的场景，也与其任务特征密切相关。首先，皮肤科诊断高度依赖可视表型，但这些表型往往不能直接一一映射到最终诊断标签，而是需要通过鉴别诊断、局部排除、时间演变解释和风险权衡逐步收缩诊断空间。其次，皮肤科中存在若干具有代表性的高混淆对与高风险子群，使得 skill selection、specialist auditing、uncertainty handling 和 experience reuse 具有明确的临床动机。再次，该场景同时具备图像、metadata 和部分病史文本，使 agent 可以在多模态上下文中组织证据，而不是仅依赖自由文本问答。正因如此，皮肤科既足够复杂，能够暴露直接 prompting 的局限；又足够结构化，适合作为分层 experience、reasoning actions 和 evidence package 的实验平台。
+
+尽管如此，本文也应当明确当前证据的局限。首先，系统的完整结果仍在补充验证之中。当前代码库已经具备 frozen evaluation、matched ablation、外围训练与结果导出链路，但这并不等同于所有核心结论都已被最终建立。其次，learned controller 与 evidence calibrator 虽然都已进入主线实现和配置体系，但它们的训练稳定性、泛化边界以及在不同病例分布下的收益仍需进一步验证。第三，外部数据集的标签空间并不总与内部 canonical dermatology label space 一致，因此 external validation 往往只能在 malignant-vs-benign、部分映射或受限子集层面进行解释，而不能简单地外推为完整多类别泛化能力。第四，writeback 的在线收益与正式 frozen evaluation 之间存在天然张力：如果允许系统在评测期间持续写回经验和认知，可能更接近“会成长的 agent”这一设想，但同时也会削弱结果的公平性与可归因性。如何在长期自进化收益与严格冻结比较之间取得更合理平衡，仍是本文尚未完全解决的问题。
+
+另一个必须正视的问题是系统复杂度与实际收益之间的平衡。DermAgent 明确引入了 skill bank、layered experience、cognition、policy versioning、evidence package 与 reflection/writeback 等多个层次。这样的设计带来了更强的结构化表达与审计能力，但也显著增加了系统复杂性、实现成本和实验空间。对于医学 AI 而言，更复杂的系统并不天然更优；只有当这种复杂度能够转化为更稳健的错误控制、更清晰的行为归因，或在同 backbone 条件下带来可复核的性能收益时，其设计才真正成立。因此，未来工作不仅需要继续追求更高性能，也需要评估哪些组件在不同资源约束、病例分布和风险偏好下是必要的，哪些组件则可以通过更轻量的策略获得近似收益。
+
+基于当前代码与实验框架，未来工作可以沿几个自然方向推进。第一，可以进一步稳定并系统评估 learned controller、retrieval reranker 与 evidence calibrator 的训练流程，特别是在固定 split state 和候选 policy gate 约束下，分析各外围组件的单独收益与交互作用。第二，可以将当前的 abstract experience 与 composite skill proposal 机制进一步发展为更稳定的 reusable multi-step reasoning templates，但仍需保持其不越过最终诊断边界。第三，可以在标签可对齐的外部皮肤科数据集上建立更明确的 malignant-vs-benign 与 partial-label evaluation protocol，以补足当前 external validation 的证据范围。第四，可以系统研究 writeback 的两种模式：一种面向 frozen formal evaluation，强调公平与可复核；另一种面向长期 online adaptation，强调认知自进化与经验积累，并通过独立协议评估其长期收益。最后，随着更多执行记录、paper exports 与训练快照被积累，DermAgent 还可以进一步支持更严格的 case-level attribution analysis，从而把 agent 的“为什么有用”从事后叙述推进到更系统化的经验驱动解释框架。
+
+总体而言，DermAgent 所提出的并非一个已经完全收敛的最终系统，而是一种针对医学多模态诊断任务的结构化 agent 设计立场：在保持 backbone 最终诊断权不变的前提下，把 skills、experience、cognition 与 policy 组织为可演化、可审计、可训练且可公平评测的外围推理外骨骼。本文认为，这一立场的价值不只在于是否获得更高的当前分数，更在于它为今后研究医学 agent 如何在安全边界内持续学习、如何被严格评测、以及如何将中间推理显式化提供了一个较为清晰的出发点。

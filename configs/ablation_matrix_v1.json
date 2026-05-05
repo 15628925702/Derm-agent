@@ -1,0 +1,380 @@
+{
+  "schema_version": "ablation_matrix_v1",
+  "protocol": {
+    "frozen_evaluation_mode": true,
+    "writeback_disabled": true,
+    "same_model_same_case_list": true
+  },
+  "run_modes": {
+    "smoke": {
+      "default_limit": 10
+    },
+    "full": {
+      "default_limit": "all"
+    }
+  },
+  "targets": [
+    {
+      "target_id": "direct_qwen_baseline",
+      "label": "Direct Qwen Baseline",
+      "enabled": true,
+      "optional": false,
+      "target_type": "baseline",
+      "mode": "baseline",
+      "description": "Direct Qwen baseline with no agent evidence package.",
+      "experiment_meaning": "Reference lower bound to measure absolute and relative gain of all agent configurations.",
+      "experience_variant": "full",
+      "cognition_variant": "frozen",
+      "execution_overrides": {},
+      "policy_overrides": {},
+      "ablation_tags": [
+        "baseline"
+      ],
+      "requirements": {}
+    },
+    {
+      "target_id": "first_stage_basic_skills_only",
+      "label": "Qwen + Stage1 Basic Skills Only",
+      "enabled": true,
+      "optional": false,
+      "target_type": "ablation",
+      "mode": "agent",
+      "description": "Use first-stage basic skills only and disable experience retrieval.",
+      "experiment_meaning": "Measures how much of the total gain comes from the minimal first-stage skill layer alone.",
+      "experience_variant": "empty",
+      "cognition_variant": "frozen",
+      "skill_profile": "stage1_basic_only",
+      "execution_overrides": {
+        "enable_experience_retrieval": false,
+        "enable_skill_retrieval": true
+      },
+      "policy_overrides": {},
+      "ablation_tags": [
+        "skills",
+        "stage1",
+        "no_experience"
+      ],
+      "requirements": {}
+    },
+    {
+      "target_id": "skill_bank_without_experience",
+      "label": "Qwen + Skill Bank (No Experience)",
+      "enabled": true,
+      "optional": false,
+      "target_type": "ablation",
+      "mode": "agent",
+      "description": "Keep full skill bank but disable raw/tactical/abstract experience retrieval.",
+      "experiment_meaning": "Isolates the pure contribution of the skill bank without memory support.",
+      "experience_variant": "empty",
+      "cognition_variant": "frozen",
+      "execution_overrides": {
+        "enable_experience_retrieval": false,
+        "enable_skill_retrieval": true
+      },
+      "policy_overrides": {},
+      "ablation_tags": [
+        "skills",
+        "experience"
+      ],
+      "requirements": {}
+    },
+    {
+      "target_id": "experience_without_advanced_skills",
+      "label": "Qwen + Experience (No Advanced Skills)",
+      "enabled": true,
+      "optional": false,
+      "target_type": "ablation",
+      "mode": "agent",
+      "description": "Keep experience retrieval but only first-stage basic skills.",
+      "experiment_meaning": "Quantifies how much advanced skill layers add beyond basic skills + experience.",
+      "experience_variant": "full",
+      "cognition_variant": "frozen",
+      "skill_profile": "stage1_basic_only",
+      "execution_overrides": {
+        "enable_experience_retrieval": true,
+        "enable_skill_retrieval": true
+      },
+      "policy_overrides": {},
+      "ablation_tags": [
+        "experience",
+        "advanced_skills"
+      ],
+      "requirements": {}
+    },
+    {
+      "target_id": "full_without_cognition_update",
+      "label": "Full DermAgent (No Cognition Update)",
+      "enabled": true,
+      "optional": false,
+      "target_type": "full_agent",
+      "mode": "agent",
+      "description": "Full DermAgent in frozen evaluation mode (writeback disabled, no online cognition update).",
+      "experiment_meaning": "Main full-system anchor under fair frozen evaluation.",
+      "experience_variant": "full",
+      "cognition_variant": "frozen",
+      "execution_overrides": {
+        "enable_experience_retrieval": true,
+        "enable_skill_retrieval": true
+      },
+      "policy_overrides": {},
+      "ablation_tags": [
+        "full",
+        "anchor"
+      ],
+      "requirements": {}
+    },
+    {
+      "target_id": "full_without_abstract_experiences",
+      "label": "Full Without Abstract Experiences",
+      "enabled": true,
+      "optional": false,
+      "target_type": "ablation",
+      "mode": "agent",
+      "description": "Remove abstract experiences while keeping raw+tactical layers.",
+      "experiment_meaning": "Measures the value of abstract memories (prototype/rule/confusion/composite seed).",
+      "experience_variant": "raw_tactical",
+      "cognition_variant": "frozen",
+      "execution_overrides": {
+        "enable_experience_retrieval": true,
+        "enable_skill_retrieval": true
+      },
+      "policy_overrides": {},
+      "ablation_tags": [
+        "experience",
+        "abstract"
+      ],
+      "requirements": {}
+    },
+    {
+      "target_id": "full_without_specialist_skills",
+      "label": "Full Without Specialist Skills",
+      "enabled": true,
+      "optional": false,
+      "target_type": "ablation",
+      "mode": "agent",
+      "description": "Disable specialist confusion-pair skills.",
+      "experiment_meaning": "Estimates the marginal value of specialist disambiguation modules.",
+      "experience_variant": "full",
+      "cognition_variant": "frozen",
+      "execution_overrides": {
+        "enable_experience_retrieval": true,
+        "enable_skill_retrieval": true
+      },
+      "policy_overrides": {
+        "planner_policy": {
+          "force_disable_skills": [
+            "mel_nev_specialist_skill",
+            "ack_scc_specialist_skill"
+          ]
+        }
+      },
+      "ablation_tags": [
+        "skills",
+        "specialist"
+      ],
+      "requirements": {}
+    },
+    {
+      "target_id": "full_without_learnable_controller",
+      "label": "Full Without Learnable Controller",
+      "enabled": true,
+      "optional": false,
+      "target_type": "ablation",
+      "mode": "agent",
+      "description": "Force planner controller to heuristic mode.",
+      "experiment_meaning": "Quantifies dependence on learned controller behavior.",
+      "experience_variant": "full",
+      "cognition_variant": "frozen",
+      "execution_overrides": {
+        "enable_experience_retrieval": true,
+        "enable_skill_retrieval": true
+      },
+      "policy_overrides": {
+        "planner_policy": {
+          "controller_family": "heuristic",
+          "controller_checkpoint_path": ""
+        }
+      },
+      "ablation_tags": [
+        "controller"
+      ],
+      "requirements": {}
+    },
+    {
+      "target_id": "full_with_rule_controller",
+      "label": "Full With Rule Controller",
+      "enabled": true,
+      "optional": false,
+      "target_type": "ablation",
+      "mode": "agent",
+      "description": "Explicit rule controller setting plus non-learned retrieval/evidence defaults.",
+      "experiment_meaning": "Provides deterministic rule-stack reference against learned controller and learned rerankers.",
+      "experience_variant": "full",
+      "cognition_variant": "frozen",
+      "execution_overrides": {
+        "enable_experience_retrieval": true,
+        "enable_skill_retrieval": true
+      },
+      "policy_overrides": {
+        "planner_policy": {
+          "controller_family": "heuristic",
+          "controller_checkpoint_path": ""
+        },
+        "retrieval_policy": {
+          "enable_learned_retrieval_reranker": false,
+          "retrieval_reranker_checkpoint_path": ""
+        },
+        "evidence_policy": {
+          "enable_evidence_calibrator": true,
+          "calibrator_mode": "heuristic",
+          "calibrator_checkpoint_path": ""
+        }
+      },
+      "ablation_tags": [
+        "controller",
+        "rule_stack"
+      ],
+      "requirements": {}
+    },
+    {
+      "target_id": "full_with_learned_controller",
+      "label": "Full With Learned Controller",
+      "enabled": true,
+      "optional": false,
+      "target_type": "ablation",
+      "mode": "agent",
+      "description": "Enable learned supervised planner controller.",
+      "experiment_meaning": "Measures gain from learnable controller policy over rule policy.",
+      "experience_variant": "full",
+      "cognition_variant": "frozen",
+      "execution_overrides": {
+        "enable_experience_retrieval": true,
+        "enable_skill_retrieval": true
+      },
+      "policy_overrides": {
+        "planner_policy": {
+          "controller_family": "learned_supervised",
+          "controller_checkpoint_path": "__AUTO_LEARNED_CONTROLLER_CHECKPOINT__"
+        }
+      },
+      "ablation_tags": [
+        "controller",
+        "learned"
+      ],
+      "requirements": {
+        "needs_learned_controller": true
+      }
+    },
+    {
+      "target_id": "without_retrieval_scorer",
+      "label": "Without Retrieval Scorer",
+      "enabled": true,
+      "optional": true,
+      "target_type": "ablation",
+      "mode": "agent",
+      "description": "Disable learned retrieval reranker.",
+      "experiment_meaning": "Optional pair: isolates retrieval reranker contribution.",
+      "experience_variant": "full",
+      "cognition_variant": "frozen",
+      "execution_overrides": {
+        "enable_experience_retrieval": true,
+        "enable_skill_retrieval": true
+      },
+      "policy_overrides": {
+        "retrieval_policy": {
+          "enable_learned_retrieval_reranker": false,
+          "retrieval_reranker_checkpoint_path": ""
+        }
+      },
+      "ablation_tags": [
+        "retrieval_scorer",
+        "optional"
+      ],
+      "requirements": {}
+    },
+    {
+      "target_id": "with_retrieval_scorer",
+      "label": "With Retrieval Scorer",
+      "enabled": true,
+      "optional": true,
+      "target_type": "ablation",
+      "mode": "agent",
+      "description": "Enable learned retrieval reranker for experience/skill candidate ranking.",
+      "experiment_meaning": "Optional pair: evaluates learned retrieval scorer impact.",
+      "experience_variant": "full",
+      "cognition_variant": "frozen",
+      "execution_overrides": {
+        "enable_experience_retrieval": true,
+        "enable_skill_retrieval": true
+      },
+      "policy_overrides": {
+        "retrieval_policy": {
+          "enable_learned_retrieval_reranker": true,
+          "retrieval_reranker_checkpoint_path": "__AUTO_RETRIEVAL_SCORER_CHECKPOINT__"
+        }
+      },
+      "ablation_tags": [
+        "retrieval_scorer",
+        "optional"
+      ],
+      "requirements": {
+        "needs_retrieval_reranker": true
+      }
+    },
+    {
+      "target_id": "without_evidence_calibrator",
+      "label": "Without Evidence Calibrator",
+      "enabled": true,
+      "optional": true,
+      "target_type": "ablation",
+      "mode": "agent",
+      "description": "Disable evidence calibrator and use raw evidence ordering.",
+      "experiment_meaning": "Optional pair: isolates effect of evidence ordering/calibration.",
+      "experience_variant": "full",
+      "cognition_variant": "frozen",
+      "execution_overrides": {
+        "enable_experience_retrieval": true,
+        "enable_skill_retrieval": true
+      },
+      "policy_overrides": {
+        "evidence_policy": {
+          "enable_evidence_calibrator": false,
+          "calibrator_mode": "off"
+        }
+      },
+      "ablation_tags": [
+        "evidence_calibrator",
+        "optional"
+      ],
+      "requirements": {}
+    },
+    {
+      "target_id": "with_evidence_calibrator",
+      "label": "With Evidence Calibrator",
+      "enabled": true,
+      "optional": true,
+      "target_type": "ablation",
+      "mode": "agent",
+      "description": "Enable evidence calibrator with heuristic ordering (or learned if policy specifies).",
+      "experiment_meaning": "Optional pair: evaluates evidence calibration contribution on final reasoning quality.",
+      "experience_variant": "full",
+      "cognition_variant": "frozen",
+      "execution_overrides": {
+        "enable_experience_retrieval": true,
+        "enable_skill_retrieval": true
+      },
+      "policy_overrides": {
+        "evidence_policy": {
+          "enable_evidence_calibrator": true,
+          "calibrator_mode": "heuristic",
+          "calibrator_checkpoint_path": "__AUTO_EVIDENCE_CALIBRATOR_CHECKPOINT__"
+        }
+      },
+      "ablation_tags": [
+        "evidence_calibrator",
+        "optional"
+      ],
+      "requirements": {}
+    }
+  ]
+}
