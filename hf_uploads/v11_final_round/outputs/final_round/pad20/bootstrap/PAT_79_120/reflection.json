@@ -1,0 +1,2271 @@
+{
+  "reasoning_summary": "Perception summary: A close-up view of skin showing dilated capillaries and a slightly erythematous area. | Useful skills: morphology_analysis_skill, color_pattern_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, differential_compare_skill, exclusion_reasoning_skill, uncertainty_assessment_skill, contradiction_check_skill | Final answer: Basal Cell Carcinoma | Uncertainty: medium",
+  "useful_skills": [
+    "morphology_analysis_skill",
+    "color_pattern_analysis_skill",
+    "distribution_analysis_skill",
+    "lesion_description_structuring_skill",
+    "metadata_consistency_skill",
+    "differential_compare_skill",
+    "exclusion_reasoning_skill",
+    "uncertainty_assessment_skill",
+    "contradiction_check_skill"
+  ],
+  "detected_errors": [],
+  "experience_type": "hard_case_experience",
+  "diagnosis_correct": true,
+  "write_experience": true,
+  "case_outcome": {
+    "status": "success",
+    "has_ground_truth": true,
+    "is_correct": true,
+    "error_type": null,
+    "predicted_label": "Basal Cell Carcinoma",
+    "reference_label": "BCC",
+    "predicted_canonical_label": "BCC",
+    "reference_canonical_label": "BCC",
+    "confidence_level": "moderate",
+    "uncertainty_level": "medium",
+    "malignant_flag": {
+      "ground_truth": true,
+      "predicted": true
+    },
+    "confusion_pair": null,
+    "risk_flags": [],
+    "label_space": {
+      "label_space_id": "derm_six",
+      "canonical_labels": [
+        "BCC",
+        "ACK",
+        "NEV",
+        "SEK",
+        "SCC",
+        "MEL"
+      ],
+      "malignant_labels": [
+        "BCC",
+        "ACK",
+        "SCC",
+        "MEL"
+      ],
+      "benign_labels": [
+        "NEV",
+        "SEK"
+      ]
+    }
+  },
+  "skill_assessments": [
+    {
+      "skill_name": "morphology_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "success",
+      "impact": "helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Rosacea",
+          "Telangiectasia",
+          "Erythema"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [
+        "stabilized lesion structure",
+        "made morphology explicit for downstream reasoning"
+      ],
+      "failed_aspects": [
+        "required downstream integration beyond morphology_analysis_skill"
+      ],
+      "key_steps": [
+        "inspect dominant lesion silhouette",
+        "judge elevation and lesion count"
+      ],
+      "referenced_experiences": [
+        "PAT_55_84"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "morphology_analysis_skill",
+        "ddx:Rosacea|Telangiectasia",
+        "region:face",
+        "uncertainty:medium"
+      ],
+      "failure_modes": [],
+      "reusable": true,
+      "reuse_reason": "morphology_analysis_skill was useful under the observed case conditions"
+    },
+    {
+      "skill_name": "color_pattern_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "success",
+      "impact": "helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Rosacea",
+          "Telangiectasia",
+          "Erythema"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [
+        "made pigment variation explicit",
+        "surfaced color asymmetry as auditable evidence"
+      ],
+      "failed_aspects": [
+        "required downstream integration beyond color_pattern_analysis_skill"
+      ],
+      "key_steps": [
+        "inspect dominant color",
+        "compare internal color asymmetry"
+      ],
+      "referenced_experiences": [
+        "PAT_850_1611",
+        "PAT_55_84"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "color_pattern_analysis_skill",
+        "ddx:Rosacea|Telangiectasia",
+        "region:face",
+        "uncertainty:medium"
+      ],
+      "failure_modes": [],
+      "reusable": true,
+      "reuse_reason": "color_pattern_analysis_skill was useful under the observed case conditions"
+    },
+    {
+      "skill_name": "distribution_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "success",
+      "impact": "helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Rosacea",
+          "Telangiectasia",
+          "Erythema"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [
+        "made location and extent assumptions explicit",
+        "captured distribution context for later comparison"
+      ],
+      "failed_aspects": [
+        "required downstream integration beyond distribution_analysis_skill"
+      ],
+      "key_steps": [
+        "identify likely anatomic site",
+        "judge extent and clustering"
+      ],
+      "referenced_experiences": [
+        "PAT_850_1611",
+        "PAT_55_84",
+        "abs_confusion_e27de6781e3f",
+        "abs_confusion_741adfe3a581",
+        "abs_composite_99850a5f6324"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "distribution_analysis_skill",
+        "ddx:Rosacea|Telangiectasia",
+        "region:face",
+        "uncertainty:medium"
+      ],
+      "failure_modes": [],
+      "reusable": true,
+      "reuse_reason": "distribution_analysis_skill was useful under the observed case conditions"
+    },
+    {
+      "skill_name": "lesion_description_structuring_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "success",
+      "impact": "helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Rosacea",
+          "Telangiectasia",
+          "Erythema"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "required downstream integration beyond lesion_description_structuring_skill"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "PAT_850_1611",
+        "PAT_55_84",
+        "abs_confusion_e27de6781e3f",
+        "abs_confusion_741adfe3a581",
+        "abs_composite_99850a5f6324"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 1.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "lesion_description_structuring_skill",
+        "ddx:Rosacea|Telangiectasia",
+        "region:face",
+        "uncertainty:medium"
+      ],
+      "failure_modes": [],
+      "reusable": true,
+      "reuse_reason": "lesion_description_structuring_skill was useful under the observed case conditions"
+    },
+    {
+      "skill_name": "metadata_consistency_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "success",
+      "impact": "helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Rosacea",
+          "Telangiectasia",
+          "Erythema"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [
+        "checked image-metadata coherence",
+        "flagged reliability issues before integration"
+      ],
+      "failed_aspects": [
+        "required downstream integration beyond metadata_consistency_skill"
+      ],
+      "key_steps": [
+        "compare visible cues against metadata",
+        "separate direct conflicts from soft concerns"
+      ],
+      "referenced_experiences": [
+        "PAT_850_1611",
+        "PAT_55_84",
+        "abs_confusion_e27de6781e3f",
+        "abs_confusion_741adfe3a581",
+        "abs_composite_99850a5f6324"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": true,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "metadata_consistency_skill",
+        "ddx:Rosacea|Telangiectasia",
+        "region:face",
+        "uncertainty:medium"
+      ],
+      "failure_modes": [],
+      "reusable": true,
+      "reuse_reason": "metadata_consistency_skill was useful under the observed case conditions"
+    },
+    {
+      "skill_name": "differential_compare_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "success",
+      "impact": "helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Rosacea",
+          "Telangiectasia",
+          "Erythema"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [
+        "kept the differential open",
+        "made pairwise reasoning explicit"
+      ],
+      "failed_aspects": [
+        "required downstream integration beyond differential_compare_skill"
+      ],
+      "key_steps": [
+        "select the most relevant candidate pair",
+        "preserve unresolved comparative evidence"
+      ],
+      "referenced_experiences": [
+        "PAT_850_1611",
+        "PAT_55_84",
+        "abs_confusion_e27de6781e3f",
+        "abs_confusion_741adfe3a581",
+        "abs_composite_99850a5f6324"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "comparative_support",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 1.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "differential_compare_skill",
+        "ddx:Rosacea|Telangiectasia",
+        "region:face",
+        "uncertainty:medium"
+      ],
+      "failure_modes": [],
+      "reusable": true,
+      "reuse_reason": "differential_compare_skill was useful under the observed case conditions"
+    },
+    {
+      "skill_name": "exclusion_reasoning_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "success",
+      "impact": "helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Rosacea",
+          "Telangiectasia",
+          "Erythema"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "required downstream integration beyond exclusion_reasoning_skill"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "PAT_850_1611",
+        "PAT_55_84"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 1.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "exclusion_reasoning_skill",
+        "ddx:Rosacea|Telangiectasia",
+        "region:face",
+        "uncertainty:medium"
+      ],
+      "failure_modes": [],
+      "reusable": true,
+      "reuse_reason": "exclusion_reasoning_skill was useful under the observed case conditions"
+    },
+    {
+      "skill_name": "uncertainty_assessment_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "success",
+      "impact": "helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Rosacea",
+          "Telangiectasia",
+          "Erythema"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [
+        "made evidence limits explicit",
+        "prevented overconfident downstream use"
+      ],
+      "failed_aspects": [
+        "required downstream integration beyond uncertainty_assessment_skill"
+      ],
+      "key_steps": [
+        "scan ambiguity across evidence streams",
+        "name missing information explicitly"
+      ],
+      "referenced_experiences": [
+        "PAT_850_1611",
+        "PAT_55_84",
+        "abs_confusion_e27de6781e3f",
+        "abs_confusion_741adfe3a581",
+        "abs_composite_99850a5f6324"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "uncertainty_signal",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 2.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "uncertainty_assessment_skill",
+        "ddx:Rosacea|Telangiectasia",
+        "region:face",
+        "uncertainty:medium"
+      ],
+      "failure_modes": [],
+      "reusable": true,
+      "reuse_reason": "uncertainty_assessment_skill was useful under the observed case conditions"
+    },
+    {
+      "skill_name": "contradiction_check_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "success",
+      "impact": "helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Rosacea",
+          "Telangiectasia",
+          "Erythema"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [
+        "surfaced missing links in the reasoning chain",
+        "audited internal consistency"
+      ],
+      "failed_aspects": [
+        "required downstream integration beyond contradiction_check_skill"
+      ],
+      "key_steps": [
+        "scan for conflicts across evidence sources",
+        "surface missing links in the reasoning chain"
+      ],
+      "referenced_experiences": [
+        "PAT_850_1611",
+        "PAT_55_84",
+        "abs_confusion_e27de6781e3f",
+        "abs_confusion_741adfe3a581",
+        "abs_composite_99850a5f6324"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": true,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 1.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "contradiction_check_skill",
+        "ddx:Rosacea|Telangiectasia",
+        "region:face",
+        "uncertainty:medium"
+      ],
+      "failure_modes": [],
+      "reusable": true,
+      "reuse_reason": "contradiction_check_skill was useful under the observed case conditions"
+    }
+  ],
+  "reflection_extract": {
+    "raw_case_memory_ready": true,
+    "tactical_experience_count": 9,
+    "abstract_experience_candidate_count": 2,
+    "reusable_tactical_count": 9,
+    "composite_skill_seed_count": 1,
+    "composite_skill_seed_ids": [
+      "seed_composite_c78592e5b561"
+    ],
+    "abstract_flags": {
+      "confusion_memory": false,
+      "prototype": true,
+      "rule": false,
+      "rule_candidate": false,
+      "composite_skill_seed": true
+    },
+    "case_status": "success",
+    "composite_skill_seed_ready_for_promotion": []
+  },
+  "writeback_bundle": {
+    "raw_case_memory": {
+      "case_id": "PAT_79_120",
+      "image_paths": [
+        "/root/DermAgent/data/pad_ufes_20/images/imgs_part_1/PAT_79_120_532.png"
+      ],
+      "metadata": {
+        "patient_id": "PAT_79",
+        "lesion_id": "120",
+        "smoke": "False",
+        "drink": "False",
+        "background_father": "POMERANIA",
+        "background_mother": "POMERANIA",
+        "age": "63",
+        "pesticide": "False",
+        "gender": "FEMALE",
+        "skin_cancer_history": "False",
+        "cancer_history": "False",
+        "has_piped_water": "True",
+        "has_sewage_system": "True",
+        "fitspatrick": "2.0",
+        "region": "FACE",
+        "diameter_1": "7.0",
+        "diameter_2": "5.0",
+        "diagnostic": "BCC",
+        "itch": "False",
+        "grew": "False",
+        "hurt": "False",
+        "changed": "False",
+        "bleed": "False",
+        "elevation": "False",
+        "img_id": "PAT_79_120_532.png",
+        "biopsed": "True"
+      },
+      "dataset_name": "pad_ufes_20",
+      "label_space_id": null,
+      "true_label": "BCC",
+      "qwen_output": {
+        "final_diagnosis": "Basal Cell Carcinoma",
+        "differential_diagnoses": [
+          "Basal Cell Carcinoma"
+        ],
+        "rationale": "The lesion exhibits characteristics of telangiectasia, including dilated capillaries and a slightly erythematous area. The supporting evidence includes the lesion description and metadata consistency, which align with telangiectasia. However, the image resolution and lack of clinical history limit the certainty of the diagnosis.",
+        "confidence": "Moderate",
+        "follow_up_considerations": "Further clinical evaluation and patient history are recommended to confirm the diagnosis. If symptoms persist or worsen, a dermatological consultation should be considered."
+      },
+      "agent_output": {
+        "perception": {
+          "image_summary": "A close-up view of skin showing dilated capillaries and a slightly erythematous area.",
+          "ddx_candidates": [
+            "Rosacea",
+            "Telangiectasia",
+            "Erythema"
+          ],
+          "uncertainty": {
+            "level": "low",
+            "reasons": [
+              "The image is too small to definitively identify the cause.",
+              "More clinical context would be helpful."
+            ]
+          },
+          "notes": [
+            "Dilated capillaries suggest vascular changes.",
+            "Slight erythema could indicate inflammation or irritation."
+          ]
+        },
+        "skill_outputs": {
+          "morphology_analysis_skill": {
+            "lesion_type": "telangiectasia",
+            "size_range": "small",
+            "elevation": "flat",
+            "count": "unknown",
+            "referenced_experiences": [
+              "PAT_55_84"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "color_pattern_analysis_skill": {
+            "primary_color": "erythematous",
+            "color_variation": "unknown",
+            "pigmentation_pattern": "reticular",
+            "asymmetry_color": "present",
+            "referenced_experiences": [
+              "PAT_850_1611",
+              "PAT_55_84"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "distribution_analysis_skill": {
+            "body_location": "FACE",
+            "symmetry": "asymmetric",
+            "localized_vs_generalized": "localized",
+            "clustering_pattern": "unknown",
+            "referenced_experiences": [
+              "PAT_850_1611",
+              "PAT_55_84",
+              "abs_confusion_e27de6781e3f",
+              "abs_confusion_741adfe3a581",
+              "abs_composite_99850a5f6324"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "lesion_description_structuring_skill": {
+            "primary_lesion_morphology": "telangiectasia",
+            "color": [
+              "erythematous"
+            ],
+            "border": [
+              "irregular"
+            ],
+            "surface": [
+              "smooth"
+            ],
+            "size_count": [
+              "size: small, count: single"
+            ],
+            "distribution": [
+              "body_location: FACE, symmetry: asymmetric, localized_vs_generalized: localized"
+            ],
+            "associated_context": [
+              "age: 63, gender: FEMALE, fitspatrick: 2.0, region: FACE"
+            ],
+            "referenced_experiences": [
+              "PAT_850_1611",
+              "PAT_55_84",
+              "abs_confusion_e27de6781e3f",
+              "abs_confusion_741adfe3a581",
+              "abs_composite_99850a5f6324"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "metadata_consistency_skill": {
+            "consistency_score": "medium",
+            "conflicts": [],
+            "suspicious_points": [
+              "The lesion description mentions dilated capillaries and slight erythema, which aligns with the observed telangiectasia and erythematous area.",
+              "The metadata includes a Fitzpatrick scale of 2.0, which suggests fair skin, which might be relevant for actinic keratosis but is not directly contradictory."
+            ],
+            "referenced_experiences": [
+              "PAT_850_1611",
+              "PAT_55_84",
+              "abs_confusion_e27de6781e3f",
+              "abs_confusion_741adfe3a581",
+              "abs_composite_99850a5f6324"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "differential_compare_skill": {
+            "candidate_pairs": [
+              "Rosacea vs Telangiectasia",
+              "Telangiectasia vs Erythema"
+            ],
+            "supporting_evidence": [
+              "Rosacea vs Telangiectasia: Dilated capillaries are a characteristic feature of Rosacea.; The slight erythematous area could be indicative of inflammation associated with Rosacea.",
+              "Telangiectasia vs Erythema: The presence of dilated capillaries strongly supports the diagnosis of Telangiectasia.; The erythematous area is consistent with the appearance of Telangiectasia."
+            ],
+            "conflicting_evidence": [
+              "Rosacea vs Telangiectasia: Telangiectasia typically presents with visible blood vessels, which is evident in the image.; Rosacea often involves a combination of erythema and papules, which is not clearly depicted here.",
+              "Telangiectasia vs Erythema: Erythema alone does not specifically point towards Telangiectasia; it can be seen in various conditions including Rosacea."
+            ],
+            "required_missing_evidence": [
+              "Rosacea vs Telangiectasia: Confirmation of papules or pustules, which are common in Rosacea.",
+              "Telangiectasia vs Erythema: Further clinical history to rule out other causes of erythema."
+            ],
+            "referenced_experiences": [
+              "PAT_850_1611",
+              "PAT_55_84",
+              "abs_confusion_e27de6781e3f",
+              "abs_confusion_741adfe3a581",
+              "abs_composite_99850a5f6324"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "comparative_support"
+          },
+          "exclusion_reasoning_skill": {
+            "unlikely_candidates": [
+              "Rosacea"
+            ],
+            "exclusion_evidence": [
+              "The image summary indicates dilated capillaries and a slightly erythematous area, which are more characteristic of Telangiectasia than Rosacea."
+            ],
+            "required_missing_evidence": [
+              "Confirmation of papules or pustules, which are common in Rosacea."
+            ],
+            "exclusion_confidence": "medium",
+            "referenced_experiences": [
+              "PAT_850_1611",
+              "PAT_55_84"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "uncertainty_assessment_skill": {
+            "uncertainty_level": "medium",
+            "reasons": [
+              "The image resolution is insufficient to clearly visualize the extent and depth of the dilated capillaries.",
+              "Clinical history and patient symptoms are not provided, which are crucial for differential diagnosis."
+            ],
+            "missing_information": [
+              "Detailed clinical history, including symptoms, duration, and any recent changes.",
+              "Patient's medical history, particularly concerning chronic skin conditions or systemic diseases."
+            ],
+            "referenced_experiences": [
+              "PAT_850_1611",
+              "PAT_55_84",
+              "abs_confusion_e27de6781e3f",
+              "abs_confusion_741adfe3a581",
+              "abs_composite_99850a5f6324"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "uncertainty_signal"
+          },
+          "contradiction_check_skill": {
+            "contradictions": [
+              {
+                "type": "internal_conflict",
+                "description": "The morphology analysis skill suggests 'telangiectasia' while the initial perception mentions 'dilated capillaries'. These terms are closely related but might have slight differences in interpretation."
+              }
+            ],
+            "missing_links": [
+              {
+                "description": "The presence of scaling and the texture of the skin need to be assessed to better differentiate between telangiectasia and other conditions like rosacea or actinic keratosis."
+              },
+              {
+                "description": "More clinical context, such as symptoms, duration, and patient history, is needed to narrow down the differential diagnosis."
+              }
+            ],
+            "reasoning_gaps": [
+              {
+                "description": "The image resolution is insufficient to clearly visualize the extent and depth of the dilated capillaries, which affects the certainty of the diagnosis."
+              },
+              {
+                "description": "The absence of detailed clinical history and patient symptoms hinders the differential diagnosis process."
+              }
+            ],
+            "referenced_experiences": [
+              "PAT_850_1611",
+              "PAT_55_84",
+              "abs_confusion_e27de6781e3f",
+              "abs_confusion_741adfe3a581",
+              "abs_composite_99850a5f6324"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          }
+        },
+        "risk_flags": [],
+        "uncertainty": {
+          "uncertainty_level": "medium",
+          "reasons": [
+            "The image resolution is insufficient to clearly visualize the extent and depth of the dilated capillaries.",
+            "Clinical history and patient symptoms are not provided, which are crucial for differential diagnosis."
+          ],
+          "missing_information": [
+            "Detailed clinical history, including symptoms, duration, and any recent changes.",
+            "Patient's medical history, particularly concerning chronic skin conditions or systemic diseases."
+          ],
+          "referenced_experiences": [
+            "PAT_850_1611",
+            "PAT_55_84",
+            "abs_confusion_e27de6781e3f",
+            "abs_confusion_741adfe3a581",
+            "abs_composite_99850a5f6324"
+          ],
+          "evidence_strength": "medium",
+          "recommendation_type": "uncertainty_signal"
+        },
+        "retrieved_experience_refs": [
+          "abs_confusion_e27de6781e3f",
+          "abs_confusion_741adfe3a581",
+          "tac_PAT_79_120_8eed343a7164",
+          "PAT_850_1611",
+          "tac_PAT_850_1611_586325b3723c",
+          "tac_PAT_79_120_586325b3723c",
+          "PAT_55_84"
+        ],
+        "notes": [
+          "Agent generated structured evidence only.",
+          "Qwen remains the sole final diagnostic decision maker.",
+          "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, differential_compare_skill, exclusion_reasoning_skill, uncertainty_assessment_skill, contradiction_check_skill.",
+          "Policy in use: mainline_parameterized_agent_20260331.",
+          "Skill retrieval candidates: metadata_consistency_skill, morphology_analysis_skill, lesion_description_structuring_skill, distribution_analysis_skill, malignancy_risk_assessment_skill, color_pattern_analysis_skill, temporal_evolution_skill, contradiction_check_skill, uncertainty_assessment_skill, border_surface_analysis_skill, differential_compare_skill, information_gap_detection_skill, exclusion_reasoning_skill.",
+          "Dilated capillaries suggest vascular changes.",
+          "Slight erythema could indicate inflammation or irritation.",
+          "Retrieved prior reasoning experience for context."
+        ],
+        "skill_assessments": [
+          {
+            "skill_name": "morphology_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "success",
+            "impact": "helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Rosacea",
+                "Telangiectasia",
+                "Erythema"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [
+              "stabilized lesion structure",
+              "made morphology explicit for downstream reasoning"
+            ],
+            "failed_aspects": [
+              "required downstream integration beyond morphology_analysis_skill"
+            ],
+            "key_steps": [
+              "inspect dominant lesion silhouette",
+              "judge elevation and lesion count"
+            ],
+            "referenced_experiences": [
+              "PAT_55_84"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "morphology_analysis_skill",
+              "ddx:Rosacea|Telangiectasia",
+              "region:face",
+              "uncertainty:medium"
+            ],
+            "failure_modes": [],
+            "reusable": true,
+            "reuse_reason": "morphology_analysis_skill was useful under the observed case conditions"
+          },
+          {
+            "skill_name": "color_pattern_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "success",
+            "impact": "helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Rosacea",
+                "Telangiectasia",
+                "Erythema"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [
+              "made pigment variation explicit",
+              "surfaced color asymmetry as auditable evidence"
+            ],
+            "failed_aspects": [
+              "required downstream integration beyond color_pattern_analysis_skill"
+            ],
+            "key_steps": [
+              "inspect dominant color",
+              "compare internal color asymmetry"
+            ],
+            "referenced_experiences": [
+              "PAT_850_1611",
+              "PAT_55_84"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "color_pattern_analysis_skill",
+              "ddx:Rosacea|Telangiectasia",
+              "region:face",
+              "uncertainty:medium"
+            ],
+            "failure_modes": [],
+            "reusable": true,
+            "reuse_reason": "color_pattern_analysis_skill was useful under the observed case conditions"
+          },
+          {
+            "skill_name": "distribution_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "success",
+            "impact": "helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Rosacea",
+                "Telangiectasia",
+                "Erythema"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [
+              "made location and extent assumptions explicit",
+              "captured distribution context for later comparison"
+            ],
+            "failed_aspects": [
+              "required downstream integration beyond distribution_analysis_skill"
+            ],
+            "key_steps": [
+              "identify likely anatomic site",
+              "judge extent and clustering"
+            ],
+            "referenced_experiences": [
+              "PAT_850_1611",
+              "PAT_55_84",
+              "abs_confusion_e27de6781e3f",
+              "abs_confusion_741adfe3a581",
+              "abs_composite_99850a5f6324"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "distribution_analysis_skill",
+              "ddx:Rosacea|Telangiectasia",
+              "region:face",
+              "uncertainty:medium"
+            ],
+            "failure_modes": [],
+            "reusable": true,
+            "reuse_reason": "distribution_analysis_skill was useful under the observed case conditions"
+          },
+          {
+            "skill_name": "lesion_description_structuring_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "success",
+            "impact": "helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Rosacea",
+                "Telangiectasia",
+                "Erythema"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "required downstream integration beyond lesion_description_structuring_skill"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "PAT_850_1611",
+              "PAT_55_84",
+              "abs_confusion_e27de6781e3f",
+              "abs_confusion_741adfe3a581",
+              "abs_composite_99850a5f6324"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 1.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "lesion_description_structuring_skill",
+              "ddx:Rosacea|Telangiectasia",
+              "region:face",
+              "uncertainty:medium"
+            ],
+            "failure_modes": [],
+            "reusable": true,
+            "reuse_reason": "lesion_description_structuring_skill was useful under the observed case conditions"
+          },
+          {
+            "skill_name": "metadata_consistency_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "success",
+            "impact": "helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Rosacea",
+                "Telangiectasia",
+                "Erythema"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [
+              "checked image-metadata coherence",
+              "flagged reliability issues before integration"
+            ],
+            "failed_aspects": [
+              "required downstream integration beyond metadata_consistency_skill"
+            ],
+            "key_steps": [
+              "compare visible cues against metadata",
+              "separate direct conflicts from soft concerns"
+            ],
+            "referenced_experiences": [
+              "PAT_850_1611",
+              "PAT_55_84",
+              "abs_confusion_e27de6781e3f",
+              "abs_confusion_741adfe3a581",
+              "abs_composite_99850a5f6324"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": true,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "metadata_consistency_skill",
+              "ddx:Rosacea|Telangiectasia",
+              "region:face",
+              "uncertainty:medium"
+            ],
+            "failure_modes": [],
+            "reusable": true,
+            "reuse_reason": "metadata_consistency_skill was useful under the observed case conditions"
+          },
+          {
+            "skill_name": "differential_compare_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "success",
+            "impact": "helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Rosacea",
+                "Telangiectasia",
+                "Erythema"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [
+              "kept the differential open",
+              "made pairwise reasoning explicit"
+            ],
+            "failed_aspects": [
+              "required downstream integration beyond differential_compare_skill"
+            ],
+            "key_steps": [
+              "select the most relevant candidate pair",
+              "preserve unresolved comparative evidence"
+            ],
+            "referenced_experiences": [
+              "PAT_850_1611",
+              "PAT_55_84",
+              "abs_confusion_e27de6781e3f",
+              "abs_confusion_741adfe3a581",
+              "abs_composite_99850a5f6324"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "comparative_support",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 1.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "differential_compare_skill",
+              "ddx:Rosacea|Telangiectasia",
+              "region:face",
+              "uncertainty:medium"
+            ],
+            "failure_modes": [],
+            "reusable": true,
+            "reuse_reason": "differential_compare_skill was useful under the observed case conditions"
+          },
+          {
+            "skill_name": "exclusion_reasoning_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "success",
+            "impact": "helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Rosacea",
+                "Telangiectasia",
+                "Erythema"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "required downstream integration beyond exclusion_reasoning_skill"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "PAT_850_1611",
+              "PAT_55_84"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 1.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "exclusion_reasoning_skill",
+              "ddx:Rosacea|Telangiectasia",
+              "region:face",
+              "uncertainty:medium"
+            ],
+            "failure_modes": [],
+            "reusable": true,
+            "reuse_reason": "exclusion_reasoning_skill was useful under the observed case conditions"
+          },
+          {
+            "skill_name": "uncertainty_assessment_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "success",
+            "impact": "helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Rosacea",
+                "Telangiectasia",
+                "Erythema"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [
+              "made evidence limits explicit",
+              "prevented overconfident downstream use"
+            ],
+            "failed_aspects": [
+              "required downstream integration beyond uncertainty_assessment_skill"
+            ],
+            "key_steps": [
+              "scan ambiguity across evidence streams",
+              "name missing information explicitly"
+            ],
+            "referenced_experiences": [
+              "PAT_850_1611",
+              "PAT_55_84",
+              "abs_confusion_e27de6781e3f",
+              "abs_confusion_741adfe3a581",
+              "abs_composite_99850a5f6324"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "uncertainty_signal",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 2.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "uncertainty_assessment_skill",
+              "ddx:Rosacea|Telangiectasia",
+              "region:face",
+              "uncertainty:medium"
+            ],
+            "failure_modes": [],
+            "reusable": true,
+            "reuse_reason": "uncertainty_assessment_skill was useful under the observed case conditions"
+          },
+          {
+            "skill_name": "contradiction_check_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "success",
+            "impact": "helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Rosacea",
+                "Telangiectasia",
+                "Erythema"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [
+              "surfaced missing links in the reasoning chain",
+              "audited internal consistency"
+            ],
+            "failed_aspects": [
+              "required downstream integration beyond contradiction_check_skill"
+            ],
+            "key_steps": [
+              "scan for conflicts across evidence sources",
+              "surface missing links in the reasoning chain"
+            ],
+            "referenced_experiences": [
+              "PAT_850_1611",
+              "PAT_55_84",
+              "abs_confusion_e27de6781e3f",
+              "abs_confusion_741adfe3a581",
+              "abs_composite_99850a5f6324"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": true,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 1.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "contradiction_check_skill",
+              "ddx:Rosacea|Telangiectasia",
+              "region:face",
+              "uncertainty:medium"
+            ],
+            "failure_modes": [],
+            "reusable": true,
+            "reuse_reason": "contradiction_check_skill was useful under the observed case conditions"
+          }
+        ]
+      },
+      "final_decision": {
+        "label": "Basal Cell Carcinoma",
+        "source": "qwen_final_diagnosis",
+        "canonical_label": "BCC"
+      },
+      "correctness": {
+        "has_ground_truth": true,
+        "is_correct": true,
+        "error_type": null
+      },
+      "malignant_flag": {
+        "ground_truth": true,
+        "predicted": true
+      }
+    },
+    "tactical_experiences": [
+      {
+        "exp_id": "tac_PAT_79_120_38cb14500658",
+        "case_id": "PAT_79_120",
+        "condition": {
+          "trigger_type": "routine_reasoning",
+          "confusion_pair": null,
+          "observed_state": {
+            "ddx_candidates": [
+              "Rosacea",
+              "Telangiectasia",
+              "Erythema"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed clinical history, including symptoms, duration, and any recent changes.",
+            "missing:Patient's medical history, particularly concerning chronic skin conditions or systemic diseases."
+          ]
+        },
+        "action": {
+          "skill_name": "morphology_analysis_skill",
+          "skills_used": [
+            "morphology_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "stabilized lesion structure",
+          "made morphology explicit for downstream reasoning",
+          "required downstream integration beyond morphology_analysis_skill"
+        ],
+        "step_trace": [
+          "inspect dominant lesion silhouette",
+          "judge elevation and lesion count"
+        ],
+        "outcome": {
+          "result": "success",
+          "case_status": "success",
+          "error_type": null,
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "morphology_analysis_skill",
+            "Rosacea",
+            "Telangiectasia"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_79_120_e6055fc25fdb",
+        "case_id": "PAT_79_120",
+        "condition": {
+          "trigger_type": "routine_reasoning",
+          "confusion_pair": null,
+          "observed_state": {
+            "ddx_candidates": [
+              "Rosacea",
+              "Telangiectasia",
+              "Erythema"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed clinical history, including symptoms, duration, and any recent changes.",
+            "missing:Patient's medical history, particularly concerning chronic skin conditions or systemic diseases."
+          ]
+        },
+        "action": {
+          "skill_name": "color_pattern_analysis_skill",
+          "skills_used": [
+            "color_pattern_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made pigment variation explicit",
+          "surfaced color asymmetry as auditable evidence",
+          "required downstream integration beyond color_pattern_analysis_skill"
+        ],
+        "step_trace": [
+          "inspect dominant color",
+          "compare internal color asymmetry"
+        ],
+        "outcome": {
+          "result": "success",
+          "case_status": "success",
+          "error_type": null,
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "color_pattern_analysis_skill",
+            "Rosacea",
+            "Telangiectasia"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_79_120_4ccbf9b719bf",
+        "case_id": "PAT_79_120",
+        "condition": {
+          "trigger_type": "routine_reasoning",
+          "confusion_pair": null,
+          "observed_state": {
+            "ddx_candidates": [
+              "Rosacea",
+              "Telangiectasia",
+              "Erythema"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed clinical history, including symptoms, duration, and any recent changes.",
+            "missing:Patient's medical history, particularly concerning chronic skin conditions or systemic diseases."
+          ]
+        },
+        "action": {
+          "skill_name": "distribution_analysis_skill",
+          "skills_used": [
+            "distribution_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made location and extent assumptions explicit",
+          "captured distribution context for later comparison",
+          "required downstream integration beyond distribution_analysis_skill"
+        ],
+        "step_trace": [
+          "identify likely anatomic site",
+          "judge extent and clustering"
+        ],
+        "outcome": {
+          "result": "success",
+          "case_status": "success",
+          "error_type": null,
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "distribution_analysis_skill",
+            "Rosacea",
+            "Telangiectasia"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_79_120_e4a8c7c2c58e",
+        "case_id": "PAT_79_120",
+        "condition": {
+          "trigger_type": "routine_reasoning",
+          "confusion_pair": null,
+          "observed_state": {
+            "ddx_candidates": [
+              "Rosacea",
+              "Telangiectasia",
+              "Erythema"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed clinical history, including symptoms, duration, and any recent changes.",
+            "missing:Patient's medical history, particularly concerning chronic skin conditions or systemic diseases."
+          ]
+        },
+        "action": {
+          "skill_name": "lesion_description_structuring_skill",
+          "skills_used": [
+            "lesion_description_structuring_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "required downstream integration beyond lesion_description_structuring_skill"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "success",
+          "case_status": "success",
+          "error_type": null,
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "lesion_description_structuring_skill",
+            "Rosacea",
+            "Telangiectasia"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_79_120_5da683d806a7",
+        "case_id": "PAT_79_120",
+        "condition": {
+          "trigger_type": "routine_reasoning",
+          "confusion_pair": null,
+          "observed_state": {
+            "ddx_candidates": [
+              "Rosacea",
+              "Telangiectasia",
+              "Erythema"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed clinical history, including symptoms, duration, and any recent changes.",
+            "missing:Patient's medical history, particularly concerning chronic skin conditions or systemic diseases."
+          ]
+        },
+        "action": {
+          "skill_name": "metadata_consistency_skill",
+          "skills_used": [
+            "metadata_consistency_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "checked image-metadata coherence",
+          "flagged reliability issues before integration",
+          "required downstream integration beyond metadata_consistency_skill"
+        ],
+        "step_trace": [
+          "compare visible cues against metadata",
+          "separate direct conflicts from soft concerns"
+        ],
+        "outcome": {
+          "result": "success",
+          "case_status": "success",
+          "error_type": null,
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "metadata_consistency_skill",
+            "Rosacea",
+            "Telangiectasia"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_79_120_ea7b54e2327b",
+        "case_id": "PAT_79_120",
+        "condition": {
+          "trigger_type": "routine_reasoning",
+          "confusion_pair": null,
+          "observed_state": {
+            "ddx_candidates": [
+              "Rosacea",
+              "Telangiectasia",
+              "Erythema"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed clinical history, including symptoms, duration, and any recent changes.",
+            "missing:Patient's medical history, particularly concerning chronic skin conditions or systemic diseases."
+          ]
+        },
+        "action": {
+          "skill_name": "differential_compare_skill",
+          "skills_used": [
+            "differential_compare_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "kept the differential open",
+          "made pairwise reasoning explicit",
+          "required downstream integration beyond differential_compare_skill"
+        ],
+        "step_trace": [
+          "select the most relevant candidate pair",
+          "preserve unresolved comparative evidence"
+        ],
+        "outcome": {
+          "result": "success",
+          "case_status": "success",
+          "error_type": null,
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "differential_compare_skill",
+            "Rosacea",
+            "Telangiectasia"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_79_120_517a52591e8e",
+        "case_id": "PAT_79_120",
+        "condition": {
+          "trigger_type": "routine_reasoning",
+          "confusion_pair": null,
+          "observed_state": {
+            "ddx_candidates": [
+              "Rosacea",
+              "Telangiectasia",
+              "Erythema"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed clinical history, including symptoms, duration, and any recent changes.",
+            "missing:Patient's medical history, particularly concerning chronic skin conditions or systemic diseases."
+          ]
+        },
+        "action": {
+          "skill_name": "exclusion_reasoning_skill",
+          "skills_used": [
+            "exclusion_reasoning_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "required downstream integration beyond exclusion_reasoning_skill"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "success",
+          "case_status": "success",
+          "error_type": null,
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "exclusion_reasoning_skill",
+            "Rosacea",
+            "Telangiectasia"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_79_120_de2f64ad3de5",
+        "case_id": "PAT_79_120",
+        "condition": {
+          "trigger_type": "routine_reasoning",
+          "confusion_pair": null,
+          "observed_state": {
+            "ddx_candidates": [
+              "Rosacea",
+              "Telangiectasia",
+              "Erythema"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed clinical history, including symptoms, duration, and any recent changes.",
+            "missing:Patient's medical history, particularly concerning chronic skin conditions or systemic diseases."
+          ]
+        },
+        "action": {
+          "skill_name": "uncertainty_assessment_skill",
+          "skills_used": [
+            "uncertainty_assessment_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made evidence limits explicit",
+          "prevented overconfident downstream use",
+          "required downstream integration beyond uncertainty_assessment_skill"
+        ],
+        "step_trace": [
+          "scan ambiguity across evidence streams",
+          "name missing information explicitly"
+        ],
+        "outcome": {
+          "result": "success",
+          "case_status": "success",
+          "error_type": null,
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "uncertainty_assessment_skill",
+            "Rosacea",
+            "Telangiectasia"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_79_120_c1a2a425bc3d",
+        "case_id": "PAT_79_120",
+        "condition": {
+          "trigger_type": "routine_reasoning",
+          "confusion_pair": null,
+          "observed_state": {
+            "ddx_candidates": [
+              "Rosacea",
+              "Telangiectasia",
+              "Erythema"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed clinical history, including symptoms, duration, and any recent changes.",
+            "missing:Patient's medical history, particularly concerning chronic skin conditions or systemic diseases."
+          ]
+        },
+        "action": {
+          "skill_name": "contradiction_check_skill",
+          "skills_used": [
+            "contradiction_check_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "surfaced missing links in the reasoning chain",
+          "audited internal consistency",
+          "required downstream integration beyond contradiction_check_skill"
+        ],
+        "step_trace": [
+          "scan for conflicts across evidence sources",
+          "surface missing links in the reasoning chain"
+        ],
+        "outcome": {
+          "result": "success",
+          "case_status": "success",
+          "error_type": null,
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "contradiction_check_skill",
+            "Rosacea",
+            "Telangiectasia"
+          ],
+          "priority": "high"
+        }
+      }
+    ],
+    "abstract_experiences": [
+      {
+        "abs_id": "abs_composite_c78592e5b561",
+        "type": "composite_skill_seed",
+        "concept": "compare_then_audit_uncertainty",
+        "pattern_summary": {
+          "supporting_pattern": [
+            "A close-up view of skin showing dilated capillaries and a slightly erythematous area.",
+            "Rosacea",
+            "Telangiectasia"
+          ],
+          "trigger_pattern": {
+            "decision_pattern": "compare_then_audit_uncertainty",
+            "ddx_candidates": [
+              "Rosacea",
+              "Telangiectasia",
+              "Erythema"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "confusion_pair": null,
+            "region": "FACE"
+          },
+          "seed_skills": [
+            "morphology_analysis_skill",
+            "color_pattern_analysis_skill",
+            "distribution_analysis_skill",
+            "lesion_description_structuring_skill",
+            "metadata_consistency_skill",
+            "differential_compare_skill",
+            "exclusion_reasoning_skill",
+            "uncertainty_assessment_skill",
+            "contradiction_check_skill"
+          ]
+        },
+        "supporting_cases": [
+          "PAT_79_120"
+        ],
+        "counter_cases": [],
+        "derived_rule": {
+          "rule_text": "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+          "action_hint": "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+distribution_analysis_skill+lesion_description_structuring_skill",
+          "promotion_interface": {
+            "builder": "promote_composite_skill_seed",
+            "future_skill_id": "composite_workflow_c78592e5b561",
+            "future_skill_type": "composite_workflow_skill",
+            "required_min_success_count": 2,
+            "component_skills": [
+              "morphology_analysis_skill",
+              "color_pattern_analysis_skill",
+              "distribution_analysis_skill",
+              "lesion_description_structuring_skill",
+              "metadata_consistency_skill",
+              "differential_compare_skill",
+              "exclusion_reasoning_skill",
+              "uncertainty_assessment_skill",
+              "contradiction_check_skill"
+            ],
+            "trigger_pattern_source": "composite_skill_seed.trigger_pattern",
+            "output_contract_source": "component_skill_union"
+          }
+        },
+        "version": "v2",
+        "seed_id": "seed_composite_c78592e5b561",
+        "composite_skill_seed": {
+          "seed_id": "seed_composite_c78592e5b561",
+          "trigger_pattern": {
+            "decision_pattern": "compare_then_audit_uncertainty",
+            "ddx_candidates": [
+              "Rosacea",
+              "Telangiectasia",
+              "Erythema"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "confusion_pair": null,
+            "region": "FACE"
+          },
+          "skill_sequence": [
+            "morphology_analysis_skill",
+            "color_pattern_analysis_skill",
+            "distribution_analysis_skill",
+            "lesion_description_structuring_skill",
+            "metadata_consistency_skill",
+            "differential_compare_skill",
+            "exclusion_reasoning_skill",
+            "uncertainty_assessment_skill",
+            "contradiction_check_skill"
+          ],
+          "supporting_cases": [
+            "PAT_79_120"
+          ],
+          "success_count": 1,
+          "notes": [
+            "Candidate only; do not auto-materialize a composite skill in the current stage.",
+            "Promote only after repeated successful supporting cases under a stable trigger pattern.",
+            "Observed decision pattern: compare_then_audit_uncertainty"
+          ],
+          "promotion_interface": {
+            "builder": "promote_composite_skill_seed",
+            "future_skill_id": "composite_workflow_c78592e5b561",
+            "future_skill_type": "composite_workflow_skill",
+            "required_min_success_count": 2,
+            "component_skills": [
+              "morphology_analysis_skill",
+              "color_pattern_analysis_skill",
+              "distribution_analysis_skill",
+              "lesion_description_structuring_skill",
+              "metadata_consistency_skill",
+              "differential_compare_skill",
+              "exclusion_reasoning_skill",
+              "uncertainty_assessment_skill",
+              "contradiction_check_skill"
+            ],
+            "trigger_pattern_source": "composite_skill_seed.trigger_pattern",
+            "output_contract_source": "component_skill_union"
+          }
+        },
+        "provenance": {}
+      },
+      {
+        "abs_id": "abs_prototype_94ec287866b9",
+        "type": "prototype",
+        "concept": "basal_cell_carcinoma",
+        "pattern_summary": {
+          "supporting_pattern": [
+            "A close-up view of skin showing dilated capillaries and a slightly erythematous area.",
+            "Rosacea",
+            "Telangiectasia"
+          ],
+          "failure_pattern": []
+        },
+        "supporting_cases": [
+          "PAT_682_1292",
+          "PAT_875_1670",
+          "PAT_684_1302",
+          "PAT_302_651",
+          "PAT_79_120"
+        ],
+        "counter_cases": [],
+        "derived_rule": {
+          "rule_text": "Prototype memories capture recurring structured observation patterns linked to stable final outcomes.",
+          "action_hint": "retrieve_as_reference_pattern"
+        },
+        "version": "v1",
+        "seed_id": null,
+        "composite_skill_seed": {},
+        "provenance": {}
+      }
+    ],
+    "cognition_update": {
+      "total_cases_increment": 1,
+      "failed_cases_increment": 0,
+      "confusion_cases_increment": 0,
+      "hard_cases_increment": 1,
+      "confusion_pair": null,
+      "preferred_skills": [
+        "morphology_analysis_skill",
+        "color_pattern_analysis_skill",
+        "distribution_analysis_skill",
+        "lesion_description_structuring_skill",
+        "metadata_consistency_skill",
+        "differential_compare_skill",
+        "exclusion_reasoning_skill",
+        "uncertainty_assessment_skill",
+        "contradiction_check_skill"
+      ]
+    },
+    "skill_stats_update": [
+      {
+        "skill_name": "morphology_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 1,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "color_pattern_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 1,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "distribution_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 1,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "lesion_description_structuring_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 1,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "metadata_consistency_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 1,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 1,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "differential_compare_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 1,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "exclusion_reasoning_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 1,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "uncertainty_assessment_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 1,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "contradiction_check_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 1,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 1,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      }
+    ],
+    "reflection_extract": {
+      "raw_case_memory_ready": true,
+      "tactical_experience_count": 9,
+      "abstract_experience_candidate_count": 2,
+      "reusable_tactical_count": 9,
+      "composite_skill_seed_count": 1,
+      "composite_skill_seed_ids": [
+        "seed_composite_c78592e5b561"
+      ],
+      "abstract_flags": {
+        "confusion_memory": false,
+        "prototype": true,
+        "rule": false,
+        "rule_candidate": false,
+        "composite_skill_seed": true
+      },
+      "case_status": "success",
+      "composite_skill_seed_ready_for_promotion": []
+    }
+  },
+  "cognition_update": {
+    "total_cases_increment": 1,
+    "failed_cases_increment": 0,
+    "confusion_cases_increment": 0,
+    "hard_cases_increment": 1,
+    "confusion_pair": null,
+    "preferred_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "distribution_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "differential_compare_skill",
+      "exclusion_reasoning_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill"
+    ]
+  }
+}

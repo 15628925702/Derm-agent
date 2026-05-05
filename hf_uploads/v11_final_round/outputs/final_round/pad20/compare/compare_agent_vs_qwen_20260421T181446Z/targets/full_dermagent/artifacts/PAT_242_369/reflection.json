@@ -1,0 +1,3236 @@
+{
+  "reasoning_summary": "Perception summary: A raised, slightly erythematous lesion with a central depression is observed on the chest. | Useful skills: morphology_analysis_skill, color_pattern_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, differential_compare_skill, mel_nev_specialist_skill, ack_scc_specialist_skill, exclusion_reasoning_skill, uncertainty_assessment_skill, contradiction_check_skill | Final answer: Malignant Melanoma | Uncertainty: high | Risk flags: malignancy_risk:medium | Detected errors: final_diagnosis_mismatch_reference",
+  "useful_skills": [
+    "morphology_analysis_skill",
+    "color_pattern_analysis_skill",
+    "distribution_analysis_skill",
+    "lesion_description_structuring_skill",
+    "metadata_consistency_skill",
+    "malignancy_risk_assessment_skill",
+    "differential_compare_skill",
+    "mel_nev_specialist_skill",
+    "ack_scc_specialist_skill",
+    "exclusion_reasoning_skill",
+    "uncertainty_assessment_skill",
+    "contradiction_check_skill"
+  ],
+  "detected_errors": [
+    "final_diagnosis_mismatch_reference"
+  ],
+  "experience_type": "confusion_experience",
+  "diagnosis_correct": false,
+  "write_experience": true,
+  "case_outcome": {
+    "status": "failure",
+    "has_ground_truth": true,
+    "is_correct": false,
+    "error_type": "final_diagnosis_mismatch_reference",
+    "predicted_label": "Malignant Melanoma",
+    "reference_label": "BCC",
+    "predicted_canonical_label": "MEL",
+    "reference_canonical_label": "BCC",
+    "confidence_level": "moderate",
+    "uncertainty_level": "high",
+    "malignant_flag": {
+      "ground_truth": true,
+      "predicted": true
+    },
+    "confusion_pair": "Malignant Melanoma->BCC",
+    "risk_flags": [
+      "malignancy_risk:medium"
+    ],
+    "label_space": {
+      "label_space_id": "derm_six",
+      "canonical_labels": [
+        "BCC",
+        "ACK",
+        "NEV",
+        "SEK",
+        "SCC",
+        "MEL"
+      ],
+      "malignant_labels": [
+        "BCC",
+        "ACK",
+        "SCC",
+        "MEL"
+      ],
+      "benign_labels": [
+        "NEV",
+        "SEK"
+      ]
+    }
+  },
+  "skill_assessments": [
+    {
+      "skill_name": "morphology_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "SEK (Superficial Spreading Melanoma)",
+          "BCC (Basal Cell Carcinoma)",
+          "NEV (Nevus)"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": "CHEST"
+      },
+      "helped_aspects": [
+        "stabilized lesion structure",
+        "made morphology explicit for downstream reasoning"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "inspect dominant lesion silhouette",
+        "judge elevation and lesion count"
+      ],
+      "referenced_experiences": [
+        "PAT_265_406",
+        "PAT_1582_2574"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "morphology_analysis_skill",
+        "ddx:SEK (Superficial Spreading Melanoma)|BCC (Basal Cell Carcinoma)",
+        "risk:malignancy_risk:medium",
+        "region:chest",
+        "uncertainty:high",
+        "confusion:Malignant Melanoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "morphology_analysis_skill remains reusable for Malignant Melanoma->BCC style confusion"
+    },
+    {
+      "skill_name": "color_pattern_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "SEK (Superficial Spreading Melanoma)",
+          "BCC (Basal Cell Carcinoma)",
+          "NEV (Nevus)"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": "CHEST"
+      },
+      "helped_aspects": [
+        "made pigment variation explicit",
+        "surfaced color asymmetry as auditable evidence"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "inspect dominant color",
+        "compare internal color asymmetry"
+      ],
+      "referenced_experiences": [
+        "PAT_265_406",
+        "PAT_1582_2574"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "color_pattern_analysis_skill",
+        "ddx:SEK (Superficial Spreading Melanoma)|BCC (Basal Cell Carcinoma)",
+        "risk:malignancy_risk:medium",
+        "region:chest",
+        "uncertainty:high",
+        "confusion:Malignant Melanoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "color_pattern_analysis_skill remains reusable for Malignant Melanoma->BCC style confusion"
+    },
+    {
+      "skill_name": "distribution_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "SEK (Superficial Spreading Melanoma)",
+          "BCC (Basal Cell Carcinoma)",
+          "NEV (Nevus)"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": "CHEST"
+      },
+      "helped_aspects": [
+        "made location and extent assumptions explicit",
+        "captured distribution context for later comparison"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "identify likely anatomic site",
+        "judge extent and clustering"
+      ],
+      "referenced_experiences": [
+        "PAT_265_406",
+        "PAT_1582_2574"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "distribution_analysis_skill",
+        "ddx:SEK (Superficial Spreading Melanoma)|BCC (Basal Cell Carcinoma)",
+        "risk:malignancy_risk:medium",
+        "region:chest",
+        "uncertainty:high",
+        "confusion:Malignant Melanoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "distribution_analysis_skill remains reusable for Malignant Melanoma->BCC style confusion"
+    },
+    {
+      "skill_name": "lesion_description_structuring_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "SEK (Superficial Spreading Melanoma)",
+          "BCC (Basal Cell Carcinoma)",
+          "NEV (Nevus)"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": "CHEST"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "PAT_265_406",
+        "PAT_1582_2574",
+        "abs_confusion_1e693232c979",
+        "tac_PAT_621_1183_4ae354055cbc",
+        "tac_PAT_333_1469_4ae354055cbc"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 2.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported",
+        "malignant_support_relevant"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "lesion_description_structuring_skill",
+        "ddx:SEK (Superficial Spreading Melanoma)|BCC (Basal Cell Carcinoma)",
+        "risk:malignancy_risk:medium",
+        "region:chest",
+        "uncertainty:high",
+        "confusion:Malignant Melanoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "lesion_description_structuring_skill remains reusable for Malignant Melanoma->BCC style confusion"
+    },
+    {
+      "skill_name": "metadata_consistency_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "SEK (Superficial Spreading Melanoma)",
+          "BCC (Basal Cell Carcinoma)",
+          "NEV (Nevus)"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": "CHEST"
+      },
+      "helped_aspects": [
+        "checked image-metadata coherence",
+        "flagged reliability issues before integration"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "compare visible cues against metadata",
+        "separate direct conflicts from soft concerns"
+      ],
+      "referenced_experiences": [
+        "PAT_265_406",
+        "PAT_1582_2574",
+        "abs_confusion_1e693232c979",
+        "tac_PAT_621_1183_4ae354055cbc",
+        "tac_PAT_333_1469_4ae354055cbc",
+        "abs_confusion_d003c5783c08",
+        "abs_confusion_7329fb3ce8fc"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": true,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "metadata_consistency_skill",
+        "ddx:SEK (Superficial Spreading Melanoma)|BCC (Basal Cell Carcinoma)",
+        "risk:malignancy_risk:medium",
+        "region:chest",
+        "uncertainty:high",
+        "confusion:Malignant Melanoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "metadata_consistency_skill remains reusable for Malignant Melanoma->BCC style confusion"
+    },
+    {
+      "skill_name": "malignancy_risk_assessment_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "SEK (Superficial Spreading Melanoma)",
+          "BCC (Basal Cell Carcinoma)",
+          "NEV (Nevus)"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": "CHEST"
+      },
+      "helped_aspects": [
+        "made risk framing explicit",
+        "highlighted alarm signals without forcing diagnosis"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "collect alarm signals",
+        "balance concerning and reassuring evidence"
+      ],
+      "referenced_experiences": [
+        "PAT_265_406",
+        "PAT_1582_2574",
+        "abs_confusion_1e693232c979",
+        "tac_PAT_621_1183_4ae354055cbc",
+        "tac_PAT_333_1469_4ae354055cbc"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "risk_signal",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 2.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "malignant_support_relevant"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "malignancy_risk_assessment_skill",
+        "ddx:SEK (Superficial Spreading Melanoma)|BCC (Basal Cell Carcinoma)",
+        "risk:malignancy_risk:medium",
+        "region:chest",
+        "uncertainty:high",
+        "confusion:Malignant Melanoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "malignancy_risk_assessment_skill remains reusable for Malignant Melanoma->BCC style confusion"
+    },
+    {
+      "skill_name": "differential_compare_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "SEK (Superficial Spreading Melanoma)",
+          "BCC (Basal Cell Carcinoma)",
+          "NEV (Nevus)"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": "CHEST"
+      },
+      "helped_aspects": [
+        "kept the differential open",
+        "made pairwise reasoning explicit"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "select the most relevant candidate pair",
+        "preserve unresolved comparative evidence"
+      ],
+      "referenced_experiences": [
+        "PAT_265_406",
+        "PAT_1582_2574",
+        "abs_confusion_1e693232c979",
+        "tac_PAT_621_1183_4ae354055cbc",
+        "tac_PAT_333_1469_4ae354055cbc"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 2.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported",
+        "malignant_support_relevant"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "differential_compare_skill",
+        "ddx:SEK (Superficial Spreading Melanoma)|BCC (Basal Cell Carcinoma)",
+        "risk:malignancy_risk:medium",
+        "region:chest",
+        "uncertainty:high",
+        "confusion:Malignant Melanoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "differential_compare_skill remains reusable for Malignant Melanoma->BCC style confusion"
+    },
+    {
+      "skill_name": "mel_nev_specialist_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "SEK (Superficial Spreading Melanoma)",
+          "BCC (Basal Cell Carcinoma)",
+          "NEV (Nevus)"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": "CHEST"
+      },
+      "helped_aspects": [
+        "focused a high-value confusion pair",
+        "sharpened specialist comparison clues"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "focus the confusion pair",
+        "contrast differentiating clues without forcing closure"
+      ],
+      "referenced_experiences": [
+        "PAT_265_406",
+        "PAT_1582_2574"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "comparative_support",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 2.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported",
+        "malignant_support_relevant"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "mel_nev_specialist_skill",
+        "ddx:SEK (Superficial Spreading Melanoma)|BCC (Basal Cell Carcinoma)",
+        "risk:malignancy_risk:medium",
+        "region:chest",
+        "uncertainty:high",
+        "confusion:Malignant Melanoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "mel_nev_specialist_skill remains reusable for Malignant Melanoma->BCC style confusion"
+    },
+    {
+      "skill_name": "ack_scc_specialist_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "SEK (Superficial Spreading Melanoma)",
+          "BCC (Basal Cell Carcinoma)",
+          "NEV (Nevus)"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": "CHEST"
+      },
+      "helped_aspects": [
+        "focused a high-value confusion pair",
+        "sharpened specialist keratinization clues"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "focus the confusion pair",
+        "contrast malignant versus keratotic clues"
+      ],
+      "referenced_experiences": [
+        "PAT_265_406",
+        "PAT_1582_2574",
+        "abs_confusion_1e693232c979",
+        "abs_confusion_d003c5783c08",
+        "abs_confusion_7329fb3ce8fc"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "comparative_support",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 1.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "malignant_support_relevant"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "ack_scc_specialist_skill",
+        "ddx:SEK (Superficial Spreading Melanoma)|BCC (Basal Cell Carcinoma)",
+        "risk:malignancy_risk:medium",
+        "region:chest",
+        "uncertainty:high",
+        "confusion:Malignant Melanoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "ack_scc_specialist_skill remains reusable for Malignant Melanoma->BCC style confusion"
+    },
+    {
+      "skill_name": "exclusion_reasoning_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "SEK (Superficial Spreading Melanoma)",
+          "BCC (Basal Cell Carcinoma)",
+          "NEV (Nevus)"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": "CHEST"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "PAT_265_406",
+        "PAT_1582_2574"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 2.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported",
+        "malignant_support_relevant"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "exclusion_reasoning_skill",
+        "ddx:SEK (Superficial Spreading Melanoma)|BCC (Basal Cell Carcinoma)",
+        "risk:malignancy_risk:medium",
+        "region:chest",
+        "uncertainty:high",
+        "confusion:Malignant Melanoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "exclusion_reasoning_skill remains reusable for Malignant Melanoma->BCC style confusion"
+    },
+    {
+      "skill_name": "uncertainty_assessment_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "SEK (Superficial Spreading Melanoma)",
+          "BCC (Basal Cell Carcinoma)",
+          "NEV (Nevus)"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": "CHEST"
+      },
+      "helped_aspects": [
+        "made evidence limits explicit",
+        "prevented overconfident downstream use"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "scan ambiguity across evidence streams",
+        "name missing information explicitly"
+      ],
+      "referenced_experiences": [
+        "PAT_265_406",
+        "PAT_1582_2574",
+        "abs_confusion_1e693232c979",
+        "tac_PAT_621_1183_4ae354055cbc",
+        "tac_PAT_333_1469_4ae354055cbc"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "uncertainty_signal",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 3.0,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported",
+        "malignant_support_relevant"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "uncertainty_assessment_skill",
+        "ddx:SEK (Superficial Spreading Melanoma)|BCC (Basal Cell Carcinoma)",
+        "risk:malignancy_risk:medium",
+        "region:chest",
+        "uncertainty:high",
+        "confusion:Malignant Melanoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "uncertainty_assessment_skill remains reusable for Malignant Melanoma->BCC style confusion"
+    },
+    {
+      "skill_name": "contradiction_check_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "SEK (Superficial Spreading Melanoma)",
+          "BCC (Basal Cell Carcinoma)",
+          "NEV (Nevus)"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": "CHEST"
+      },
+      "helped_aspects": [
+        "surfaced missing links in the reasoning chain",
+        "audited internal consistency"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "scan for conflicts across evidence sources",
+        "surface missing links in the reasoning chain"
+      ],
+      "referenced_experiences": [
+        "PAT_265_406",
+        "PAT_1582_2574",
+        "abs_confusion_1e693232c979",
+        "tac_PAT_621_1183_4ae354055cbc",
+        "tac_PAT_333_1469_4ae354055cbc",
+        "abs_confusion_d003c5783c08",
+        "abs_confusion_7329fb3ce8fc"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "uncertainty_signal",
+      "uncertainty_reduction": true,
+      "contradiction_detected": true,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 3.0,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported",
+        "malignant_support_relevant"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "contradiction_check_skill",
+        "ddx:SEK (Superficial Spreading Melanoma)|BCC (Basal Cell Carcinoma)",
+        "risk:malignancy_risk:medium",
+        "region:chest",
+        "uncertainty:high",
+        "confusion:Malignant Melanoma->BCC"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "contradiction_check_skill remains reusable for Malignant Melanoma->BCC style confusion"
+    }
+  ],
+  "reflection_extract": {
+    "raw_case_memory_ready": true,
+    "tactical_experience_count": 12,
+    "abstract_experience_candidate_count": 2,
+    "reusable_tactical_count": 12,
+    "composite_skill_seed_count": 0,
+    "composite_skill_seed_ids": [],
+    "abstract_flags": {
+      "confusion_memory": true,
+      "prototype": false,
+      "rule": true,
+      "rule_candidate": false,
+      "composite_skill_seed": false
+    },
+    "case_status": "failure"
+  },
+  "writeback_bundle": {
+    "raw_case_memory": {
+      "case_id": "PAT_242_369",
+      "image_paths": [
+        "/root/DermAgent/data/pad_ufes_20/images/imgs_part_1/PAT_242_369_930.png"
+      ],
+      "metadata": {
+        "patient_id": "PAT_242",
+        "lesion_id": "369",
+        "smoke": "True",
+        "drink": "True",
+        "background_father": "GERMANY",
+        "background_mother": "GERMANY",
+        "age": "45",
+        "pesticide": "False",
+        "gender": "FEMALE",
+        "skin_cancer_history": "True",
+        "cancer_history": "True",
+        "has_piped_water": "True",
+        "has_sewage_system": "True",
+        "fitspatrick": "2.0",
+        "region": "CHEST",
+        "diameter_1": "12.0",
+        "diameter_2": "12.0",
+        "diagnostic": "BCC",
+        "itch": "True",
+        "grew": "True",
+        "hurt": "False",
+        "changed": "False",
+        "bleed": "False",
+        "elevation": "True",
+        "img_id": "PAT_242_369_930.png",
+        "biopsed": "True"
+      },
+      "dataset_name": "pad_ufes_20",
+      "label_space_id": null,
+      "true_label": "BCC",
+      "qwen_output": {
+        "final_diagnosis": "Malignant Melanoma",
+        "differential_diagnoses": [
+          "Malignant Melanoma",
+          "Seborrheic Keratosis",
+          "Nevus"
+        ],
+        "rationale": "The lesion exhibits asymmetry and irregular border, which are concerning features for malignancy. While the lesion is small in size and the surface appears smooth, the central depression and slight erythema raise suspicion for malignancy. Further evaluation, including dermoscopy and histopathological examination, is recommended.",
+        "confidence": "Moderate",
+        "follow_up_considerations": "Closer dermatologic review or biopsy consideration due to the high malignancy risk and uncertainty."
+      },
+      "agent_output": {
+        "perception": {
+          "image_summary": "A raised, slightly erythematous lesion with a central depression is observed on the chest.",
+          "ddx_candidates": [
+            "SEK (Superficial Spreading Melanoma)",
+            "BCC (Basal Cell Carcinoma)",
+            "NEV (Nevus)"
+          ],
+          "uncertainty": {
+            "level": "high",
+            "reasons": [
+              "The lesion has a central depression which can be seen in both SEK and BCC.",
+              "The size and location suggest a possibility of malignancy but further evaluation is needed."
+            ]
+          },
+          "notes": [
+            "The lesion is located on the chest, which is a common site for skin cancers.",
+            "The patient has a history of skin cancer, increasing the risk of malignancy.",
+            "The lesion is growing, which is a concerning sign for malignancy."
+          ]
+        },
+        "skill_outputs": {
+          "morphology_analysis_skill": {
+            "lesion_type": "nodule",
+            "size_range": "small",
+            "elevation": "raised",
+            "count": "solitary",
+            "referenced_experiences": [
+              "PAT_265_406",
+              "PAT_1582_2574"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "color_pattern_analysis_skill": {
+            "primary_color": "Pink",
+            "color_variation": "Marked",
+            "pigmentation_pattern": "Reticular",
+            "asymmetry_color": "Present",
+            "referenced_experiences": [
+              "PAT_265_406",
+              "PAT_1582_2574"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "distribution_analysis_skill": {
+            "body_location": "chest",
+            "symmetry": "asymmetric",
+            "localized_vs_generalized": "localized",
+            "clustering_pattern": "solitary",
+            "referenced_experiences": [
+              "PAT_265_406",
+              "PAT_1582_2574"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "lesion_description_structuring_skill": {
+            "primary_lesion_morphology": "raised nodule",
+            "color": [
+              "slightly erythematous"
+            ],
+            "border": [
+              "slightly raised, central depression"
+            ],
+            "surface": [
+              "smooth"
+            ],
+            "size_count": [
+              "size: small, count: solitary"
+            ],
+            "distribution": [
+              "body_location: chest, symmetry: asymmetric, localized_vs_generalized: localized, clustering_pattern: solitary"
+            ],
+            "associated_context": [
+              "patient_history: skin cancer history, high malignancy risk, clinical_notes: growing lesion, concerning for malignancy"
+            ],
+            "referenced_experiences": [
+              "PAT_265_406",
+              "PAT_1582_2574",
+              "abs_confusion_1e693232c979",
+              "tac_PAT_621_1183_4ae354055cbc",
+              "tac_PAT_333_1469_4ae354055cbc"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "metadata_consistency_skill": {
+            "consistency_score": "medium",
+            "conflicts": [],
+            "suspicious_points": [
+              "The lesion's central depression is noted in the metadata, but the image shows a slightly raised nodule without a central depression."
+            ],
+            "referenced_experiences": [
+              "PAT_265_406",
+              "PAT_1582_2574",
+              "abs_confusion_1e693232c979",
+              "tac_PAT_621_1183_4ae354055cbc",
+              "tac_PAT_333_1469_4ae354055cbc",
+              "abs_confusion_d003c5783c08",
+              "abs_confusion_7329fb3ce8fc"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "malignancy_risk_assessment_skill": {
+            "risk_level": "medium",
+            "risk_evidence": [
+              "The lesion has a central depression, which is a concerning feature for malignancy.",
+              "The lesion is slightly erythematous, indicating inflammation."
+            ],
+            "alarm_signals": [
+              "Central depression",
+              "Slightly erythematous appearance"
+            ],
+            "benign_reassuring_features": [
+              "The lesion is small in size (<6mm).",
+              "The surface appears smooth."
+            ],
+            "referenced_experiences": [
+              "PAT_265_406",
+              "PAT_1582_2574",
+              "abs_confusion_1e693232c979",
+              "tac_PAT_621_1183_4ae354055cbc",
+              "tac_PAT_333_1469_4ae354055cbc"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "risk_signal"
+          },
+          "differential_compare_skill": {
+            "candidate_pairs": [
+              "SEK (Superficial Spreading Melanoma) vs BCC (Basal Cell Carcinoma)",
+              "SEK (Superficial Spreading Melanoma) vs NEV (Nevus)"
+            ],
+            "supporting_evidence": [
+              "SEK (Superficial Spreading Melanoma) vs BCC (Basal Cell Carcinoma): The lesion has a central depression, which is a concerning feature for malignancy.; The lesion is slightly erythematous, indicating inflammation.",
+              "SEK (Superficial Spreading Melanoma) vs NEV (Nevus): The lesion is located on the chest, which is a common site for skin cancers.; The patient has a history of skin cancer, increasing the risk of malignancy."
+            ],
+            "conflicting_evidence": [
+              "SEK (Superficial Spreading Melanoma) vs BCC (Basal Cell Carcinoma): The lesion is small in size (<6mm), which is a benign feature for BCC.",
+              "SEK (Superficial Spreading Melanoma) vs NEV (Nevus): The lesion is slightly erythematous, which can be seen in both SEK and NEV."
+            ],
+            "required_missing_evidence": [
+              "SEK (Superficial Spreading Melanoma) vs BCC (Basal Cell Carcinoma): Missing dermoscopic/pattern detail for pigment network or additional structure.",
+              "SEK (Superficial Spreading Melanoma) vs NEV (Nevus): Missing clearer evolution history when growth/change is not explicit."
+            ],
+            "referenced_experiences": [
+              "PAT_265_406",
+              "PAT_1582_2574",
+              "abs_confusion_1e693232c979",
+              "tac_PAT_621_1183_4ae354055cbc",
+              "tac_PAT_333_1469_4ae354055cbc"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "mel_nev_specialist_skill": {
+            "differentiation_features": [
+              "asymmetry",
+              "border irregularity",
+              "pigment complexity",
+              "size/evolution context"
+            ],
+            "supporting_evidence": [
+              "The lesion exhibits asymmetry.",
+              "The border appears irregular.",
+              "There is pigment complexity visible.",
+              "The lesion is slightly erythematous, which can be seen in both SEK and NEV."
+            ],
+            "opposing_evidence": [
+              "The lesion is small in size (<6mm).",
+              "The surface appears smooth."
+            ],
+            "required_missing_evidence": [
+              "Missing dermoscopic/pattern detail for pigment network or additional structure.",
+              "Missing clearer evolution history when growth/change is not explicit."
+            ],
+            "uncertainty_under_current_evidence": "medium",
+            "further_observation_suggestions": [
+              "Perform dermoscopy to assess the pigment network and additional structures.",
+              "Observe the lesion's evolution over time to determine if it is growing or changing."
+            ],
+            "cluster_watchouts": [
+              "Do not turn pigmented concern into a final melanoma verdict.",
+              "Do not ignore nevus-like opposing evidence when uncertainty remains high.",
+              "Do not over-read image noise or shadow as true color variegation."
+            ],
+            "referenced_confusion_patterns": [],
+            "critical_supporting_evidence": [
+              "The lesion exhibits asymmetry.",
+              "The border appears irregular."
+            ],
+            "counterexample_watchouts": [
+              "Do not convert darker color alone into melanoma support without structural irregularity."
+            ],
+            "referenced_experiences": [
+              "PAT_265_406",
+              "PAT_1582_2574"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "comparative_support"
+          },
+          "ack_scc_specialist_skill": {
+            "differentiation_features": [
+              "Central depression",
+              "Erythematous surface",
+              "Surrounding hyperpigmentation"
+            ],
+            "supporting_evidence": [
+              "Central depression suggests malignancy.",
+              "Erythematous surface indicates inflammation."
+            ],
+            "opposing_evidence": [
+              "Hyperpigmentation around the lesion is not typical for SCC.",
+              "The lesion's size and location are not specific to ACK."
+            ],
+            "required_missing_evidence": [
+              "Clearer dermoscopic features for pigment network or additional structure.",
+              "More detailed temporal evolution history."
+            ],
+            "uncertainty_under_current_evidence": "medium",
+            "further_observation_suggestions": [
+              "Examine the lesion's surface for subtle changes in texture or color.",
+              "Assess the lesion's margin for irregularity or asymmetry."
+            ],
+            "cluster_watchouts": [
+              "Do not over-read image noise or shadow as true color variegation.",
+              "Preserve negative evidence for benign conditions."
+            ],
+            "referenced_confusion_patterns": [
+              "Malignant Melanoma->NEV",
+              "Superficial Spreading Melanoma->NEV",
+              "Malignant Melanoma->BCC"
+            ],
+            "critical_supporting_evidence": [
+              "Central depression",
+              "Erythematous surface"
+            ],
+            "counterexample_watchouts": [
+              "Hyperpigmentation around the lesion is not typical for SCC.",
+              "The lesion's size and location are not specific to ACK."
+            ],
+            "referenced_experiences": [
+              "PAT_265_406",
+              "PAT_1582_2574",
+              "abs_confusion_1e693232c979",
+              "abs_confusion_d003c5783c08",
+              "abs_confusion_7329fb3ce8fc"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "comparative_support"
+          },
+          "exclusion_reasoning_skill": {
+            "unlikely_candidates": [
+              "BCC (Basal Cell Carcinoma)"
+            ],
+            "exclusion_evidence": [
+              "The lesion is small in size (<6mm), which is a benign feature for BCC."
+            ],
+            "required_missing_evidence": [
+              "Missing dermoscopic/pattern detail for pigment network or additional structure."
+            ],
+            "exclusion_confidence": "medium",
+            "referenced_experiences": [
+              "PAT_265_406",
+              "PAT_1582_2574"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "uncertainty_assessment_skill": {
+            "uncertainty_level": "high",
+            "reasons": [
+              "The lesion has a central depression which can be seen in both SEK and BCC.",
+              "The size and location suggest a possibility of malignancy but further evaluation is needed.",
+              "The lesion is growing, which is a concerning sign for malignancy."
+            ],
+            "missing_information": [
+              "Clearer dermoscopic details, such as pigment network and additional structures, to differentiate between SEK and BCC.",
+              "More detailed history of the lesion's evolution, including changes in size, color, and shape over time."
+            ],
+            "referenced_experiences": [
+              "PAT_265_406",
+              "PAT_1582_2574",
+              "abs_confusion_1e693232c979",
+              "tac_PAT_621_1183_4ae354055cbc",
+              "tac_PAT_333_1469_4ae354055cbc"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "uncertainty_signal"
+          },
+          "contradiction_check_skill": {
+            "contradictions": [
+              {
+                "description": "The lesion is described as having a central depression in the image summary, but the image itself does not clearly show a depression.",
+                "evidence_sources": [
+                  "image_summary",
+                  "metadata"
+                ]
+              }
+            ],
+            "missing_links": [
+              {
+                "description": "There is no clear evidence about the lesion's surface texture or whether it is smooth or rough, which could help in differentiating between SEK and BCC.",
+                "evidence_sources": [
+                  "morphology_analysis_skill"
+                ]
+              },
+              {
+                "description": "The image does not provide dermoscopic details such as pigment network and additional structures, which are crucial for differentiating between SEK and BCC.",
+                "evidence_sources": [
+                  "color_pattern_analysis_skill"
+                ]
+              }
+            ],
+            "reasoning_gaps": [
+              {
+                "description": "The lesion's growth rate and the patient's history of skin cancer are important factors for malignancy risk assessment, but these are not fully addressed in the current evidence.",
+                "evidence_sources": [
+                  "malignancy_risk_assessment_skill",
+                  "uncertainty_assessment_skill"
+                ]
+              }
+            ],
+            "referenced_experiences": [
+              "PAT_265_406",
+              "PAT_1582_2574",
+              "abs_confusion_1e693232c979",
+              "tac_PAT_621_1183_4ae354055cbc",
+              "tac_PAT_333_1469_4ae354055cbc",
+              "abs_confusion_d003c5783c08",
+              "abs_confusion_7329fb3ce8fc"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "uncertainty_signal"
+          }
+        },
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty": {
+          "uncertainty_level": "high",
+          "reasons": [
+            "The lesion has a central depression which can be seen in both SEK and BCC.",
+            "The size and location suggest a possibility of malignancy but further evaluation is needed.",
+            "The lesion is growing, which is a concerning sign for malignancy."
+          ],
+          "missing_information": [
+            "Clearer dermoscopic details, such as pigment network and additional structures, to differentiate between SEK and BCC.",
+            "More detailed history of the lesion's evolution, including changes in size, color, and shape over time."
+          ],
+          "referenced_experiences": [
+            "PAT_265_406",
+            "PAT_1582_2574",
+            "abs_confusion_1e693232c979",
+            "tac_PAT_621_1183_4ae354055cbc",
+            "tac_PAT_333_1469_4ae354055cbc"
+          ],
+          "evidence_strength": "medium",
+          "recommendation_type": "uncertainty_signal"
+        },
+        "retrieved_experience_refs": [
+          "abs_confusion_1e693232c979",
+          "abs_confusion_d003c5783c08",
+          "abs_confusion_7329fb3ce8fc",
+          "tac_PAT_621_1183_4ae354055cbc",
+          "PAT_265_406",
+          "PAT_1582_2574"
+        ],
+        "notes": [
+          "Agent generated structured evidence only.",
+          "Qwen remains the sole final diagnostic decision maker.",
+          "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, differential_compare_skill, mel_nev_specialist_skill, ack_scc_specialist_skill, exclusion_reasoning_skill, uncertainty_assessment_skill, contradiction_check_skill.",
+          "Policy in use: mainline_parameterized_agent_20260331__full_dermagent.",
+          "Skill retrieval candidates: metadata_consistency_skill, benign_mimic_specialist_skill, lesion_description_structuring_skill, ack_scc_specialist_skill, malignancy_risk_assessment_skill, mel_nev_specialist_skill, distribution_analysis_skill, color_pattern_analysis_skill, morphology_analysis_skill, uncertainty_assessment_skill, contradiction_check_skill, exclusion_reasoning_skill, temporal_evolution_skill, differential_compare_skill.",
+          "The lesion is located on the chest, which is a common site for skin cancers.",
+          "The patient has a history of skin cancer, increasing the risk of malignancy.",
+          "The lesion is growing, which is a concerning sign for malignancy.",
+          "Retrieved prior reasoning experience for context.",
+          "High uncertainty detected in MVP skeleton."
+        ],
+        "skill_assessments": [
+          {
+            "skill_name": "morphology_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "SEK (Superficial Spreading Melanoma)",
+                "BCC (Basal Cell Carcinoma)",
+                "NEV (Nevus)"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": "CHEST"
+            },
+            "helped_aspects": [
+              "stabilized lesion structure",
+              "made morphology explicit for downstream reasoning"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "inspect dominant lesion silhouette",
+              "judge elevation and lesion count"
+            ],
+            "referenced_experiences": [
+              "PAT_265_406",
+              "PAT_1582_2574"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "morphology_analysis_skill",
+              "ddx:SEK (Superficial Spreading Melanoma)|BCC (Basal Cell Carcinoma)",
+              "risk:malignancy_risk:medium",
+              "region:chest",
+              "uncertainty:high",
+              "confusion:Malignant Melanoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "morphology_analysis_skill remains reusable for Malignant Melanoma->BCC style confusion"
+          },
+          {
+            "skill_name": "color_pattern_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "SEK (Superficial Spreading Melanoma)",
+                "BCC (Basal Cell Carcinoma)",
+                "NEV (Nevus)"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": "CHEST"
+            },
+            "helped_aspects": [
+              "made pigment variation explicit",
+              "surfaced color asymmetry as auditable evidence"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "inspect dominant color",
+              "compare internal color asymmetry"
+            ],
+            "referenced_experiences": [
+              "PAT_265_406",
+              "PAT_1582_2574"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "color_pattern_analysis_skill",
+              "ddx:SEK (Superficial Spreading Melanoma)|BCC (Basal Cell Carcinoma)",
+              "risk:malignancy_risk:medium",
+              "region:chest",
+              "uncertainty:high",
+              "confusion:Malignant Melanoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "color_pattern_analysis_skill remains reusable for Malignant Melanoma->BCC style confusion"
+          },
+          {
+            "skill_name": "distribution_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "SEK (Superficial Spreading Melanoma)",
+                "BCC (Basal Cell Carcinoma)",
+                "NEV (Nevus)"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": "CHEST"
+            },
+            "helped_aspects": [
+              "made location and extent assumptions explicit",
+              "captured distribution context for later comparison"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "identify likely anatomic site",
+              "judge extent and clustering"
+            ],
+            "referenced_experiences": [
+              "PAT_265_406",
+              "PAT_1582_2574"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "distribution_analysis_skill",
+              "ddx:SEK (Superficial Spreading Melanoma)|BCC (Basal Cell Carcinoma)",
+              "risk:malignancy_risk:medium",
+              "region:chest",
+              "uncertainty:high",
+              "confusion:Malignant Melanoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "distribution_analysis_skill remains reusable for Malignant Melanoma->BCC style confusion"
+          },
+          {
+            "skill_name": "lesion_description_structuring_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "SEK (Superficial Spreading Melanoma)",
+                "BCC (Basal Cell Carcinoma)",
+                "NEV (Nevus)"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": "CHEST"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "PAT_265_406",
+              "PAT_1582_2574",
+              "abs_confusion_1e693232c979",
+              "tac_PAT_621_1183_4ae354055cbc",
+              "tac_PAT_333_1469_4ae354055cbc"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 2.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported",
+              "malignant_support_relevant"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "lesion_description_structuring_skill",
+              "ddx:SEK (Superficial Spreading Melanoma)|BCC (Basal Cell Carcinoma)",
+              "risk:malignancy_risk:medium",
+              "region:chest",
+              "uncertainty:high",
+              "confusion:Malignant Melanoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "lesion_description_structuring_skill remains reusable for Malignant Melanoma->BCC style confusion"
+          },
+          {
+            "skill_name": "metadata_consistency_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "SEK (Superficial Spreading Melanoma)",
+                "BCC (Basal Cell Carcinoma)",
+                "NEV (Nevus)"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": "CHEST"
+            },
+            "helped_aspects": [
+              "checked image-metadata coherence",
+              "flagged reliability issues before integration"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "compare visible cues against metadata",
+              "separate direct conflicts from soft concerns"
+            ],
+            "referenced_experiences": [
+              "PAT_265_406",
+              "PAT_1582_2574",
+              "abs_confusion_1e693232c979",
+              "tac_PAT_621_1183_4ae354055cbc",
+              "tac_PAT_333_1469_4ae354055cbc",
+              "abs_confusion_d003c5783c08",
+              "abs_confusion_7329fb3ce8fc"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": true,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "metadata_consistency_skill",
+              "ddx:SEK (Superficial Spreading Melanoma)|BCC (Basal Cell Carcinoma)",
+              "risk:malignancy_risk:medium",
+              "region:chest",
+              "uncertainty:high",
+              "confusion:Malignant Melanoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "metadata_consistency_skill remains reusable for Malignant Melanoma->BCC style confusion"
+          },
+          {
+            "skill_name": "malignancy_risk_assessment_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "SEK (Superficial Spreading Melanoma)",
+                "BCC (Basal Cell Carcinoma)",
+                "NEV (Nevus)"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": "CHEST"
+            },
+            "helped_aspects": [
+              "made risk framing explicit",
+              "highlighted alarm signals without forcing diagnosis"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "collect alarm signals",
+              "balance concerning and reassuring evidence"
+            ],
+            "referenced_experiences": [
+              "PAT_265_406",
+              "PAT_1582_2574",
+              "abs_confusion_1e693232c979",
+              "tac_PAT_621_1183_4ae354055cbc",
+              "tac_PAT_333_1469_4ae354055cbc"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "risk_signal",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 2.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "malignant_support_relevant"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "malignancy_risk_assessment_skill",
+              "ddx:SEK (Superficial Spreading Melanoma)|BCC (Basal Cell Carcinoma)",
+              "risk:malignancy_risk:medium",
+              "region:chest",
+              "uncertainty:high",
+              "confusion:Malignant Melanoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "malignancy_risk_assessment_skill remains reusable for Malignant Melanoma->BCC style confusion"
+          },
+          {
+            "skill_name": "differential_compare_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "SEK (Superficial Spreading Melanoma)",
+                "BCC (Basal Cell Carcinoma)",
+                "NEV (Nevus)"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": "CHEST"
+            },
+            "helped_aspects": [
+              "kept the differential open",
+              "made pairwise reasoning explicit"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "select the most relevant candidate pair",
+              "preserve unresolved comparative evidence"
+            ],
+            "referenced_experiences": [
+              "PAT_265_406",
+              "PAT_1582_2574",
+              "abs_confusion_1e693232c979",
+              "tac_PAT_621_1183_4ae354055cbc",
+              "tac_PAT_333_1469_4ae354055cbc"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 2.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported",
+              "malignant_support_relevant"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "differential_compare_skill",
+              "ddx:SEK (Superficial Spreading Melanoma)|BCC (Basal Cell Carcinoma)",
+              "risk:malignancy_risk:medium",
+              "region:chest",
+              "uncertainty:high",
+              "confusion:Malignant Melanoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "differential_compare_skill remains reusable for Malignant Melanoma->BCC style confusion"
+          },
+          {
+            "skill_name": "mel_nev_specialist_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "SEK (Superficial Spreading Melanoma)",
+                "BCC (Basal Cell Carcinoma)",
+                "NEV (Nevus)"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": "CHEST"
+            },
+            "helped_aspects": [
+              "focused a high-value confusion pair",
+              "sharpened specialist comparison clues"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "focus the confusion pair",
+              "contrast differentiating clues without forcing closure"
+            ],
+            "referenced_experiences": [
+              "PAT_265_406",
+              "PAT_1582_2574"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "comparative_support",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 2.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported",
+              "malignant_support_relevant"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "mel_nev_specialist_skill",
+              "ddx:SEK (Superficial Spreading Melanoma)|BCC (Basal Cell Carcinoma)",
+              "risk:malignancy_risk:medium",
+              "region:chest",
+              "uncertainty:high",
+              "confusion:Malignant Melanoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "mel_nev_specialist_skill remains reusable for Malignant Melanoma->BCC style confusion"
+          },
+          {
+            "skill_name": "ack_scc_specialist_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "SEK (Superficial Spreading Melanoma)",
+                "BCC (Basal Cell Carcinoma)",
+                "NEV (Nevus)"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": "CHEST"
+            },
+            "helped_aspects": [
+              "focused a high-value confusion pair",
+              "sharpened specialist keratinization clues"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "focus the confusion pair",
+              "contrast malignant versus keratotic clues"
+            ],
+            "referenced_experiences": [
+              "PAT_265_406",
+              "PAT_1582_2574",
+              "abs_confusion_1e693232c979",
+              "abs_confusion_d003c5783c08",
+              "abs_confusion_7329fb3ce8fc"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "comparative_support",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 1.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "malignant_support_relevant"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "ack_scc_specialist_skill",
+              "ddx:SEK (Superficial Spreading Melanoma)|BCC (Basal Cell Carcinoma)",
+              "risk:malignancy_risk:medium",
+              "region:chest",
+              "uncertainty:high",
+              "confusion:Malignant Melanoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "ack_scc_specialist_skill remains reusable for Malignant Melanoma->BCC style confusion"
+          },
+          {
+            "skill_name": "exclusion_reasoning_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "SEK (Superficial Spreading Melanoma)",
+                "BCC (Basal Cell Carcinoma)",
+                "NEV (Nevus)"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": "CHEST"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "PAT_265_406",
+              "PAT_1582_2574"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 2.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported",
+              "malignant_support_relevant"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "exclusion_reasoning_skill",
+              "ddx:SEK (Superficial Spreading Melanoma)|BCC (Basal Cell Carcinoma)",
+              "risk:malignancy_risk:medium",
+              "region:chest",
+              "uncertainty:high",
+              "confusion:Malignant Melanoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "exclusion_reasoning_skill remains reusable for Malignant Melanoma->BCC style confusion"
+          },
+          {
+            "skill_name": "uncertainty_assessment_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "SEK (Superficial Spreading Melanoma)",
+                "BCC (Basal Cell Carcinoma)",
+                "NEV (Nevus)"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": "CHEST"
+            },
+            "helped_aspects": [
+              "made evidence limits explicit",
+              "prevented overconfident downstream use"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "scan ambiguity across evidence streams",
+              "name missing information explicitly"
+            ],
+            "referenced_experiences": [
+              "PAT_265_406",
+              "PAT_1582_2574",
+              "abs_confusion_1e693232c979",
+              "tac_PAT_621_1183_4ae354055cbc",
+              "tac_PAT_333_1469_4ae354055cbc"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "uncertainty_signal",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 3.0,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported",
+              "malignant_support_relevant"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "uncertainty_assessment_skill",
+              "ddx:SEK (Superficial Spreading Melanoma)|BCC (Basal Cell Carcinoma)",
+              "risk:malignancy_risk:medium",
+              "region:chest",
+              "uncertainty:high",
+              "confusion:Malignant Melanoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "uncertainty_assessment_skill remains reusable for Malignant Melanoma->BCC style confusion"
+          },
+          {
+            "skill_name": "contradiction_check_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "SEK (Superficial Spreading Melanoma)",
+                "BCC (Basal Cell Carcinoma)",
+                "NEV (Nevus)"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": "CHEST"
+            },
+            "helped_aspects": [
+              "surfaced missing links in the reasoning chain",
+              "audited internal consistency"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "scan for conflicts across evidence sources",
+              "surface missing links in the reasoning chain"
+            ],
+            "referenced_experiences": [
+              "PAT_265_406",
+              "PAT_1582_2574",
+              "abs_confusion_1e693232c979",
+              "tac_PAT_621_1183_4ae354055cbc",
+              "tac_PAT_333_1469_4ae354055cbc",
+              "abs_confusion_d003c5783c08",
+              "abs_confusion_7329fb3ce8fc"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "uncertainty_signal",
+            "uncertainty_reduction": true,
+            "contradiction_detected": true,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 3.0,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported",
+              "malignant_support_relevant"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "contradiction_check_skill",
+              "ddx:SEK (Superficial Spreading Melanoma)|BCC (Basal Cell Carcinoma)",
+              "risk:malignancy_risk:medium",
+              "region:chest",
+              "uncertainty:high",
+              "confusion:Malignant Melanoma->BCC"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "contradiction_check_skill remains reusable for Malignant Melanoma->BCC style confusion"
+          }
+        ]
+      },
+      "final_decision": {
+        "label": "Malignant Melanoma",
+        "source": "qwen_final_diagnosis",
+        "canonical_label": "MEL"
+      },
+      "correctness": {
+        "has_ground_truth": true,
+        "is_correct": false,
+        "error_type": "final_diagnosis_mismatch_reference"
+      },
+      "malignant_flag": {
+        "ground_truth": true,
+        "predicted": true
+      }
+    },
+    "tactical_experiences": [
+      {
+        "exp_id": "tac_PAT_242_369_e5b6956c8c26",
+        "case_id": "PAT_242_369",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Malignant Melanoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "SEK (Superficial Spreading Melanoma)",
+              "BCC (Basal Cell Carcinoma)",
+              "NEV (Nevus)"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": "CHEST"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Clearer dermoscopic details, such as pigment network and additional structures, to differentiate between SEK and BCC.",
+            "missing:More detailed history of the lesion's evolution, including changes in size, color, and shape over time."
+          ]
+        },
+        "action": {
+          "skill_name": "morphology_analysis_skill",
+          "skills_used": [
+            "morphology_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "stabilized lesion structure",
+          "made morphology explicit for downstream reasoning",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "inspect dominant lesion silhouette",
+          "judge elevation and lesion count"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "morphology_analysis_skill",
+            "Malignant Melanoma->BCC",
+            "SEK (Superficial Spreading Melanoma)",
+            "BCC (Basal Cell Carcinoma)",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_242_369_5d8de46f6089",
+        "case_id": "PAT_242_369",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Malignant Melanoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "SEK (Superficial Spreading Melanoma)",
+              "BCC (Basal Cell Carcinoma)",
+              "NEV (Nevus)"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": "CHEST"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Clearer dermoscopic details, such as pigment network and additional structures, to differentiate between SEK and BCC.",
+            "missing:More detailed history of the lesion's evolution, including changes in size, color, and shape over time."
+          ]
+        },
+        "action": {
+          "skill_name": "color_pattern_analysis_skill",
+          "skills_used": [
+            "color_pattern_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made pigment variation explicit",
+          "surfaced color asymmetry as auditable evidence",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "inspect dominant color",
+          "compare internal color asymmetry"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "color_pattern_analysis_skill",
+            "Malignant Melanoma->BCC",
+            "SEK (Superficial Spreading Melanoma)",
+            "BCC (Basal Cell Carcinoma)",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_242_369_586325b3723c",
+        "case_id": "PAT_242_369",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Malignant Melanoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "SEK (Superficial Spreading Melanoma)",
+              "BCC (Basal Cell Carcinoma)",
+              "NEV (Nevus)"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": "CHEST"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Clearer dermoscopic details, such as pigment network and additional structures, to differentiate between SEK and BCC.",
+            "missing:More detailed history of the lesion's evolution, including changes in size, color, and shape over time."
+          ]
+        },
+        "action": {
+          "skill_name": "distribution_analysis_skill",
+          "skills_used": [
+            "distribution_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made location and extent assumptions explicit",
+          "captured distribution context for later comparison",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "identify likely anatomic site",
+          "judge extent and clustering"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "distribution_analysis_skill",
+            "Malignant Melanoma->BCC",
+            "SEK (Superficial Spreading Melanoma)",
+            "BCC (Basal Cell Carcinoma)",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_242_369_8fa365c666e8",
+        "case_id": "PAT_242_369",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Malignant Melanoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "SEK (Superficial Spreading Melanoma)",
+              "BCC (Basal Cell Carcinoma)",
+              "NEV (Nevus)"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": "CHEST"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Clearer dermoscopic details, such as pigment network and additional structures, to differentiate between SEK and BCC.",
+            "missing:More detailed history of the lesion's evolution, including changes in size, color, and shape over time."
+          ]
+        },
+        "action": {
+          "skill_name": "lesion_description_structuring_skill",
+          "skills_used": [
+            "lesion_description_structuring_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "lesion_description_structuring_skill",
+            "Malignant Melanoma->BCC",
+            "SEK (Superficial Spreading Melanoma)",
+            "BCC (Basal Cell Carcinoma)",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_242_369_2f79c85a7fb8",
+        "case_id": "PAT_242_369",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Malignant Melanoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "SEK (Superficial Spreading Melanoma)",
+              "BCC (Basal Cell Carcinoma)",
+              "NEV (Nevus)"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": "CHEST"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Clearer dermoscopic details, such as pigment network and additional structures, to differentiate between SEK and BCC.",
+            "missing:More detailed history of the lesion's evolution, including changes in size, color, and shape over time."
+          ]
+        },
+        "action": {
+          "skill_name": "metadata_consistency_skill",
+          "skills_used": [
+            "metadata_consistency_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "checked image-metadata coherence",
+          "flagged reliability issues before integration",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "compare visible cues against metadata",
+          "separate direct conflicts from soft concerns"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "metadata_consistency_skill",
+            "Malignant Melanoma->BCC",
+            "SEK (Superficial Spreading Melanoma)",
+            "BCC (Basal Cell Carcinoma)",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_242_369_47d9748366d2",
+        "case_id": "PAT_242_369",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Malignant Melanoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "SEK (Superficial Spreading Melanoma)",
+              "BCC (Basal Cell Carcinoma)",
+              "NEV (Nevus)"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": "CHEST"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Clearer dermoscopic details, such as pigment network and additional structures, to differentiate between SEK and BCC.",
+            "missing:More detailed history of the lesion's evolution, including changes in size, color, and shape over time."
+          ]
+        },
+        "action": {
+          "skill_name": "malignancy_risk_assessment_skill",
+          "skills_used": [
+            "malignancy_risk_assessment_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made risk framing explicit",
+          "highlighted alarm signals without forcing diagnosis",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "collect alarm signals",
+          "balance concerning and reassuring evidence"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "malignancy_risk_assessment_skill",
+            "Malignant Melanoma->BCC",
+            "SEK (Superficial Spreading Melanoma)",
+            "BCC (Basal Cell Carcinoma)",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_242_369_bce72efcf1a2",
+        "case_id": "PAT_242_369",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Malignant Melanoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "SEK (Superficial Spreading Melanoma)",
+              "BCC (Basal Cell Carcinoma)",
+              "NEV (Nevus)"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": "CHEST"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Clearer dermoscopic details, such as pigment network and additional structures, to differentiate between SEK and BCC.",
+            "missing:More detailed history of the lesion's evolution, including changes in size, color, and shape over time."
+          ]
+        },
+        "action": {
+          "skill_name": "differential_compare_skill",
+          "skills_used": [
+            "differential_compare_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "kept the differential open",
+          "made pairwise reasoning explicit",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "select the most relevant candidate pair",
+          "preserve unresolved comparative evidence"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "differential_compare_skill",
+            "Malignant Melanoma->BCC",
+            "SEK (Superficial Spreading Melanoma)",
+            "BCC (Basal Cell Carcinoma)",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_242_369_4ae354055cbc",
+        "case_id": "PAT_242_369",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Malignant Melanoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "SEK (Superficial Spreading Melanoma)",
+              "BCC (Basal Cell Carcinoma)",
+              "NEV (Nevus)"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": "CHEST"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Clearer dermoscopic details, such as pigment network and additional structures, to differentiate between SEK and BCC.",
+            "missing:More detailed history of the lesion's evolution, including changes in size, color, and shape over time."
+          ]
+        },
+        "action": {
+          "skill_name": "mel_nev_specialist_skill",
+          "skills_used": [
+            "mel_nev_specialist_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "focused a high-value confusion pair",
+          "sharpened specialist comparison clues",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "focus the confusion pair",
+          "contrast differentiating clues without forcing closure"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "mel_nev_specialist_skill",
+            "Malignant Melanoma->BCC",
+            "SEK (Superficial Spreading Melanoma)",
+            "BCC (Basal Cell Carcinoma)",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_242_369_3a26b1b0de4b",
+        "case_id": "PAT_242_369",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Malignant Melanoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "SEK (Superficial Spreading Melanoma)",
+              "BCC (Basal Cell Carcinoma)",
+              "NEV (Nevus)"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": "CHEST"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Clearer dermoscopic details, such as pigment network and additional structures, to differentiate between SEK and BCC.",
+            "missing:More detailed history of the lesion's evolution, including changes in size, color, and shape over time."
+          ]
+        },
+        "action": {
+          "skill_name": "ack_scc_specialist_skill",
+          "skills_used": [
+            "ack_scc_specialist_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "focused a high-value confusion pair",
+          "sharpened specialist keratinization clues",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "focus the confusion pair",
+          "contrast malignant versus keratotic clues"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "ack_scc_specialist_skill",
+            "Malignant Melanoma->BCC",
+            "SEK (Superficial Spreading Melanoma)",
+            "BCC (Basal Cell Carcinoma)",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_242_369_77b666058907",
+        "case_id": "PAT_242_369",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Malignant Melanoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "SEK (Superficial Spreading Melanoma)",
+              "BCC (Basal Cell Carcinoma)",
+              "NEV (Nevus)"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": "CHEST"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Clearer dermoscopic details, such as pigment network and additional structures, to differentiate between SEK and BCC.",
+            "missing:More detailed history of the lesion's evolution, including changes in size, color, and shape over time."
+          ]
+        },
+        "action": {
+          "skill_name": "exclusion_reasoning_skill",
+          "skills_used": [
+            "exclusion_reasoning_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "exclusion_reasoning_skill",
+            "Malignant Melanoma->BCC",
+            "SEK (Superficial Spreading Melanoma)",
+            "BCC (Basal Cell Carcinoma)",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_242_369_e21fa70f1cb7",
+        "case_id": "PAT_242_369",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Malignant Melanoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "SEK (Superficial Spreading Melanoma)",
+              "BCC (Basal Cell Carcinoma)",
+              "NEV (Nevus)"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": "CHEST"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Clearer dermoscopic details, such as pigment network and additional structures, to differentiate between SEK and BCC.",
+            "missing:More detailed history of the lesion's evolution, including changes in size, color, and shape over time."
+          ]
+        },
+        "action": {
+          "skill_name": "uncertainty_assessment_skill",
+          "skills_used": [
+            "uncertainty_assessment_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made evidence limits explicit",
+          "prevented overconfident downstream use",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "scan ambiguity across evidence streams",
+          "name missing information explicitly"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "uncertainty_assessment_skill",
+            "Malignant Melanoma->BCC",
+            "SEK (Superficial Spreading Melanoma)",
+            "BCC (Basal Cell Carcinoma)",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_242_369_8eed343a7164",
+        "case_id": "PAT_242_369",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Malignant Melanoma->BCC",
+          "observed_state": {
+            "ddx_candidates": [
+              "SEK (Superficial Spreading Melanoma)",
+              "BCC (Basal Cell Carcinoma)",
+              "NEV (Nevus)"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": "CHEST"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Clearer dermoscopic details, such as pigment network and additional structures, to differentiate between SEK and BCC.",
+            "missing:More detailed history of the lesion's evolution, including changes in size, color, and shape over time."
+          ]
+        },
+        "action": {
+          "skill_name": "contradiction_check_skill",
+          "skills_used": [
+            "contradiction_check_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "surfaced missing links in the reasoning chain",
+          "audited internal consistency",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "scan for conflicts across evidence sources",
+          "surface missing links in the reasoning chain"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "contradiction_check_skill",
+            "Malignant Melanoma->BCC",
+            "SEK (Superficial Spreading Melanoma)",
+            "BCC (Basal Cell Carcinoma)",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      }
+    ],
+    "abstract_experiences": [
+      {
+        "abs_id": "abs_confusion_7329fb3ce8fc",
+        "type": "confusion_memory",
+        "concept": "malignant_melanoma->bcc",
+        "pattern_summary": {
+          "confusion_pair": "Malignant Melanoma->BCC",
+          "supporting_pattern": [
+            "A raised, slightly erythematous lesion with a central depression is observed on the chest.",
+            "SEK (Superficial Spreading Melanoma)",
+            "BCC (Basal Cell Carcinoma)",
+            "malignancy_risk:medium"
+          ],
+          "failure_pattern": [
+            "final_diagnosis_mismatch_reference"
+          ]
+        },
+        "supporting_cases": [
+          "PAT_242_369"
+        ],
+        "counter_cases": [],
+        "derived_rule": {
+          "rule_text": "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+          "action_hint": "compare_then_audit_uncertainty"
+        },
+        "version": "v1",
+        "seed_id": null,
+        "composite_skill_seed": {},
+        "provenance": {}
+      },
+      {
+        "abs_id": "abs_rule_97a155a28150",
+        "type": "rule",
+        "concept": "compare_then_audit_uncertainty",
+        "pattern_summary": {
+          "supporting_pattern": [
+            "A raised, slightly erythematous lesion with a central depression is observed on the chest.",
+            "SEK (Superficial Spreading Melanoma)",
+            "BCC (Basal Cell Carcinoma)",
+            "malignancy_risk:medium"
+          ],
+          "failure_pattern": [
+            "final_diagnosis_mismatch_reference"
+          ]
+        },
+        "supporting_cases": [
+          "PAT_242_369"
+        ],
+        "counter_cases": [],
+        "derived_rule": {
+          "rule_text": "When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Qwen integration.",
+          "action_hint": "compare_then_audit_uncertainty"
+        },
+        "version": "v1",
+        "seed_id": null,
+        "composite_skill_seed": {},
+        "provenance": {}
+      }
+    ],
+    "cognition_update": {
+      "total_cases_increment": 1,
+      "failed_cases_increment": 1,
+      "confusion_cases_increment": 1,
+      "hard_cases_increment": 0,
+      "confusion_pair": "Malignant Melanoma->BCC",
+      "preferred_skills": [
+        "morphology_analysis_skill",
+        "color_pattern_analysis_skill",
+        "distribution_analysis_skill",
+        "lesion_description_structuring_skill",
+        "metadata_consistency_skill",
+        "malignancy_risk_assessment_skill",
+        "differential_compare_skill",
+        "mel_nev_specialist_skill",
+        "ack_scc_specialist_skill",
+        "exclusion_reasoning_skill",
+        "uncertainty_assessment_skill",
+        "contradiction_check_skill"
+      ]
+    },
+    "skill_stats_update": [
+      {
+        "skill_name": "morphology_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "color_pattern_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "distribution_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "lesion_description_structuring_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "metadata_consistency_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 1,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "malignancy_risk_assessment_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "differential_compare_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "mel_nev_specialist_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "ack_scc_specialist_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "exclusion_reasoning_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "uncertainty_assessment_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "contradiction_check_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 1,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      }
+    ],
+    "reflection_extract": {
+      "raw_case_memory_ready": true,
+      "tactical_experience_count": 12,
+      "abstract_experience_candidate_count": 2,
+      "reusable_tactical_count": 12,
+      "composite_skill_seed_count": 0,
+      "composite_skill_seed_ids": [],
+      "abstract_flags": {
+        "confusion_memory": true,
+        "prototype": false,
+        "rule": true,
+        "rule_candidate": false,
+        "composite_skill_seed": false
+      },
+      "case_status": "failure"
+    }
+  },
+  "cognition_update": {
+    "total_cases_increment": 1,
+    "failed_cases_increment": 1,
+    "confusion_cases_increment": 1,
+    "hard_cases_increment": 0,
+    "confusion_pair": "Malignant Melanoma->BCC",
+    "preferred_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "distribution_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "malignancy_risk_assessment_skill",
+      "differential_compare_skill",
+      "mel_nev_specialist_skill",
+      "ack_scc_specialist_skill",
+      "exclusion_reasoning_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill"
+    ]
+  }
+}

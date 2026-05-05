@@ -1,0 +1,730 @@
+{
+  "perception": {
+    "image_summary": "A well-circumscribed, slightly irregular brownish lesion with a central lighter area on the posterior torso.",
+    "ddx_candidates": [
+      "Dermal Nevus",
+      "Atypical Dermal Nevus",
+      "Lentigo"
+    ],
+    "uncertainty": {
+      "level": "low",
+      "reasons": [
+        "The lesion appears well-circumscribed but has some irregularity."
+      ]
+    },
+    "notes": [
+      "The lesion's color gradient suggests it may be a nevus variant.",
+      "The central lighter area could indicate a lentiginous component."
+    ]
+  },
+  "retrieved_experience": [
+    {
+      "case_id": "ISIC_0000006",
+      "source_layer": "abstract_experience",
+      "source_subtype": "composite_skill_seed",
+      "experience_type": "composite_skill_seed",
+      "perception_summary": "ddx=Dermal Nevus, Atypical Dermal Nevus, Benign Keratosis; decision_pattern=risk_then_uncertainty_audit; uncertainty=medium; risk=malignancy_risk:medium",
+      "confusion_pair": null,
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage.",
+        "Promote only after repeated successful supporting cases under a stable trigger pattern."
+      ],
+      "source_id": "abs_composite_a8337995dea3",
+      "retrieval_score": 12
+    },
+    {
+      "case_id": "ISIC_0000006",
+      "source_layer": "tactical_experience",
+      "source_subtype": "risk_review",
+      "experience_type": "tactical_experience",
+      "perception_summary": "ddx=Dermal Nevus, Atypical Dermal Nevus, Benign Keratosis; risk=malignancy_risk:medium; uncertainty=medium",
+      "confusion_pair": null,
+      "learning_points": [
+        "separated edge evidence from surface evidence",
+        "highlighted margin quality explicitly",
+        "required downstream integration beyond border_surface_analysis_skill",
+        "Action pattern: structured_skill_sequence"
+      ],
+      "source_id": "tac_ISIC_0000006_f0152010c15d",
+      "retrieval_score": 11
+    }
+  ],
+  "skill_outputs": {
+    "morphology_analysis_skill": {
+      "lesion_type": "plaque",
+      "size_range": "large",
+      "elevation": "unknown",
+      "count": "solitary",
+      "referenced_experiences": [
+        "ISIC_0000006"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "color_pattern_analysis_skill": {
+      "primary_color": "brown",
+      "color_variation": "marked",
+      "pigmentation_pattern": "reticular",
+      "asymmetry_color": "present",
+      "referenced_experiences": [
+        "ISIC_0000006",
+        "ISIC_0000013"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "border_surface_analysis_skill": {
+      "border_clarity": "slightly irregular",
+      "border_irregularity": "irregular",
+      "surface_texture": "rough",
+      "scaling_presence": "absent",
+      "referenced_experiences": [
+        "ISIC_0000006",
+        "ISIC_0000013"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "lesion_description_structuring_skill": {
+      "primary_lesion_morphology": "Plaque",
+      "color": [
+        "Brown, marked variation, reticular pigmentation"
+      ],
+      "border": [
+        "Slightly irregular, rough texture"
+      ],
+      "surface": [
+        "Rough"
+      ],
+      "size_count": [
+        "Large, solitary"
+      ],
+      "distribution": [
+        "Posterior torso"
+      ],
+      "associated_context": [
+        "age_approx: 35, sex: Male, anatom_site_general: Posterior torso"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000006",
+        "ISIC_0000013"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "metadata_consistency_skill": {
+      "consistency_score": "medium",
+      "conflicts": [],
+      "suspicious_points": [
+        "The lesion's central lighter area might suggest a lentiginous component, which is not directly mentioned in the metadata.",
+        "The lesion's size and count are described as 'large' and 'solitary' in the metadata, while the image summary mentions a 'well-circumscribed, slightly irregular brownish lesion'."
+      ],
+      "referenced_experiences": [
+        "ISIC_0000006",
+        "ISIC_0000013",
+        "abs_composite_a8337995dea3",
+        "tac_ISIC_0000006_f0152010c15d",
+        "tac_ISIC_0000006_e6055fc25fdb",
+        "abs_composite_fa50b3f9d6e5",
+        "abs_composite_8d19ffda6695"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "malignancy_risk_assessment_skill": {
+      "risk_level": "medium",
+      "risk_evidence": [
+        "{'border_clarity': 'slightly irregular', 'color_variation': 'marked', 'pigmentation_pattern': 'reticular', 'asymmetry_color': 'present'}"
+      ],
+      "alarm_signals": [
+        "Slightly irregular border",
+        "Marked color variation",
+        "Reticular pigmentation pattern",
+        "Asymmetry in color"
+      ],
+      "benign_reassuring_features": [],
+      "referenced_experiences": [
+        "abs_composite_a8337995dea3",
+        "tac_ISIC_0000006_f0152010c15d",
+        "tac_ISIC_0000006_e6055fc25fdb"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "risk_signal"
+    },
+    "information_gap_detection_skill": {
+      "missing_information": [
+        "Precise location within the posterior torso",
+        "Lesion's exact size in centimeters",
+        "Patient's medical history, including any previous skin conditions or surgeries"
+      ],
+      "why_it_matters": [
+        "Precise location helps in understanding the anatomical context and potential risks.",
+        "Exact size aids in assessing the lesion's growth rate and potential malignancy.",
+        "Patient's medical history is crucial for ruling out secondary lesions or conditions that could influence the diagnosis."
+      ],
+      "impact_on_differential": [
+        "Location can help differentiate between primary and secondary lesions.",
+        "Size is important for assessing the lesion's behavior over time and for determining the need for biopsy.",
+        "Medical history can provide insights into the patient's overall health and any factors that might affect the lesion's nature."
+      ],
+      "uncertainty_if_missing": "medium",
+      "referenced_experiences": [
+        "ISIC_0000006",
+        "ISIC_0000013",
+        "abs_composite_a8337995dea3",
+        "tac_ISIC_0000006_f0152010c15d",
+        "tac_ISIC_0000006_e6055fc25fdb",
+        "abs_composite_fa50b3f9d6e5",
+        "abs_composite_8d19ffda6695"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "uncertainty_assessment_skill": {
+      "uncertainty_level": "medium",
+      "reasons": [
+        "The lesion exhibits slight irregularity in its border, which is a concerning feature.",
+        "The presence of a central lighter area raises suspicion for a lentiginous component, which complicates differentiation between benign and malignant lesions."
+      ],
+      "missing_information": [
+        "Histopathological confirmation is necessary to rule out atypical features that cannot be definitively assessed clinically.",
+        "Additional imaging techniques like dermoscopy or ultrasound might provide more detailed information about the lesion's structure and depth."
+      ],
+      "referenced_experiences": [
+        "ISIC_0000006",
+        "ISIC_0000013",
+        "abs_composite_a8337995dea3",
+        "tac_ISIC_0000006_f0152010c15d",
+        "tac_ISIC_0000006_e6055fc25fdb",
+        "abs_composite_fa50b3f9d6e5",
+        "abs_composite_8d19ffda6695"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "uncertainty_signal"
+    },
+    "contradiction_check_skill": {
+      "contradictions": [],
+      "missing_links": [
+        {
+          "description": "The lesion's exact size in centimeters needs to be determined to assess the size range accurately."
+        },
+        {
+          "description": "The lesion's surface texture should be assessed using dermoscopy or another imaging technique to confirm if it is rough or smooth."
+        }
+      ],
+      "reasoning_gaps": [
+        {
+          "description": "The lesion's depth and structure cannot be determined from the image alone, which is crucial for differentiating between benign and malignant lesions."
+        },
+        {
+          "description": "The lesion's symmetry in terms of shape and color should be evaluated to assess the presence of asymmetry, which is important for malignancy risk assessment."
+        }
+      ],
+      "referenced_experiences": [
+        "ISIC_0000006",
+        "ISIC_0000013"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "uncertainty_signal"
+    }
+  },
+  "risk_flags": [
+    "malignancy_risk:medium"
+  ],
+  "uncertainty": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The lesion exhibits slight irregularity in its border, which is a concerning feature.",
+      "The presence of a central lighter area raises suspicion for a lentiginous component, which complicates differentiation between benign and malignant lesions."
+    ],
+    "missing_information": [
+      "Histopathological confirmation is necessary to rule out atypical features that cannot be definitively assessed clinically.",
+      "Additional imaging techniques like dermoscopy or ultrasound might provide more detailed information about the lesion's structure and depth."
+    ],
+    "referenced_experiences": [
+      "ISIC_0000006",
+      "ISIC_0000013",
+      "abs_composite_a8337995dea3",
+      "tac_ISIC_0000006_f0152010c15d",
+      "tac_ISIC_0000006_e6055fc25fdb",
+      "abs_composite_fa50b3f9d6e5",
+      "abs_composite_8d19ffda6695"
+    ],
+    "evidence_strength": "medium",
+    "recommendation_type": "uncertainty_signal"
+  },
+  "notes": [
+    "Agent generated structured evidence only.",
+    "Qwen remains the sole final diagnostic decision maker.",
+    "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill.",
+    "Policy in use: stable_default_policy.",
+    "Skill retrieval candidates: metadata_consistency_skill, color_pattern_analysis_skill, morphology_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, uncertainty_assessment_skill, malignancy_risk_assessment_skill, distribution_analysis_skill, differential_compare_skill, contradiction_check_skill, information_gap_detection_skill, temporal_evolution_skill, exclusion_reasoning_skill, escalation_recommendation_skill.",
+    "The lesion's color gradient suggests it may be a nevus variant.",
+    "The central lighter area could indicate a lentiginous component.",
+    "Retrieved prior reasoning experience for context."
+  ],
+  "initial_perception_summary": {
+    "image_summary": "A well-circumscribed, slightly irregular brownish lesion with a central lighter area on the posterior torso.",
+    "ddx_candidates": [
+      "Dermal Nevus",
+      "Atypical Dermal Nevus",
+      "Lentigo"
+    ],
+    "uncertainty_level": "low",
+    "uncertainty_reasons": [
+      "The lesion appears well-circumscribed but has some irregularity."
+    ],
+    "observation_notes": [
+      "The lesion's color gradient suggests it may be a nevus variant.",
+      "The central lighter area could indicate a lentiginous component."
+    ]
+  },
+  "retrieved_raw_cases_summary": [
+    {
+      "source_id": "ISIC_0000013",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "ISIC_0000013",
+      "confusion_pair": "None",
+      "perception_summary": "A well-circumscribed, dark brown to black lesion with irregular borders and a slightly raised surface.",
+      "learning_points": [
+        "Final decision: Malignant Melanoma",
+        "Correctness: True"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "ISIC_0000006",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "ISIC_0000006",
+      "confusion_pair": "None",
+      "perception_summary": "A well-circumscribed, slightly irregular brownish lesion on the posterior torso.",
+      "learning_points": [
+        "Final decision: Nevus",
+        "Correctness: True"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "ISIC_0000000",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "ISIC_0000000",
+      "confusion_pair": "None",
+      "perception_summary": "A large, irregularly shaped lesion with a mix of brown and black pigmentation, some areas appear hyperpigmented, and there are subtle irregularities in the border.",
+      "learning_points": [
+        "Final decision: Malignant Melanoma",
+        "Correctness: False"
+      ],
+      "retrieval_score": 7.0,
+      "base_retrieval_score": 7.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_tactical_experiences_summary": [
+    {
+      "source_id": "tac_ISIC_0000006_f0152010c15d",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000006",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dermal Nevus, Atypical Dermal Nevus, Benign Keratosis; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "separated edge evidence from surface evidence",
+        "highlighted margin quality explicitly",
+        "required downstream integration beyond border_surface_analysis_skill"
+      ],
+      "retrieval_score": 11.0,
+      "base_retrieval_score": 11.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_ISIC_0000006_e6055fc25fdb",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000006",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dermal Nevus, Atypical Dermal Nevus, Benign Keratosis; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "made pigment variation explicit",
+        "surfaced color asymmetry as auditable evidence",
+        "required downstream integration beyond color_pattern_analysis_skill"
+      ],
+      "retrieval_score": 11.0,
+      "base_retrieval_score": 11.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_ISIC_0000006_e4a8c7c2c58e",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000006",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dermal Nevus, Atypical Dermal Nevus, Benign Keratosis; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "required downstream integration beyond lesion_description_structuring_skill",
+        "Action pattern: structured_skill_sequence"
+      ],
+      "retrieval_score": 11.0,
+      "base_retrieval_score": 11.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_ISIC_0000006_de2f64ad3de5",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000006",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dermal Nevus, Atypical Dermal Nevus, Benign Keratosis; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "made evidence limits explicit",
+        "prevented overconfident downstream use",
+        "required downstream integration beyond uncertainty_assessment_skill"
+      ],
+      "retrieval_score": 11.0,
+      "base_retrieval_score": 11.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_abstract_experiences_summary": [
+    {
+      "source_id": "abs_composite_a8337995dea3",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "ISIC_0000006",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dermal Nevus, Atypical Dermal Nevus, Benign Keratosis; decision_pattern=risk_then_uncertainty_audit; uncertainty=medium; risk=malignancy_risk:medium",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 12.0,
+      "base_retrieval_score": 12.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_composite_fa50b3f9d6e5",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "ISIC_0000013",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Malignant Melanoma, Atypical Nevus, Dermal Nevus; decision_pattern=compare_then_audit_uncertainty; uncertainty=high; risk=malignancy_risk:medium",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_composite_7538a6b26480",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "ISIC_0000002",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Malignant Melanoma, Atypical Nevus, Dermal Nevus; decision_pattern=compare_then_audit_uncertainty; uncertainty=high; risk=malignancy_risk:medium",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "uncertainty_summary": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The lesion exhibits slight irregularity in its border, which is a concerning feature.",
+      "The presence of a central lighter area raises suspicion for a lentiginous component, which complicates differentiation between benign and malignant lesions."
+    ],
+    "missing_information": [
+      "Histopathological confirmation is necessary to rule out atypical features that cannot be definitively assessed clinically.",
+      "Additional imaging techniques like dermoscopy or ultrasound might provide more detailed information about the lesion's structure and depth."
+    ],
+    "referenced_experiences": [
+      "ISIC_0000006",
+      "ISIC_0000013",
+      "abs_composite_a8337995dea3",
+      "tac_ISIC_0000006_f0152010c15d",
+      "tac_ISIC_0000006_e6055fc25fdb",
+      "abs_composite_fa50b3f9d6e5"
+    ]
+  },
+  "contradiction_summary": {
+    "contradictions": [],
+    "missing_links": [
+      "{'description': \"The lesion's exact size in centimeters needs to be determined to assess the size range accurately.\"}",
+      "{'description': \"The lesion's surface texture should be assessed using dermoscopy or another imaging technique to confirm if it is rough or smooth.\"}"
+    ],
+    "reasoning_gaps": [
+      "{'description': \"The lesion's depth and structure cannot be determined from the image alone, which is crucial for differentiating between benign and malignant lesions.\"}",
+      "{'description': \"The lesion's symmetry in terms of shape and color should be evaluated to assess the presence of asymmetry, which is important for malignancy risk assessment.\"}"
+    ],
+    "metadata_conflicts": [],
+    "suspicious_points": [
+      "The lesion's central lighter area might suggest a lentiginous component, which is not directly mentioned in the metadata.",
+      "The lesion's size and count are described as 'large' and 'solitary' in the metadata, while the image summary mentions a 'well-circumscribed, slightly irregular brownish lesion'."
+    ]
+  },
+  "information_gap_summary": {
+    "missing_information": [
+      "Precise location within the posterior torso",
+      "Lesion's exact size in centimeters",
+      "Patient's medical history, including any previous skin conditions or surgeries"
+    ],
+    "why_it_matters": [
+      "Precise location helps in understanding the anatomical context and potential risks.",
+      "Exact size aids in assessing the lesion's growth rate and potential malignancy.",
+      "Patient's medical history is crucial for ruling out secondary lesions or conditions that could influence the diagnosis."
+    ],
+    "impact_on_differential": [
+      "Location can help differentiate between primary and secondary lesions.",
+      "Size is important for assessing the lesion's behavior over time and for determining the need for biopsy.",
+      "Medical history can provide insights into the patient's overall health and any factors that might affect the lesion's nature."
+    ],
+    "uncertainty_if_missing": "medium"
+  },
+  "escalation_summary": {
+    "whether_escalation_needed": "unknown",
+    "escalation_reason": [],
+    "suggested_next_check_type": "",
+    "caution_flags": []
+  },
+  "planner_rationale": {
+    "planner_type": "rule_based",
+    "planner_version": "v1",
+    "selected_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "border_surface_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "malignancy_risk_assessment_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill"
+    ],
+    "selection_reasons": {
+      "morphology_analysis_skill": [
+        "Boosted by skill retrieval score=10.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "color_pattern_analysis_skill": [
+        "Boosted by skill retrieval score=11.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "border_surface_analysis_skill": [
+        "Boosted by skill retrieval score=9.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "lesion_description_structuring_skill": [
+        "Boosted by skill retrieval score=8.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "metadata_consistency_skill": [
+        "Boosted by skill retrieval score=12.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "malignancy_risk_assessment_skill": [
+        "Boosted by skill retrieval score=7.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "information_gap_detection_skill": [
+        "Boosted by skill retrieval score=5.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `contradiction_rich`."
+      ],
+      "uncertainty_assessment_skill": [
+        "Boosted by skill retrieval score=7.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ],
+      "contradiction_check_skill": [
+        "Boosted by skill retrieval score=7.50.",
+        "Boosted by cognition helpful_rate=0.98.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ]
+    }
+  },
+  "confusion_cluster_summary": {
+    "active_clusters": [],
+    "guidance": []
+  },
+  "selected_evidence": [],
+  "evidence_decision_policy": {
+    "risk_layer": {
+      "risk_flag": "malignancy_risk_medium",
+      "caution_flags": [
+        "contradictions_present"
+      ],
+      "follow_up_suggestion": "clinical follow-up and closer inspection if concern persists",
+      "selected_evidence": [],
+      "baseline_preview": {
+        "early_ddx_candidates": [
+          "Dermal Nevus",
+          "Atypical Dermal Nevus",
+          "Lentigo"
+        ],
+        "image_summary": "A well-circumscribed, slightly irregular brownish lesion with a central lighter area on the posterior torso.",
+        "baseline_final_diagnosis": "Nevus",
+        "baseline_differential_diagnoses": [
+          "Nevus",
+          "Malignant Melanoma"
+        ],
+        "baseline_confidence": "Moderate"
+      }
+    },
+    "diagnosis_override_layer": {
+      "workflow_context": {
+        "label_granularity": "fine",
+        "presentation_mode": "focal_lesion",
+        "workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+        "available_tests": [
+          "clinical_photo_only",
+          "lesion_photo"
+        ],
+        "workflow_preference": "morphology_first",
+        "hospital_type": "specialist_clinic",
+        "time_budget": "standard",
+        "metadata_completeness": "partial",
+        "workflow_capabilities": [
+          "image_archive_reasoning",
+          "full_taxonomy_reasoning",
+          "focal_lesion_reasoning",
+          "legacy_agent_final_reasoning"
+        ]
+      },
+      "override_allowed": false,
+      "malignancy_override_allowed": false,
+      "subtype_override_allowed": false,
+      "family_override_allowed": false,
+      "override_mode": "risk_only",
+      "override_reasons": [
+        "uncertainty_not_high"
+      ],
+      "why_not_confident_enough_to_override": [
+        "malignancy risk is not high enough for a diagnosis override",
+        "no curated selected evidence is available to justify overriding the baseline diagnosis",
+        "supporting evidence does not sufficiently outweigh opposing or exclusion evidence",
+        "supporting evidence is not specific enough to justify a subtype override",
+        "no specialist evidence strongly supports the override direction",
+        "contradictions or reasoning gaps remain too numerous",
+        "retrieval evidence does not provide a consistent prototype or confusion-memory anchor",
+        "opposing or exclusion evidence quota is not satisfied"
+      ],
+      "supporting_evidence": [],
+      "opposing_evidence": [],
+      "supporting_score": 0,
+      "opposing_score": 0,
+      "support_margin": 0,
+      "selected_evidence_present": false,
+      "subtype_support_score": 0,
+      "subtype_support_margin": 0,
+      "specialist_support_present": false,
+      "consistent_retrieval_count": 0,
+      "contradiction_count": 6,
+      "uncertainty_level": "medium",
+      "opposing_quota_satisfied": false,
+      "subtype_support_quota_satisfied": false
+    }
+  },
+  "serialized_evidence_text": "[Observation Evidence]\n- Initial image summary: A well-circumscribed, slightly irregular brownish lesion with a central lighter area on the posterior torso.\n- Early differential candidates: Dermal Nevus, Atypical Dermal Nevus, Lentigo\n- morphology_analysis_skill: lesion_type=plaque | size_range=large | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence\n- color_pattern_analysis_skill: primary_color=brown | color_variation=marked | pigmentation_pattern=reticular | asymmetry_color=present | evidence_strength=medium | recommendation_type=descriptive_evidence\n- border_surface_analysis_skill: border_clarity=slightly irregular | border_irregularity=irregular | surface_texture=rough | scaling_presence=absent | evidence_strength=medium | recommendation_type=descriptive_evidence\n- lesion_description_structuring_skill: primary_lesion_morphology=Plaque | color=Brown, marked variation, reticular pigmentation | border=Slightly irregular, rough texture | surface=Rough | size_count=Large, solitary | distribution=Posterior torso\n- Raw case reference ISIC_0000013: A well-circumscribed, dark brown to black lesion with irregular borders and a slightly raised surface.\n\n[Exclusion And Comparison Evidence]\n- metadata_consistency_skill: consistency_score=medium | suspicious_points=The lesion's central lighter area might suggest a lentiginous component, which is not directly mentioned in the metadata.; The lesion's size and count are de... | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Tactical experience tac_ISIC_0000006_f0152010c15d: ddx=Dermal Nevus, Atypical Dermal Nevus, Benign Keratosis; risk=malignancy_risk:medium; uncertainty=medium; separated edge evidence from surface evidence; highlighted margin quality explicitly; required downstream integration beyond border_surface_analysis_skill\n- Tactical experience tac_ISIC_0000006_e6055fc25fdb: ddx=Dermal Nevus, Atypical Dermal Nevus, Benign Keratosis; risk=malignancy_risk:medium; uncertainty=medium; made pigment variation explicit; surfaced color asymmetry as auditable evidence; required downstream integration beyond color_pattern_analysis_skill\n\n[Risk Evidence]\n- Risk flags: malignancy_risk:medium\n- malignancy_risk_assessment_skill: risk_level=medium | risk_evidence={'border_clarity': 'slightly irregular', 'color_variation': 'marked', 'pigmentation_pattern': 'reticular', 'asymmetry_color': 'present'} | alarm_signals=Slightly irregular border; Marked color variation; Reticular pigmentation pattern | evidence_strength=medium | recommendation_type=risk_signal\n- Abstract experience abs_composite_a8337995dea3: ddx=Dermal Nevus, Atypical Dermal Nevus, Benign Keratosis; decision_pattern=risk_then_uncertainty_audit; uncertainty=medium; risk=malignancy_risk:medium; Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.; compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill; Candidate only; do not auto-materialize a composite skill in the current stage.\n- Abstract experience abs_composite_fa50b3f9d6e5: ddx=Malignant Melanoma, Atypical Nevus, Dermal Nevus; decision_pattern=compare_then_audit_uncertainty; uncertainty=high; risk=malignancy_risk:medium; Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.; compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill; Candidate only; do not auto-materialize a composite skill in the current stage.\n- Abstract experience abs_composite_7538a6b26480: ddx=Malignant Melanoma, Atypical Nevus, Dermal Nevus; decision_pattern=compare_then_audit_uncertainty; uncertainty=high; risk=malignancy_risk:medium; Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.; compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill; Candidate only; do not auto-materialize a composite skill in the current stage.\n\n[Conflict And Uncertainty]\n- Uncertainty level: medium\n- Uncertainty reasons: The lesion exhibits slight irregularity in its border, which is a concerning feature.; The presence of a central lighter area raises suspicion for a lentiginous component, which complicates differentiation between benign and malignant lesions.\n- Missing information: Histopathological confirmation is necessary to rule out atypical features that cannot be definitively assessed clinically.; Additional imaging techniques like dermoscopy or ultrasound might provide more detailed information about the lesion's structure and depth.\n- missing links: {'description': \"The lesion's exact size in centimeters needs to be determined to assess the size range accurately.\"}; {'description': \"The lesion's surface texture should be assessed using dermoscopy or another imaging technique to confirm if it is rough or smooth.\"}\n- reasoning gaps: {'description': \"The lesion's depth and structure cannot be determined from the image alone, which is crucial for differentiating between benign and malignant lesions.\"}; {'description': \"The lesion's symmetry in terms of shape and color should be evaluated to assess the presence of asymmetry, which is important for malignancy risk assessment.\"}\n- suspicious points: The lesion's central lighter area might suggest a lentiginous component, which is not directly mentioned in the metadata.; The lesion's size and count are described as 'large' and 'solitary' in the metadata, while the image summary mentions a 'well-circumscribed, slightly irregular brownish lesion'.\n- contradiction_check_skill: missing_links={'description': \"The lesion's exact size in centimeters needs to be determined to assess the size range accurately.\"}; {'description': \"The lesion's surface ... | reasoning_gaps={'description': \"The lesion's depth and structure cannot be determined from the image alone, which is crucial for differentiating between benign and malignan... | evidence_strength=medium | recommendation_type=uncertainty_signal\n- uncertainty_assessment_skill: uncertainty_level=medium | reasons=The lesion exhibits slight irregularity in its border, which is a concerning feature.; The presence of a central lighter area raises suspicion for a lentigin... | missing_information=Histopathological confirmation is necessary to rule out atypical features that cannot be definitively assessed clinically.; Additional imaging techniques lik... | evidence_strength=medium | recommendation_type=uncertainty_signal\n- information_gap_detection_skill: missing_information=Precise location within the posterior torso; Lesion's exact size in centimeters; Patient's medical history, including any previous skin conditions or surgeries | why_it_matters=Precise location helps in understanding the anatomical context and potential risks.; Exact size aids in assessing the lesion's growth rate and potential mali... | impact_on_differential=Location can help differentiate between primary and secondary lesions.; Size is important for assessing the lesion's behavior over time and for determining t... | uncertainty_if_missing=medium | evidence_strength=medium | recommendation_type=descriptive_evidence\n- explicit information gaps: Precise location within the posterior torso; Lesion's exact size in centimeters; Patient's medical history, including any previous skin conditions or surgeries\n- why gaps matter: Precise location helps in understanding the anatomical context and potential risks.; Exact size aids in assessing the lesion's growth rate and potential malignancy.; Patient's medical history is crucial for ruling out secondary lesions or conditions that could influence the diagnosis.\n- impact on differential: Location can help differentiate between primary and secondary lesions.; Size is important for assessing the lesion's behavior over time and for determining the need for biopsy.; Medical history can provide insights into the patient's overall health and any factors that might affect the lesion's nature.\n- residual uncertainty if still missing: medium\n- escalation needed: unknown\n\n[Planner Rationale]\n- Selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill\n- morphology_analysis_skill: Boosted by skill retrieval score=10.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.\n- color_pattern_analysis_skill: Boosted by skill retrieval score=11.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.\n- border_surface_analysis_skill: Boosted by skill retrieval score=9.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.",
+  "evidence_calibration_debug": {
+    "calibrator_type": "off",
+    "calibrator_version": "v1",
+    "section_plan": {
+      "observation": {
+        "skill_names": [
+          "morphology_analysis_skill",
+          "color_pattern_analysis_skill",
+          "border_surface_analysis_skill",
+          "lesion_description_structuring_skill"
+        ],
+        "merged_groups": [],
+        "raw_case_source_ids": [
+          "ISIC_0000013"
+        ]
+      },
+      "comparison": {
+        "skill_names": [
+          "metadata_consistency_skill"
+        ],
+        "merged_groups": [],
+        "tactical_source_ids": [
+          "tac_ISIC_0000006_f0152010c15d",
+          "tac_ISIC_0000006_e6055fc25fdb"
+        ],
+        "abstract_source_ids": []
+      },
+      "risk": {
+        "skill_names": [
+          "malignancy_risk_assessment_skill"
+        ],
+        "abstract_source_ids": [
+          "abs_composite_a8337995dea3",
+          "abs_composite_fa50b3f9d6e5",
+          "abs_composite_7538a6b26480"
+        ]
+      },
+      "conflict_uncertainty": {
+        "skill_names": [
+          "information_gap_detection_skill",
+          "uncertainty_assessment_skill",
+          "contradiction_check_skill"
+        ]
+      },
+      "planner": {
+        "max_reason_skills": 3
+      },
+      "section_order": [
+        "observation",
+        "comparison",
+        "risk",
+        "conflict_uncertainty",
+        "planner"
+      ]
+    },
+    "item_scores": [],
+    "omitted_items": [],
+    "debug": {
+      "reason": "evidence calibrator disabled by policy"
+    }
+  }
+}

@@ -1,0 +1,721 @@
+{
+  "perception": {
+    "image_summary": "A flat, slightly elevated lesion with a uniform color and texture on the anterior torso.",
+    "ddx_candidates": [
+      "NV",
+      "DF"
+    ],
+    "uncertainty": {
+      "level": "low",
+      "reasons": [
+        "Uniform color and texture without significant asymmetry or irregular borders."
+      ]
+    },
+    "notes": [
+      "No visible pigmentation or irregularities."
+    ]
+  },
+  "retrieved_experience": [
+    {
+      "case_id": "ISIC_0000042_downsampled",
+      "source_layer": "abstract_experience",
+      "source_subtype": "composite_skill_seed",
+      "experience_type": "composite_skill_seed",
+      "perception_summary": "ddx=DF, NV, BKL; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium",
+      "confusion_pair": null,
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage.",
+        "Promote only after repeated successful supporting cases under a stable trigger pattern."
+      ],
+      "source_id": "abs_composite_85802b5142ee",
+      "retrieval_score": 9
+    },
+    {
+      "case_id": "ISIC_0000019_downsampled",
+      "source_layer": "abstract_experience",
+      "source_subtype": "composite_skill_seed",
+      "experience_type": "composite_skill_seed",
+      "perception_summary": "ddx=NV, DF, BKL; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium",
+      "confusion_pair": null,
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage.",
+        "Promote only after repeated successful supporting cases under a stable trigger pattern."
+      ],
+      "source_id": "abs_composite_7ea3cabb18e5",
+      "retrieval_score": 9
+    }
+  ],
+  "skill_outputs": {
+    "morphology_analysis_skill": {
+      "lesion_type": "macule",
+      "size_range": "small",
+      "elevation": "flat",
+      "count": "solitary",
+      "referenced_experiences": [
+        "ISIC_0000023_downsampled",
+        "ISIC_0000001",
+        "abs_composite_85802b5142ee",
+        "abs_composite_7ea3cabb18e5",
+        "abs_composite_7de6a616ea40"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "color_pattern_analysis_skill": {
+      "primary_color": "pink",
+      "color_variation": "unknown",
+      "pigmentation_pattern": "mixed",
+      "asymmetry_color": "absent",
+      "referenced_experiences": [
+        "ISIC_0000023_downsampled",
+        "ISIC_0000001",
+        "abs_composite_85802b5142ee",
+        "abs_composite_7ea3cabb18e5",
+        "abs_composite_7de6a616ea40"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "border_surface_analysis_skill": {
+      "border_clarity": "crisp",
+      "border_irregularity": "regular",
+      "surface_texture": "smooth",
+      "scaling_presence": "absent",
+      "referenced_experiences": [
+        "ISIC_0000023_downsampled",
+        "ISIC_0000001",
+        "abs_composite_85802b5142ee",
+        "abs_composite_7ea3cabb18e5",
+        "abs_composite_7de6a616ea40"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "lesion_description_structuring_skill": {
+      "primary_lesion_morphology": "flat macule",
+      "color": [
+        "pink"
+      ],
+      "border": [
+        "crisp"
+      ],
+      "surface": [
+        "smooth"
+      ],
+      "size_count": [
+        "size: small, count: solitary"
+      ],
+      "distribution": [
+        "site: anterior torso, anatom_site_general: anterior torso"
+      ],
+      "associated_context": [
+        "age_approx: 30, sex: female, label_space_id: isic2019_full"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000023_downsampled",
+        "ISIC_0000001"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "metadata_consistency_skill": {
+      "consistency_score": "high",
+      "conflicts": [],
+      "suspicious_points": [
+        "The lesion appears slightly elevated, which might be interpreted as 'slightly elevated' in the metadata but could also be seen as 'flat' depending on the magnification level."
+      ],
+      "referenced_experiences": [
+        "ISIC_0000023_downsampled",
+        "ISIC_0000001",
+        "abs_composite_85802b5142ee",
+        "abs_composite_7ea3cabb18e5",
+        "abs_composite_7de6a616ea40"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "malignancy_risk_assessment_skill": {
+      "risk_level": "low",
+      "risk_evidence": [
+        "The lesion is described as a flat macule with a uniform color and texture.",
+        "The primary color is pink, and there is no indication of asymmetry or irregular borders."
+      ],
+      "alarm_signals": [],
+      "benign_reassuring_features": [
+        "Symmetry (bilateral or radial)",
+        "Regular border (smooth, well-defined)",
+        "Uniform color (single color, homogeneous)",
+        "Lack of structural irregularity",
+        "Small size (<6mm)",
+        "Smooth surface texture"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000023_downsampled",
+        "ISIC_0000001"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "information_gap_detection_skill": {
+      "missing_information": [
+        "Lesion's exact size in millimeters",
+        "Patient's medical history (including previous skin conditions)"
+      ],
+      "why_it_matters": [
+        "Size is crucial for differentiating between benign and potentially malignant lesions.",
+        "Medical history helps in ruling out certain conditions and assessing risk factors."
+      ],
+      "impact_on_differential": [
+        "Without knowing the size, it's difficult to assess the lesion's growth potential, which is important for distinguishing between benign and malignant lesions.",
+        "Medical history can provide insights into the patient's risk profile, which influences the differential diagnosis."
+      ],
+      "uncertainty_if_missing": "medium",
+      "referenced_experiences": [
+        "ISIC_0000023_downsampled",
+        "ISIC_0000001",
+        "abs_composite_85802b5142ee",
+        "abs_composite_7ea3cabb18e5",
+        "abs_composite_7de6a616ea40"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "uncertainty_assessment_skill": {
+      "uncertainty_level": "medium",
+      "reasons": [
+        "The lesion appears to be a macule with a uniform color and texture, but the lack of detailed information about the lesion's surface characteristics and the absence of specific features like pigment network or dermoscopic patterns make it difficult to rule out certain conditions.",
+        "The image does not provide a clear view of the lesion's surface, which could reveal important details about its structure and texture."
+      ],
+      "missing_information": [
+        "Detailed dermoscopic features such as pigment network, structure, and symmetry.",
+        "High-resolution images to assess subtle surface characteristics."
+      ],
+      "referenced_experiences": [
+        "ISIC_0000023_downsampled",
+        "ISIC_0000001",
+        "abs_composite_85802b5142ee",
+        "abs_composite_7ea3cabb18e5",
+        "abs_composite_7de6a616ea40"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "uncertainty_signal"
+    },
+    "contradiction_check_skill": {
+      "contradictions": [
+        {
+          "description": "The image shows a flat lesion with a uniform color and texture, while the metadata indicates the lesion is described as a macule with a uniform color and texture.",
+          "confidence": "high"
+        }
+      ],
+      "missing_links": [
+        {
+          "description": "There is a lack of detailed dermoscopic features such as pigment network, structure, and symmetry, which could provide more insight into the lesion's nature.",
+          "confidence": "medium"
+        }
+      ],
+      "reasoning_gaps": [
+        {
+          "description": "The lesion's surface characteristics and subtle surface details are not clearly visible in the image, which could affect the differential diagnosis.",
+          "confidence": "medium"
+        }
+      ],
+      "referenced_experiences": [
+        "ISIC_0000023_downsampled",
+        "ISIC_0000001",
+        "abs_composite_85802b5142ee",
+        "abs_composite_7ea3cabb18e5",
+        "abs_composite_7de6a616ea40"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    }
+  },
+  "risk_flags": [],
+  "uncertainty": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The lesion appears to be a macule with a uniform color and texture, but the lack of detailed information about the lesion's surface characteristics and the absence of specific features like pigment network or dermoscopic patterns make it difficult to rule out certain conditions.",
+      "The image does not provide a clear view of the lesion's surface, which could reveal important details about its structure and texture."
+    ],
+    "missing_information": [
+      "Detailed dermoscopic features such as pigment network, structure, and symmetry.",
+      "High-resolution images to assess subtle surface characteristics."
+    ],
+    "referenced_experiences": [
+      "ISIC_0000023_downsampled",
+      "ISIC_0000001",
+      "abs_composite_85802b5142ee",
+      "abs_composite_7ea3cabb18e5",
+      "abs_composite_7de6a616ea40"
+    ],
+    "evidence_strength": "medium",
+    "recommendation_type": "uncertainty_signal"
+  },
+  "notes": [
+    "Agent generated structured evidence only.",
+    "Qwen remains the sole final diagnostic decision maker.",
+    "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill.",
+    "Policy in use: stable_default_policy__full_dermagent.",
+    "Skill retrieval candidates: color_pattern_analysis_skill, metadata_consistency_skill, morphology_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, benign_mimic_specialist_skill, malignancy_risk_assessment_skill, distribution_analysis_skill, differential_compare_skill, uncertainty_assessment_skill, contradiction_check_skill, temporal_evolution_skill, information_gap_detection_skill, exclusion_reasoning_skill.",
+    "No visible pigmentation or irregularities.",
+    "Retrieved prior reasoning experience for context."
+  ],
+  "initial_perception_summary": {
+    "image_summary": "A flat, slightly elevated lesion with a uniform color and texture on the anterior torso.",
+    "ddx_candidates": [
+      "NV",
+      "DF"
+    ],
+    "uncertainty_level": "low",
+    "uncertainty_reasons": [
+      "Uniform color and texture without significant asymmetry or irregular borders."
+    ],
+    "observation_notes": [
+      "No visible pigmentation or irregularities."
+    ]
+  },
+  "retrieved_raw_cases_summary": [
+    {
+      "source_id": "ISIC_0000023_downsampled",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "ISIC_0000023_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "A well-circumscribed, irregularly shaped brownish lesion with a slightly raised border on the anterior torso.",
+      "learning_points": [
+        "Final decision: Nevus",
+        "Correctness: True"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "ISIC_0000019_downsampled",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "ISIC_0000019_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "A well-circumscribed, homogenous brownish lesion with a slightly irregular border and a central area of lower pigmentation.",
+      "learning_points": [
+        "Final decision: Nevus",
+        "Correctness: True"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "ISIC_0000012",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "ISIC_0000012",
+      "confusion_pair": "None",
+      "perception_summary": "A well-circumscribed, slightly irregular brownish lesion with a central area of hyperpigmentation on a light pink background.",
+      "learning_points": [
+        "Final decision: Nevus",
+        "Correctness: True"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_tactical_experiences_summary": [
+    {
+      "source_id": "tac_ISIC_0000044_downsampled_f0152010c15d",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000044_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=DF, NV, BKL; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "separated edge evidence from surface evidence",
+        "highlighted margin quality explicitly",
+        "required downstream integration beyond border_surface_analysis_skill"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_ISIC_0000044_downsampled_e6055fc25fdb",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000044_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=DF, NV, BKL; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "made pigment variation explicit",
+        "surfaced color asymmetry as auditable evidence",
+        "required downstream integration beyond color_pattern_analysis_skill"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_ISIC_0000044_downsampled_e4a8c7c2c58e",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000044_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=DF, NV, BKL; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "required downstream integration beyond lesion_description_structuring_skill",
+        "Action pattern: structured_skill_sequence"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_ISIC_0000044_downsampled_de2f64ad3de5",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000044_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=DF, NV, BKL; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "made evidence limits explicit",
+        "prevented overconfident downstream use",
+        "required downstream integration beyond uncertainty_assessment_skill"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_abstract_experiences_summary": [
+    {
+      "source_id": "abs_composite_85802b5142ee",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "ISIC_0000042_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=DF, NV, BKL; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_composite_7ea3cabb18e5",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "ISIC_0000019_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=NV, DF, BKL; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_composite_7de6a616ea40",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "ISIC_0000007",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=NV, DF, BKL; decision_pattern=risk_then_uncertainty_audit; uncertainty=medium; risk=malignancy_risk:medium",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "uncertainty_summary": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The lesion appears to be a macule with a uniform color and texture, but the lack of detailed information about the lesion's surface characteristics and the absence of specific features like pigment network or dermoscopic patterns make it difficult to rule out certain conditions.",
+      "The image does not provide a clear view of the lesion's surface, which could reveal important details about its structure and texture."
+    ],
+    "missing_information": [
+      "Detailed dermoscopic features such as pigment network, structure, and symmetry.",
+      "High-resolution images to assess subtle surface characteristics."
+    ],
+    "referenced_experiences": [
+      "ISIC_0000023_downsampled",
+      "ISIC_0000001",
+      "abs_composite_85802b5142ee",
+      "abs_composite_7ea3cabb18e5",
+      "abs_composite_7de6a616ea40"
+    ]
+  },
+  "contradiction_summary": {
+    "contradictions": [
+      "{'description': 'The image shows a flat lesion with a uniform color and texture, while the metadata indicates the lesion is described as a macule with a uniform color and texture.', 'confidence': 'high'}"
+    ],
+    "missing_links": [
+      "{'description': \"There is a lack of detailed dermoscopic features such as pigment network, structure, and symmetry, which could provide more insight into the lesion's nature.\", 'confidence': 'medium'}"
+    ],
+    "reasoning_gaps": [
+      "{'description': \"The lesion's surface characteristics and subtle surface details are not clearly visible in the image, which could affect the differential diagnosis.\", 'confidence': 'medium'}"
+    ],
+    "metadata_conflicts": [],
+    "suspicious_points": [
+      "The lesion appears slightly elevated, which might be interpreted as 'slightly elevated' in the metadata but could also be seen as 'flat' depending on the magnification level."
+    ]
+  },
+  "information_gap_summary": {
+    "missing_information": [
+      "Lesion's exact size in millimeters",
+      "Patient's medical history (including previous skin conditions)"
+    ],
+    "why_it_matters": [
+      "Size is crucial for differentiating between benign and potentially malignant lesions.",
+      "Medical history helps in ruling out certain conditions and assessing risk factors."
+    ],
+    "impact_on_differential": [
+      "Without knowing the size, it's difficult to assess the lesion's growth potential, which is important for distinguishing between benign and malignant lesions.",
+      "Medical history can provide insights into the patient's risk profile, which influences the differential diagnosis."
+    ],
+    "uncertainty_if_missing": "medium"
+  },
+  "escalation_summary": {
+    "whether_escalation_needed": "unknown",
+    "escalation_reason": [],
+    "suggested_next_check_type": "",
+    "caution_flags": []
+  },
+  "planner_rationale": {
+    "planner_type": "rule_based",
+    "planner_version": "v1",
+    "selected_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "border_surface_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "malignancy_risk_assessment_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill"
+    ],
+    "selection_reasons": {
+      "morphology_analysis_skill": [
+        "Boosted by skill retrieval score=11.00.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "color_pattern_analysis_skill": [
+        "Boosted by skill retrieval score=13.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "border_surface_analysis_skill": [
+        "Boosted by skill retrieval score=9.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "lesion_description_structuring_skill": [
+        "Boosted by skill retrieval score=8.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "metadata_consistency_skill": [
+        "Boosted by skill retrieval score=12.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "malignancy_risk_assessment_skill": [
+        "Boosted by skill retrieval score=7.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "information_gap_detection_skill": [
+        "Boosted by skill retrieval score=3.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Boosted by cognition.preferred_skills from prior cases."
+      ],
+      "uncertainty_assessment_skill": [
+        "Boosted by skill retrieval score=5.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ],
+      "contradiction_check_skill": [
+        "Boosted by skill retrieval score=5.50.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ]
+    }
+  },
+  "confusion_cluster_summary": {
+    "active_clusters": [],
+    "guidance": []
+  },
+  "selected_evidence": [],
+  "evidence_decision_policy": {
+    "risk_layer": {
+      "risk_flag": "malignancy_risk_low",
+      "caution_flags": [
+        "contradictions_present"
+      ],
+      "follow_up_suggestion": "clinical follow-up and closer inspection if concern persists",
+      "selected_evidence": [],
+      "baseline_preview": {
+        "early_ddx_candidates": [
+          "NV",
+          "DF"
+        ],
+        "image_summary": "A flat, slightly elevated lesion with a uniform color and texture on the anterior torso.",
+        "baseline_final_diagnosis": "Nevus",
+        "baseline_differential_diagnoses": [
+          "Nevus",
+          "Actinic Keratosis"
+        ],
+        "baseline_confidence": "Moderate"
+      }
+    },
+    "diagnosis_override_layer": {
+      "workflow_context": {
+        "label_granularity": "fine",
+        "presentation_mode": "focal_lesion",
+        "workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+        "available_tests": [
+          "clinical_photo_only",
+          "lesion_photo"
+        ],
+        "workflow_preference": "morphology_first",
+        "hospital_type": "specialist_clinic",
+        "time_budget": "standard",
+        "metadata_completeness": "partial",
+        "workflow_capabilities": [
+          "image_archive_reasoning",
+          "full_taxonomy_reasoning",
+          "focal_lesion_reasoning",
+          "legacy_agent_final_reasoning"
+        ]
+      },
+      "override_allowed": false,
+      "malignancy_override_allowed": false,
+      "subtype_override_allowed": false,
+      "family_override_allowed": false,
+      "override_mode": "risk_only",
+      "override_reasons": [
+        "uncertainty_not_high"
+      ],
+      "why_not_confident_enough_to_override": [
+        "malignancy risk is not high enough for a diagnosis override",
+        "no curated selected evidence is available to justify overriding the baseline diagnosis",
+        "supporting evidence does not sufficiently outweigh opposing or exclusion evidence",
+        "supporting evidence is not specific enough to justify a subtype override",
+        "no specialist evidence strongly supports the override direction",
+        "contradictions or reasoning gaps remain too numerous",
+        "retrieval evidence does not provide a consistent prototype or confusion-memory anchor",
+        "opposing or exclusion evidence quota is not satisfied"
+      ],
+      "supporting_evidence": [],
+      "opposing_evidence": [],
+      "supporting_score": 0,
+      "opposing_score": 0,
+      "support_margin": 0,
+      "selected_evidence_present": false,
+      "subtype_support_score": 0,
+      "subtype_support_margin": 0,
+      "specialist_support_present": false,
+      "consistent_retrieval_count": 0,
+      "contradiction_count": 4,
+      "uncertainty_level": "medium",
+      "opposing_quota_satisfied": false,
+      "subtype_support_quota_satisfied": false
+    }
+  },
+  "serialized_evidence_text": "[Observation Evidence]\n- Initial image summary: A flat, slightly elevated lesion with a uniform color and texture on the anterior torso.\n- Early differential candidates: NV, DF\n- morphology_analysis_skill: lesion_type=macule | size_range=small | elevation=flat | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence\n- color_pattern_analysis_skill: primary_color=pink | pigmentation_pattern=mixed | asymmetry_color=absent | evidence_strength=medium | recommendation_type=descriptive_evidence\n- border_surface_analysis_skill: border_clarity=crisp | border_irregularity=regular | surface_texture=smooth | scaling_presence=absent | evidence_strength=medium | recommendation_type=descriptive_evidence\n- lesion_description_structuring_skill: primary_lesion_morphology=flat macule | color=pink | border=crisp | surface=smooth | size_count=size: small, count: solitary | distribution=site: anterior torso, anatom_site_general: anterior torso\n- Raw case reference ISIC_0000023_downsampled: A well-circumscribed, irregularly shaped brownish lesion with a slightly raised border on the anterior torso.\n\n[Exclusion And Comparison Evidence]\n- metadata_consistency_skill: consistency_score=high | suspicious_points=The lesion appears slightly elevated, which might be interpreted as 'slightly elevated' in the metadata but could also be seen as 'flat' depending on the mag... | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Tactical experience tac_ISIC_0000044_downsampled_f0152010c15d: ddx=DF, NV, BKL; risk=malignancy_risk:medium; uncertainty=medium; separated edge evidence from surface evidence; highlighted margin quality explicitly; required downstream integration beyond border_surface_analysis_skill\n- Tactical experience tac_ISIC_0000044_downsampled_e6055fc25fdb: ddx=DF, NV, BKL; risk=malignancy_risk:medium; uncertainty=medium; made pigment variation explicit; surfaced color asymmetry as auditable evidence; required downstream integration beyond color_pattern_analysis_skill\n\n[Risk Evidence]\n- malignancy_risk_assessment_skill: risk_level=low | risk_evidence=The lesion is described as a flat macule with a uniform color and texture.; The primary color is pink, and there is no indication of asymmetry or irregular b... | benign_reassuring_features=Symmetry (bilateral or radial); Regular border (smooth, well-defined); Uniform color (single color, homogeneous) | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Abstract experience abs_composite_85802b5142ee: ddx=DF, NV, BKL; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium; Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.; compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill; Candidate only; do not auto-materialize a composite skill in the current stage.\n- Abstract experience abs_composite_7ea3cabb18e5: ddx=NV, DF, BKL; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium; Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.; compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill; Candidate only; do not auto-materialize a composite skill in the current stage.\n- Abstract experience abs_composite_7de6a616ea40: ddx=NV, DF, BKL; decision_pattern=risk_then_uncertainty_audit; uncertainty=medium; risk=malignancy_risk:medium; Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.; compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill; Candidate only; do not auto-materialize a composite skill in the current stage.\n\n[Conflict And Uncertainty]\n- Uncertainty level: medium\n- Uncertainty reasons: The lesion appears to be a macule with a uniform color and texture, but the lack of detailed information about the lesion's surface characteristics and the absence of specific features like pigment network or dermoscopic patterns make it difficult to rule out certain conditions.; The image does not provide a clear view of the lesion's surface, which could reveal important details about its structure and texture.\n- Missing information: Detailed dermoscopic features such as pigment network, structure, and symmetry.; High-resolution images to assess subtle surface characteristics.\n- contradictions: {'description': 'The image shows a flat lesion with a uniform color and texture, while the metadata indicates the lesion is described as a macule with a uniform color and texture.', 'confidence': 'high'}\n- missing links: {'description': \"There is a lack of detailed dermoscopic features such as pigment network, structure, and symmetry, which could provide more insight into the lesion's nature.\", 'confidence': 'medium'}\n- reasoning gaps: {'description': \"The lesion's surface characteristics and subtle surface details are not clearly visible in the image, which could affect the differential diagnosis.\", 'confidence': 'medium'}\n- suspicious points: The lesion appears slightly elevated, which might be interpreted as 'slightly elevated' in the metadata but could also be seen as 'flat' depending on the magnification level.\n- contradiction_check_skill: contradictions={'description': 'The image shows a flat lesion with a uniform color and texture, while the metadata indicates the lesion is described as a macule with a unif... | missing_links={'description': \"There is a lack of detailed dermoscopic features such as pigment network, structure, and symmetry, which could provide more insight into the... | reasoning_gaps={'description': \"The lesion's surface characteristics and subtle surface details are not clearly visible in the image, which could affect the differential di... | evidence_strength=medium | recommendation_type=descriptive_evidence\n- uncertainty_assessment_skill: uncertainty_level=medium | reasons=The lesion appears to be a macule with a uniform color and texture, but the lack of detailed information about the lesion's surface characteristics and the a... | missing_information=Detailed dermoscopic features such as pigment network, structure, and symmetry.; High-resolution images to assess subtle surface characteristics. | evidence_strength=medium | recommendation_type=uncertainty_signal\n- information_gap_detection_skill: missing_information=Lesion's exact size in millimeters; Patient's medical history (including previous skin conditions) | why_it_matters=Size is crucial for differentiating between benign and potentially malignant lesions.; Medical history helps in ruling out certain conditions and assessing r... | impact_on_differential=Without knowing the size, it's difficult to assess the lesion's growth potential, which is important for distinguishing between benign and malignant lesions.... | uncertainty_if_missing=medium | evidence_strength=medium | recommendation_type=descriptive_evidence\n- explicit information gaps: Lesion's exact size in millimeters; Patient's medical history (including previous skin conditions)\n- why gaps matter: Size is crucial for differentiating between benign and potentially malignant lesions.; Medical history helps in ruling out certain conditions and assessing risk factors.\n- impact on differential: Without knowing the size, it's difficult to assess the lesion's growth potential, which is important for distinguishing between benign and malignant lesions.; Medical history can provide insights into the patient's risk profile, which influences the differential diagnosis.\n- residual uncertainty if still missing: medium\n- escalation needed: unknown\n\n[Planner Rationale]\n- Selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill\n- morphology_analysis_skill: Boosted by skill retrieval score=11.00.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.\n- color_pattern_analysis_skill: Boosted by skill retrieval score=13.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.\n- border_surface_analysis_skill: Boosted by skill retrieval score=9.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.",
+  "evidence_calibration_debug": {
+    "calibrator_type": "off",
+    "calibrator_version": "v1",
+    "section_plan": {
+      "observation": {
+        "skill_names": [
+          "morphology_analysis_skill",
+          "color_pattern_analysis_skill",
+          "border_surface_analysis_skill",
+          "lesion_description_structuring_skill"
+        ],
+        "merged_groups": [],
+        "raw_case_source_ids": [
+          "ISIC_0000023_downsampled"
+        ]
+      },
+      "comparison": {
+        "skill_names": [
+          "metadata_consistency_skill"
+        ],
+        "merged_groups": [],
+        "tactical_source_ids": [
+          "tac_ISIC_0000044_downsampled_f0152010c15d",
+          "tac_ISIC_0000044_downsampled_e6055fc25fdb"
+        ],
+        "abstract_source_ids": []
+      },
+      "risk": {
+        "skill_names": [
+          "malignancy_risk_assessment_skill"
+        ],
+        "abstract_source_ids": [
+          "abs_composite_85802b5142ee",
+          "abs_composite_7ea3cabb18e5",
+          "abs_composite_7de6a616ea40"
+        ]
+      },
+      "conflict_uncertainty": {
+        "skill_names": [
+          "information_gap_detection_skill",
+          "uncertainty_assessment_skill",
+          "contradiction_check_skill"
+        ]
+      },
+      "planner": {
+        "max_reason_skills": 3
+      },
+      "section_order": [
+        "observation",
+        "comparison",
+        "risk",
+        "conflict_uncertainty",
+        "planner"
+      ]
+    },
+    "item_scores": [],
+    "omitted_items": [],
+    "debug": {
+      "reason": "evidence calibrator disabled by policy"
+    }
+  }
+}

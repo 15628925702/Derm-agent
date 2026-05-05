@@ -1,0 +1,3214 @@
+{
+  "reasoning_summary": "Perception summary: A well-circumscribed, irregularly shaped lesion with a dark brown center and lighter periphery on a light skin background. | Useful skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, mel_nev_specialist_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill | Final answer: Malignant Melanoma | Uncertainty: high | Risk flags: malignancy_risk:medium | Detected errors: final_diagnosis_mismatch_reference",
+  "useful_skills": [
+    "morphology_analysis_skill",
+    "color_pattern_analysis_skill",
+    "border_surface_analysis_skill",
+    "lesion_description_structuring_skill",
+    "metadata_consistency_skill",
+    "malignancy_risk_assessment_skill",
+    "mel_nev_specialist_skill",
+    "exclusion_reasoning_skill",
+    "information_gap_detection_skill",
+    "uncertainty_assessment_skill",
+    "contradiction_check_skill",
+    "escalation_recommendation_skill"
+  ],
+  "detected_errors": [
+    "final_diagnosis_mismatch_reference"
+  ],
+  "experience_type": "confusion_experience",
+  "diagnosis_correct": false,
+  "write_experience": true,
+  "case_outcome": {
+    "status": "failure",
+    "has_ground_truth": true,
+    "is_correct": false,
+    "error_type": "final_diagnosis_mismatch_reference",
+    "predicted_label": "Malignant Melanoma",
+    "reference_label": "NV",
+    "predicted_canonical_label": "MEL",
+    "reference_canonical_label": "NV",
+    "confidence_level": "moderate",
+    "uncertainty_level": "high",
+    "malignant_flag": {
+      "ground_truth": false,
+      "predicted": true
+    },
+    "confusion_pair": "Malignant Melanoma->NV",
+    "risk_flags": [
+      "malignancy_risk:medium"
+    ],
+    "label_space": {
+      "label_space_id": "isic2019_full",
+      "canonical_labels": [
+        "MEL",
+        "NV",
+        "BCC",
+        "AK",
+        "BKL",
+        "DF",
+        "VASC",
+        "SCC",
+        "UNK"
+      ],
+      "malignant_labels": [
+        "MEL",
+        "BCC",
+        "AK",
+        "SCC"
+      ],
+      "benign_labels": [
+        "NV",
+        "BKL",
+        "DF",
+        "VASC",
+        "UNK"
+      ]
+    }
+  },
+  "skill_assessments": [
+    {
+      "skill_name": "morphology_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Malignant Melanoma",
+          "Atypical Nevus",
+          "Dermal Nevus"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": ""
+      },
+      "helped_aspects": [
+        "stabilized lesion structure",
+        "made morphology explicit for downstream reasoning"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "inspect dominant lesion silhouette",
+        "judge elevation and lesion count"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000002",
+        "ISIC_0000000"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "morphology_analysis_skill",
+        "ddx:Malignant Melanoma|Atypical Nevus",
+        "risk:malignancy_risk:medium",
+        "uncertainty:high",
+        "confusion:Malignant Melanoma->NV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "morphology_analysis_skill remains reusable for Malignant Melanoma->NV style confusion"
+    },
+    {
+      "skill_name": "color_pattern_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Malignant Melanoma",
+          "Atypical Nevus",
+          "Dermal Nevus"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": ""
+      },
+      "helped_aspects": [
+        "made pigment variation explicit",
+        "surfaced color asymmetry as auditable evidence"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "inspect dominant color",
+        "compare internal color asymmetry"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000002",
+        "ISIC_0000000"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "color_pattern_analysis_skill",
+        "ddx:Malignant Melanoma|Atypical Nevus",
+        "risk:malignancy_risk:medium",
+        "uncertainty:high",
+        "confusion:Malignant Melanoma->NV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "color_pattern_analysis_skill remains reusable for Malignant Melanoma->NV style confusion"
+    },
+    {
+      "skill_name": "border_surface_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Malignant Melanoma",
+          "Atypical Nevus",
+          "Dermal Nevus"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": ""
+      },
+      "helped_aspects": [
+        "separated edge evidence from surface evidence",
+        "highlighted margin quality explicitly"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "judge border definition",
+        "inspect surface change and scale"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000002",
+        "ISIC_0000000"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "border_surface_analysis_skill",
+        "ddx:Malignant Melanoma|Atypical Nevus",
+        "risk:malignancy_risk:medium",
+        "uncertainty:high",
+        "confusion:Malignant Melanoma->NV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "border_surface_analysis_skill remains reusable for Malignant Melanoma->NV style confusion"
+    },
+    {
+      "skill_name": "lesion_description_structuring_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Malignant Melanoma",
+          "Atypical Nevus",
+          "Dermal Nevus"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": ""
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000002",
+        "tac_ISIC_0000000_77b666058907",
+        "abs_confusion_8f48b4d56c81"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 1.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "lesion_description_structuring_skill",
+        "ddx:Malignant Melanoma|Atypical Nevus",
+        "risk:malignancy_risk:medium",
+        "uncertainty:high",
+        "confusion:Malignant Melanoma->NV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "lesion_description_structuring_skill remains reusable for Malignant Melanoma->NV style confusion"
+    },
+    {
+      "skill_name": "metadata_consistency_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Malignant Melanoma",
+          "Atypical Nevus",
+          "Dermal Nevus"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": ""
+      },
+      "helped_aspects": [
+        "checked image-metadata coherence",
+        "flagged reliability issues before integration"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "compare visible cues against metadata",
+        "separate direct conflicts from soft concerns"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000002",
+        "ISIC_0000000",
+        "tac_ISIC_0000000_77b666058907",
+        "tac_ISIC_0000000_5d8de46f6089",
+        "tac_ISIC_0000000_e5b6956c8c26",
+        "abs_confusion_8f48b4d56c81",
+        "abs_composite_fa50b3f9d6e5",
+        "abs_composite_7538a6b26480"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": true,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "metadata_consistency_skill",
+        "ddx:Malignant Melanoma|Atypical Nevus",
+        "risk:malignancy_risk:medium",
+        "uncertainty:high",
+        "confusion:Malignant Melanoma->NV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "metadata_consistency_skill remains reusable for Malignant Melanoma->NV style confusion"
+    },
+    {
+      "skill_name": "malignancy_risk_assessment_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Malignant Melanoma",
+          "Atypical Nevus",
+          "Dermal Nevus"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": ""
+      },
+      "helped_aspects": [
+        "made risk framing explicit",
+        "highlighted alarm signals without forcing diagnosis"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "collect alarm signals",
+        "balance concerning and reassuring evidence"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000002",
+        "tac_ISIC_0000000_77b666058907",
+        "tac_ISIC_0000000_5d8de46f6089",
+        "tac_ISIC_0000000_e5b6956c8c26",
+        "abs_confusion_8f48b4d56c81",
+        "abs_composite_fa50b3f9d6e5",
+        "abs_composite_7538a6b26480"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "risk_signal",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 1.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "malignancy_risk_assessment_skill",
+        "ddx:Malignant Melanoma|Atypical Nevus",
+        "risk:malignancy_risk:medium",
+        "uncertainty:high",
+        "confusion:Malignant Melanoma->NV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "malignancy_risk_assessment_skill remains reusable for Malignant Melanoma->NV style confusion"
+    },
+    {
+      "skill_name": "mel_nev_specialist_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Malignant Melanoma",
+          "Atypical Nevus",
+          "Dermal Nevus"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": ""
+      },
+      "helped_aspects": [
+        "focused a high-value confusion pair",
+        "sharpened specialist comparison clues"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "focus the confusion pair",
+        "contrast differentiating clues without forcing closure"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000002",
+        "tac_ISIC_0000000_77b666058907",
+        "tac_ISIC_0000000_5d8de46f6089",
+        "abs_confusion_8f48b4d56c81"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "comparative_support",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 1.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "mel_nev_specialist_skill",
+        "ddx:Malignant Melanoma|Atypical Nevus",
+        "risk:malignancy_risk:medium",
+        "uncertainty:high",
+        "confusion:Malignant Melanoma->NV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "mel_nev_specialist_skill remains reusable for Malignant Melanoma->NV style confusion"
+    },
+    {
+      "skill_name": "exclusion_reasoning_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Malignant Melanoma",
+          "Atypical Nevus",
+          "Dermal Nevus"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": ""
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_8f48b4d56c81",
+        "tac_ISIC_0000000_77b666058907",
+        "tac_ISIC_0000000_5d8de46f6089"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 1.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "exclusion_reasoning_skill",
+        "ddx:Malignant Melanoma|Atypical Nevus",
+        "risk:malignancy_risk:medium",
+        "uncertainty:high",
+        "confusion:Malignant Melanoma->NV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "exclusion_reasoning_skill remains reusable for Malignant Melanoma->NV style confusion"
+    },
+    {
+      "skill_name": "information_gap_detection_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Malignant Melanoma",
+          "Atypical Nevus",
+          "Dermal Nevus"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": ""
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000002",
+        "ISIC_0000000",
+        "tac_ISIC_0000000_77b666058907",
+        "tac_ISIC_0000000_5d8de46f6089",
+        "tac_ISIC_0000000_e5b6956c8c26",
+        "abs_confusion_8f48b4d56c81",
+        "abs_composite_fa50b3f9d6e5",
+        "abs_composite_7538a6b26480"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 1.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "information_gap_detection_skill",
+        "ddx:Malignant Melanoma|Atypical Nevus",
+        "risk:malignancy_risk:medium",
+        "uncertainty:high",
+        "confusion:Malignant Melanoma->NV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "information_gap_detection_skill remains reusable for Malignant Melanoma->NV style confusion"
+    },
+    {
+      "skill_name": "uncertainty_assessment_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Malignant Melanoma",
+          "Atypical Nevus",
+          "Dermal Nevus"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": ""
+      },
+      "helped_aspects": [
+        "made evidence limits explicit",
+        "prevented overconfident downstream use"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "scan ambiguity across evidence streams",
+        "name missing information explicitly"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000002",
+        "ISIC_0000000",
+        "tac_ISIC_0000000_77b666058907",
+        "tac_ISIC_0000000_5d8de46f6089",
+        "tac_ISIC_0000000_e5b6956c8c26",
+        "abs_confusion_8f48b4d56c81",
+        "abs_composite_fa50b3f9d6e5",
+        "abs_composite_7538a6b26480"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "uncertainty_signal",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 2.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "uncertainty_assessment_skill",
+        "ddx:Malignant Melanoma|Atypical Nevus",
+        "risk:malignancy_risk:medium",
+        "uncertainty:high",
+        "confusion:Malignant Melanoma->NV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "uncertainty_assessment_skill remains reusable for Malignant Melanoma->NV style confusion"
+    },
+    {
+      "skill_name": "contradiction_check_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Malignant Melanoma",
+          "Atypical Nevus",
+          "Dermal Nevus"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": ""
+      },
+      "helped_aspects": [
+        "surfaced missing links in the reasoning chain",
+        "audited internal consistency"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "scan for conflicts across evidence sources",
+        "surface missing links in the reasoning chain"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000002",
+        "ISIC_0000000",
+        "tac_ISIC_0000000_77b666058907",
+        "tac_ISIC_0000000_5d8de46f6089",
+        "tac_ISIC_0000000_e5b6956c8c26",
+        "abs_confusion_8f48b4d56c81",
+        "abs_composite_fa50b3f9d6e5",
+        "abs_composite_7538a6b26480"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "uncertainty_signal",
+      "uncertainty_reduction": true,
+      "contradiction_detected": true,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 2.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "contradiction_check_skill",
+        "ddx:Malignant Melanoma|Atypical Nevus",
+        "risk:malignancy_risk:medium",
+        "uncertainty:high",
+        "confusion:Malignant Melanoma->NV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "contradiction_check_skill remains reusable for Malignant Melanoma->NV style confusion"
+    },
+    {
+      "skill_name": "escalation_recommendation_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Malignant Melanoma",
+          "Atypical Nevus",
+          "Dermal Nevus"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": ""
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000002",
+        "ISIC_0000000"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "risk_signal",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 2.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "escalation_recommendation_skill",
+        "ddx:Malignant Melanoma|Atypical Nevus",
+        "risk:malignancy_risk:medium",
+        "uncertainty:high",
+        "confusion:Malignant Melanoma->NV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "escalation_recommendation_skill remains reusable for Malignant Melanoma->NV style confusion"
+    }
+  ],
+  "reflection_extract": {
+    "raw_case_memory_ready": true,
+    "tactical_experience_count": 12,
+    "abstract_experience_candidate_count": 2,
+    "reusable_tactical_count": 12,
+    "composite_skill_seed_count": 0,
+    "composite_skill_seed_ids": [],
+    "abstract_flags": {
+      "confusion_memory": true,
+      "prototype": false,
+      "rule": true,
+      "rule_candidate": false,
+      "composite_skill_seed": false
+    },
+    "case_status": "failure",
+    "composite_skill_seed_ready_for_promotion": []
+  },
+  "writeback_bundle": {
+    "raw_case_memory": {
+      "case_id": "ISIC_0000028_downsampled",
+      "image_paths": [
+        "/root/DermAgent/data/isic2019/images/ISIC_2019_Training_Input/ISIC_0000028_downsampled.jpg"
+      ],
+      "metadata": {
+        "image": "ISIC_0000028_downsampled",
+        "age_approx": "60",
+        "anatom_site_general": "anterior torso",
+        "lesion_id": "",
+        "sex": "male",
+        "original_label": "NV",
+        "label_space_id": "isic2019_full"
+      },
+      "dataset_name": "ISIC2019",
+      "label_space_id": "isic2019_full",
+      "true_label": "NV",
+      "qwen_output": {
+        "final_diagnosis": "Malignant Melanoma",
+        "differential_diagnoses": [
+          "Malignant Melanoma",
+          "Nevus"
+        ],
+        "rationale": "The lesion exhibits irregular borders and asymmetry, which are concerning features for malignancy. While the color variation from dark to light is noted, it can occur in both benign and malignant lesions. The lesion's size and surface texture are not clearly defined due to the image quality and resolution, leading to high uncertainty. The presence of irregular borders and asymmetry, along with the need for high-resolution imaging and histopathological confirmation, necessitates a cautious approach.",
+        "confidence": "Moderate",
+        "follow_up_considerations": "High-resolution imaging to better assess the lesion's borders and surface texture. Histopathological confirmation to rule out malignancy definitively."
+      },
+      "agent_output": {
+        "perception": {
+          "image_summary": "A well-circumscribed, irregularly shaped lesion with a dark brown center and lighter periphery on a light skin background.",
+          "ddx_candidates": [
+            "Malignant Melanoma",
+            "Atypical Nevus",
+            "Dermal Nevus"
+          ],
+          "uncertainty": {
+            "level": "high",
+            "reasons": [
+              "Irregular border and asymmetry suggest malignancy but could also be seen in benign lesions.",
+              "Color variation from dark to light raises concern but can occur in benign lesions."
+            ]
+          },
+          "notes": [
+            "The lesion has a classic "
+          ]
+        },
+        "skill_outputs": {
+          "morphology_analysis_skill": {
+            "lesion_type": "plaque",
+            "size_range": "large",
+            "elevation": "raised",
+            "count": "solitary",
+            "referenced_experiences": [
+              "ISIC_0000002",
+              "ISIC_0000000"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "color_pattern_analysis_skill": {
+            "primary_color": "Dark brown",
+            "color_variation": "Marked",
+            "pigmentation_pattern": "Reticular",
+            "asymmetry_color": "Present",
+            "referenced_experiences": [
+              "ISIC_0000002",
+              "ISIC_0000000"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "border_surface_analysis_skill": {
+            "border_clarity": "poor",
+            "border_irregularity": "irregular",
+            "surface_texture": "rough",
+            "scaling_presence": "absent",
+            "referenced_experiences": [
+              "ISIC_0000002",
+              "ISIC_0000000"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "lesion_description_structuring_skill": {
+            "primary_lesion_morphology": "irregular plaque",
+            "color": [
+              "dark brown center, lighter periphery"
+            ],
+            "border": [
+              "irregular, poor clarity"
+            ],
+            "surface": [
+              "rough"
+            ],
+            "size_count": [
+              "large, solitary"
+            ],
+            "distribution": [
+              "anterior torso"
+            ],
+            "associated_context": [
+              "male, age approx 60, anterior torso location"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000002",
+              "tac_ISIC_0000000_77b666058907",
+              "abs_confusion_8f48b4d56c81"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "metadata_consistency_skill": {
+            "consistency_score": "medium",
+            "conflicts": [],
+            "suspicious_points": [
+              "The lesion's irregular shape and color variation are concerning but can be seen in benign lesions.",
+              "The lesion's surface texture is rough, which is not explicitly mentioned in the metadata."
+            ],
+            "referenced_experiences": [
+              "ISIC_0000002",
+              "ISIC_0000000",
+              "tac_ISIC_0000000_77b666058907",
+              "tac_ISIC_0000000_5d8de46f6089",
+              "tac_ISIC_0000000_e5b6956c8c26",
+              "abs_confusion_8f48b4d56c81",
+              "abs_composite_fa50b3f9d6e5",
+              "abs_composite_7538a6b26480"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "malignancy_risk_assessment_skill": {
+            "risk_level": "medium",
+            "risk_evidence": [
+              "{'alarm_signals': ['Irregular border and asymmetry', 'Color variation from dark to light'], 'benign_reassuring_features': ['Large size (>6mm)', 'Rough surface texture']}"
+            ],
+            "alarm_signals": [
+              "Irregular border and asymmetry",
+              "Color variation from dark to light"
+            ],
+            "benign_reassuring_features": [
+              "Large size (>6mm)",
+              "Rough surface texture"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000002",
+              "tac_ISIC_0000000_77b666058907",
+              "tac_ISIC_0000000_5d8de46f6089",
+              "tac_ISIC_0000000_e5b6956c8c26",
+              "abs_confusion_8f48b4d56c81",
+              "abs_composite_fa50b3f9d6e5",
+              "abs_composite_7538a6b26480"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "risk_signal"
+          },
+          "mel_nev_specialist_skill": {
+            "differentiation_features": [
+              "asymmetry",
+              "border irregularity",
+              "pigment complexity",
+              "size/evolution context"
+            ],
+            "supporting_evidence": [
+              "Irregular border and asymmetry suggest malignancy but could also be seen in benign lesions.",
+              "Color variation from dark to light raises concern but can occur in benign lesions."
+            ],
+            "opposing_evidence": [
+              "Symmetry (bilateral or radial symmetry) - only if actually present",
+              "Regular border (smooth, well-defined, circular or oval) - only if actually present",
+              "Uniform pigmentation (single color, homogeneous distribution) - only if actually present",
+              "Lack of structural irregularity (no chaotic patterns, no regression areas) - only if actually present",
+              "Small size (<6mm) with stable history - only if actually present",
+              "Regular dermoscopic network or uniform globules - only if actually present"
+            ],
+            "required_missing_evidence": [
+              "Missing dermoscopic/pattern detail for pigment network or additional structure.",
+              "Missing clearer evolution history when growth/change is not explicit.",
+              "Missing close border inspection to support true irregularity rather than image uncertainty."
+            ],
+            "uncertainty_under_current_evidence": "high",
+            "further_observation_suggestions": [
+              "Examine dermoscopic details for pigment network and structural irregularities."
+            ],
+            "cluster_watchouts": [
+              "Do not turn pigmented concern into a final melanoma verdict.",
+              "Do not ignore nevus-like opposing evidence when uncertainty remains high.",
+              "Do not over-read image noise or shadow as true color variegation."
+            ],
+            "referenced_confusion_patterns": [
+              "Malignant Melanoma->NV"
+            ],
+            "critical_supporting_evidence": [
+              "Irregular border and asymmetry",
+              "Color variation from dark to light"
+            ],
+            "counterexample_watchouts": [
+              "Counterexamples, prototype mismatches, or cautionary opposing patterns to keep in mind"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000002",
+              "tac_ISIC_0000000_77b666058907",
+              "tac_ISIC_0000000_5d8de46f6089",
+              "abs_confusion_8f48b4d56c81"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "comparative_support"
+          },
+          "exclusion_reasoning_skill": {
+            "unlikely_candidates": [
+              "Dermal Nevus"
+            ],
+            "exclusion_evidence": [
+              "The lesion shows significant asymmetry and irregular border, which are concerning features for malignancy but can also be seen in benign lesions. The color variation from dark to light raises concern but can occur in benign lesions."
+            ],
+            "required_missing_evidence": [
+              "Missing dermoscopic/pattern detail for pigment network or additional structure.",
+              "Missing clearer evolution history when growth/change is not explicit.",
+              "Missing close border inspection to support true irregularity rather than image uncertainty."
+            ],
+            "exclusion_confidence": "medium",
+            "referenced_experiences": [
+              "abs_confusion_8f48b4d56c81",
+              "tac_ISIC_0000000_77b666058907",
+              "tac_ISIC_0000000_5d8de46f6089"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "information_gap_detection_skill": {
+            "missing_information": [
+              "Missing dermoscopic/pattern detail for pigment network or additional structure.",
+              "Missing clearer evolution history when growth/change is not explicit.",
+              "Missing close border inspection to support true irregularity rather than image uncertainty."
+            ],
+            "why_it_matters": [
+              "Detailed dermoscopic features are crucial for differentiating between benign and malignant lesions, especially in cases with irregular borders and color variation.",
+              "Evolution history helps in assessing the behavior of the lesion over time, which is important for malignancy prediction.",
+              "Close border inspection aids in confirming the true nature of the border irregularity, distinguishing it from image artifacts."
+            ],
+            "impact_on_differential": [
+              "Without dermoscopic details, the differential cannot be narrowed down effectively, as these features are key in distinguishing between melanomas and nevi.",
+              "Lack of evolution history prevents a dynamic assessment of the lesion's behavior, which is essential for malignancy risk estimation.",
+              "Insufficient border inspection may lead to misinterpretation of the lesion's characteristics, affecting the differential diagnosis."
+            ],
+            "uncertainty_if_missing": "high",
+            "referenced_experiences": [
+              "ISIC_0000002",
+              "ISIC_0000000",
+              "tac_ISIC_0000000_77b666058907",
+              "tac_ISIC_0000000_5d8de46f6089",
+              "tac_ISIC_0000000_e5b6956c8c26",
+              "abs_confusion_8f48b4d56c81",
+              "abs_composite_fa50b3f9d6e5",
+              "abs_composite_7538a6b26480"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "uncertainty_assessment_skill": {
+            "uncertainty_level": "high",
+            "reasons": [
+              "The lesion exhibits irregular borders and asymmetry, which are concerning features for malignancy.",
+              "The color variation from dark to light is noted, which can be seen in both benign and malignant lesions.",
+              "The lesion's size and surface texture are not clearly defined due to the image quality and resolution."
+            ],
+            "missing_information": [
+              "High-resolution imaging to better assess the lesion's borders and surface texture.",
+              "Histopathological confirmation to rule out malignancy definitively."
+            ],
+            "referenced_experiences": [
+              "ISIC_0000002",
+              "ISIC_0000000",
+              "tac_ISIC_0000000_77b666058907",
+              "tac_ISIC_0000000_5d8de46f6089",
+              "tac_ISIC_0000000_e5b6956c8c26",
+              "abs_confusion_8f48b4d56c81",
+              "abs_composite_fa50b3f9d6e5",
+              "abs_composite_7538a6b26480"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "uncertainty_signal"
+          },
+          "contradiction_check_skill": {
+            "contradictions": [
+              {
+                "description": "The lesion's irregular border and asymmetry are noted as alarm signals, yet the lesion type described as 'plaque' suggests a more uniform shape.",
+                "evidence_sources": [
+                  "border_surface_analysis_skill",
+                  "morphology_analysis_skill"
+                ]
+              }
+            ],
+            "missing_links": [
+              {
+                "description": "The lesion's exact size cannot be determined from the image summary alone, which is crucial for assessing malignancy risk.",
+                "evidence_needed": "Lesion size measurement"
+              },
+              {
+                "description": "The lesion's surface texture is described as rough, but the morphology analysis does not specify if it is elevated or depressed.",
+                "evidence_needed": "Elevation assessment"
+              }
+            ],
+            "reasoning_gaps": [
+              {
+                "description": "The lesion's exact location on the body (anterior torso) is not specified in the metadata, which could influence the clinical relevance of the findings.",
+                "evidence_needed": "Detailed anatomical location description"
+              },
+              {
+                "description": "The lesion's age and sex are not specified in the metadata, which could provide additional context for the clinical presentation.",
+                "evidence_needed": "Age and sex information"
+              }
+            ],
+            "referenced_experiences": [
+              "ISIC_0000002",
+              "ISIC_0000000",
+              "tac_ISIC_0000000_77b666058907",
+              "tac_ISIC_0000000_5d8de46f6089",
+              "tac_ISIC_0000000_e5b6956c8c26",
+              "abs_confusion_8f48b4d56c81",
+              "abs_composite_fa50b3f9d6e5",
+              "abs_composite_7538a6b26480"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "uncertainty_signal"
+          },
+          "escalation_recommendation_skill": {
+            "whether_escalation_needed": "yes",
+            "escalation_reason": [
+              "High uncertainty and missing critical diagnostic details necessitate a more cautious approach."
+            ],
+            "suggested_next_check_type": "Histopathological confirmation",
+            "caution_flags": [
+              "High uncertainty level",
+              "Missing dermoscopic details",
+              "Missing evolution history",
+              "Insufficient border inspection"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000002",
+              "ISIC_0000000"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "risk_signal"
+          }
+        },
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty": {
+          "uncertainty_level": "high",
+          "reasons": [
+            "The lesion exhibits irregular borders and asymmetry, which are concerning features for malignancy.",
+            "The color variation from dark to light is noted, which can be seen in both benign and malignant lesions.",
+            "The lesion's size and surface texture are not clearly defined due to the image quality and resolution."
+          ],
+          "missing_information": [
+            "High-resolution imaging to better assess the lesion's borders and surface texture.",
+            "Histopathological confirmation to rule out malignancy definitively."
+          ],
+          "referenced_experiences": [
+            "ISIC_0000002",
+            "ISIC_0000000",
+            "tac_ISIC_0000000_77b666058907",
+            "tac_ISIC_0000000_5d8de46f6089",
+            "tac_ISIC_0000000_e5b6956c8c26",
+            "abs_confusion_8f48b4d56c81",
+            "abs_composite_fa50b3f9d6e5",
+            "abs_composite_7538a6b26480"
+          ],
+          "evidence_strength": "medium",
+          "recommendation_type": "uncertainty_signal"
+        },
+        "retrieved_experience_refs": [
+          "abs_confusion_8f48b4d56c81",
+          "tac_ISIC_0000000_77b666058907",
+          "abs_composite_fa50b3f9d6e5",
+          "abs_composite_7538a6b26480"
+        ],
+        "notes": [
+          "Agent generated structured evidence only.",
+          "Qwen remains the sole final diagnostic decision maker.",
+          "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, mel_nev_specialist_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill.",
+          "Policy in use: stable_default_policy.",
+          "Skill retrieval candidates: metadata_consistency_skill, mel_nev_specialist_skill, color_pattern_analysis_skill, uncertainty_assessment_skill, lesion_description_structuring_skill, differential_compare_skill, malignancy_risk_assessment_skill, information_gap_detection_skill, escalation_recommendation_skill, contradiction_check_skill, border_surface_analysis_skill, exclusion_reasoning_skill, morphology_analysis_skill, distribution_analysis_skill.",
+          "The lesion has a classic ",
+          "Retrieved prior reasoning experience for context.",
+          "High uncertainty detected in MVP skeleton."
+        ],
+        "skill_assessments": [
+          {
+            "skill_name": "morphology_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Malignant Melanoma",
+                "Atypical Nevus",
+                "Dermal Nevus"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": ""
+            },
+            "helped_aspects": [
+              "stabilized lesion structure",
+              "made morphology explicit for downstream reasoning"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "inspect dominant lesion silhouette",
+              "judge elevation and lesion count"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000002",
+              "ISIC_0000000"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "morphology_analysis_skill",
+              "ddx:Malignant Melanoma|Atypical Nevus",
+              "risk:malignancy_risk:medium",
+              "uncertainty:high",
+              "confusion:Malignant Melanoma->NV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "morphology_analysis_skill remains reusable for Malignant Melanoma->NV style confusion"
+          },
+          {
+            "skill_name": "color_pattern_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Malignant Melanoma",
+                "Atypical Nevus",
+                "Dermal Nevus"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": ""
+            },
+            "helped_aspects": [
+              "made pigment variation explicit",
+              "surfaced color asymmetry as auditable evidence"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "inspect dominant color",
+              "compare internal color asymmetry"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000002",
+              "ISIC_0000000"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "color_pattern_analysis_skill",
+              "ddx:Malignant Melanoma|Atypical Nevus",
+              "risk:malignancy_risk:medium",
+              "uncertainty:high",
+              "confusion:Malignant Melanoma->NV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "color_pattern_analysis_skill remains reusable for Malignant Melanoma->NV style confusion"
+          },
+          {
+            "skill_name": "border_surface_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Malignant Melanoma",
+                "Atypical Nevus",
+                "Dermal Nevus"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": ""
+            },
+            "helped_aspects": [
+              "separated edge evidence from surface evidence",
+              "highlighted margin quality explicitly"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "judge border definition",
+              "inspect surface change and scale"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000002",
+              "ISIC_0000000"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "border_surface_analysis_skill",
+              "ddx:Malignant Melanoma|Atypical Nevus",
+              "risk:malignancy_risk:medium",
+              "uncertainty:high",
+              "confusion:Malignant Melanoma->NV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "border_surface_analysis_skill remains reusable for Malignant Melanoma->NV style confusion"
+          },
+          {
+            "skill_name": "lesion_description_structuring_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Malignant Melanoma",
+                "Atypical Nevus",
+                "Dermal Nevus"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": ""
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000002",
+              "tac_ISIC_0000000_77b666058907",
+              "abs_confusion_8f48b4d56c81"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 1.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "lesion_description_structuring_skill",
+              "ddx:Malignant Melanoma|Atypical Nevus",
+              "risk:malignancy_risk:medium",
+              "uncertainty:high",
+              "confusion:Malignant Melanoma->NV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "lesion_description_structuring_skill remains reusable for Malignant Melanoma->NV style confusion"
+          },
+          {
+            "skill_name": "metadata_consistency_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Malignant Melanoma",
+                "Atypical Nevus",
+                "Dermal Nevus"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": ""
+            },
+            "helped_aspects": [
+              "checked image-metadata coherence",
+              "flagged reliability issues before integration"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "compare visible cues against metadata",
+              "separate direct conflicts from soft concerns"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000002",
+              "ISIC_0000000",
+              "tac_ISIC_0000000_77b666058907",
+              "tac_ISIC_0000000_5d8de46f6089",
+              "tac_ISIC_0000000_e5b6956c8c26",
+              "abs_confusion_8f48b4d56c81",
+              "abs_composite_fa50b3f9d6e5",
+              "abs_composite_7538a6b26480"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": true,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "metadata_consistency_skill",
+              "ddx:Malignant Melanoma|Atypical Nevus",
+              "risk:malignancy_risk:medium",
+              "uncertainty:high",
+              "confusion:Malignant Melanoma->NV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "metadata_consistency_skill remains reusable for Malignant Melanoma->NV style confusion"
+          },
+          {
+            "skill_name": "malignancy_risk_assessment_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Malignant Melanoma",
+                "Atypical Nevus",
+                "Dermal Nevus"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": ""
+            },
+            "helped_aspects": [
+              "made risk framing explicit",
+              "highlighted alarm signals without forcing diagnosis"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "collect alarm signals",
+              "balance concerning and reassuring evidence"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000002",
+              "tac_ISIC_0000000_77b666058907",
+              "tac_ISIC_0000000_5d8de46f6089",
+              "tac_ISIC_0000000_e5b6956c8c26",
+              "abs_confusion_8f48b4d56c81",
+              "abs_composite_fa50b3f9d6e5",
+              "abs_composite_7538a6b26480"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "risk_signal",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 1.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "malignancy_risk_assessment_skill",
+              "ddx:Malignant Melanoma|Atypical Nevus",
+              "risk:malignancy_risk:medium",
+              "uncertainty:high",
+              "confusion:Malignant Melanoma->NV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "malignancy_risk_assessment_skill remains reusable for Malignant Melanoma->NV style confusion"
+          },
+          {
+            "skill_name": "mel_nev_specialist_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Malignant Melanoma",
+                "Atypical Nevus",
+                "Dermal Nevus"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": ""
+            },
+            "helped_aspects": [
+              "focused a high-value confusion pair",
+              "sharpened specialist comparison clues"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "focus the confusion pair",
+              "contrast differentiating clues without forcing closure"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000002",
+              "tac_ISIC_0000000_77b666058907",
+              "tac_ISIC_0000000_5d8de46f6089",
+              "abs_confusion_8f48b4d56c81"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "comparative_support",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 1.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "mel_nev_specialist_skill",
+              "ddx:Malignant Melanoma|Atypical Nevus",
+              "risk:malignancy_risk:medium",
+              "uncertainty:high",
+              "confusion:Malignant Melanoma->NV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "mel_nev_specialist_skill remains reusable for Malignant Melanoma->NV style confusion"
+          },
+          {
+            "skill_name": "exclusion_reasoning_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Malignant Melanoma",
+                "Atypical Nevus",
+                "Dermal Nevus"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": ""
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "abs_confusion_8f48b4d56c81",
+              "tac_ISIC_0000000_77b666058907",
+              "tac_ISIC_0000000_5d8de46f6089"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 1.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "exclusion_reasoning_skill",
+              "ddx:Malignant Melanoma|Atypical Nevus",
+              "risk:malignancy_risk:medium",
+              "uncertainty:high",
+              "confusion:Malignant Melanoma->NV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "exclusion_reasoning_skill remains reusable for Malignant Melanoma->NV style confusion"
+          },
+          {
+            "skill_name": "information_gap_detection_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Malignant Melanoma",
+                "Atypical Nevus",
+                "Dermal Nevus"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": ""
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000002",
+              "ISIC_0000000",
+              "tac_ISIC_0000000_77b666058907",
+              "tac_ISIC_0000000_5d8de46f6089",
+              "tac_ISIC_0000000_e5b6956c8c26",
+              "abs_confusion_8f48b4d56c81",
+              "abs_composite_fa50b3f9d6e5",
+              "abs_composite_7538a6b26480"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 1.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "information_gap_detection_skill",
+              "ddx:Malignant Melanoma|Atypical Nevus",
+              "risk:malignancy_risk:medium",
+              "uncertainty:high",
+              "confusion:Malignant Melanoma->NV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "information_gap_detection_skill remains reusable for Malignant Melanoma->NV style confusion"
+          },
+          {
+            "skill_name": "uncertainty_assessment_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Malignant Melanoma",
+                "Atypical Nevus",
+                "Dermal Nevus"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": ""
+            },
+            "helped_aspects": [
+              "made evidence limits explicit",
+              "prevented overconfident downstream use"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "scan ambiguity across evidence streams",
+              "name missing information explicitly"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000002",
+              "ISIC_0000000",
+              "tac_ISIC_0000000_77b666058907",
+              "tac_ISIC_0000000_5d8de46f6089",
+              "tac_ISIC_0000000_e5b6956c8c26",
+              "abs_confusion_8f48b4d56c81",
+              "abs_composite_fa50b3f9d6e5",
+              "abs_composite_7538a6b26480"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "uncertainty_signal",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 2.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "uncertainty_assessment_skill",
+              "ddx:Malignant Melanoma|Atypical Nevus",
+              "risk:malignancy_risk:medium",
+              "uncertainty:high",
+              "confusion:Malignant Melanoma->NV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "uncertainty_assessment_skill remains reusable for Malignant Melanoma->NV style confusion"
+          },
+          {
+            "skill_name": "contradiction_check_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Malignant Melanoma",
+                "Atypical Nevus",
+                "Dermal Nevus"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": ""
+            },
+            "helped_aspects": [
+              "surfaced missing links in the reasoning chain",
+              "audited internal consistency"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "scan for conflicts across evidence sources",
+              "surface missing links in the reasoning chain"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000002",
+              "ISIC_0000000",
+              "tac_ISIC_0000000_77b666058907",
+              "tac_ISIC_0000000_5d8de46f6089",
+              "tac_ISIC_0000000_e5b6956c8c26",
+              "abs_confusion_8f48b4d56c81",
+              "abs_composite_fa50b3f9d6e5",
+              "abs_composite_7538a6b26480"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "uncertainty_signal",
+            "uncertainty_reduction": true,
+            "contradiction_detected": true,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 2.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "contradiction_check_skill",
+              "ddx:Malignant Melanoma|Atypical Nevus",
+              "risk:malignancy_risk:medium",
+              "uncertainty:high",
+              "confusion:Malignant Melanoma->NV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "contradiction_check_skill remains reusable for Malignant Melanoma->NV style confusion"
+          },
+          {
+            "skill_name": "escalation_recommendation_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Malignant Melanoma",
+                "Atypical Nevus",
+                "Dermal Nevus"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": ""
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000002",
+              "ISIC_0000000"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "risk_signal",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 2.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "escalation_recommendation_skill",
+              "ddx:Malignant Melanoma|Atypical Nevus",
+              "risk:malignancy_risk:medium",
+              "uncertainty:high",
+              "confusion:Malignant Melanoma->NV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "escalation_recommendation_skill remains reusable for Malignant Melanoma->NV style confusion"
+          }
+        ]
+      },
+      "final_decision": {
+        "label": "Malignant Melanoma",
+        "source": "qwen_final_diagnosis",
+        "canonical_label": "MEL"
+      },
+      "correctness": {
+        "has_ground_truth": true,
+        "is_correct": false,
+        "error_type": "final_diagnosis_mismatch_reference"
+      },
+      "malignant_flag": {
+        "ground_truth": false,
+        "predicted": true
+      }
+    },
+    "tactical_experiences": [
+      {
+        "exp_id": "tac_ISIC_0000028_downsampled_e5b6956c8c26",
+        "case_id": "ISIC_0000028_downsampled",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Malignant Melanoma->NV",
+          "observed_state": {
+            "ddx_candidates": [
+              "Malignant Melanoma",
+              "Atypical Nevus",
+              "Dermal Nevus"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:High-resolution imaging to better assess the lesion's borders and surface texture.",
+            "missing:Histopathological confirmation to rule out malignancy definitively."
+          ]
+        },
+        "action": {
+          "skill_name": "morphology_analysis_skill",
+          "skills_used": [
+            "morphology_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "stabilized lesion structure",
+          "made morphology explicit for downstream reasoning",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "inspect dominant lesion silhouette",
+          "judge elevation and lesion count"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "morphology_analysis_skill",
+            "Malignant Melanoma->NV",
+            "Malignant Melanoma",
+            "Atypical Nevus",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0000028_downsampled_5d8de46f6089",
+        "case_id": "ISIC_0000028_downsampled",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Malignant Melanoma->NV",
+          "observed_state": {
+            "ddx_candidates": [
+              "Malignant Melanoma",
+              "Atypical Nevus",
+              "Dermal Nevus"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:High-resolution imaging to better assess the lesion's borders and surface texture.",
+            "missing:Histopathological confirmation to rule out malignancy definitively."
+          ]
+        },
+        "action": {
+          "skill_name": "color_pattern_analysis_skill",
+          "skills_used": [
+            "color_pattern_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made pigment variation explicit",
+          "surfaced color asymmetry as auditable evidence",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "inspect dominant color",
+          "compare internal color asymmetry"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "color_pattern_analysis_skill",
+            "Malignant Melanoma->NV",
+            "Malignant Melanoma",
+            "Atypical Nevus",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0000028_downsampled_88ae3d2a1aaf",
+        "case_id": "ISIC_0000028_downsampled",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Malignant Melanoma->NV",
+          "observed_state": {
+            "ddx_candidates": [
+              "Malignant Melanoma",
+              "Atypical Nevus",
+              "Dermal Nevus"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:High-resolution imaging to better assess the lesion's borders and surface texture.",
+            "missing:Histopathological confirmation to rule out malignancy definitively."
+          ]
+        },
+        "action": {
+          "skill_name": "border_surface_analysis_skill",
+          "skills_used": [
+            "border_surface_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "separated edge evidence from surface evidence",
+          "highlighted margin quality explicitly",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "judge border definition",
+          "inspect surface change and scale"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "border_surface_analysis_skill",
+            "Malignant Melanoma->NV",
+            "Malignant Melanoma",
+            "Atypical Nevus",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0000028_downsampled_8fa365c666e8",
+        "case_id": "ISIC_0000028_downsampled",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Malignant Melanoma->NV",
+          "observed_state": {
+            "ddx_candidates": [
+              "Malignant Melanoma",
+              "Atypical Nevus",
+              "Dermal Nevus"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:High-resolution imaging to better assess the lesion's borders and surface texture.",
+            "missing:Histopathological confirmation to rule out malignancy definitively."
+          ]
+        },
+        "action": {
+          "skill_name": "lesion_description_structuring_skill",
+          "skills_used": [
+            "lesion_description_structuring_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "lesion_description_structuring_skill",
+            "Malignant Melanoma->NV",
+            "Malignant Melanoma",
+            "Atypical Nevus",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0000028_downsampled_2f79c85a7fb8",
+        "case_id": "ISIC_0000028_downsampled",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Malignant Melanoma->NV",
+          "observed_state": {
+            "ddx_candidates": [
+              "Malignant Melanoma",
+              "Atypical Nevus",
+              "Dermal Nevus"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:High-resolution imaging to better assess the lesion's borders and surface texture.",
+            "missing:Histopathological confirmation to rule out malignancy definitively."
+          ]
+        },
+        "action": {
+          "skill_name": "metadata_consistency_skill",
+          "skills_used": [
+            "metadata_consistency_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "checked image-metadata coherence",
+          "flagged reliability issues before integration",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "compare visible cues against metadata",
+          "separate direct conflicts from soft concerns"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "metadata_consistency_skill",
+            "Malignant Melanoma->NV",
+            "Malignant Melanoma",
+            "Atypical Nevus",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0000028_downsampled_47d9748366d2",
+        "case_id": "ISIC_0000028_downsampled",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Malignant Melanoma->NV",
+          "observed_state": {
+            "ddx_candidates": [
+              "Malignant Melanoma",
+              "Atypical Nevus",
+              "Dermal Nevus"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:High-resolution imaging to better assess the lesion's borders and surface texture.",
+            "missing:Histopathological confirmation to rule out malignancy definitively."
+          ]
+        },
+        "action": {
+          "skill_name": "malignancy_risk_assessment_skill",
+          "skills_used": [
+            "malignancy_risk_assessment_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made risk framing explicit",
+          "highlighted alarm signals without forcing diagnosis",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "collect alarm signals",
+          "balance concerning and reassuring evidence"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "malignancy_risk_assessment_skill",
+            "Malignant Melanoma->NV",
+            "Malignant Melanoma",
+            "Atypical Nevus",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0000028_downsampled_4ae354055cbc",
+        "case_id": "ISIC_0000028_downsampled",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Malignant Melanoma->NV",
+          "observed_state": {
+            "ddx_candidates": [
+              "Malignant Melanoma",
+              "Atypical Nevus",
+              "Dermal Nevus"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:High-resolution imaging to better assess the lesion's borders and surface texture.",
+            "missing:Histopathological confirmation to rule out malignancy definitively."
+          ]
+        },
+        "action": {
+          "skill_name": "mel_nev_specialist_skill",
+          "skills_used": [
+            "mel_nev_specialist_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "focused a high-value confusion pair",
+          "sharpened specialist comparison clues",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "focus the confusion pair",
+          "contrast differentiating clues without forcing closure"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "mel_nev_specialist_skill",
+            "Malignant Melanoma->NV",
+            "Malignant Melanoma",
+            "Atypical Nevus",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0000028_downsampled_77b666058907",
+        "case_id": "ISIC_0000028_downsampled",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Malignant Melanoma->NV",
+          "observed_state": {
+            "ddx_candidates": [
+              "Malignant Melanoma",
+              "Atypical Nevus",
+              "Dermal Nevus"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:High-resolution imaging to better assess the lesion's borders and surface texture.",
+            "missing:Histopathological confirmation to rule out malignancy definitively."
+          ]
+        },
+        "action": {
+          "skill_name": "exclusion_reasoning_skill",
+          "skills_used": [
+            "exclusion_reasoning_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "exclusion_reasoning_skill",
+            "Malignant Melanoma->NV",
+            "Malignant Melanoma",
+            "Atypical Nevus",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0000028_downsampled_3195d993f5b8",
+        "case_id": "ISIC_0000028_downsampled",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Malignant Melanoma->NV",
+          "observed_state": {
+            "ddx_candidates": [
+              "Malignant Melanoma",
+              "Atypical Nevus",
+              "Dermal Nevus"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:High-resolution imaging to better assess the lesion's borders and surface texture.",
+            "missing:Histopathological confirmation to rule out malignancy definitively."
+          ]
+        },
+        "action": {
+          "skill_name": "information_gap_detection_skill",
+          "skills_used": [
+            "information_gap_detection_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "information_gap_detection_skill",
+            "Malignant Melanoma->NV",
+            "Malignant Melanoma",
+            "Atypical Nevus",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0000028_downsampled_e21fa70f1cb7",
+        "case_id": "ISIC_0000028_downsampled",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Malignant Melanoma->NV",
+          "observed_state": {
+            "ddx_candidates": [
+              "Malignant Melanoma",
+              "Atypical Nevus",
+              "Dermal Nevus"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:High-resolution imaging to better assess the lesion's borders and surface texture.",
+            "missing:Histopathological confirmation to rule out malignancy definitively."
+          ]
+        },
+        "action": {
+          "skill_name": "uncertainty_assessment_skill",
+          "skills_used": [
+            "uncertainty_assessment_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made evidence limits explicit",
+          "prevented overconfident downstream use",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "scan ambiguity across evidence streams",
+          "name missing information explicitly"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "uncertainty_assessment_skill",
+            "Malignant Melanoma->NV",
+            "Malignant Melanoma",
+            "Atypical Nevus",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0000028_downsampled_8eed343a7164",
+        "case_id": "ISIC_0000028_downsampled",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Malignant Melanoma->NV",
+          "observed_state": {
+            "ddx_candidates": [
+              "Malignant Melanoma",
+              "Atypical Nevus",
+              "Dermal Nevus"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:High-resolution imaging to better assess the lesion's borders and surface texture.",
+            "missing:Histopathological confirmation to rule out malignancy definitively."
+          ]
+        },
+        "action": {
+          "skill_name": "contradiction_check_skill",
+          "skills_used": [
+            "contradiction_check_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "surfaced missing links in the reasoning chain",
+          "audited internal consistency",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "scan for conflicts across evidence sources",
+          "surface missing links in the reasoning chain"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "contradiction_check_skill",
+            "Malignant Melanoma->NV",
+            "Malignant Melanoma",
+            "Atypical Nevus",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0000028_downsampled_3f9fb737051a",
+        "case_id": "ISIC_0000028_downsampled",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Malignant Melanoma->NV",
+          "observed_state": {
+            "ddx_candidates": [
+              "Malignant Melanoma",
+              "Atypical Nevus",
+              "Dermal Nevus"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:High-resolution imaging to better assess the lesion's borders and surface texture.",
+            "missing:Histopathological confirmation to rule out malignancy definitively."
+          ]
+        },
+        "action": {
+          "skill_name": "escalation_recommendation_skill",
+          "skills_used": [
+            "escalation_recommendation_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "escalation_recommendation_skill",
+            "Malignant Melanoma->NV",
+            "Malignant Melanoma",
+            "Atypical Nevus",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      }
+    ],
+    "abstract_experiences": [
+      {
+        "abs_id": "abs_confusion_8f48b4d56c81",
+        "type": "confusion_memory",
+        "concept": "malignant_melanoma->nv",
+        "pattern_summary": {
+          "confusion_pair": "Malignant Melanoma->NV",
+          "supporting_pattern": [
+            "A well-circumscribed, irregularly shaped lesion with a dark brown center and lighter periphery on a light skin background.",
+            "Malignant Melanoma",
+            "Atypical Nevus",
+            "malignancy_risk:medium"
+          ],
+          "failure_pattern": [
+            "final_diagnosis_mismatch_reference"
+          ]
+        },
+        "supporting_cases": [
+          "ISIC_0000000",
+          "ISIC_0000003",
+          "ISIC_0000007",
+          "ISIC_0000008",
+          "ISIC_0000009",
+          "ISIC_0000010",
+          "ISIC_0000011",
+          "ISIC_0000012",
+          "ISIC_0000025_downsampled",
+          "ISIC_0000027_downsampled",
+          "ISIC_0000028_downsampled",
+          "ISIC_0000032_downsampled",
+          "ISIC_0000034_downsampled",
+          "ISIC_0000037_downsampled",
+          "ISIC_0000006",
+          "ISIC_0000014",
+          "ISIC_0000016",
+          "ISIC_0000017_downsampled",
+          "ISIC_0000018_downsampled",
+          "ISIC_0000019_downsampled",
+          "ISIC_0000020_downsampled",
+          "ISIC_0000021_downsampled",
+          "ISIC_0000023_downsampled",
+          "ISIC_0000024_downsampled"
+        ],
+        "counter_cases": [],
+        "derived_rule": {
+          "rule_text": "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+          "action_hint": "risk_then_uncertainty_audit"
+        },
+        "version": "v1",
+        "seed_id": null,
+        "composite_skill_seed": {},
+        "provenance": {}
+      },
+      {
+        "abs_id": "abs_rule_903518803931",
+        "type": "rule",
+        "concept": "risk_then_uncertainty_audit",
+        "pattern_summary": {
+          "supporting_pattern": [
+            "A well-circumscribed, irregularly shaped lesion with a dark brown center and lighter periphery on a light skin background.",
+            "Malignant Melanoma",
+            "Atypical Nevus",
+            "malignancy_risk:medium"
+          ],
+          "failure_pattern": [
+            "final_diagnosis_mismatch_reference"
+          ]
+        },
+        "supporting_cases": [
+          "ISIC_0000003",
+          "ISIC_0000004",
+          "ISIC_0000006",
+          "ISIC_0000007",
+          "ISIC_0000008",
+          "ISIC_0000001",
+          "ISIC_0000002",
+          "ISIC_0000012",
+          "ISIC_0000014",
+          "ISIC_0000016",
+          "ISIC_0000017_downsampled",
+          "ISIC_0000018_downsampled",
+          "ISIC_0000020_downsampled",
+          "ISIC_0000021_downsampled",
+          "ISIC_0000025_downsampled",
+          "ISIC_0000026_downsampled",
+          "ISIC_0000027_downsampled",
+          "ISIC_0000028_downsampled"
+        ],
+        "counter_cases": [],
+        "derived_rule": {
+          "rule_text": "When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Qwen integration.",
+          "action_hint": "risk_then_uncertainty_audit"
+        },
+        "version": "v1",
+        "seed_id": null,
+        "composite_skill_seed": {},
+        "provenance": {}
+      }
+    ],
+    "cognition_update": {
+      "total_cases_increment": 1,
+      "failed_cases_increment": 1,
+      "confusion_cases_increment": 1,
+      "hard_cases_increment": 0,
+      "confusion_pair": "Malignant Melanoma->NV",
+      "preferred_skills": [
+        "morphology_analysis_skill",
+        "color_pattern_analysis_skill",
+        "border_surface_analysis_skill",
+        "lesion_description_structuring_skill",
+        "metadata_consistency_skill",
+        "malignancy_risk_assessment_skill",
+        "mel_nev_specialist_skill",
+        "exclusion_reasoning_skill",
+        "information_gap_detection_skill",
+        "uncertainty_assessment_skill",
+        "contradiction_check_skill",
+        "escalation_recommendation_skill"
+      ]
+    },
+    "skill_stats_update": [
+      {
+        "skill_name": "morphology_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "color_pattern_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "border_surface_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "lesion_description_structuring_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "metadata_consistency_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 1,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "malignancy_risk_assessment_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "mel_nev_specialist_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "exclusion_reasoning_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "information_gap_detection_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "uncertainty_assessment_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "contradiction_check_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 1,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "escalation_recommendation_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      }
+    ],
+    "reflection_extract": {
+      "raw_case_memory_ready": true,
+      "tactical_experience_count": 12,
+      "abstract_experience_candidate_count": 2,
+      "reusable_tactical_count": 12,
+      "composite_skill_seed_count": 0,
+      "composite_skill_seed_ids": [],
+      "abstract_flags": {
+        "confusion_memory": true,
+        "prototype": false,
+        "rule": true,
+        "rule_candidate": false,
+        "composite_skill_seed": false
+      },
+      "case_status": "failure",
+      "composite_skill_seed_ready_for_promotion": []
+    }
+  },
+  "cognition_update": {
+    "total_cases_increment": 1,
+    "failed_cases_increment": 1,
+    "confusion_cases_increment": 1,
+    "hard_cases_increment": 0,
+    "confusion_pair": "Malignant Melanoma->NV",
+    "preferred_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "border_surface_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "malignancy_risk_assessment_skill",
+      "mel_nev_specialist_skill",
+      "exclusion_reasoning_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill",
+      "escalation_recommendation_skill"
+    ]
+  }
+}

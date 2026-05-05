@@ -1,0 +1,2726 @@
+{
+  "reasoning_summary": "Perception summary: A large, irregularly shaped lesion with a mottled brown coloration and areas of hyperpigmentation and hypopigmentation. There are some hair follicles present within the lesion. | Useful skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, differential_compare_skill, mel_nev_specialist_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill | Final answer: Nevus | Uncertainty: medium | Detected errors: final_diagnosis_mismatch_reference",
+  "useful_skills": [
+    "morphology_analysis_skill",
+    "color_pattern_analysis_skill",
+    "border_surface_analysis_skill",
+    "lesion_description_structuring_skill",
+    "metadata_consistency_skill",
+    "differential_compare_skill",
+    "mel_nev_specialist_skill",
+    "exclusion_reasoning_skill",
+    "information_gap_detection_skill",
+    "uncertainty_assessment_skill",
+    "contradiction_check_skill"
+  ],
+  "detected_errors": [
+    "final_diagnosis_mismatch_reference"
+  ],
+  "experience_type": "confusion_experience",
+  "diagnosis_correct": false,
+  "write_experience": true,
+  "case_outcome": {
+    "status": "failure",
+    "has_ground_truth": true,
+    "is_correct": false,
+    "error_type": "final_diagnosis_mismatch_reference",
+    "predicted_label": "Nevus",
+    "reference_label": "MEL",
+    "predicted_canonical_label": "NV",
+    "reference_canonical_label": "MEL",
+    "confidence_level": "moderate",
+    "uncertainty_level": "medium",
+    "malignant_flag": {
+      "ground_truth": true,
+      "predicted": false
+    },
+    "confusion_pair": "Nevus->MEL",
+    "risk_flags": [],
+    "label_space": {
+      "label_space_id": "isic2019_full",
+      "canonical_labels": [
+        "MEL",
+        "NV",
+        "BCC",
+        "AK",
+        "BKL",
+        "DF",
+        "VASC",
+        "SCC",
+        "UNK"
+      ],
+      "malignant_labels": [
+        "MEL",
+        "BCC",
+        "AK",
+        "SCC"
+      ],
+      "benign_labels": [
+        "NV",
+        "BKL",
+        "DF",
+        "VASC",
+        "UNK"
+      ]
+    }
+  },
+  "skill_assessments": [
+    {
+      "skill_name": "morphology_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Dysplastic Nevus",
+          "Atypical Mole",
+          "Seborrheic Keratosis"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": ""
+      },
+      "helped_aspects": [
+        "stabilized lesion structure",
+        "made morphology explicit for downstream reasoning"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "inspect dominant lesion silhouette",
+        "judge elevation and lesion count"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000027_downsampled",
+        "ISIC_0000020_downsampled"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "morphology_analysis_skill",
+        "ddx:Dysplastic Nevus|Atypical Mole",
+        "uncertainty:medium",
+        "confusion:Nevus->MEL"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "morphology_analysis_skill remains reusable for Nevus->MEL style confusion"
+    },
+    {
+      "skill_name": "color_pattern_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Dysplastic Nevus",
+          "Atypical Mole",
+          "Seborrheic Keratosis"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": ""
+      },
+      "helped_aspects": [
+        "made pigment variation explicit",
+        "surfaced color asymmetry as auditable evidence"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "inspect dominant color",
+        "compare internal color asymmetry"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000027_downsampled",
+        "ISIC_0000020_downsampled"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 1.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "color_pattern_analysis_skill",
+        "ddx:Dysplastic Nevus|Atypical Mole",
+        "uncertainty:medium",
+        "confusion:Nevus->MEL"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "color_pattern_analysis_skill remains reusable for Nevus->MEL style confusion"
+    },
+    {
+      "skill_name": "border_surface_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Dysplastic Nevus",
+          "Atypical Mole",
+          "Seborrheic Keratosis"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": ""
+      },
+      "helped_aspects": [
+        "separated edge evidence from surface evidence",
+        "highlighted margin quality explicitly"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "judge border definition",
+        "inspect surface change and scale"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000027_downsampled",
+        "ISIC_0000020_downsampled"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "border_surface_analysis_skill",
+        "ddx:Dysplastic Nevus|Atypical Mole",
+        "uncertainty:medium",
+        "confusion:Nevus->MEL"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "border_surface_analysis_skill remains reusable for Nevus->MEL style confusion"
+    },
+    {
+      "skill_name": "lesion_description_structuring_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Dysplastic Nevus",
+          "Atypical Mole",
+          "Seborrheic Keratosis"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": ""
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000027_downsampled",
+        "ISIC_0000020_downsampled"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 1.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "lesion_description_structuring_skill",
+        "ddx:Dysplastic Nevus|Atypical Mole",
+        "uncertainty:medium",
+        "confusion:Nevus->MEL"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "lesion_description_structuring_skill remains reusable for Nevus->MEL style confusion"
+    },
+    {
+      "skill_name": "metadata_consistency_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Dysplastic Nevus",
+          "Atypical Mole",
+          "Seborrheic Keratosis"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": ""
+      },
+      "helped_aspects": [
+        "checked image-metadata coherence",
+        "flagged reliability issues before integration"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "compare visible cues against metadata",
+        "separate direct conflicts from soft concerns"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000027_downsampled",
+        "ISIC_0000020_downsampled",
+        "abs_composite_4e40b5003e04",
+        "abs_composite_38ebf6b9597c",
+        "abs_composite_34c2f0722d4b"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "uncertainty_signal",
+      "uncertainty_reduction": true,
+      "contradiction_detected": true,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 2.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "metadata_consistency_skill",
+        "ddx:Dysplastic Nevus|Atypical Mole",
+        "uncertainty:medium",
+        "confusion:Nevus->MEL"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "metadata_consistency_skill remains reusable for Nevus->MEL style confusion"
+    },
+    {
+      "skill_name": "differential_compare_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Dysplastic Nevus",
+          "Atypical Mole",
+          "Seborrheic Keratosis"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": ""
+      },
+      "helped_aspects": [
+        "kept the differential open",
+        "made pairwise reasoning explicit"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "select the most relevant candidate pair",
+        "preserve unresolved comparative evidence"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000027_downsampled",
+        "ISIC_0000020_downsampled",
+        "abs_composite_4e40b5003e04",
+        "abs_composite_38ebf6b9597c",
+        "abs_composite_34c2f0722d4b"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "conflict_signal",
+      "uncertainty_reduction": true,
+      "contradiction_detected": true,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 2.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "contradiction_signal_supported",
+        "uncertainty_reduction_claim_supported",
+        "malignant_support_relevant"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "differential_compare_skill",
+        "ddx:Dysplastic Nevus|Atypical Mole",
+        "uncertainty:medium",
+        "confusion:Nevus->MEL"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "differential_compare_skill remains reusable for Nevus->MEL style confusion"
+    },
+    {
+      "skill_name": "mel_nev_specialist_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Dysplastic Nevus",
+          "Atypical Mole",
+          "Seborrheic Keratosis"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": ""
+      },
+      "helped_aspects": [
+        "focused a high-value confusion pair",
+        "sharpened specialist comparison clues"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "focus the confusion pair",
+        "contrast differentiating clues without forcing closure"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000027_downsampled",
+        "ISIC_0000020_downsampled"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "conflict_signal",
+      "uncertainty_reduction": true,
+      "contradiction_detected": true,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 2.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "contradiction_signal_supported",
+        "uncertainty_reduction_claim_supported",
+        "malignant_support_relevant"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "mel_nev_specialist_skill",
+        "ddx:Dysplastic Nevus|Atypical Mole",
+        "uncertainty:medium",
+        "confusion:Nevus->MEL"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "mel_nev_specialist_skill remains reusable for Nevus->MEL style confusion"
+    },
+    {
+      "skill_name": "exclusion_reasoning_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Dysplastic Nevus",
+          "Atypical Mole",
+          "Seborrheic Keratosis"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": ""
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000027_downsampled",
+        "ISIC_0000020_downsampled"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 1.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "exclusion_reasoning_skill",
+        "ddx:Dysplastic Nevus|Atypical Mole",
+        "uncertainty:medium",
+        "confusion:Nevus->MEL"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "exclusion_reasoning_skill remains reusable for Nevus->MEL style confusion"
+    },
+    {
+      "skill_name": "information_gap_detection_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Dysplastic Nevus",
+          "Atypical Mole",
+          "Seborrheic Keratosis"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": ""
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000027_downsampled",
+        "ISIC_0000020_downsampled",
+        "abs_composite_4e40b5003e04",
+        "abs_composite_38ebf6b9597c",
+        "abs_composite_34c2f0722d4b"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 2.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported",
+        "malignant_support_relevant"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "information_gap_detection_skill",
+        "ddx:Dysplastic Nevus|Atypical Mole",
+        "uncertainty:medium",
+        "confusion:Nevus->MEL"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "information_gap_detection_skill remains reusable for Nevus->MEL style confusion"
+    },
+    {
+      "skill_name": "uncertainty_assessment_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Dysplastic Nevus",
+          "Atypical Mole",
+          "Seborrheic Keratosis"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": ""
+      },
+      "helped_aspects": [
+        "made evidence limits explicit",
+        "prevented overconfident downstream use"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "scan ambiguity across evidence streams",
+        "name missing information explicitly"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000027_downsampled",
+        "ISIC_0000020_downsampled",
+        "abs_composite_4e40b5003e04",
+        "abs_composite_38ebf6b9597c",
+        "abs_composite_34c2f0722d4b"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "uncertainty_signal",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 3.0,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported",
+        "malignant_support_relevant"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "uncertainty_assessment_skill",
+        "ddx:Dysplastic Nevus|Atypical Mole",
+        "uncertainty:medium",
+        "confusion:Nevus->MEL"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "uncertainty_assessment_skill remains reusable for Nevus->MEL style confusion"
+    },
+    {
+      "skill_name": "contradiction_check_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "Dysplastic Nevus",
+          "Atypical Mole",
+          "Seborrheic Keratosis"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": ""
+      },
+      "helped_aspects": [
+        "surfaced missing links in the reasoning chain",
+        "audited internal consistency"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "scan for conflicts across evidence sources",
+        "surface missing links in the reasoning chain"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000027_downsampled",
+        "ISIC_0000020_downsampled",
+        "abs_composite_4e40b5003e04",
+        "abs_composite_38ebf6b9597c",
+        "abs_composite_34c2f0722d4b"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "uncertainty_signal",
+      "uncertainty_reduction": true,
+      "contradiction_detected": true,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 3.0,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported",
+        "malignant_support_relevant"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "contradiction_check_skill",
+        "ddx:Dysplastic Nevus|Atypical Mole",
+        "uncertainty:medium",
+        "confusion:Nevus->MEL"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "contradiction_check_skill remains reusable for Nevus->MEL style confusion"
+    }
+  ],
+  "reflection_extract": {
+    "raw_case_memory_ready": true,
+    "tactical_experience_count": 11,
+    "abstract_experience_candidate_count": 2,
+    "reusable_tactical_count": 11,
+    "composite_skill_seed_count": 0,
+    "composite_skill_seed_ids": [],
+    "abstract_flags": {
+      "confusion_memory": true,
+      "prototype": false,
+      "rule": true,
+      "rule_candidate": false,
+      "composite_skill_seed": false
+    },
+    "case_status": "failure"
+  },
+  "writeback_bundle": {
+    "raw_case_memory": {
+      "case_id": "ISIC_0067289",
+      "image_paths": [
+        "/root/DermAgent/data/isic2019/images/ISIC_2019_Training_Input/ISIC_0067289.jpg"
+      ],
+      "metadata": {
+        "image": "ISIC_0067289",
+        "age_approx": "55",
+        "anatom_site_general": "anterior torso",
+        "lesion_id": "BCN_0003877",
+        "sex": "male",
+        "original_label": "MEL",
+        "label_space_id": "isic2019_full"
+      },
+      "dataset_name": "ISIC2019",
+      "label_space_id": "isic2019_full",
+      "true_label": "MEL",
+      "qwen_output": {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": [
+          "Nevus",
+          "Malignant Melanoma",
+          "Actinic Keratosis"
+        ],
+        "rationale": "The lesion exhibits features commonly associated with a nevus, including a mottled brown coloration, areas of hyperpigmentation and hypopigmentation, and irregular borders. While there is some color variation, the lack of asymmetry, irregular borders, or irregular pigmentation that are key features of melanoma suggests a nevus. The lesion's surface texture, described as rough, is more characteristic of dysplastic nevi rather than actinic keratosis. However, the presence of hair follicles and the overall irregularity warrant further clinical evaluation and follow-up.",
+        "confidence": "Moderate",
+        "follow_up_considerations": "Clinical follow-up and closer inspection if concern persists. Further dermoscopic examination and clinical history are crucial for a definitive diagnosis."
+      },
+      "agent_output": {
+        "perception": {
+          "image_summary": "A large, irregularly shaped lesion with a mottled brown coloration and areas of hyperpigmentation and hypopigmentation. There are some hair follicles present within the lesion.",
+          "ddx_candidates": [
+            "Dysplastic Nevus",
+            "Atypical Mole",
+            "Seborrheic Keratosis"
+          ],
+          "uncertainty": {
+            "level": "low",
+            "reasons": [
+              "The lesion has features that can be seen in both benign and potentially malignant lesions.",
+              "Further clinical history and examination would be necessary for a definitive diagnosis."
+            ]
+          },
+          "notes": [
+            "The lesion shows a mottled pattern which is common in dysplastic nevi.",
+            "There is no clear evidence of asymmetry, irregular borders, or irregular pigmentation which are key features of melanoma."
+          ]
+        },
+        "skill_outputs": {
+          "morphology_analysis_skill": {
+            "lesion_type": "plaque",
+            "size_range": "large",
+            "elevation": "unknown",
+            "count": "multiple",
+            "referenced_experiences": [
+              "ISIC_0000027_downsampled",
+              "ISIC_0000020_downsampled"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "color_pattern_analysis_skill": {
+            "primary_color": "Brown",
+            "color_variation": "Marked",
+            "pigmentation_pattern": "Reticular",
+            "asymmetry_color": "Uncertain",
+            "referenced_experiences": [
+              "ISIC_0000027_downsampled",
+              "ISIC_0000020_downsampled"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "border_surface_analysis_skill": {
+            "border_clarity": "poor",
+            "border_irregularity": "irregular",
+            "surface_texture": "rough",
+            "scaling_presence": "present",
+            "referenced_experiences": [
+              "ISIC_0000027_downsampled",
+              "ISIC_0000020_downsampled"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "lesion_description_structuring_skill": {
+            "primary_lesion_morphology": "Irregular plaque",
+            "color": [
+              "Mottled brown with areas of hyperpigmentation and hypopigmentation"
+            ],
+            "border": [
+              "Irregular"
+            ],
+            "surface": [
+              "Rough, scaling presence"
+            ],
+            "size_count": [
+              "size: Large, count: Multiple"
+            ],
+            "distribution": [
+              "site: Anterior torso, anatom_site_general: anterior torso"
+            ],
+            "associated_context": [
+              "age_approx: 55, sex: male, label_space_id: isic2019_full"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000027_downsampled",
+              "ISIC_0000020_downsampled"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "metadata_consistency_skill": {
+            "consistency_score": "medium",
+            "conflicts": [],
+            "suspicious_points": [
+              "The lesion's surface texture described as 'rough' might suggest actinic keratosis, but the image shows a mottled pattern which is more characteristic of dysplastic nevi."
+            ],
+            "referenced_experiences": [
+              "ISIC_0000027_downsampled",
+              "ISIC_0000020_downsampled",
+              "abs_composite_4e40b5003e04",
+              "abs_composite_38ebf6b9597c",
+              "abs_composite_34c2f0722d4b"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "uncertainty_signal"
+          },
+          "differential_compare_skill": {
+            "candidate_pairs": [
+              "Dysplastic Nevus vs Atypical Mole"
+            ],
+            "supporting_evidence": [
+              "The lesion shows a mottled pattern which is common in dysplastic nevi.",
+              "The lesion has features that can be seen in both benign and potentially malignant lesions."
+            ],
+            "conflicting_evidence": [
+              "There is no clear evidence of asymmetry, irregular borders, or irregular pigmentation which are key features of melanoma."
+            ],
+            "required_missing_evidence": [
+              "Missing dermoscopic/pattern detail for pigment network or additional structure.",
+              "Missing clearer evolution history when growth/change is not explicit."
+            ],
+            "referenced_experiences": [
+              "ISIC_0000027_downsampled",
+              "ISIC_0000020_downsampled",
+              "abs_composite_4e40b5003e04",
+              "abs_composite_38ebf6b9597c",
+              "abs_composite_34c2f0722d4b"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "conflict_signal"
+          },
+          "mel_nev_specialist_skill": {
+            "differentiation_features": [
+              "asymmetry",
+              "border irregularity",
+              "pigment complexity"
+            ],
+            "supporting_evidence": [
+              "The lesion shows a mottled pattern which is common in dysplastic nevi.",
+              "The lesion has features that can be seen in both benign and potentially malignant lesions."
+            ],
+            "opposing_evidence": [
+              "Symmetry (bilateral or radial symmetry) - only if actually present",
+              "Regular border (smooth, well-defined, circular or oval) - only if actually present",
+              "Uniform pigmentation (single color, homogeneous distribution) - only if actually present",
+              "Lack of structural irregularity (no chaotic patterns, no regression areas) - only if actually present",
+              "Small size (<6mm) with stable history - only if actually present",
+              "Regular dermoscopic network or uniform globules - only if actually present"
+            ],
+            "required_missing_evidence": [
+              "Missing dermoscopic/pattern detail for pigment network or additional structure.",
+              "Missing clearer evolution history when growth/change is not explicit."
+            ],
+            "uncertainty_under_current_evidence": "medium",
+            "further_observation_suggestions": [
+              "Examine dermoscopic features for pigment network and additional structures.",
+              "Observe the lesion's evolution over time for any changes in size, shape, or color."
+            ],
+            "cluster_watchouts": [
+              "Do not turn pigmented concern into a final melanoma verdict.",
+              "Do not ignore nevus-like opposing evidence when uncertainty remains high.",
+              "Do not over-read image noise or shadow as true color variegation."
+            ],
+            "referenced_confusion_patterns": [],
+            "critical_supporting_evidence": [
+              "The lesion shows a mottled pattern which is common in dysplastic nevi."
+            ],
+            "counterexample_watchouts": [
+              "Counterexamples where a mottled pattern can also be seen in melanomas."
+            ],
+            "referenced_experiences": [
+              "ISIC_0000027_downsampled",
+              "ISIC_0000020_downsampled"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "conflict_signal"
+          },
+          "exclusion_reasoning_skill": {
+            "unlikely_candidates": [
+              "Seborrheic Keratosis"
+            ],
+            "exclusion_evidence": [
+              "The lesion does not show the typical smooth, waxy appearance of seborrheic keratosis.",
+              "The lesion lacks the characteristic keratin cysts or comedones often seen in seborrheic keratosis."
+            ],
+            "required_missing_evidence": [
+              "Missing dermoscopic features for papillomatous structure or central umbilication.",
+              "Missing clinical history to confirm the lesion's behavior over time."
+            ],
+            "exclusion_confidence": "medium",
+            "referenced_experiences": [
+              "ISIC_0000027_downsampled",
+              "ISIC_0000020_downsampled"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "information_gap_detection_skill": {
+            "missing_information": [
+              "Detailed dermoscopic features such as pigment network, structure, and pattern",
+              "Clearer evolution history or growth change details",
+              "Clinical history of the lesion"
+            ],
+            "why_it_matters": [
+              "Detailed dermoscopic features are crucial for distinguishing between benign and potentially malignant lesions.",
+              "Evolution history helps in assessing the nature of the lesion over time, which is important for differential diagnosis.",
+              "Clinical history provides context about the lesion's behavior and patient's medical history, which can influence the differential diagnosis."
+            ],
+            "impact_on_differential": [
+              "Without detailed dermoscopic features, it is challenging to differentiate between dysplastic nevi and atypical moles.",
+              "Lack of evolution history makes it difficult to rule out malignancy based on growth patterns.",
+              "Clinical history is essential for understanding the patient's risk factors and the natural history of the lesion."
+            ],
+            "uncertainty_if_missing": "high",
+            "referenced_experiences": [
+              "ISIC_0000027_downsampled",
+              "ISIC_0000020_downsampled",
+              "abs_composite_4e40b5003e04",
+              "abs_composite_38ebf6b9597c",
+              "abs_composite_34c2f0722d4b"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "uncertainty_assessment_skill": {
+            "uncertainty_level": "medium",
+            "reasons": [
+              "The lesion exhibits features that overlap between benign and potentially malignant conditions.",
+              "Clinical history and further examination are crucial for a definitive diagnosis."
+            ],
+            "missing_information": [
+              "Clearer dermoscopic details, such as pigment network patterns and additional structures.",
+              "More detailed clinical history regarding the lesion's growth and change over time."
+            ],
+            "referenced_experiences": [
+              "ISIC_0000027_downsampled",
+              "ISIC_0000020_downsampled",
+              "abs_composite_4e40b5003e04",
+              "abs_composite_38ebf6b9597c",
+              "abs_composite_34c2f0722d4b"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "uncertainty_signal"
+          },
+          "contradiction_check_skill": {
+            "contradictions": [],
+            "missing_links": [
+              {
+                "description": "The lesion description does not mention the presence of pigment network patterns, which could provide additional diagnostic information."
+              }
+            ],
+            "reasoning_gaps": [
+              {
+                "description": "The lesion's growth and change over time are not documented, which is crucial for assessing malignancy risk."
+              },
+              {
+                "description": "The presence of pigment network patterns is not confirmed, which could help narrow down the differential diagnosis."
+              }
+            ],
+            "referenced_experiences": [
+              "ISIC_0000027_downsampled",
+              "ISIC_0000020_downsampled",
+              "abs_composite_4e40b5003e04",
+              "abs_composite_38ebf6b9597c",
+              "abs_composite_34c2f0722d4b"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "uncertainty_signal"
+          }
+        },
+        "risk_flags": [],
+        "uncertainty": {
+          "uncertainty_level": "medium",
+          "reasons": [
+            "The lesion exhibits features that overlap between benign and potentially malignant conditions.",
+            "Clinical history and further examination are crucial for a definitive diagnosis."
+          ],
+          "missing_information": [
+            "Clearer dermoscopic details, such as pigment network patterns and additional structures.",
+            "More detailed clinical history regarding the lesion's growth and change over time."
+          ],
+          "referenced_experiences": [
+            "ISIC_0000027_downsampled",
+            "ISIC_0000020_downsampled",
+            "abs_composite_4e40b5003e04",
+            "abs_composite_38ebf6b9597c",
+            "abs_composite_34c2f0722d4b"
+          ],
+          "evidence_strength": "medium",
+          "recommendation_type": "uncertainty_signal"
+        },
+        "retrieved_experience_refs": [
+          "abs_composite_4e40b5003e04",
+          "abs_composite_38ebf6b9597c"
+        ],
+        "notes": [
+          "Agent generated structured evidence only.",
+          "Qwen remains the sole final diagnostic decision maker.",
+          "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, differential_compare_skill, mel_nev_specialist_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill.",
+          "Policy in use: stable_default_policy__full_dermagent.",
+          "Skill retrieval candidates: metadata_consistency_skill, color_pattern_analysis_skill, mel_nev_specialist_skill, differential_compare_skill, morphology_analysis_skill, border_surface_analysis_skill, benign_mimic_specialist_skill, lesion_description_structuring_skill, malignancy_risk_assessment_skill, uncertainty_assessment_skill, distribution_analysis_skill, contradiction_check_skill, exclusion_reasoning_skill, information_gap_detection_skill.",
+          "The lesion shows a mottled pattern which is common in dysplastic nevi.",
+          "There is no clear evidence of asymmetry, irregular borders, or irregular pigmentation which are key features of melanoma.",
+          "Retrieved prior reasoning experience for context."
+        ],
+        "skill_assessments": [
+          {
+            "skill_name": "morphology_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Dysplastic Nevus",
+                "Atypical Mole",
+                "Seborrheic Keratosis"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": ""
+            },
+            "helped_aspects": [
+              "stabilized lesion structure",
+              "made morphology explicit for downstream reasoning"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "inspect dominant lesion silhouette",
+              "judge elevation and lesion count"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000027_downsampled",
+              "ISIC_0000020_downsampled"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "morphology_analysis_skill",
+              "ddx:Dysplastic Nevus|Atypical Mole",
+              "uncertainty:medium",
+              "confusion:Nevus->MEL"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "morphology_analysis_skill remains reusable for Nevus->MEL style confusion"
+          },
+          {
+            "skill_name": "color_pattern_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Dysplastic Nevus",
+                "Atypical Mole",
+                "Seborrheic Keratosis"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": ""
+            },
+            "helped_aspects": [
+              "made pigment variation explicit",
+              "surfaced color asymmetry as auditable evidence"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "inspect dominant color",
+              "compare internal color asymmetry"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000027_downsampled",
+              "ISIC_0000020_downsampled"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 1.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "color_pattern_analysis_skill",
+              "ddx:Dysplastic Nevus|Atypical Mole",
+              "uncertainty:medium",
+              "confusion:Nevus->MEL"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "color_pattern_analysis_skill remains reusable for Nevus->MEL style confusion"
+          },
+          {
+            "skill_name": "border_surface_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Dysplastic Nevus",
+                "Atypical Mole",
+                "Seborrheic Keratosis"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": ""
+            },
+            "helped_aspects": [
+              "separated edge evidence from surface evidence",
+              "highlighted margin quality explicitly"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "judge border definition",
+              "inspect surface change and scale"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000027_downsampled",
+              "ISIC_0000020_downsampled"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "border_surface_analysis_skill",
+              "ddx:Dysplastic Nevus|Atypical Mole",
+              "uncertainty:medium",
+              "confusion:Nevus->MEL"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "border_surface_analysis_skill remains reusable for Nevus->MEL style confusion"
+          },
+          {
+            "skill_name": "lesion_description_structuring_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Dysplastic Nevus",
+                "Atypical Mole",
+                "Seborrheic Keratosis"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": ""
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000027_downsampled",
+              "ISIC_0000020_downsampled"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 1.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "lesion_description_structuring_skill",
+              "ddx:Dysplastic Nevus|Atypical Mole",
+              "uncertainty:medium",
+              "confusion:Nevus->MEL"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "lesion_description_structuring_skill remains reusable for Nevus->MEL style confusion"
+          },
+          {
+            "skill_name": "metadata_consistency_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Dysplastic Nevus",
+                "Atypical Mole",
+                "Seborrheic Keratosis"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": ""
+            },
+            "helped_aspects": [
+              "checked image-metadata coherence",
+              "flagged reliability issues before integration"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "compare visible cues against metadata",
+              "separate direct conflicts from soft concerns"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000027_downsampled",
+              "ISIC_0000020_downsampled",
+              "abs_composite_4e40b5003e04",
+              "abs_composite_38ebf6b9597c",
+              "abs_composite_34c2f0722d4b"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "uncertainty_signal",
+            "uncertainty_reduction": true,
+            "contradiction_detected": true,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 2.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "metadata_consistency_skill",
+              "ddx:Dysplastic Nevus|Atypical Mole",
+              "uncertainty:medium",
+              "confusion:Nevus->MEL"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "metadata_consistency_skill remains reusable for Nevus->MEL style confusion"
+          },
+          {
+            "skill_name": "differential_compare_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Dysplastic Nevus",
+                "Atypical Mole",
+                "Seborrheic Keratosis"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": ""
+            },
+            "helped_aspects": [
+              "kept the differential open",
+              "made pairwise reasoning explicit"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "select the most relevant candidate pair",
+              "preserve unresolved comparative evidence"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000027_downsampled",
+              "ISIC_0000020_downsampled",
+              "abs_composite_4e40b5003e04",
+              "abs_composite_38ebf6b9597c",
+              "abs_composite_34c2f0722d4b"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "conflict_signal",
+            "uncertainty_reduction": true,
+            "contradiction_detected": true,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 2.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "contradiction_signal_supported",
+              "uncertainty_reduction_claim_supported",
+              "malignant_support_relevant"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "differential_compare_skill",
+              "ddx:Dysplastic Nevus|Atypical Mole",
+              "uncertainty:medium",
+              "confusion:Nevus->MEL"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "differential_compare_skill remains reusable for Nevus->MEL style confusion"
+          },
+          {
+            "skill_name": "mel_nev_specialist_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Dysplastic Nevus",
+                "Atypical Mole",
+                "Seborrheic Keratosis"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": ""
+            },
+            "helped_aspects": [
+              "focused a high-value confusion pair",
+              "sharpened specialist comparison clues"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "focus the confusion pair",
+              "contrast differentiating clues without forcing closure"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000027_downsampled",
+              "ISIC_0000020_downsampled"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "conflict_signal",
+            "uncertainty_reduction": true,
+            "contradiction_detected": true,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 2.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "contradiction_signal_supported",
+              "uncertainty_reduction_claim_supported",
+              "malignant_support_relevant"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "mel_nev_specialist_skill",
+              "ddx:Dysplastic Nevus|Atypical Mole",
+              "uncertainty:medium",
+              "confusion:Nevus->MEL"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "mel_nev_specialist_skill remains reusable for Nevus->MEL style confusion"
+          },
+          {
+            "skill_name": "exclusion_reasoning_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Dysplastic Nevus",
+                "Atypical Mole",
+                "Seborrheic Keratosis"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": ""
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000027_downsampled",
+              "ISIC_0000020_downsampled"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 1.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "exclusion_reasoning_skill",
+              "ddx:Dysplastic Nevus|Atypical Mole",
+              "uncertainty:medium",
+              "confusion:Nevus->MEL"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "exclusion_reasoning_skill remains reusable for Nevus->MEL style confusion"
+          },
+          {
+            "skill_name": "information_gap_detection_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Dysplastic Nevus",
+                "Atypical Mole",
+                "Seborrheic Keratosis"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": ""
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000027_downsampled",
+              "ISIC_0000020_downsampled",
+              "abs_composite_4e40b5003e04",
+              "abs_composite_38ebf6b9597c",
+              "abs_composite_34c2f0722d4b"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 2.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported",
+              "malignant_support_relevant"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "information_gap_detection_skill",
+              "ddx:Dysplastic Nevus|Atypical Mole",
+              "uncertainty:medium",
+              "confusion:Nevus->MEL"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "information_gap_detection_skill remains reusable for Nevus->MEL style confusion"
+          },
+          {
+            "skill_name": "uncertainty_assessment_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Dysplastic Nevus",
+                "Atypical Mole",
+                "Seborrheic Keratosis"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": ""
+            },
+            "helped_aspects": [
+              "made evidence limits explicit",
+              "prevented overconfident downstream use"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "scan ambiguity across evidence streams",
+              "name missing information explicitly"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000027_downsampled",
+              "ISIC_0000020_downsampled",
+              "abs_composite_4e40b5003e04",
+              "abs_composite_38ebf6b9597c",
+              "abs_composite_34c2f0722d4b"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "uncertainty_signal",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 3.0,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported",
+              "malignant_support_relevant"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "uncertainty_assessment_skill",
+              "ddx:Dysplastic Nevus|Atypical Mole",
+              "uncertainty:medium",
+              "confusion:Nevus->MEL"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "uncertainty_assessment_skill remains reusable for Nevus->MEL style confusion"
+          },
+          {
+            "skill_name": "contradiction_check_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "Dysplastic Nevus",
+                "Atypical Mole",
+                "Seborrheic Keratosis"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": ""
+            },
+            "helped_aspects": [
+              "surfaced missing links in the reasoning chain",
+              "audited internal consistency"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "scan for conflicts across evidence sources",
+              "surface missing links in the reasoning chain"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000027_downsampled",
+              "ISIC_0000020_downsampled",
+              "abs_composite_4e40b5003e04",
+              "abs_composite_38ebf6b9597c",
+              "abs_composite_34c2f0722d4b"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "uncertainty_signal",
+            "uncertainty_reduction": true,
+            "contradiction_detected": true,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 3.0,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported",
+              "malignant_support_relevant"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "contradiction_check_skill",
+              "ddx:Dysplastic Nevus|Atypical Mole",
+              "uncertainty:medium",
+              "confusion:Nevus->MEL"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "contradiction_check_skill remains reusable for Nevus->MEL style confusion"
+          }
+        ]
+      },
+      "final_decision": {
+        "label": "Nevus",
+        "source": "qwen_final_diagnosis",
+        "canonical_label": "NV"
+      },
+      "correctness": {
+        "has_ground_truth": true,
+        "is_correct": false,
+        "error_type": "final_diagnosis_mismatch_reference"
+      },
+      "malignant_flag": {
+        "ground_truth": true,
+        "predicted": false
+      }
+    },
+    "tactical_experiences": [
+      {
+        "exp_id": "tac_ISIC_0067289_e5b6956c8c26",
+        "case_id": "ISIC_0067289",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Nevus->MEL",
+          "observed_state": {
+            "ddx_candidates": [
+              "Dysplastic Nevus",
+              "Atypical Mole",
+              "Seborrheic Keratosis"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:Clearer dermoscopic details, such as pigment network patterns and additional structures.",
+            "missing:More detailed clinical history regarding the lesion's growth and change over time."
+          ]
+        },
+        "action": {
+          "skill_name": "morphology_analysis_skill",
+          "skills_used": [
+            "morphology_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "stabilized lesion structure",
+          "made morphology explicit for downstream reasoning",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "inspect dominant lesion silhouette",
+          "judge elevation and lesion count"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "morphology_analysis_skill",
+            "Nevus->MEL",
+            "Dysplastic Nevus",
+            "Atypical Mole"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0067289_5d8de46f6089",
+        "case_id": "ISIC_0067289",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Nevus->MEL",
+          "observed_state": {
+            "ddx_candidates": [
+              "Dysplastic Nevus",
+              "Atypical Mole",
+              "Seborrheic Keratosis"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:Clearer dermoscopic details, such as pigment network patterns and additional structures.",
+            "missing:More detailed clinical history regarding the lesion's growth and change over time."
+          ]
+        },
+        "action": {
+          "skill_name": "color_pattern_analysis_skill",
+          "skills_used": [
+            "color_pattern_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made pigment variation explicit",
+          "surfaced color asymmetry as auditable evidence",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "inspect dominant color",
+          "compare internal color asymmetry"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "color_pattern_analysis_skill",
+            "Nevus->MEL",
+            "Dysplastic Nevus",
+            "Atypical Mole"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0067289_88ae3d2a1aaf",
+        "case_id": "ISIC_0067289",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Nevus->MEL",
+          "observed_state": {
+            "ddx_candidates": [
+              "Dysplastic Nevus",
+              "Atypical Mole",
+              "Seborrheic Keratosis"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:Clearer dermoscopic details, such as pigment network patterns and additional structures.",
+            "missing:More detailed clinical history regarding the lesion's growth and change over time."
+          ]
+        },
+        "action": {
+          "skill_name": "border_surface_analysis_skill",
+          "skills_used": [
+            "border_surface_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "separated edge evidence from surface evidence",
+          "highlighted margin quality explicitly",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "judge border definition",
+          "inspect surface change and scale"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "border_surface_analysis_skill",
+            "Nevus->MEL",
+            "Dysplastic Nevus",
+            "Atypical Mole"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0067289_8fa365c666e8",
+        "case_id": "ISIC_0067289",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Nevus->MEL",
+          "observed_state": {
+            "ddx_candidates": [
+              "Dysplastic Nevus",
+              "Atypical Mole",
+              "Seborrheic Keratosis"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:Clearer dermoscopic details, such as pigment network patterns and additional structures.",
+            "missing:More detailed clinical history regarding the lesion's growth and change over time."
+          ]
+        },
+        "action": {
+          "skill_name": "lesion_description_structuring_skill",
+          "skills_used": [
+            "lesion_description_structuring_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "lesion_description_structuring_skill",
+            "Nevus->MEL",
+            "Dysplastic Nevus",
+            "Atypical Mole"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0067289_2f79c85a7fb8",
+        "case_id": "ISIC_0067289",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Nevus->MEL",
+          "observed_state": {
+            "ddx_candidates": [
+              "Dysplastic Nevus",
+              "Atypical Mole",
+              "Seborrheic Keratosis"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:Clearer dermoscopic details, such as pigment network patterns and additional structures.",
+            "missing:More detailed clinical history regarding the lesion's growth and change over time."
+          ]
+        },
+        "action": {
+          "skill_name": "metadata_consistency_skill",
+          "skills_used": [
+            "metadata_consistency_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "checked image-metadata coherence",
+          "flagged reliability issues before integration",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "compare visible cues against metadata",
+          "separate direct conflicts from soft concerns"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "metadata_consistency_skill",
+            "Nevus->MEL",
+            "Dysplastic Nevus",
+            "Atypical Mole"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0067289_bce72efcf1a2",
+        "case_id": "ISIC_0067289",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Nevus->MEL",
+          "observed_state": {
+            "ddx_candidates": [
+              "Dysplastic Nevus",
+              "Atypical Mole",
+              "Seborrheic Keratosis"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:Clearer dermoscopic details, such as pigment network patterns and additional structures.",
+            "missing:More detailed clinical history regarding the lesion's growth and change over time."
+          ]
+        },
+        "action": {
+          "skill_name": "differential_compare_skill",
+          "skills_used": [
+            "differential_compare_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "kept the differential open",
+          "made pairwise reasoning explicit",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "select the most relevant candidate pair",
+          "preserve unresolved comparative evidence"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "differential_compare_skill",
+            "Nevus->MEL",
+            "Dysplastic Nevus",
+            "Atypical Mole"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0067289_4ae354055cbc",
+        "case_id": "ISIC_0067289",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Nevus->MEL",
+          "observed_state": {
+            "ddx_candidates": [
+              "Dysplastic Nevus",
+              "Atypical Mole",
+              "Seborrheic Keratosis"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:Clearer dermoscopic details, such as pigment network patterns and additional structures.",
+            "missing:More detailed clinical history regarding the lesion's growth and change over time."
+          ]
+        },
+        "action": {
+          "skill_name": "mel_nev_specialist_skill",
+          "skills_used": [
+            "mel_nev_specialist_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "focused a high-value confusion pair",
+          "sharpened specialist comparison clues",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "focus the confusion pair",
+          "contrast differentiating clues without forcing closure"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "mel_nev_specialist_skill",
+            "Nevus->MEL",
+            "Dysplastic Nevus",
+            "Atypical Mole"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0067289_77b666058907",
+        "case_id": "ISIC_0067289",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Nevus->MEL",
+          "observed_state": {
+            "ddx_candidates": [
+              "Dysplastic Nevus",
+              "Atypical Mole",
+              "Seborrheic Keratosis"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:Clearer dermoscopic details, such as pigment network patterns and additional structures.",
+            "missing:More detailed clinical history regarding the lesion's growth and change over time."
+          ]
+        },
+        "action": {
+          "skill_name": "exclusion_reasoning_skill",
+          "skills_used": [
+            "exclusion_reasoning_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "exclusion_reasoning_skill",
+            "Nevus->MEL",
+            "Dysplastic Nevus",
+            "Atypical Mole"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0067289_3195d993f5b8",
+        "case_id": "ISIC_0067289",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Nevus->MEL",
+          "observed_state": {
+            "ddx_candidates": [
+              "Dysplastic Nevus",
+              "Atypical Mole",
+              "Seborrheic Keratosis"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:Clearer dermoscopic details, such as pigment network patterns and additional structures.",
+            "missing:More detailed clinical history regarding the lesion's growth and change over time."
+          ]
+        },
+        "action": {
+          "skill_name": "information_gap_detection_skill",
+          "skills_used": [
+            "information_gap_detection_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "information_gap_detection_skill",
+            "Nevus->MEL",
+            "Dysplastic Nevus",
+            "Atypical Mole"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0067289_e21fa70f1cb7",
+        "case_id": "ISIC_0067289",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Nevus->MEL",
+          "observed_state": {
+            "ddx_candidates": [
+              "Dysplastic Nevus",
+              "Atypical Mole",
+              "Seborrheic Keratosis"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:Clearer dermoscopic details, such as pigment network patterns and additional structures.",
+            "missing:More detailed clinical history regarding the lesion's growth and change over time."
+          ]
+        },
+        "action": {
+          "skill_name": "uncertainty_assessment_skill",
+          "skills_used": [
+            "uncertainty_assessment_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made evidence limits explicit",
+          "prevented overconfident downstream use",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "scan ambiguity across evidence streams",
+          "name missing information explicitly"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "uncertainty_assessment_skill",
+            "Nevus->MEL",
+            "Dysplastic Nevus",
+            "Atypical Mole"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0067289_8eed343a7164",
+        "case_id": "ISIC_0067289",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Nevus->MEL",
+          "observed_state": {
+            "ddx_candidates": [
+              "Dysplastic Nevus",
+              "Atypical Mole",
+              "Seborrheic Keratosis"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:Clearer dermoscopic details, such as pigment network patterns and additional structures.",
+            "missing:More detailed clinical history regarding the lesion's growth and change over time."
+          ]
+        },
+        "action": {
+          "skill_name": "contradiction_check_skill",
+          "skills_used": [
+            "contradiction_check_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "surfaced missing links in the reasoning chain",
+          "audited internal consistency",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "scan for conflicts across evidence sources",
+          "surface missing links in the reasoning chain"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "contradiction_check_skill",
+            "Nevus->MEL",
+            "Dysplastic Nevus",
+            "Atypical Mole"
+          ],
+          "priority": "high"
+        }
+      }
+    ],
+    "abstract_experiences": [
+      {
+        "abs_id": "abs_confusion_5c6199e857fc",
+        "type": "confusion_memory",
+        "concept": "nevus->mel",
+        "pattern_summary": {
+          "confusion_pair": "Nevus->MEL",
+          "supporting_pattern": [
+            "A large, irregularly shaped lesion with a mottled brown coloration and areas of hyperpigmentation and hypopigmentation. There are some hair follicles present within the lesion.",
+            "Dysplastic Nevus",
+            "Atypical Mole"
+          ],
+          "failure_pattern": [
+            "final_diagnosis_mismatch_reference"
+          ]
+        },
+        "supporting_cases": [
+          "ISIC_0067289"
+        ],
+        "counter_cases": [],
+        "derived_rule": {
+          "rule_text": "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+          "action_hint": "compare_then_audit_uncertainty"
+        },
+        "version": "v1",
+        "seed_id": null,
+        "composite_skill_seed": {},
+        "provenance": {}
+      },
+      {
+        "abs_id": "abs_rule_97a155a28150",
+        "type": "rule",
+        "concept": "compare_then_audit_uncertainty",
+        "pattern_summary": {
+          "supporting_pattern": [
+            "A large, irregularly shaped lesion with a mottled brown coloration and areas of hyperpigmentation and hypopigmentation. There are some hair follicles present within the lesion.",
+            "Dysplastic Nevus",
+            "Atypical Mole"
+          ],
+          "failure_pattern": [
+            "final_diagnosis_mismatch_reference"
+          ]
+        },
+        "supporting_cases": [
+          "ISIC_0067289"
+        ],
+        "counter_cases": [],
+        "derived_rule": {
+          "rule_text": "When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Qwen integration.",
+          "action_hint": "compare_then_audit_uncertainty"
+        },
+        "version": "v1",
+        "seed_id": null,
+        "composite_skill_seed": {},
+        "provenance": {}
+      }
+    ],
+    "cognition_update": {
+      "total_cases_increment": 1,
+      "failed_cases_increment": 1,
+      "confusion_cases_increment": 1,
+      "hard_cases_increment": 0,
+      "confusion_pair": "Nevus->MEL",
+      "preferred_skills": [
+        "morphology_analysis_skill",
+        "color_pattern_analysis_skill",
+        "border_surface_analysis_skill",
+        "lesion_description_structuring_skill",
+        "metadata_consistency_skill",
+        "differential_compare_skill",
+        "mel_nev_specialist_skill",
+        "exclusion_reasoning_skill",
+        "information_gap_detection_skill",
+        "uncertainty_assessment_skill",
+        "contradiction_check_skill"
+      ]
+    },
+    "skill_stats_update": [
+      {
+        "skill_name": "morphology_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "color_pattern_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "border_surface_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "lesion_description_structuring_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "metadata_consistency_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 1,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "differential_compare_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 1,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "mel_nev_specialist_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 1,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "exclusion_reasoning_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "information_gap_detection_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "uncertainty_assessment_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "contradiction_check_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 1,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      }
+    ],
+    "reflection_extract": {
+      "raw_case_memory_ready": true,
+      "tactical_experience_count": 11,
+      "abstract_experience_candidate_count": 2,
+      "reusable_tactical_count": 11,
+      "composite_skill_seed_count": 0,
+      "composite_skill_seed_ids": [],
+      "abstract_flags": {
+        "confusion_memory": true,
+        "prototype": false,
+        "rule": true,
+        "rule_candidate": false,
+        "composite_skill_seed": false
+      },
+      "case_status": "failure"
+    }
+  },
+  "cognition_update": {
+    "total_cases_increment": 1,
+    "failed_cases_increment": 1,
+    "confusion_cases_increment": 1,
+    "hard_cases_increment": 0,
+    "confusion_pair": "Nevus->MEL",
+    "preferred_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "border_surface_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "differential_compare_skill",
+      "mel_nev_specialist_skill",
+      "exclusion_reasoning_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill"
+    ]
+  }
+}

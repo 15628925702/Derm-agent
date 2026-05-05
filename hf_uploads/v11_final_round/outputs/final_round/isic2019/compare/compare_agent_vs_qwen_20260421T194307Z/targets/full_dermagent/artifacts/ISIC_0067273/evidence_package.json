@@ -1,0 +1,841 @@
+{
+  "perception": {
+    "image_summary": "A slightly elevated, irregularly shaped lesion with a mix of pinkish and brownish hues, some areas showing hyperpigmentation and others hypopigmentation. The surface appears rough with fine telangiectasias.",
+    "ddx_candidates": [
+      "Actinic Keratosis",
+      "Seborrheic Keratosis",
+      "Solar Lentigo"
+    ],
+    "uncertainty": {
+      "level": "low",
+      "reasons": [
+        "The lesion's morphology does not show clear features of malignancy.",
+        "The color variation could be due to solar damage."
+      ]
+    },
+    "notes": [
+      "The lesion has a rough texture and uneven pigmentation, which can be seen in benign conditions."
+    ]
+  },
+  "retrieved_experience": [
+    {
+      "case_id": "ISIC_0000009",
+      "source_layer": "abstract_experience",
+      "source_subtype": "composite_skill_seed",
+      "experience_type": "composite_skill_seed",
+      "perception_summary": "ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium",
+      "confusion_pair": null,
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage.",
+        "Promote only after repeated successful supporting cases under a stable trigger pattern."
+      ],
+      "source_id": "abs_composite_4e40b5003e04",
+      "retrieval_score": 10
+    },
+    {
+      "case_id": "ISIC_0000009",
+      "source_layer": "abstract_experience",
+      "source_subtype": "composite_skill_seed",
+      "experience_type": "composite_skill_seed",
+      "perception_summary": "ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium",
+      "confusion_pair": null,
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage.",
+        "Promote only after repeated successful supporting cases under a stable trigger pattern."
+      ],
+      "source_id": "abs_composite_34c2f0722d4b",
+      "retrieval_score": 10
+    }
+  ],
+  "skill_outputs": {
+    "morphology_analysis_skill": {
+      "lesion_type": "plaque",
+      "size_range": "large",
+      "elevation": "raised",
+      "count": "solitary",
+      "referenced_experiences": [
+        "ISIC_0000018_downsampled"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "color_pattern_analysis_skill": {
+      "primary_color": "pinkish-brown",
+      "color_variation": "marked",
+      "pigmentation_pattern": "mixed",
+      "asymmetry_color": "present",
+      "referenced_experiences": [
+        "ISIC_0000018_downsampled"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "border_surface_analysis_skill": {
+      "border_clarity": "poor",
+      "border_irregularity": "irregular",
+      "surface_texture": "rough",
+      "scaling_presence": "absent",
+      "referenced_experiences": [
+        "ISIC_0000018_downsampled",
+        "ISIC_0000030_downsampled",
+        "tac_ISIC_0000027_downsampled_38cb14500658",
+        "tac_ISIC_0000020_downsampled_38cb14500658",
+        "tac_ISIC_0000018_downsampled_38cb14500658",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_8acae44c3a66",
+        "abs_composite_4e40b5003e04"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "lesion_description_structuring_skill": {
+      "primary_lesion_morphology": "slightly elevated, irregularly shaped",
+      "color": [
+        "pinkish-brown, mixed pigmentation"
+      ],
+      "border": [
+        "irregular, poor clarity"
+      ],
+      "surface": [
+        "rough, uneven texture"
+      ],
+      "size_count": [
+        "large, solitary"
+      ],
+      "distribution": [
+        "head/neck, male patient, age approx. 65"
+      ],
+      "associated_context": [
+        "clinical metadata includes age, sex, and anatomical site"
+      ],
+      "referenced_experiences": [
+        "tac_ISIC_0000027_downsampled_38cb14500658",
+        "tac_ISIC_0000020_downsampled_38cb14500658",
+        "tac_ISIC_0000018_downsampled_38cb14500658"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "metadata_consistency_skill": {
+      "consistency_score": "medium",
+      "conflicts": [],
+      "suspicious_points": [
+        "The lesion's surface texture described as 'rough' in the metadata does not align with the visual observation of a smooth surface.",
+        "The lesion's size and count described as 'large, solitary' in the metadata do not match the visual impression of a smaller, more confluent lesion."
+      ],
+      "referenced_experiences": [
+        "ISIC_0000018_downsampled",
+        "ISIC_0000030_downsampled",
+        "tac_ISIC_0000027_downsampled_38cb14500658",
+        "tac_ISIC_0000020_downsampled_38cb14500658",
+        "tac_ISIC_0000018_downsampled_38cb14500658",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_8acae44c3a66",
+        "abs_composite_4e40b5003e04"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "malignancy_risk_assessment_skill": {
+      "risk_level": "medium",
+      "risk_evidence": [
+        "Irregular border with poor clarity",
+        "Marked color variation with mixed pigmentation",
+        "Rough, uneven texture"
+      ],
+      "alarm_signals": [
+        "Irregular border with poor clarity",
+        "Marked color variation with mixed pigmentation",
+        "Rough, uneven texture"
+      ],
+      "benign_reassuring_features": [
+        "Symmetry (bilateral or radial)",
+        "Regular border (smooth, well-defined)",
+        "Uniform color (single color, homogeneous)"
+      ],
+      "referenced_experiences": [
+        "tac_ISIC_0000027_downsampled_38cb14500658",
+        "tac_ISIC_0000020_downsampled_38cb14500658",
+        "tac_ISIC_0000018_downsampled_38cb14500658"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "risk_signal"
+    },
+    "differential_compare_skill": {
+      "candidate_pairs": [
+        "Actinic Keratosis vs Seborrheic Keratosis"
+      ],
+      "supporting_evidence": [
+        "Irregular border with poor clarity",
+        "Marked color variation with mixed pigmentation",
+        "Rough, uneven texture"
+      ],
+      "conflicting_evidence": [
+        "The lesion's morphology does not show clear features of malignancy.",
+        "The color variation could be due to solar damage."
+      ],
+      "required_missing_evidence": [
+        "Closer surface texture and border-demarcation detail.",
+        "Confirmation of waxy/stuck-on appearance versus flatter actinic roughness."
+      ],
+      "referenced_experiences": [
+        "ISIC_0000018_downsampled",
+        "ISIC_0000030_downsampled",
+        "tac_ISIC_0000027_downsampled_38cb14500658",
+        "tac_ISIC_0000020_downsampled_38cb14500658",
+        "tac_ISIC_0000018_downsampled_38cb14500658",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_8acae44c3a66",
+        "abs_composite_4e40b5003e04"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "conflict_signal"
+    },
+    "exclusion_reasoning_skill": {
+      "unlikely_candidates": [
+        "Seborrheic Keratosis"
+      ],
+      "exclusion_evidence": [
+        "The lesion's morphology does not show clear features of malignancy.",
+        "The color variation could be due to solar damage."
+      ],
+      "required_missing_evidence": [
+        "Closer surface texture and border-demarcation detail.",
+        "Confirmation of waxy/stuck-on appearance versus flatter actinic roughness."
+      ],
+      "exclusion_confidence": "medium",
+      "referenced_experiences": [
+        "abs_confusion_fb61033fa484",
+        "abs_composite_8acae44c3a66",
+        "abs_composite_4e40b5003e04"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "information_gap_detection_skill": {
+      "missing_information": [
+        "Closer surface texture and border-demarcation detail.",
+        "Confirmation of waxy/stuck-on appearance versus flatter actinic roughness."
+      ],
+      "why_it_matters": [
+        "These details are crucial for distinguishing between benign and potentially malignant lesions, especially in differentiating between Actinic Keratosis and Seborrheic Keratosis.",
+        "Surface characteristics help in assessing the lesion's consistency and whether it aligns more with the typical presentation of actinic changes or a keratotic lesion."
+      ],
+      "impact_on_differential": [
+        "Without these details, the differential remains open between Actinic Keratosis and Seborrheic Keratosis, as both can present with similar color variations and surface irregularities.",
+        "The lack of specific surface texture and border clarity makes it difficult to rule out malignancy, which is important for excluding Solar Lentigo."
+      ],
+      "uncertainty_if_missing": "high",
+      "referenced_experiences": [
+        "ISIC_0000018_downsampled",
+        "ISIC_0000030_downsampled",
+        "tac_ISIC_0000027_downsampled_38cb14500658",
+        "tac_ISIC_0000020_downsampled_38cb14500658",
+        "tac_ISIC_0000018_downsampled_38cb14500658",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_8acae44c3a66",
+        "abs_composite_4e40b5003e04"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "uncertainty_assessment_skill": {
+      "uncertainty_level": "medium",
+      "reasons": [
+        "The lesion's morphology does not show clear features of malignancy.",
+        "The color variation could be due to solar damage.",
+        "The surface texture and border demarcation details are not clearly visible."
+      ],
+      "missing_information": [
+        "Closer surface texture and border-demarcation detail.",
+        "Confirmation of waxy/stuck-on appearance versus flatter actinic roughness."
+      ],
+      "referenced_experiences": [
+        "ISIC_0000018_downsampled",
+        "ISIC_0000030_downsampled",
+        "tac_ISIC_0000027_downsampled_38cb14500658",
+        "tac_ISIC_0000020_downsampled_38cb14500658",
+        "tac_ISIC_0000018_downsampled_38cb14500658",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_8acae44c3a66",
+        "abs_composite_4e40b5003e04"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "conflict_signal"
+    },
+    "contradiction_check_skill": {
+      "contradictions": [
+        {
+          "description": "The lesion's surface texture described as 'rough' in the border_surface_analysis_skill contradicts the perception summary stating the lesion has a 'slightly raised border'."
+        }
+      ],
+      "missing_links": [
+        {
+          "description": "The presence of waxy/stuck-on appearance versus flatter actinic roughness needs confirmation."
+        }
+      ],
+      "reasoning_gaps": [
+        {
+          "description": "The lesion's exact anatomical location within the head/neck region is not specified, which could influence the differential diagnosis."
+        },
+        {
+          "description": "The lesion's size relative to the patient's body is not mentioned, which could provide additional context for the lesion's significance."
+        }
+      ],
+      "referenced_experiences": [
+        "ISIC_0000018_downsampled",
+        "ISIC_0000030_downsampled",
+        "tac_ISIC_0000027_downsampled_38cb14500658",
+        "tac_ISIC_0000020_downsampled_38cb14500658",
+        "tac_ISIC_0000018_downsampled_38cb14500658",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_8acae44c3a66",
+        "abs_composite_4e40b5003e04"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "conflict_signal"
+    }
+  },
+  "risk_flags": [
+    "malignancy_risk:medium"
+  ],
+  "uncertainty": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The lesion's morphology does not show clear features of malignancy.",
+      "The color variation could be due to solar damage.",
+      "The surface texture and border demarcation details are not clearly visible."
+    ],
+    "missing_information": [
+      "Closer surface texture and border-demarcation detail.",
+      "Confirmation of waxy/stuck-on appearance versus flatter actinic roughness."
+    ],
+    "referenced_experiences": [
+      "ISIC_0000018_downsampled",
+      "ISIC_0000030_downsampled",
+      "tac_ISIC_0000027_downsampled_38cb14500658",
+      "tac_ISIC_0000020_downsampled_38cb14500658",
+      "tac_ISIC_0000018_downsampled_38cb14500658",
+      "abs_confusion_fb61033fa484",
+      "abs_composite_8acae44c3a66",
+      "abs_composite_4e40b5003e04"
+    ],
+    "evidence_strength": "medium",
+    "recommendation_type": "conflict_signal"
+  },
+  "notes": [
+    "Agent generated structured evidence only.",
+    "Qwen remains the sole final diagnostic decision maker.",
+    "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, differential_compare_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill.",
+    "Policy in use: stable_default_policy__full_dermagent.",
+    "Skill retrieval candidates: metadata_consistency_skill, color_pattern_analysis_skill, ack_scc_specialist_skill, border_surface_analysis_skill, lesion_description_structuring_skill, morphology_analysis_skill, differential_compare_skill, contradiction_check_skill, uncertainty_assessment_skill, malignancy_risk_assessment_skill, distribution_analysis_skill, information_gap_detection_skill, escalation_recommendation_skill, exclusion_reasoning_skill.",
+    "The lesion has a rough texture and uneven pigmentation, which can be seen in benign conditions.",
+    "Retrieved prior reasoning experience for context."
+  ],
+  "initial_perception_summary": {
+    "image_summary": "A slightly elevated, irregularly shaped lesion with a mix of pinkish and brownish hues, some areas showing hyperpigmentation and others hypopigmentation. The surface appears rough with fine telangiectasias.",
+    "ddx_candidates": [
+      "Actinic Keratosis",
+      "Seborrheic Keratosis",
+      "Solar Lentigo"
+    ],
+    "uncertainty_level": "low",
+    "uncertainty_reasons": [
+      "The lesion's morphology does not show clear features of malignancy.",
+      "The color variation could be due to solar damage."
+    ],
+    "observation_notes": [
+      "The lesion has a rough texture and uneven pigmentation, which can be seen in benign conditions."
+    ]
+  },
+  "retrieved_raw_cases_summary": [
+    {
+      "source_id": "ISIC_0000018_downsampled",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "ISIC_0000018_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "A large, irregularly shaped brown lesion with uneven pigmentation and some areas of hyperpigmentation and hypopigmentation. The lesion has a slightly raised border and a central area with a lighter coloration.",
+      "learning_points": [
+        "Final decision: Nevus",
+        "Correctness: True"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "ISIC_0000027_downsampled",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "ISIC_0000027_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "A well-circumscribed, irregularly shaped brown lesion with multiple darker speckled areas is present on the anterior torso.",
+      "learning_points": [
+        "Final decision: Nevus",
+        "Correctness: True"
+      ],
+      "retrieval_score": 7.0,
+      "base_retrieval_score": 7.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "ISIC_0000026_downsampled",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "ISIC_0000026_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "A large, irregularly shaped, brownish-red patch with some areas of hyperpigmentation and hypopigmentation on the lower extremity.",
+      "learning_points": [
+        "Final decision: Nevus",
+        "Correctness: False"
+      ],
+      "retrieval_score": 7.0,
+      "base_retrieval_score": 7.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_tactical_experiences_summary": [
+    {
+      "source_id": "tac_ISIC_0000027_downsampled_38cb14500658",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000027_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "stabilized lesion structure",
+        "made morphology explicit for downstream reasoning",
+        "required downstream integration beyond morphology_analysis_skill"
+      ],
+      "retrieval_score": 10.0,
+      "base_retrieval_score": 10.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_ISIC_0000020_downsampled_38cb14500658",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000020_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "stabilized lesion structure",
+        "made morphology explicit for downstream reasoning",
+        "required downstream integration beyond morphology_analysis_skill"
+      ],
+      "retrieval_score": 10.0,
+      "base_retrieval_score": 10.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_ISIC_0000018_downsampled_38cb14500658",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000018_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "stabilized lesion structure",
+        "made morphology explicit for downstream reasoning",
+        "required downstream integration beyond morphology_analysis_skill"
+      ],
+      "retrieval_score": 10.0,
+      "base_retrieval_score": 10.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_ISIC_0000015_38cb14500658",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000015",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dysplastic Nevus, Atypical Mole, Seborrheic Keratosis; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "stabilized lesion structure",
+        "made morphology explicit for downstream reasoning",
+        "required downstream integration beyond morphology_analysis_skill"
+      ],
+      "retrieval_score": 10.0,
+      "base_retrieval_score": 10.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_abstract_experiences_summary": [
+    {
+      "source_id": "abs_composite_4e40b5003e04",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "ISIC_0000009",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 10.0,
+      "base_retrieval_score": 10.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_composite_34c2f0722d4b",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "ISIC_0000009",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 10.0,
+      "base_retrieval_score": 10.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_composite_8acae44c3a66",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "ISIC_0000015",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dysplastic Nevus, Atypical Mole, Seborrheic Keratosis; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "uncertainty_summary": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The lesion's morphology does not show clear features of malignancy.",
+      "The color variation could be due to solar damage.",
+      "The surface texture and border demarcation details are not clearly visible."
+    ],
+    "missing_information": [
+      "Closer surface texture and border-demarcation detail.",
+      "Confirmation of waxy/stuck-on appearance versus flatter actinic roughness."
+    ],
+    "referenced_experiences": [
+      "ISIC_0000018_downsampled",
+      "ISIC_0000030_downsampled",
+      "tac_ISIC_0000027_downsampled_38cb14500658",
+      "tac_ISIC_0000020_downsampled_38cb14500658",
+      "tac_ISIC_0000018_downsampled_38cb14500658",
+      "abs_confusion_fb61033fa484"
+    ]
+  },
+  "contradiction_summary": {
+    "contradictions": [
+      "{'description': \"The lesion's surface texture described as 'rough' in the border_surface_analysis_skill contradicts the perception summary stating the lesion has a 'slightly raised border'.\"}"
+    ],
+    "missing_links": [
+      "{'description': 'The presence of waxy/stuck-on appearance versus flatter actinic roughness needs confirmation.'}"
+    ],
+    "reasoning_gaps": [
+      "{'description': \"The lesion's exact anatomical location within the head/neck region is not specified, which could influence the differential diagnosis.\"}",
+      "{'description': \"The lesion's size relative to the patient's body is not mentioned, which could provide additional context for the lesion's significance.\"}"
+    ],
+    "metadata_conflicts": [],
+    "suspicious_points": [
+      "The lesion's surface texture described as 'rough' in the metadata does not align with the visual observation of a smooth surface.",
+      "The lesion's size and count described as 'large, solitary' in the metadata do not match the visual impression of a smaller, more confluent lesion."
+    ]
+  },
+  "information_gap_summary": {
+    "missing_information": [
+      "Closer surface texture and border-demarcation detail.",
+      "Confirmation of waxy/stuck-on appearance versus flatter actinic roughness."
+    ],
+    "why_it_matters": [
+      "These details are crucial for distinguishing between benign and potentially malignant lesions, especially in differentiating between Actinic Keratosis and Seborrheic Keratosis.",
+      "Surface characteristics help in assessing the lesion's consistency and whether it aligns more with the typical presentation of actinic changes or a keratotic lesion."
+    ],
+    "impact_on_differential": [
+      "Without these details, the differential remains open between Actinic Keratosis and Seborrheic Keratosis, as both can present with similar color variations and surface irregularities.",
+      "The lack of specific surface texture and border clarity makes it difficult to rule out malignancy, which is important for excluding Solar Lentigo."
+    ],
+    "uncertainty_if_missing": "high"
+  },
+  "escalation_summary": {
+    "whether_escalation_needed": "unknown",
+    "escalation_reason": [],
+    "suggested_next_check_type": "",
+    "caution_flags": []
+  },
+  "planner_rationale": {
+    "planner_type": "rule_based",
+    "planner_version": "v1",
+    "selected_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "border_surface_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "malignancy_risk_assessment_skill",
+      "differential_compare_skill",
+      "exclusion_reasoning_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill"
+    ],
+    "selection_reasons": {
+      "morphology_analysis_skill": [
+        "Boosted by skill retrieval score=11.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "color_pattern_analysis_skill": [
+        "Boosted by skill retrieval score=13.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "border_surface_analysis_skill": [
+        "Boosted by skill retrieval score=12.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "lesion_description_structuring_skill": [
+        "Boosted by skill retrieval score=12.40.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Boosted by active confusion cluster(s): ack_sek (bonus=0.9)."
+      ],
+      "metadata_consistency_skill": [
+        "Boosted by skill retrieval score=16.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "malignancy_risk_assessment_skill": [
+        "Boosted by skill retrieval score=9.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "differential_compare_skill": [
+        "Boosted by skill retrieval score=11.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Boosted by active confusion cluster(s): ack_sek (bonus=1.0).",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "exclusion_reasoning_skill": [
+        "Boosted by skill retrieval score=6.90.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Boosted by active confusion cluster(s): ack_sek (bonus=1.4).",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "information_gap_detection_skill": [
+        "Boosted by skill retrieval score=7.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `malignancy_possible`."
+      ],
+      "uncertainty_assessment_skill": [
+        "Boosted by skill retrieval score=9.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ],
+      "contradiction_check_skill": [
+        "Boosted by skill retrieval score=10.50.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ]
+    }
+  },
+  "confusion_cluster_summary": {
+    "active_clusters": [
+      "ack_sek"
+    ],
+    "guidance": [
+      {
+        "cluster_id": "ack_sek",
+        "label": "ACK / SEK",
+        "supporting_clues": [
+          "Explicitly contrast stuck-on/waxy/verrucous clues against flatter actinic roughness.",
+          "State whether the lesion reads as sharply demarcated keratotic plaque versus more actinic field-type change."
+        ],
+        "opposing_clues": [
+          "Scale alone is not enough to favor ACK when waxy or stuck-on cues dominate.",
+          "Seborrheic-looking keratin does not exclude ACK if actinic roughness and malignant-risk context remain active."
+        ],
+        "required_missing_evidence": [
+          "Missing closer surface texture and border-demarcation detail.",
+          "Missing confirmation of waxy/stuck-on appearance versus flatter actinic roughness."
+        ],
+        "watch_outs": [
+          "Do not use keratin or scale as a shortcut to either ACK or SEK.",
+          "Do not hide uncertainty when stuck-on/waxy morphology is not clearly seen."
+        ]
+      }
+    ]
+  },
+  "selected_evidence": [],
+  "evidence_decision_policy": {
+    "risk_layer": {
+      "risk_flag": "malignancy_risk_medium",
+      "caution_flags": [
+        "contradictions_present"
+      ],
+      "follow_up_suggestion": "clinical follow-up and closer inspection if concern persists",
+      "selected_evidence": [],
+      "baseline_preview": {
+        "early_ddx_candidates": [
+          "Actinic Keratosis",
+          "Seborrheic Keratosis",
+          "Solar Lentigo"
+        ],
+        "image_summary": "A slightly elevated, irregularly shaped lesion with a mix of pinkish and brownish hues, some areas showing hyperpigmentation and others hypopigmentation. The surface appears rough with fine telangiectasias.",
+        "baseline_final_diagnosis": "Actinic Keratosis",
+        "baseline_differential_diagnoses": [
+          "Actinic Keratosis",
+          "Seborrheic Keratosis",
+          "Basal Cell Carcinoma"
+        ],
+        "baseline_confidence": "Moderate"
+      }
+    },
+    "diagnosis_override_layer": {
+      "workflow_context": {
+        "label_granularity": "fine",
+        "presentation_mode": "focal_lesion",
+        "workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+        "available_tests": [
+          "clinical_photo_only",
+          "lesion_photo"
+        ],
+        "workflow_preference": "morphology_first",
+        "hospital_type": "specialist_clinic",
+        "time_budget": "standard",
+        "metadata_completeness": "partial",
+        "workflow_capabilities": [
+          "image_archive_reasoning",
+          "full_taxonomy_reasoning",
+          "focal_lesion_reasoning",
+          "legacy_agent_final_reasoning"
+        ]
+      },
+      "override_allowed": false,
+      "malignancy_override_allowed": false,
+      "subtype_override_allowed": false,
+      "family_override_allowed": false,
+      "override_mode": "risk_only",
+      "override_reasons": [
+        "uncertainty_not_high"
+      ],
+      "why_not_confident_enough_to_override": [
+        "malignancy risk is not high enough for a diagnosis override",
+        "no curated selected evidence is available to justify overriding the baseline diagnosis",
+        "supporting evidence does not sufficiently outweigh opposing or exclusion evidence",
+        "supporting evidence is not specific enough to justify a subtype override",
+        "no specialist evidence strongly supports the override direction",
+        "contradictions or reasoning gaps remain too numerous",
+        "retrieval evidence does not provide a consistent prototype or confusion-memory anchor",
+        "opposing or exclusion evidence quota is not satisfied"
+      ],
+      "supporting_evidence": [],
+      "opposing_evidence": [],
+      "supporting_score": 0,
+      "opposing_score": 0,
+      "support_margin": 0,
+      "selected_evidence_present": false,
+      "subtype_support_score": 0,
+      "subtype_support_margin": 0,
+      "specialist_support_present": false,
+      "consistent_retrieval_count": 0,
+      "contradiction_count": 6,
+      "uncertainty_level": "medium",
+      "opposing_quota_satisfied": false,
+      "subtype_support_quota_satisfied": false
+    }
+  },
+  "serialized_evidence_text": "[Observation Evidence]\n- Initial image summary: A slightly elevated, irregularly shaped lesion with a mix of pinkish and brownish hues, some areas showing hyperpigmentation and others hypopigmentation. The surface appears rough with fine telangiectasias.\n- Early differential candidates: Actinic Keratosis, Seborrheic Keratosis, Solar Lentigo\n- morphology_analysis_skill: lesion_type=plaque | size_range=large | elevation=raised | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence\n- color_pattern_analysis_skill: primary_color=pinkish-brown | color_variation=marked | pigmentation_pattern=mixed | asymmetry_color=present | evidence_strength=medium | recommendation_type=descriptive_evidence\n- border_surface_analysis_skill: border_clarity=poor | border_irregularity=irregular | surface_texture=rough | scaling_presence=absent | evidence_strength=medium | recommendation_type=descriptive_evidence\n- lesion_description_structuring_skill: primary_lesion_morphology=slightly elevated, irregularly shaped | color=pinkish-brown, mixed pigmentation | border=irregular, poor clarity | surface=rough, uneven texture | size_count=large, solitary | distribution=head/neck, male patient, age approx. 65\n- Raw case reference ISIC_0000018_downsampled: A large, irregularly shaped brown lesion with uneven pigmentation and some areas of hyperpigmentation and hypopigmentation. The lesion has a slightly raised border and a central area with a lighter coloration.\n\n[Exclusion And Comparison Evidence]\n- Active confusion clusters: ack_sek\n- ACK / SEK watch-out: Do not use keratin or scale as a shortcut to either ACK or SEK.; Do not hide uncertainty when stuck-on/waxy morphology is not clearly seen.\n- metadata_consistency_skill: consistency_score=medium | suspicious_points=The lesion's surface texture described as 'rough' in the metadata does not align with the visual observation of a smooth surface.; The lesion's size and coun... | evidence_strength=medium | recommendation_type=descriptive_evidence\n- differential_compare_skill: candidate_pairs=Actinic Keratosis vs Seborrheic Keratosis | supporting_evidence=Irregular border with poor clarity; Marked color variation with mixed pigmentation; Rough, uneven texture | conflicting_evidence=The lesion's morphology does not show clear features of malignancy.; The color variation could be due to solar damage. | required_missing_evidence=Closer surface texture and border-demarcation detail.; Confirmation of waxy/stuck-on appearance versus flatter actinic roughness. | evidence_strength=medium | recommendation_type=conflict_signal\n- exclusion_reasoning_skill: unlikely_candidates=Seborrheic Keratosis | exclusion_evidence=The lesion's morphology does not show clear features of malignancy.; The color variation could be due to solar damage. | required_missing_evidence=Closer surface texture and border-demarcation detail.; Confirmation of waxy/stuck-on appearance versus flatter actinic roughness. | exclusion_confidence=medium | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Tactical experience tac_ISIC_0000027_downsampled_38cb14500658: ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; risk=malignancy_risk:medium; uncertainty=medium; stabilized lesion structure; made morphology explicit for downstream reasoning; required downstream integration beyond morphology_analysis_skill\n- Tactical experience tac_ISIC_0000020_downsampled_38cb14500658: ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; risk=malignancy_risk:medium; uncertainty=medium; stabilized lesion structure; made morphology explicit for downstream reasoning; required downstream integration beyond morphology_analysis_skill\n\n[Risk Evidence]\n- Risk flags: malignancy_risk:medium\n- malignancy_risk_assessment_skill: risk_level=medium | risk_evidence=Irregular border with poor clarity; Marked color variation with mixed pigmentation; Rough, uneven texture | alarm_signals=Irregular border with poor clarity; Marked color variation with mixed pigmentation; Rough, uneven texture | benign_reassuring_features=Symmetry (bilateral or radial); Regular border (smooth, well-defined); Uniform color (single color, homogeneous) | evidence_strength=medium | recommendation_type=risk_signal\n- Abstract experience abs_composite_4e40b5003e04: ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium; Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.; compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill; Candidate only; do not auto-materialize a composite skill in the current stage.\n- Abstract experience abs_composite_34c2f0722d4b: ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium; Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.; compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill; Candidate only; do not auto-materialize a composite skill in the current stage.\n- Abstract experience abs_composite_8acae44c3a66: ddx=Dysplastic Nevus, Atypical Mole, Seborrheic Keratosis; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium; Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.; compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill; Candidate only; do not auto-materialize a composite skill in the current stage.\n\n[Conflict And Uncertainty]\n- Uncertainty level: medium\n- Uncertainty reasons: The lesion's morphology does not show clear features of malignancy.; The color variation could be due to solar damage.; The surface texture and border demarcation details are not clearly visible.\n- Missing information: Closer surface texture and border-demarcation detail.; Confirmation of waxy/stuck-on appearance versus flatter actinic roughness.\n- contradictions: {'description': \"The lesion's surface texture described as 'rough' in the border_surface_analysis_skill contradicts the perception summary stating the lesion has a 'slightly raised border'.\"}\n- missing links: {'description': 'The presence of waxy/stuck-on appearance versus flatter actinic roughness needs confirmation.'}\n- reasoning gaps: {'description': \"The lesion's exact anatomical location within the head/neck region is not specified, which could influence the differential diagnosis.\"}; {'description': \"The lesion's size relative to the patient's body is not mentioned, which could provide additional context for the lesion's significance.\"}\n- suspicious points: The lesion's surface texture described as 'rough' in the metadata does not align with the visual observation of a smooth surface.; The lesion's size and count described as 'large, solitary' in the metadata do not match the visual impression of a smaller, more confluent lesion.\n- contradiction_check_skill: contradictions={'description': \"The lesion's surface texture described as 'rough' in the border_surface_analysis_skill contradicts the perception summary stating the lesion... | missing_links={'description': 'The presence of waxy/stuck-on appearance versus flatter actinic roughness needs confirmation.'} | reasoning_gaps={'description': \"The lesion's exact anatomical location within the head/neck region is not specified, which could influence the differential diagnosis.\"}; {'... | evidence_strength=medium | recommendation_type=conflict_signal\n- uncertainty_assessment_skill: uncertainty_level=medium | reasons=The lesion's morphology does not show clear features of malignancy.; The color variation could be due to solar damage.; The surface texture and border demarc... | missing_information=Closer surface texture and border-demarcation detail.; Confirmation of waxy/stuck-on appearance versus flatter actinic roughness. | evidence_strength=medium | recommendation_type=conflict_signal\n- information_gap_detection_skill: missing_information=Closer surface texture and border-demarcation detail.; Confirmation of waxy/stuck-on appearance versus flatter actinic roughness. | why_it_matters=These details are crucial for distinguishing between benign and potentially malignant lesions, especially in differentiating between Actinic Keratosis and Se... | impact_on_differential=Without these details, the differential remains open between Actinic Keratosis and Seborrheic Keratosis, as both can present with similar color variations an... | uncertainty_if_missing=high | evidence_strength=medium | recommendation_type=descriptive_evidence\n- explicit information gaps: Closer surface texture and border-demarcation detail.; Confirmation of waxy/stuck-on appearance versus flatter actinic roughness.\n- why gaps matter: These details are crucial for distinguishing between benign and potentially malignant lesions, especially in differentiating between Actinic Keratosis and Seborrheic Keratosis.; Surface characteristics help in assessing the lesion's consistency and whether it aligns more with the typical presentation of actinic changes or a keratotic lesion.\n- impact on differential: Without these details, the differential remains open between Actinic Keratosis and Seborrheic Keratosis, as both can present with similar color variations and surface irregularities.; The lack of specific surface texture and border clarity makes it difficult to rule out malignancy, which is important for excluding Solar Lentigo.\n- residual uncertainty if still missing: high\n- escalation needed: unknown\n\n[Planner Rationale]\n- Selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, differential_compare_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill\n- morphology_analysis_skill: Boosted by skill retrieval score=11.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.\n- color_pattern_analysis_skill: Boosted by skill retrieval score=13.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.\n- border_surface_analysis_skill: Boosted by skill retrieval score=12.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.",
+  "evidence_calibration_debug": {
+    "calibrator_type": "off",
+    "calibrator_version": "v1",
+    "section_plan": {
+      "observation": {
+        "skill_names": [
+          "morphology_analysis_skill",
+          "color_pattern_analysis_skill",
+          "border_surface_analysis_skill",
+          "lesion_description_structuring_skill"
+        ],
+        "merged_groups": [],
+        "raw_case_source_ids": [
+          "ISIC_0000018_downsampled"
+        ]
+      },
+      "comparison": {
+        "skill_names": [
+          "metadata_consistency_skill",
+          "differential_compare_skill",
+          "exclusion_reasoning_skill"
+        ],
+        "merged_groups": [],
+        "tactical_source_ids": [
+          "tac_ISIC_0000027_downsampled_38cb14500658",
+          "tac_ISIC_0000020_downsampled_38cb14500658"
+        ],
+        "abstract_source_ids": []
+      },
+      "risk": {
+        "skill_names": [
+          "malignancy_risk_assessment_skill"
+        ],
+        "abstract_source_ids": [
+          "abs_composite_4e40b5003e04",
+          "abs_composite_34c2f0722d4b",
+          "abs_composite_8acae44c3a66"
+        ]
+      },
+      "conflict_uncertainty": {
+        "skill_names": [
+          "information_gap_detection_skill",
+          "uncertainty_assessment_skill",
+          "contradiction_check_skill"
+        ]
+      },
+      "planner": {
+        "max_reason_skills": 3
+      },
+      "section_order": [
+        "observation",
+        "comparison",
+        "risk",
+        "conflict_uncertainty",
+        "planner"
+      ]
+    },
+    "item_scores": [],
+    "omitted_items": [],
+    "debug": {
+      "reason": "evidence calibrator disabled by policy"
+    }
+  }
+}

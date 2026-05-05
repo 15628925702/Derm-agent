@@ -1,0 +1,848 @@
+{
+  "perception": {
+    "image_summary": "A slightly elevated, irregularly shaped lesion with a central area of erythema and some surrounding telangiectasia.",
+    "ddx_candidates": [
+      "Atypical Nevus",
+      "Seborrheic Keratosis",
+      "Actinic Keratosis"
+    ],
+    "uncertainty": {
+      "level": "low",
+      "reasons": [
+        "The lesion appears relatively small and lacks significant asymmetry or irregular borders.",
+        "Telangiectasia is common in benign lesions."
+      ]
+    },
+    "notes": [
+      "The lesion's central erythematous area could be indicative of inflammation or vascular changes."
+    ]
+  },
+  "retrieved_experience": [
+    {
+      "case_id": "ISIC_0000004",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "A well-circumscribed, slightly elevated lesion with a central area of atrophy and telangiectasia is observed on the posterior torso.; Atypical nevus; Dermatofibroma",
+      "confusion_pair": "Seborrheic Keratosis->MEL",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_confusion_fb61033fa484",
+      "retrieval_score": 10
+    },
+    {
+      "case_id": "ISIC_0000009",
+      "source_layer": "abstract_experience",
+      "source_subtype": "composite_skill_seed",
+      "experience_type": "composite_skill_seed",
+      "perception_summary": "ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium",
+      "confusion_pair": null,
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage.",
+        "Promote only after repeated successful supporting cases under a stable trigger pattern."
+      ],
+      "source_id": "abs_composite_4e40b5003e04",
+      "retrieval_score": 10
+    },
+    {
+      "case_id": "ISIC_0000018_downsampled",
+      "source_layer": "abstract_experience",
+      "source_subtype": "composite_skill_seed",
+      "experience_type": "composite_skill_seed",
+      "perception_summary": "ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; decision_pattern=risk_then_uncertainty_audit; uncertainty=medium; risk=malignancy_risk:medium",
+      "confusion_pair": null,
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage.",
+        "Promote only after repeated successful supporting cases under a stable trigger pattern."
+      ],
+      "source_id": "abs_composite_38ebf6b9597c",
+      "retrieval_score": 10
+    }
+  ],
+  "skill_outputs": {
+    "morphology_analysis_skill": {
+      "lesion_type": "nodule",
+      "size_range": "small to medium",
+      "elevation": "raised",
+      "count": "solitary",
+      "referenced_experiences": [
+        "ISIC_0000030_downsampled",
+        "ISIC_0000018_downsampled"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "color_pattern_analysis_skill": {
+      "primary_color": "pink",
+      "color_variation": "mild",
+      "pigmentation_pattern": "reticular",
+      "asymmetry_color": "present",
+      "referenced_experiences": [
+        "ISIC_0000030_downsampled",
+        "ISIC_0000018_downsampled"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "border_surface_analysis_skill": {
+      "border_clarity": "poor",
+      "border_irregularity": "irregular",
+      "surface_texture": "rough",
+      "scaling_presence": "absent",
+      "referenced_experiences": [
+        "ISIC_0000030_downsampled",
+        "ISIC_0000018_downsampled"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "lesion_description_structuring_skill": {
+      "primary_lesion_morphology": "slightly elevated, irregularly shaped nodule",
+      "color": [
+        "pink with central erythema and surrounding telangiectasia"
+      ],
+      "border": [
+        "irregular, poor border clarity"
+      ],
+      "surface": [
+        "rough, with telangiectasia"
+      ],
+      "size_count": [
+        "small to medium, solitary"
+      ],
+      "distribution": [
+        "anterior torso, male patient, age approx. 85"
+      ],
+      "associated_context": [
+        "lesion's central erythematous area could indicate inflammation or vascular changes"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000030_downsampled",
+        "ISIC_0000018_downsampled"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "metadata_consistency_skill": {
+      "consistency_score": "medium",
+      "conflicts": [],
+      "suspicious_points": [
+        "The lesion's central erythematous area could indicate inflammation or vascular changes."
+      ],
+      "referenced_experiences": [
+        "ISIC_0000030_downsampled",
+        "ISIC_0000018_downsampled",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_3a30f61995cf",
+        "tac_ISIC_0000004_bce72efcf1a2",
+        "abs_composite_4e40b5003e04"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "malignancy_risk_assessment_skill": {
+      "risk_level": "medium",
+      "risk_evidence": [
+        "Irregular border with poor clarity",
+        "Central area of erythema",
+        "Surrounding telangiectasia"
+      ],
+      "alarm_signals": [
+        "Irregular border with poor clarity",
+        "Central area of erythema",
+        "Surrounding telangiectasia"
+      ],
+      "benign_reassuring_features": [],
+      "referenced_experiences": [
+        "ISIC_0000030_downsampled",
+        "ISIC_0000018_downsampled",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_3a30f61995cf",
+        "tac_ISIC_0000004_bce72efcf1a2"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "risk_signal"
+    },
+    "differential_compare_skill": {
+      "candidate_pairs": [
+        "Atypical Nevus vs Seborrheic Keratosis"
+      ],
+      "supporting_evidence": [
+        "Central area of erythema suggests inflammation or vascular changes, which is less characteristic of Seborrheic Keratosis but can occur in Atypical Nevus.",
+        "Telangiectasia is common in benign lesions like Seborrheic Keratosis but also present here, making it non-specific.",
+        "The lesion's central erythematous area could indicate inflammation or vascular changes, which is more suggestive of Atypical Nevus than Seborrheic Keratosis."
+      ],
+      "conflicting_evidence": [
+        "Telangiectasia is common in benign lesions like Seborrheic Keratosis, which makes it a less specific feature for differentiating between Atypical Nevus and Seborrheic Keratosis.",
+        "The lesion's central erythematous area could indicate inflammation or vascular changes, which is more suggestive of Atypical Nevus but also seen in benign conditions."
+      ],
+      "required_missing_evidence": [
+        "Closer surface texture and border-demarcation detail to confirm waxy/stuck-on appearance versus flatter actinic roughness.",
+        "Confirmation of waxy/stuck-on appearance versus flatter actinic roughness to better differentiate between Seborrheic Keratosis and Atypical Nevus."
+      ],
+      "referenced_experiences": [
+        "abs_confusion_fb61033fa484",
+        "tac_ISIC_0000004_bce72efcf1a2"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "conflict_signal"
+    },
+    "information_gap_detection_skill": {
+      "missing_information": [
+        "Surface texture",
+        "Border demarcation"
+      ],
+      "why_it_matters": [
+        "Surface texture and border demarcation are crucial for distinguishing between benign and potentially malignant lesions.",
+        "These features help in differentiating between Seborrheic Keratosis and Atypical Nevus."
+      ],
+      "impact_on_differential": [
+        "Without clear surface texture and border demarcation, it is difficult to rule out Seborrheic Keratosis, which often presents with a waxy or stuck-on appearance.",
+        "These details are essential for confirming whether the lesion is consistent with the characteristics of Atypical Nevus or Seborrheic Keratosis."
+      ],
+      "uncertainty_if_missing": "medium",
+      "referenced_experiences": [
+        "ISIC_0000030_downsampled",
+        "ISIC_0000018_downsampled",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_3a30f61995cf",
+        "tac_ISIC_0000004_bce72efcf1a2",
+        "abs_composite_4e40b5003e04"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "uncertainty_assessment_skill": {
+      "uncertainty_level": "medium",
+      "reasons": [
+        "The lesion exhibits features that are not definitively characteristic of any single diagnostic category.",
+        "The central erythematous area could suggest inflammation or vascular changes, which are not exclusive to any of the differential diagnoses.",
+        "The presence of telangiectasia is non-specific and can be seen in both benign and malignant lesions."
+      ],
+      "missing_information": [
+        "Closer surface texture and border-demarcation detail to confirm waxy/stuck-on appearance versus flatter actinic roughness.",
+        "Confirmation of waxy/stuck-on appearance versus flatter actinic roughness to better differentiate between Seborrheic Keratosis and Atypical Nevus."
+      ],
+      "referenced_experiences": [
+        "ISIC_0000030_downsampled",
+        "ISIC_0000018_downsampled",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_3a30f61995cf",
+        "tac_ISIC_0000004_bce72efcf1a2",
+        "abs_composite_4e40b5003e04"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "conflict_signal"
+    },
+    "contradiction_check_skill": {
+      "contradictions": [
+        {
+          "description": "The lesion's central erythematous area suggests inflammation or vascular changes, but the morphology analysis indicates a nodule with poor border clarity.",
+          "evidence_sources": [
+            "initial_perception",
+            "morphology_analysis_skill"
+          ]
+        }
+      ],
+      "missing_links": [
+        {
+          "description": "The surface texture and border demarcation details are not clearly described, which is crucial for differentiating between Seborrheic Keratosis and Atypical Nevus.",
+          "evidence_sources": [
+            "initial_perception",
+            "border_surface_analysis_skill"
+          ]
+        }
+      ],
+      "reasoning_gaps": [
+        {
+          "description": "The lesion's size and exact location on the anterior torso need further clarification to rule out Seborrheic Keratosis, which is more common in older individuals.",
+          "evidence_sources": [
+            "metadata",
+            "initial_perception"
+          ]
+        },
+        {
+          "description": "The presence of telangiectasia alone is not sufficient to rule out malignancy, and additional information about the lesion's behavior over time would be beneficial.",
+          "evidence_sources": [
+            "initial_perception",
+            "malignancy_risk_assessment_skill"
+          ]
+        }
+      ],
+      "referenced_experiences": [
+        "ISIC_0000030_downsampled",
+        "ISIC_0000018_downsampled",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_3a30f61995cf",
+        "tac_ISIC_0000004_bce72efcf1a2",
+        "abs_composite_4e40b5003e04"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "conflict_signal"
+    },
+    "escalation_recommendation_skill": {
+      "whether_escalation_needed": "yes",
+      "escalation_reason": [
+        "The lesion exhibits features that are not definitively characteristic of any single diagnostic category, and there are unresolved information gaps regarding surface texture and border demarcation. These factors contribute to a medium level of uncertainty and risk."
+      ],
+      "suggested_next_check_type": "dermoscopy",
+      "caution_flags": [
+        "Surface texture and border demarcation are crucial for distinguishing between benign and potentially malignant lesions.",
+        "Further clarification of the lesion's size and exact location is necessary to rule out Seborrheic Keratosis.",
+        "Additional information about the lesion's behavior over time would be beneficial."
+      ],
+      "referenced_experiences": [
+        "ISIC_0000030_downsampled",
+        "ISIC_0000018_downsampled"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "risk_signal"
+    }
+  },
+  "risk_flags": [
+    "malignancy_risk:medium"
+  ],
+  "uncertainty": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The lesion exhibits features that are not definitively characteristic of any single diagnostic category.",
+      "The central erythematous area could suggest inflammation or vascular changes, which are not exclusive to any of the differential diagnoses.",
+      "The presence of telangiectasia is non-specific and can be seen in both benign and malignant lesions."
+    ],
+    "missing_information": [
+      "Closer surface texture and border-demarcation detail to confirm waxy/stuck-on appearance versus flatter actinic roughness.",
+      "Confirmation of waxy/stuck-on appearance versus flatter actinic roughness to better differentiate between Seborrheic Keratosis and Atypical Nevus."
+    ],
+    "referenced_experiences": [
+      "ISIC_0000030_downsampled",
+      "ISIC_0000018_downsampled",
+      "abs_confusion_fb61033fa484",
+      "abs_composite_3a30f61995cf",
+      "tac_ISIC_0000004_bce72efcf1a2",
+      "abs_composite_4e40b5003e04"
+    ],
+    "evidence_strength": "medium",
+    "recommendation_type": "conflict_signal"
+  },
+  "notes": [
+    "Agent generated structured evidence only.",
+    "Qwen remains the sole final diagnostic decision maker.",
+    "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, differential_compare_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill.",
+    "Policy in use: stable_default_policy__full_dermagent.",
+    "Skill retrieval candidates: metadata_consistency_skill, color_pattern_analysis_skill, benign_mimic_specialist_skill, ack_scc_specialist_skill, differential_compare_skill, border_surface_analysis_skill, lesion_description_structuring_skill, morphology_analysis_skill, uncertainty_assessment_skill, malignancy_risk_assessment_skill, distribution_analysis_skill, contradiction_check_skill, information_gap_detection_skill, escalation_recommendation_skill.",
+    "The lesion's central erythematous area could be indicative of inflammation or vascular changes.",
+    "Retrieved prior reasoning experience for context."
+  ],
+  "initial_perception_summary": {
+    "image_summary": "A slightly elevated, irregularly shaped lesion with a central area of erythema and some surrounding telangiectasia.",
+    "ddx_candidates": [
+      "Atypical Nevus",
+      "Seborrheic Keratosis",
+      "Actinic Keratosis"
+    ],
+    "uncertainty_level": "low",
+    "uncertainty_reasons": [
+      "The lesion appears relatively small and lacks significant asymmetry or irregular borders.",
+      "Telangiectasia is common in benign lesions."
+    ],
+    "observation_notes": [
+      "The lesion's central erythematous area could be indicative of inflammation or vascular changes."
+    ]
+  },
+  "retrieved_raw_cases_summary": [
+    {
+      "source_id": "ISIC_0000048_downsampled",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "ISIC_0000048_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "A dark, irregularly shaped lesion with a central area of depigmentation on the anterior torso.",
+      "learning_points": [
+        "Final decision: Malignant Melanoma",
+        "Correctness: False"
+      ],
+      "retrieval_score": 7.0,
+      "base_retrieval_score": 7.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "ISIC_0000018_downsampled",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "ISIC_0000018_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "A large, irregularly shaped brown lesion with uneven pigmentation and some areas of hyperpigmentation and hypopigmentation. The lesion has a slightly raised border and a central area with a lighter coloration.",
+      "learning_points": [
+        "Final decision: Nevus",
+        "Correctness: True"
+      ],
+      "retrieval_score": 7.0,
+      "base_retrieval_score": 7.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "ISIC_0000004",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "ISIC_0000004",
+      "confusion_pair": "None",
+      "perception_summary": "A well-circumscribed, slightly elevated, pinkish lesion with a central area of atrophic change and telangiectasia.",
+      "learning_points": [
+        "Final decision: Nevus",
+        "Correctness: False"
+      ],
+      "retrieval_score": 7.0,
+      "base_retrieval_score": 7.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_tactical_experiences_summary": [
+    {
+      "source_id": "tac_ISIC_0000027_downsampled_f0152010c15d",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000027_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "separated edge evidence from surface evidence",
+        "highlighted margin quality explicitly",
+        "required downstream integration beyond border_surface_analysis_skill"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_ISIC_0000027_downsampled_e6055fc25fdb",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000027_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "made pigment variation explicit",
+        "surfaced color asymmetry as auditable evidence",
+        "required downstream integration beyond color_pattern_analysis_skill"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_ISIC_0000027_downsampled_e4a8c7c2c58e",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000027_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "required downstream integration beyond lesion_description_structuring_skill",
+        "Action pattern: structured_skill_sequence"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_ISIC_0000027_downsampled_de2f64ad3de5",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000027_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "made evidence limits explicit",
+        "prevented overconfident downstream use",
+        "required downstream integration beyond uncertainty_assessment_skill"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_abstract_experiences_summary": [
+    {
+      "source_id": "abs_confusion_fb61033fa484",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "ISIC_0000004",
+      "confusion_pair": "Seborrheic Keratosis->MEL",
+      "perception_summary": "A well-circumscribed, slightly elevated lesion with a central area of atrophy and telangiectasia is observed on the posterior torso.; Atypical nevus; Dermatofibroma",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 10.0,
+      "base_retrieval_score": 10.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_composite_4e40b5003e04",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "ISIC_0000009",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 10.0,
+      "base_retrieval_score": 10.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_composite_38ebf6b9597c",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "ISIC_0000018_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; decision_pattern=risk_then_uncertainty_audit; uncertainty=medium; risk=malignancy_risk:medium",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 10.0,
+      "base_retrieval_score": 10.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "uncertainty_summary": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The lesion exhibits features that are not definitively characteristic of any single diagnostic category.",
+      "The central erythematous area could suggest inflammation or vascular changes, which are not exclusive to any of the differential diagnoses.",
+      "The presence of telangiectasia is non-specific and can be seen in both benign and malignant lesions."
+    ],
+    "missing_information": [
+      "Closer surface texture and border-demarcation detail to confirm waxy/stuck-on appearance versus flatter actinic roughness.",
+      "Confirmation of waxy/stuck-on appearance versus flatter actinic roughness to better differentiate between Seborrheic Keratosis and Atypical Nevus."
+    ],
+    "referenced_experiences": [
+      "ISIC_0000030_downsampled",
+      "ISIC_0000018_downsampled",
+      "abs_confusion_fb61033fa484",
+      "abs_composite_3a30f61995cf",
+      "tac_ISIC_0000004_bce72efcf1a2",
+      "abs_composite_4e40b5003e04"
+    ]
+  },
+  "contradiction_summary": {
+    "contradictions": [
+      "{'description': \"The lesion's central erythematous area suggests inflammation or vascular changes, but the morphology analysis indicates a nodule with poor border clarity.\", 'evidence_sources': ['initial_perception', 'morphology_analysis_skill']}"
+    ],
+    "missing_links": [
+      "{'description': 'The surface texture and border demarcation details are not clearly described, which is crucial for differentiating between Seborrheic Keratosis and Atypical Nevus.', 'evidence_sources': ['initial_perception', 'border_surface_analysis_skill']}"
+    ],
+    "reasoning_gaps": [
+      "{'description': \"The lesion's size and exact location on the anterior torso need further clarification to rule out Seborrheic Keratosis, which is more common in older individuals.\", 'evidence_sources': ['metadata', 'initial_perception']}",
+      "{'description': \"The presence of telangiectasia alone is not sufficient to rule out malignancy, and additional information about the lesion's behavior over time would be beneficial.\", 'evidence_sources': ['initial_perception', 'malignancy_risk_assessment_skill']}"
+    ],
+    "metadata_conflicts": [],
+    "suspicious_points": [
+      "The lesion's central erythematous area could indicate inflammation or vascular changes."
+    ]
+  },
+  "information_gap_summary": {
+    "missing_information": [
+      "Surface texture",
+      "Border demarcation"
+    ],
+    "why_it_matters": [
+      "Surface texture and border demarcation are crucial for distinguishing between benign and potentially malignant lesions.",
+      "These features help in differentiating between Seborrheic Keratosis and Atypical Nevus."
+    ],
+    "impact_on_differential": [
+      "Without clear surface texture and border demarcation, it is difficult to rule out Seborrheic Keratosis, which often presents with a waxy or stuck-on appearance.",
+      "These details are essential for confirming whether the lesion is consistent with the characteristics of Atypical Nevus or Seborrheic Keratosis."
+    ],
+    "uncertainty_if_missing": "medium"
+  },
+  "escalation_summary": {
+    "whether_escalation_needed": "yes",
+    "escalation_reason": [
+      "The lesion exhibits features that are not definitively characteristic of any single diagnostic category, and there are unresolved information gaps regarding surface texture and border demarcation. These factors contribute to a medium level of uncertainty and risk."
+    ],
+    "suggested_next_check_type": "dermoscopy",
+    "caution_flags": [
+      "Surface texture and border demarcation are crucial for distinguishing between benign and potentially malignant lesions.",
+      "Further clarification of the lesion's size and exact location is necessary to rule out Seborrheic Keratosis.",
+      "Additional information about the lesion's behavior over time would be beneficial."
+    ]
+  },
+  "planner_rationale": {
+    "planner_type": "rule_based",
+    "planner_version": "v1",
+    "selected_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "border_surface_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "malignancy_risk_assessment_skill",
+      "differential_compare_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill",
+      "escalation_recommendation_skill"
+    ],
+    "selection_reasons": {
+      "morphology_analysis_skill": [
+        "Boosted by skill retrieval score=10.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "color_pattern_analysis_skill": [
+        "Boosted by skill retrieval score=15.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "border_surface_analysis_skill": [
+        "Boosted by skill retrieval score=11.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "lesion_description_structuring_skill": [
+        "Boosted by skill retrieval score=11.40.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Boosted by active confusion cluster(s): ack_sek (bonus=0.9)."
+      ],
+      "metadata_consistency_skill": [
+        "Boosted by skill retrieval score=18.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "malignancy_risk_assessment_skill": [
+        "Boosted by skill retrieval score=9.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "differential_compare_skill": [
+        "Boosted by skill retrieval score=12.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Boosted by active confusion cluster(s): ack_sek (bonus=1.0).",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "information_gap_detection_skill": [
+        "Boosted by skill retrieval score=7.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `malignancy_possible`."
+      ],
+      "uncertainty_assessment_skill": [
+        "Boosted by skill retrieval score=9.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ],
+      "contradiction_check_skill": [
+        "Boosted by skill retrieval score=9.50.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ],
+      "escalation_recommendation_skill": [
+        "Boosted by skill retrieval score=7.50.",
+        "Boosted by cognition helpful_rate=0.86.",
+        "Matched active trigger profile `malignancy_possible`.",
+        "Matched active trigger profile `contradiction_rich`."
+      ]
+    }
+  },
+  "confusion_cluster_summary": {
+    "active_clusters": [
+      "ack_sek"
+    ],
+    "guidance": [
+      {
+        "cluster_id": "ack_sek",
+        "label": "ACK / SEK",
+        "supporting_clues": [
+          "Explicitly contrast stuck-on/waxy/verrucous clues against flatter actinic roughness.",
+          "State whether the lesion reads as sharply demarcated keratotic plaque versus more actinic field-type change."
+        ],
+        "opposing_clues": [
+          "Scale alone is not enough to favor ACK when waxy or stuck-on cues dominate.",
+          "Seborrheic-looking keratin does not exclude ACK if actinic roughness and malignant-risk context remain active."
+        ],
+        "required_missing_evidence": [
+          "Missing closer surface texture and border-demarcation detail.",
+          "Missing confirmation of waxy/stuck-on appearance versus flatter actinic roughness."
+        ],
+        "watch_outs": [
+          "Do not use keratin or scale as a shortcut to either ACK or SEK.",
+          "Do not hide uncertainty when stuck-on/waxy morphology is not clearly seen."
+        ]
+      }
+    ]
+  },
+  "selected_evidence": [],
+  "evidence_decision_policy": {
+    "risk_layer": {
+      "risk_flag": "malignancy_risk_medium",
+      "caution_flags": [
+        "contradictions_present",
+        "follow_up_or_biopsy_consideration"
+      ],
+      "follow_up_suggestion": "dermoscopy",
+      "selected_evidence": [],
+      "baseline_preview": {
+        "early_ddx_candidates": [
+          "Atypical Nevus",
+          "Seborrheic Keratosis",
+          "Actinic Keratosis"
+        ],
+        "image_summary": "A slightly elevated, irregularly shaped lesion with a central area of erythema and some surrounding telangiectasia.",
+        "baseline_final_diagnosis": "Nevus",
+        "baseline_differential_diagnoses": [
+          "Nevus",
+          "Actinic Keratosis"
+        ],
+        "baseline_confidence": "Moderate"
+      }
+    },
+    "diagnosis_override_layer": {
+      "workflow_context": {
+        "label_granularity": "fine",
+        "presentation_mode": "focal_lesion",
+        "workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+        "available_tests": [
+          "clinical_photo_only",
+          "lesion_photo"
+        ],
+        "workflow_preference": "morphology_first",
+        "hospital_type": "specialist_clinic",
+        "time_budget": "standard",
+        "metadata_completeness": "partial",
+        "workflow_capabilities": [
+          "image_archive_reasoning",
+          "full_taxonomy_reasoning",
+          "focal_lesion_reasoning",
+          "legacy_agent_final_reasoning"
+        ]
+      },
+      "override_allowed": false,
+      "malignancy_override_allowed": false,
+      "subtype_override_allowed": false,
+      "family_override_allowed": false,
+      "override_mode": "risk_only",
+      "override_reasons": [
+        "uncertainty_not_high"
+      ],
+      "why_not_confident_enough_to_override": [
+        "malignancy risk is not high enough for a diagnosis override",
+        "no curated selected evidence is available to justify overriding the baseline diagnosis",
+        "supporting evidence does not sufficiently outweigh opposing or exclusion evidence",
+        "supporting evidence is not specific enough to justify a subtype override",
+        "no specialist evidence strongly supports the override direction",
+        "contradictions or reasoning gaps remain too numerous",
+        "retrieval evidence does not provide a consistent prototype or confusion-memory anchor",
+        "opposing or exclusion evidence quota is not satisfied"
+      ],
+      "supporting_evidence": [],
+      "opposing_evidence": [],
+      "supporting_score": 0,
+      "opposing_score": 0,
+      "support_margin": 0,
+      "selected_evidence_present": false,
+      "subtype_support_score": 0,
+      "subtype_support_margin": 0,
+      "specialist_support_present": false,
+      "consistent_retrieval_count": 0,
+      "contradiction_count": 5,
+      "uncertainty_level": "medium",
+      "opposing_quota_satisfied": false,
+      "subtype_support_quota_satisfied": false
+    }
+  },
+  "serialized_evidence_text": "[Observation Evidence]\n- Initial image summary: A slightly elevated, irregularly shaped lesion with a central area of erythema and some surrounding telangiectasia.\n- Early differential candidates: Atypical Nevus, Seborrheic Keratosis, Actinic Keratosis\n- morphology_analysis_skill: lesion_type=nodule | size_range=small to medium | elevation=raised | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence\n- color_pattern_analysis_skill: primary_color=pink | color_variation=mild | pigmentation_pattern=reticular | asymmetry_color=present | evidence_strength=medium | recommendation_type=descriptive_evidence\n- border_surface_analysis_skill: border_clarity=poor | border_irregularity=irregular | surface_texture=rough | scaling_presence=absent | evidence_strength=medium | recommendation_type=descriptive_evidence\n- lesion_description_structuring_skill: primary_lesion_morphology=slightly elevated, irregularly shaped nodule | color=pink with central erythema and surrounding telangiectasia | border=irregular, poor border clarity | surface=rough, with telangiectasia | size_count=small to medium, solitary | distribution=anterior torso, male patient, age approx. 85\n- Raw case reference ISIC_0000048_downsampled: A dark, irregularly shaped lesion with a central area of depigmentation on the anterior torso.\n\n[Exclusion And Comparison Evidence]\n- Active confusion clusters: ack_sek\n- ACK / SEK watch-out: Do not use keratin or scale as a shortcut to either ACK or SEK.; Do not hide uncertainty when stuck-on/waxy morphology is not clearly seen.\n- metadata_consistency_skill: consistency_score=medium | suspicious_points=The lesion's central erythematous area could indicate inflammation or vascular changes. | evidence_strength=medium | recommendation_type=descriptive_evidence\n- differential_compare_skill: candidate_pairs=Atypical Nevus vs Seborrheic Keratosis | supporting_evidence=Central area of erythema suggests inflammation or vascular changes, which is less characteristic of Seborrheic Keratosis but can occur in Atypical Nevus.; Te... | conflicting_evidence=Telangiectasia is common in benign lesions like Seborrheic Keratosis, which makes it a less specific feature for differentiating between Atypical Nevus and S... | required_missing_evidence=Closer surface texture and border-demarcation detail to confirm waxy/stuck-on appearance versus flatter actinic roughness.; Confirmation of waxy/stuck-on app... | evidence_strength=medium | recommendation_type=conflict_signal\n- Tactical experience tac_ISIC_0000027_downsampled_f0152010c15d: ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; risk=malignancy_risk:medium; uncertainty=medium; separated edge evidence from surface evidence; highlighted margin quality explicitly; required downstream integration beyond border_surface_analysis_skill\n- Tactical experience tac_ISIC_0000027_downsampled_e6055fc25fdb: ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; risk=malignancy_risk:medium; uncertainty=medium; made pigment variation explicit; surfaced color asymmetry as auditable evidence; required downstream integration beyond color_pattern_analysis_skill\n- Abstract comparison memory abs_confusion_fb61033fa484: A well-circumscribed, slightly elevated lesion with a central area of atrophy and telangiectasia is observed on the posterior torso.; Atypical nevus; Dermatofibroma; When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty\n\n[Risk Evidence]\n- Risk flags: malignancy_risk:medium\n- malignancy_risk_assessment_skill: risk_level=medium | risk_evidence=Irregular border with poor clarity; Central area of erythema; Surrounding telangiectasia | alarm_signals=Irregular border with poor clarity; Central area of erythema; Surrounding telangiectasia | evidence_strength=medium | recommendation_type=risk_signal\n- Abstract experience abs_composite_4e40b5003e04: ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium; Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.; compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill; Candidate only; do not auto-materialize a composite skill in the current stage.\n- Abstract experience abs_composite_38ebf6b9597c: ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; decision_pattern=risk_then_uncertainty_audit; uncertainty=medium; risk=malignancy_risk:medium; Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.; compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill; Candidate only; do not auto-materialize a composite skill in the current stage.\n\n[Conflict And Uncertainty]\n- Uncertainty level: medium\n- Uncertainty reasons: The lesion exhibits features that are not definitively characteristic of any single diagnostic category.; The central erythematous area could suggest inflammation or vascular changes, which are not exclusive to any of the differential diagnoses.; The presence of telangiectasia is non-specific and can be seen in both benign and malignant lesions.\n- Missing information: Closer surface texture and border-demarcation detail to confirm waxy/stuck-on appearance versus flatter actinic roughness.; Confirmation of waxy/stuck-on appearance versus flatter actinic roughness to better differentiate between Seborrheic Keratosis and Atypical Nevus.\n- contradictions: {'description': \"The lesion's central erythematous area suggests inflammation or vascular changes, but the morphology analysis indicates a nodule with poor border clarity.\", 'evidence_sources': ['initial_perception', 'morphology_analysis_skill']}\n- missing links: {'description': 'The surface texture and border demarcation details are not clearly described, which is crucial for differentiating between Seborrheic Keratosis and Atypical Nevus.', 'evidence_sources': ['initial_perception', 'border_surface_analysis_skill']}\n- reasoning gaps: {'description': \"The lesion's size and exact location on the anterior torso need further clarification to rule out Seborrheic Keratosis, which is more common in older individuals.\", 'evidence_sources': ['metadata', 'initial_perception']}; {'description': \"The presence of telangiectasia alone is not sufficient to rule out malignancy, and additional information about the lesion's behavior over time would be beneficial.\", 'evidence_sources': ['initial_perception', 'malignancy_risk_assessment_skill']}\n- suspicious points: The lesion's central erythematous area could indicate inflammation or vascular changes.\n- contradiction_check_skill: contradictions={'description': \"The lesion's central erythematous area suggests inflammation or vascular changes, but the morphology analysis indicates a nodule with poor b... | missing_links={'description': 'The surface texture and border demarcation details are not clearly described, which is crucial for differentiating between Seborrheic Kerato... | reasoning_gaps={'description': \"The lesion's size and exact location on the anterior torso need further clarification to rule out Seborrheic Keratosis, which is more common... | evidence_strength=medium | recommendation_type=conflict_signal\n- uncertainty_assessment_skill: uncertainty_level=medium | reasons=The lesion exhibits features that are not definitively characteristic of any single diagnostic category.; The central erythematous area could suggest inflamm... | missing_information=Closer surface texture and border-demarcation detail to confirm waxy/stuck-on appearance versus flatter actinic roughness.; Confirmation of waxy/stuck-on app... | evidence_strength=medium | recommendation_type=conflict_signal\n- information_gap_detection_skill: missing_information=Surface texture; Border demarcation | why_it_matters=Surface texture and border demarcation are crucial for distinguishing between benign and potentially malignant lesions.; These features help in differentiati... | impact_on_differential=Without clear surface texture and border demarcation, it is difficult to rule out Seborrheic Keratosis, which often presents with a waxy or stuck-on appearan... | uncertainty_if_missing=medium | evidence_strength=medium | recommendation_type=descriptive_evidence\n- explicit information gaps: Surface texture; Border demarcation\n- why gaps matter: Surface texture and border demarcation are crucial for distinguishing between benign and potentially malignant lesions.; These features help in differentiating between Seborrheic Keratosis and Atypical Nevus.\n- impact on differential: Without clear surface texture and border demarcation, it is difficult to rule out Seborrheic Keratosis, which often presents with a waxy or stuck-on appearance.; These details are essential for confirming whether the lesion is consistent with the characteristics of Atypical Nevus or Seborrheic Keratosis.\n- residual uncertainty if still missing: medium\n- escalation_recommendation_skill: whether_escalation_needed=yes | escalation_reason=The lesion exhibits features that are not definitively characteristic of any single diagnostic category, and there are unresolved information gaps regarding ... | suggested_next_check_type=dermoscopy | caution_flags=Surface texture and border demarcation are crucial for distinguishing between benign and potentially malignant lesions.; Further clarification of the lesion'... | evidence_strength=medium | recommendation_type=risk_signal\n- escalation needed: yes\n- escalation reasons: The lesion exhibits features that are not definitively characteristic of any single diagnostic category, and there are unresolved information gaps regarding surface texture and border demarcation. These factors contribute to a medium level of uncertainty and risk.\n- suggested next check type: dermoscopy\n- caution flags: Surface texture and border demarcation are crucial for distinguishing between benign and potentially malignant lesions.; Further clarification of the lesion's size and exact location is necessary to rule out Seborrheic Keratosis.; Additional information about the lesion's behavior over time would be beneficial.\n\n[Planner Rationale]\n- Selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, differential_compare_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill\n- morphology_analysis_skill: Boosted by skill retrieval score=10.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.\n- color_pattern_analysis_skill: Boosted by skill retrieval score=15.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.\n- border_surface_analysis_skill: Boosted by skill retrieval score=11.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.",
+  "evidence_calibration_debug": {
+    "calibrator_type": "off",
+    "calibrator_version": "v1",
+    "section_plan": {
+      "observation": {
+        "skill_names": [
+          "morphology_analysis_skill",
+          "color_pattern_analysis_skill",
+          "border_surface_analysis_skill",
+          "lesion_description_structuring_skill"
+        ],
+        "merged_groups": [],
+        "raw_case_source_ids": [
+          "ISIC_0000048_downsampled"
+        ]
+      },
+      "comparison": {
+        "skill_names": [
+          "metadata_consistency_skill",
+          "differential_compare_skill"
+        ],
+        "merged_groups": [],
+        "tactical_source_ids": [
+          "tac_ISIC_0000027_downsampled_f0152010c15d",
+          "tac_ISIC_0000027_downsampled_e6055fc25fdb"
+        ],
+        "abstract_source_ids": [
+          "abs_confusion_fb61033fa484"
+        ]
+      },
+      "risk": {
+        "skill_names": [
+          "malignancy_risk_assessment_skill"
+        ],
+        "abstract_source_ids": [
+          "abs_composite_4e40b5003e04",
+          "abs_composite_38ebf6b9597c"
+        ]
+      },
+      "conflict_uncertainty": {
+        "skill_names": [
+          "information_gap_detection_skill",
+          "uncertainty_assessment_skill",
+          "contradiction_check_skill",
+          "escalation_recommendation_skill"
+        ]
+      },
+      "planner": {
+        "max_reason_skills": 3
+      },
+      "section_order": [
+        "observation",
+        "comparison",
+        "risk",
+        "conflict_uncertainty",
+        "planner"
+      ]
+    },
+    "item_scores": [],
+    "omitted_items": [],
+    "debug": {
+      "reason": "evidence calibrator disabled by policy"
+    }
+  }
+}

@@ -1,0 +1,847 @@
+{
+  "perception": {
+    "image_summary": "A slightly elevated, pinkish lesion with a central depression surrounded by fine telangiectasias on the anterior torso.",
+    "ddx_candidates": [
+      "Actinic keratosis",
+      "Seborrheic keratosis",
+      "Dermatofibroma"
+    ],
+    "uncertainty": {
+      "level": "low",
+      "reasons": [
+        "The lesion appears relatively small and lacks significant asymmetry or irregular borders."
+      ]
+    },
+    "notes": [
+      "Telangiectasias are present but not prominent.",
+      "The lesion's surface is smooth without visible scales or crusts."
+    ]
+  },
+  "retrieved_experience": [
+    {
+      "case_id": "ISIC_0000009",
+      "source_layer": "abstract_experience",
+      "source_subtype": "composite_skill_seed",
+      "experience_type": "composite_skill_seed",
+      "perception_summary": "ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium",
+      "confusion_pair": null,
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage.",
+        "Promote only after repeated successful supporting cases under a stable trigger pattern."
+      ],
+      "source_id": "abs_composite_4e40b5003e04",
+      "retrieval_score": 11
+    },
+    {
+      "case_id": "ISIC_0000004",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "A well-circumscribed, slightly elevated lesion with a central area of atrophy and telangiectasia is observed on the posterior torso.; Atypical nevus; Dermatofibroma",
+      "confusion_pair": "Seborrheic Keratosis->MEL",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_confusion_fb61033fa484",
+      "retrieval_score": 10
+    },
+    {
+      "case_id": "ISIC_0000018_downsampled",
+      "source_layer": "abstract_experience",
+      "source_subtype": "composite_skill_seed",
+      "experience_type": "composite_skill_seed",
+      "perception_summary": "ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; decision_pattern=risk_then_uncertainty_audit; uncertainty=medium; risk=malignancy_risk:medium",
+      "confusion_pair": null,
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage.",
+        "Promote only after repeated successful supporting cases under a stable trigger pattern."
+      ],
+      "source_id": "abs_composite_38ebf6b9597c",
+      "retrieval_score": 10
+    }
+  ],
+  "skill_outputs": {
+    "morphology_analysis_skill": {
+      "lesion_type": "papule",
+      "size_range": "small",
+      "elevation": "raised",
+      "count": "solitary",
+      "referenced_experiences": [
+        "ISIC_0000018_downsampled",
+        "ISIC_0000027_downsampled",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_4e40b5003e04",
+        "tac_ISIC_0000004_bce72efcf1a2",
+        "abs_composite_38ebf6b9597c"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "color_pattern_analysis_skill": {
+      "primary_color": "pink",
+      "color_variation": "unknown",
+      "pigmentation_pattern": "reticular",
+      "asymmetry_color": "present",
+      "referenced_experiences": [
+        "ISIC_0000018_downsampled",
+        "ISIC_0000027_downsampled"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "border_surface_analysis_skill": {
+      "border_clarity": "poor",
+      "border_irregularity": "irregular",
+      "surface_texture": "smooth",
+      "scaling_presence": "absent",
+      "referenced_experiences": [
+        "ISIC_0000018_downsampled",
+        "ISIC_0000027_downsampled",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_4e40b5003e04",
+        "tac_ISIC_0000004_bce72efcf1a2",
+        "abs_composite_38ebf6b9597c"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "lesion_description_structuring_skill": {
+      "primary_lesion_morphology": "slightly elevated papule",
+      "color": [
+        "pink"
+      ],
+      "border": [
+        "irregular"
+      ],
+      "surface": [
+        "smooth"
+      ],
+      "size_count": [
+        "size: small, count: solitary"
+      ],
+      "distribution": [
+        "site: anterior torso, anatom_site_general: anterior torso"
+      ],
+      "associated_context": [
+        "age_approx: 40, sex: male, label_space_id: isic2019_full"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000018_downsampled",
+        "ISIC_0000027_downsampled",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_4e40b5003e04",
+        "tac_ISIC_0000004_bce72efcf1a2"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "metadata_consistency_skill": {
+      "consistency_score": "medium",
+      "conflicts": [],
+      "suspicious_points": [
+        "The lesion appears slightly elevated, which aligns with the metadata description of a 'slightly elevated papule'. However, the lesion's central depression and telangiectasias are not explicitly mentioned in the metadata.",
+        "The lesion's surface is described as smooth in the metadata, while the image shows some irregularities that could be interpreted as telangiectasias."
+      ],
+      "referenced_experiences": [
+        "ISIC_0000018_downsampled",
+        "ISIC_0000027_downsampled",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_4e40b5003e04",
+        "tac_ISIC_0000004_bce72efcf1a2",
+        "abs_composite_38ebf6b9597c"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "malignancy_risk_assessment_skill": {
+      "risk_level": "medium",
+      "risk_evidence": [
+        "Irregular border with fine telangiectasias surrounding the lesion.",
+        "Central depression suggesting possible atrophy."
+      ],
+      "alarm_signals": [
+        "Irregular border",
+        "Central depression"
+      ],
+      "benign_reassuring_features": [
+        "Smooth surface texture",
+        "Small size (<6mm)"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_fb61033fa484",
+        "abs_composite_4e40b5003e04",
+        "tac_ISIC_0000004_bce72efcf1a2"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "risk_signal"
+    },
+    "differential_compare_skill": {
+      "candidate_pairs": [
+        "Actinic keratosis vs Seborrheic keratosis"
+      ],
+      "supporting_evidence": [
+        "The lesion has a central depression, which could suggest possible atrophy associated with Actinic keratosis.",
+        "The presence of fine telangiectasias around the lesion supports the possibility of Actinic keratosis, which often presents with these vascular changes.",
+        "The lesion's surface is smooth without visible scales or crusts, which is more characteristic of Seborrheic keratosis, which typically has a waxy or stuck-on appearance."
+      ],
+      "conflicting_evidence": [
+        "The lesion is relatively small and lacks significant asymmetry or irregular borders, which are less typical of Actinic keratosis.",
+        "The lesion's surface is smooth, which is not a strong feature for Actinic keratosis but is consistent with Seborrheic keratosis.",
+        "The central depression might also be seen in Seborrheic keratosis, especially if it is a compound type."
+      ],
+      "required_missing_evidence": [
+        "Closer surface texture and border-demarcation detail would help differentiate between Actinic keratosis and Seborrheic keratosis.",
+        "Confirmation of waxy/stuck-on appearance versus flatter actinic roughness would be crucial for a definitive differentiation."
+      ],
+      "referenced_experiences": [
+        "abs_confusion_fb61033fa484",
+        "abs_composite_4e40b5003e04",
+        "tac_ISIC_0000004_bce72efcf1a2"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "conflict_signal"
+    },
+    "exclusion_reasoning_skill": {
+      "unlikely_candidates": [
+        "Seborrheic keratosis"
+      ],
+      "exclusion_evidence": [
+        "The lesion lacks the waxy or stuck-on appearance typical of Seborrheic keratosis.",
+        "The lesion's surface is smooth, which is inconsistent with the waxy or rough texture often seen in Seborrheic keratosis."
+      ],
+      "required_missing_evidence": [
+        "Closer surface texture and border-demarcation detail would help differentiate between Actinic keratosis and Seborrheic keratosis."
+      ],
+      "exclusion_confidence": "medium",
+      "referenced_experiences": [
+        "abs_confusion_fb61033fa484"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "information_gap_detection_skill": {
+      "missing_information": [
+        "Closer surface texture and border-demarcation detail",
+        "Confirmation of waxy/stuck-on appearance versus flatter actinic roughness"
+      ],
+      "why_it_matters": [
+        "Surface texture and border demarcation are crucial for differentiating between Actinic keratosis and Seborrheic keratosis.",
+        "Waxy or stuck-on appearance is a key feature of Seborrheic keratosis, which helps in distinguishing it from other lesions."
+      ],
+      "impact_on_differential": [
+        "Without detailed surface texture and border demarcation, the differential between Actinic keratosis and Seborrheic keratosis remains unresolved.",
+        "Confirmation of the waxy/stuck-on appearance would help in favoring Seborrheic keratosis over Actinic keratosis."
+      ],
+      "uncertainty_if_missing": "high",
+      "referenced_experiences": [
+        "ISIC_0000018_downsampled",
+        "ISIC_0000027_downsampled",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_4e40b5003e04",
+        "tac_ISIC_0000004_bce72efcf1a2",
+        "abs_composite_38ebf6b9597c"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "uncertainty_assessment_skill": {
+      "uncertainty_level": "medium",
+      "reasons": [
+        "The lesion's surface texture is smooth, which is a feature more characteristic of Seborrheic keratosis.",
+        "The lesion lacks significant asymmetry or irregular borders, which are less typical of Actinic keratosis.",
+        "The central depression might be seen in Seborrheic keratosis, especially if it is a compound type."
+      ],
+      "missing_information": [
+        "Closer surface texture and border-demarcation detail would help differentiate between Actinic keratosis and Seborrheic keratosis.",
+        "Confirmation of waxy/stuck-on appearance versus flatter actinic roughness would be crucial for a definitive differentiation."
+      ],
+      "referenced_experiences": [
+        "ISIC_0000018_downsampled",
+        "ISIC_0000027_downsampled",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_4e40b5003e04",
+        "tac_ISIC_0000004_bce72efcf1a2",
+        "abs_composite_38ebf6b9597c"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "conflict_signal"
+    },
+    "contradiction_check_skill": {
+      "contradictions": [
+        {
+          "description": "The lesion appears slightly elevated and pinkish, which aligns with the morphology analysis, but the presence of fine telangiectasias is noted in the initial perception, which is not mentioned in the morphology analysis.",
+          "evidence_sources": [
+            "initial_perception",
+            "morphology_analysis_skill"
+          ]
+        }
+      ],
+      "missing_links": [
+        {
+          "description": "The presence of fine telangiectasias is not quantified or described further in the morphology analysis, which could provide additional context for differential diagnosis.",
+          "evidence_sources": [
+            "morphology_analysis_skill"
+          ]
+        }
+      ],
+      "reasoning_gaps": [
+        {
+          "description": "The lesion's surface texture is described as smooth, which is a benign feature, but the presence of fine telangiectasias suggests a potential concern. There is no clear indication of how these features interact in the current reasoning state.",
+          "evidence_sources": [
+            "initial_perception",
+            "border_surface_analysis_skill"
+          ]
+        }
+      ],
+      "referenced_experiences": [
+        "ISIC_0000018_downsampled",
+        "ISIC_0000027_downsampled",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_4e40b5003e04",
+        "tac_ISIC_0000004_bce72efcf1a2",
+        "abs_composite_38ebf6b9597c"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    }
+  },
+  "risk_flags": [
+    "malignancy_risk:medium"
+  ],
+  "uncertainty": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The lesion's surface texture is smooth, which is a feature more characteristic of Seborrheic keratosis.",
+      "The lesion lacks significant asymmetry or irregular borders, which are less typical of Actinic keratosis.",
+      "The central depression might be seen in Seborrheic keratosis, especially if it is a compound type."
+    ],
+    "missing_information": [
+      "Closer surface texture and border-demarcation detail would help differentiate between Actinic keratosis and Seborrheic keratosis.",
+      "Confirmation of waxy/stuck-on appearance versus flatter actinic roughness would be crucial for a definitive differentiation."
+    ],
+    "referenced_experiences": [
+      "ISIC_0000018_downsampled",
+      "ISIC_0000027_downsampled",
+      "abs_confusion_fb61033fa484",
+      "abs_composite_4e40b5003e04",
+      "tac_ISIC_0000004_bce72efcf1a2",
+      "abs_composite_38ebf6b9597c"
+    ],
+    "evidence_strength": "medium",
+    "recommendation_type": "conflict_signal"
+  },
+  "notes": [
+    "Agent generated structured evidence only.",
+    "Qwen remains the sole final diagnostic decision maker.",
+    "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, differential_compare_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill.",
+    "Policy in use: stable_default_policy__full_dermagent.",
+    "Skill retrieval candidates: metadata_consistency_skill, ack_scc_specialist_skill, color_pattern_analysis_skill, lesion_description_structuring_skill, morphology_analysis_skill, border_surface_analysis_skill, malignancy_risk_assessment_skill, distribution_analysis_skill, differential_compare_skill, contradiction_check_skill, uncertainty_assessment_skill, exclusion_reasoning_skill, temporal_evolution_skill, information_gap_detection_skill.",
+    "Telangiectasias are present but not prominent.",
+    "The lesion's surface is smooth without visible scales or crusts.",
+    "Retrieved prior reasoning experience for context."
+  ],
+  "initial_perception_summary": {
+    "image_summary": "A slightly elevated, pinkish lesion with a central depression surrounded by fine telangiectasias on the anterior torso.",
+    "ddx_candidates": [
+      "Actinic keratosis",
+      "Seborrheic keratosis",
+      "Dermatofibroma"
+    ],
+    "uncertainty_level": "low",
+    "uncertainty_reasons": [
+      "The lesion appears relatively small and lacks significant asymmetry or irregular borders."
+    ],
+    "observation_notes": [
+      "Telangiectasias are present but not prominent.",
+      "The lesion's surface is smooth without visible scales or crusts."
+    ]
+  },
+  "retrieved_raw_cases_summary": [
+    {
+      "source_id": "ISIC_0000018_downsampled",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "ISIC_0000018_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "A large, irregularly shaped brown lesion with uneven pigmentation and some areas of hyperpigmentation and hypopigmentation. The lesion has a slightly raised border and a central area with a lighter coloration.",
+      "learning_points": [
+        "Final decision: Nevus",
+        "Correctness: True"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "ISIC_0000027_downsampled",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "ISIC_0000027_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "A well-circumscribed, irregularly shaped brown lesion with multiple darker speckled areas is present on the anterior torso.",
+      "learning_points": [
+        "Final decision: Nevus",
+        "Correctness: True"
+      ],
+      "retrieval_score": 7.0,
+      "base_retrieval_score": 7.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "ISIC_0000023_downsampled",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "ISIC_0000023_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "A well-circumscribed, irregularly shaped brownish lesion with a slightly raised border on the anterior torso.",
+      "learning_points": [
+        "Final decision: Nevus",
+        "Correctness: True"
+      ],
+      "retrieval_score": 7.0,
+      "base_retrieval_score": 7.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_tactical_experiences_summary": [
+    {
+      "source_id": "tac_ISIC_0000027_downsampled_f0152010c15d",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000027_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "separated edge evidence from surface evidence",
+        "highlighted margin quality explicitly",
+        "required downstream integration beyond border_surface_analysis_skill"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_ISIC_0000027_downsampled_e6055fc25fdb",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000027_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "made pigment variation explicit",
+        "surfaced color asymmetry as auditable evidence",
+        "required downstream integration beyond color_pattern_analysis_skill"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_ISIC_0000027_downsampled_e4a8c7c2c58e",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000027_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "required downstream integration beyond lesion_description_structuring_skill",
+        "Action pattern: structured_skill_sequence"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_ISIC_0000027_downsampled_de2f64ad3de5",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000027_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "made evidence limits explicit",
+        "prevented overconfident downstream use",
+        "required downstream integration beyond uncertainty_assessment_skill"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_abstract_experiences_summary": [
+    {
+      "source_id": "abs_composite_4e40b5003e04",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "ISIC_0000009",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 11.0,
+      "base_retrieval_score": 11.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_confusion_fb61033fa484",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "ISIC_0000004",
+      "confusion_pair": "Seborrheic Keratosis->MEL",
+      "perception_summary": "A well-circumscribed, slightly elevated lesion with a central area of atrophy and telangiectasia is observed on the posterior torso.; Atypical nevus; Dermatofibroma",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 10.0,
+      "base_retrieval_score": 10.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_composite_38ebf6b9597c",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "ISIC_0000018_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; decision_pattern=risk_then_uncertainty_audit; uncertainty=medium; risk=malignancy_risk:medium",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 10.0,
+      "base_retrieval_score": 10.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "uncertainty_summary": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The lesion's surface texture is smooth, which is a feature more characteristic of Seborrheic keratosis.",
+      "The lesion lacks significant asymmetry or irregular borders, which are less typical of Actinic keratosis.",
+      "The central depression might be seen in Seborrheic keratosis, especially if it is a compound type."
+    ],
+    "missing_information": [
+      "Closer surface texture and border-demarcation detail would help differentiate between Actinic keratosis and Seborrheic keratosis.",
+      "Confirmation of waxy/stuck-on appearance versus flatter actinic roughness would be crucial for a definitive differentiation."
+    ],
+    "referenced_experiences": [
+      "ISIC_0000018_downsampled",
+      "ISIC_0000027_downsampled",
+      "abs_confusion_fb61033fa484",
+      "abs_composite_4e40b5003e04",
+      "tac_ISIC_0000004_bce72efcf1a2",
+      "abs_composite_38ebf6b9597c"
+    ]
+  },
+  "contradiction_summary": {
+    "contradictions": [
+      "{'description': 'The lesion appears slightly elevated and pinkish, which aligns with the morphology analysis, but the presence of fine telangiectasias is noted in the initial perception, which is not mentioned in the morphology analysis.', 'evidence_sources': ['initial_perception', 'morphology_analysis_skill']}"
+    ],
+    "missing_links": [
+      "{'description': 'The presence of fine telangiectasias is not quantified or described further in the morphology analysis, which could provide additional context for differential diagnosis.', 'evidence_sources': ['morphology_analysis_skill']}"
+    ],
+    "reasoning_gaps": [
+      "{'description': \"The lesion's surface texture is described as smooth, which is a benign feature, but the presence of fine telangiectasias suggests a potential concern. There is no clear indication of how these features interact in the current reasoning state.\", 'evidence_sources': ['initial_perception', 'border_surface_analysis_skill']}"
+    ],
+    "metadata_conflicts": [],
+    "suspicious_points": [
+      "The lesion appears slightly elevated, which aligns with the metadata description of a 'slightly elevated papule'. However, the lesion's central depression and telangiectasias are not explicitly mentioned in the metadata.",
+      "The lesion's surface is described as smooth in the metadata, while the image shows some irregularities that could be interpreted as telangiectasias."
+    ]
+  },
+  "information_gap_summary": {
+    "missing_information": [
+      "Closer surface texture and border-demarcation detail",
+      "Confirmation of waxy/stuck-on appearance versus flatter actinic roughness"
+    ],
+    "why_it_matters": [
+      "Surface texture and border demarcation are crucial for differentiating between Actinic keratosis and Seborrheic keratosis.",
+      "Waxy or stuck-on appearance is a key feature of Seborrheic keratosis, which helps in distinguishing it from other lesions."
+    ],
+    "impact_on_differential": [
+      "Without detailed surface texture and border demarcation, the differential between Actinic keratosis and Seborrheic keratosis remains unresolved.",
+      "Confirmation of the waxy/stuck-on appearance would help in favoring Seborrheic keratosis over Actinic keratosis."
+    ],
+    "uncertainty_if_missing": "high"
+  },
+  "escalation_summary": {
+    "whether_escalation_needed": "unknown",
+    "escalation_reason": [],
+    "suggested_next_check_type": "",
+    "caution_flags": []
+  },
+  "planner_rationale": {
+    "planner_type": "rule_based",
+    "planner_version": "v1",
+    "selected_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "border_surface_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "malignancy_risk_assessment_skill",
+      "differential_compare_skill",
+      "exclusion_reasoning_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill"
+    ],
+    "selection_reasons": {
+      "morphology_analysis_skill": [
+        "Boosted by skill retrieval score=12.00.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "color_pattern_analysis_skill": [
+        "Boosted by skill retrieval score=12.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "border_surface_analysis_skill": [
+        "Boosted by skill retrieval score=12.00.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "lesion_description_structuring_skill": [
+        "Boosted by skill retrieval score=12.40.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Boosted by active confusion cluster(s): ack_sek (bonus=0.9)."
+      ],
+      "metadata_consistency_skill": [
+        "Boosted by skill retrieval score=14.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "malignancy_risk_assessment_skill": [
+        "Boosted by skill retrieval score=9.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "differential_compare_skill": [
+        "Boosted by skill retrieval score=9.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Boosted by active confusion cluster(s): ack_sek (bonus=1.0).",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "exclusion_reasoning_skill": [
+        "Boosted by skill retrieval score=7.40.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Boosted by active confusion cluster(s): ack_sek (bonus=1.4).",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "information_gap_detection_skill": [
+        "Boosted by skill retrieval score=5.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `malignancy_possible`."
+      ],
+      "uncertainty_assessment_skill": [
+        "Boosted by skill retrieval score=7.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ],
+      "contradiction_check_skill": [
+        "Boosted by skill retrieval score=8.50.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ]
+    }
+  },
+  "confusion_cluster_summary": {
+    "active_clusters": [
+      "ack_sek"
+    ],
+    "guidance": [
+      {
+        "cluster_id": "ack_sek",
+        "label": "ACK / SEK",
+        "supporting_clues": [
+          "Explicitly contrast stuck-on/waxy/verrucous clues against flatter actinic roughness.",
+          "State whether the lesion reads as sharply demarcated keratotic plaque versus more actinic field-type change."
+        ],
+        "opposing_clues": [
+          "Scale alone is not enough to favor ACK when waxy or stuck-on cues dominate.",
+          "Seborrheic-looking keratin does not exclude ACK if actinic roughness and malignant-risk context remain active."
+        ],
+        "required_missing_evidence": [
+          "Missing closer surface texture and border-demarcation detail.",
+          "Missing confirmation of waxy/stuck-on appearance versus flatter actinic roughness."
+        ],
+        "watch_outs": [
+          "Do not use keratin or scale as a shortcut to either ACK or SEK.",
+          "Do not hide uncertainty when stuck-on/waxy morphology is not clearly seen."
+        ]
+      }
+    ]
+  },
+  "selected_evidence": [],
+  "evidence_decision_policy": {
+    "risk_layer": {
+      "risk_flag": "malignancy_risk_medium",
+      "caution_flags": [
+        "contradictions_present"
+      ],
+      "follow_up_suggestion": "clinical follow-up and closer inspection if concern persists",
+      "selected_evidence": [],
+      "baseline_preview": {
+        "early_ddx_candidates": [
+          "Actinic keratosis",
+          "Seborrheic keratosis",
+          "Dermatofibroma"
+        ],
+        "image_summary": "A slightly elevated, pinkish lesion with a central depression surrounded by fine telangiectasias on the anterior torso.",
+        "baseline_final_diagnosis": "Nevus",
+        "baseline_differential_diagnoses": [
+          "Nevus",
+          "Actinic Keratosis"
+        ],
+        "baseline_confidence": "Moderate"
+      }
+    },
+    "diagnosis_override_layer": {
+      "workflow_context": {
+        "label_granularity": "fine",
+        "presentation_mode": "focal_lesion",
+        "workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+        "available_tests": [
+          "clinical_photo_only",
+          "lesion_photo"
+        ],
+        "workflow_preference": "morphology_first",
+        "hospital_type": "specialist_clinic",
+        "time_budget": "standard",
+        "metadata_completeness": "partial",
+        "workflow_capabilities": [
+          "image_archive_reasoning",
+          "full_taxonomy_reasoning",
+          "focal_lesion_reasoning",
+          "legacy_agent_final_reasoning"
+        ]
+      },
+      "override_allowed": false,
+      "malignancy_override_allowed": false,
+      "subtype_override_allowed": false,
+      "family_override_allowed": false,
+      "override_mode": "risk_only",
+      "override_reasons": [
+        "uncertainty_not_high"
+      ],
+      "why_not_confident_enough_to_override": [
+        "malignancy risk is not high enough for a diagnosis override",
+        "no curated selected evidence is available to justify overriding the baseline diagnosis",
+        "supporting evidence does not sufficiently outweigh opposing or exclusion evidence",
+        "supporting evidence is not specific enough to justify a subtype override",
+        "no specialist evidence strongly supports the override direction",
+        "contradictions or reasoning gaps remain too numerous",
+        "retrieval evidence does not provide a consistent prototype or confusion-memory anchor",
+        "opposing or exclusion evidence quota is not satisfied"
+      ],
+      "supporting_evidence": [],
+      "opposing_evidence": [],
+      "supporting_score": 0,
+      "opposing_score": 0,
+      "support_margin": 0,
+      "selected_evidence_present": false,
+      "subtype_support_score": 0,
+      "subtype_support_margin": 0,
+      "specialist_support_present": false,
+      "consistent_retrieval_count": 0,
+      "contradiction_count": 5,
+      "uncertainty_level": "medium",
+      "opposing_quota_satisfied": false,
+      "subtype_support_quota_satisfied": false
+    }
+  },
+  "serialized_evidence_text": "[Observation Evidence]\n- Initial image summary: A slightly elevated, pinkish lesion with a central depression surrounded by fine telangiectasias on the anterior torso.\n- Early differential candidates: Actinic keratosis, Seborrheic keratosis, Dermatofibroma\n- morphology_analysis_skill: lesion_type=papule | size_range=small | elevation=raised | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence\n- color_pattern_analysis_skill: primary_color=pink | pigmentation_pattern=reticular | asymmetry_color=present | evidence_strength=medium | recommendation_type=descriptive_evidence\n- border_surface_analysis_skill: border_clarity=poor | border_irregularity=irregular | surface_texture=smooth | scaling_presence=absent | evidence_strength=medium | recommendation_type=descriptive_evidence\n- lesion_description_structuring_skill: primary_lesion_morphology=slightly elevated papule | color=pink | border=irregular | surface=smooth | size_count=size: small, count: solitary | distribution=site: anterior torso, anatom_site_general: anterior torso\n- Raw case reference ISIC_0000018_downsampled: A large, irregularly shaped brown lesion with uneven pigmentation and some areas of hyperpigmentation and hypopigmentation. The lesion has a slightly raised border and a central area with a lighter coloration.\n\n[Exclusion And Comparison Evidence]\n- Active confusion clusters: ack_sek\n- ACK / SEK watch-out: Do not use keratin or scale as a shortcut to either ACK or SEK.; Do not hide uncertainty when stuck-on/waxy morphology is not clearly seen.\n- metadata_consistency_skill: consistency_score=medium | suspicious_points=The lesion appears slightly elevated, which aligns with the metadata description of a 'slightly elevated papule'. However, the lesion's central depression an... | evidence_strength=medium | recommendation_type=descriptive_evidence\n- differential_compare_skill: candidate_pairs=Actinic keratosis vs Seborrheic keratosis | supporting_evidence=The lesion has a central depression, which could suggest possible atrophy associated with Actinic keratosis.; The presence of fine telangiectasias around the... | conflicting_evidence=The lesion is relatively small and lacks significant asymmetry or irregular borders, which are less typical of Actinic keratosis.; The lesion's surface is sm... | required_missing_evidence=Closer surface texture and border-demarcation detail would help differentiate between Actinic keratosis and Seborrheic keratosis.; Confirmation of waxy/stuck... | evidence_strength=medium | recommendation_type=conflict_signal\n- exclusion_reasoning_skill: unlikely_candidates=Seborrheic keratosis | exclusion_evidence=The lesion lacks the waxy or stuck-on appearance typical of Seborrheic keratosis.; The lesion's surface is smooth, which is inconsistent with the waxy or rou... | required_missing_evidence=Closer surface texture and border-demarcation detail would help differentiate between Actinic keratosis and Seborrheic keratosis. | exclusion_confidence=medium | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Tactical experience tac_ISIC_0000027_downsampled_f0152010c15d: ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; risk=malignancy_risk:medium; uncertainty=medium; separated edge evidence from surface evidence; highlighted margin quality explicitly; required downstream integration beyond border_surface_analysis_skill\n- Tactical experience tac_ISIC_0000027_downsampled_e6055fc25fdb: ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; risk=malignancy_risk:medium; uncertainty=medium; made pigment variation explicit; surfaced color asymmetry as auditable evidence; required downstream integration beyond color_pattern_analysis_skill\n- Abstract comparison memory abs_confusion_fb61033fa484: A well-circumscribed, slightly elevated lesion with a central area of atrophy and telangiectasia is observed on the posterior torso.; Atypical nevus; Dermatofibroma; When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty\n\n[Risk Evidence]\n- Risk flags: malignancy_risk:medium\n- malignancy_risk_assessment_skill: risk_level=medium | risk_evidence=Irregular border with fine telangiectasias surrounding the lesion.; Central depression suggesting possible atrophy. | alarm_signals=Irregular border; Central depression | benign_reassuring_features=Smooth surface texture; Small size (<6mm) | evidence_strength=medium | recommendation_type=risk_signal\n- Abstract experience abs_composite_4e40b5003e04: ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium; Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.; compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill; Candidate only; do not auto-materialize a composite skill in the current stage.\n- Abstract experience abs_composite_38ebf6b9597c: ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Seborrheic Keratosis; decision_pattern=risk_then_uncertainty_audit; uncertainty=medium; risk=malignancy_risk:medium; Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.; compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill; Candidate only; do not auto-materialize a composite skill in the current stage.\n\n[Conflict And Uncertainty]\n- Uncertainty level: medium\n- Uncertainty reasons: The lesion's surface texture is smooth, which is a feature more characteristic of Seborrheic keratosis.; The lesion lacks significant asymmetry or irregular borders, which are less typical of Actinic keratosis.; The central depression might be seen in Seborrheic keratosis, especially if it is a compound type.\n- Missing information: Closer surface texture and border-demarcation detail would help differentiate between Actinic keratosis and Seborrheic keratosis.; Confirmation of waxy/stuck-on appearance versus flatter actinic roughness would be crucial for a definitive differentiation.\n- contradictions: {'description': 'The lesion appears slightly elevated and pinkish, which aligns with the morphology analysis, but the presence of fine telangiectasias is noted in the initial perception, which is not mentioned in the morphology analysis.', 'evidence_sources': ['initial_perception', 'morphology_analysis_skill']}\n- missing links: {'description': 'The presence of fine telangiectasias is not quantified or described further in the morphology analysis, which could provide additional context for differential diagnosis.', 'evidence_sources': ['morphology_analysis_skill']}\n- reasoning gaps: {'description': \"The lesion's surface texture is described as smooth, which is a benign feature, but the presence of fine telangiectasias suggests a potential concern. There is no clear indication of how these features interact in the current reasoning state.\", 'evidence_sources': ['initial_perception', 'border_surface_analysis_skill']}\n- suspicious points: The lesion appears slightly elevated, which aligns with the metadata description of a 'slightly elevated papule'. However, the lesion's central depression and telangiectasias are not explicitly mentioned in the metadata.; The lesion's surface is described as smooth in the metadata, while the image shows some irregularities that could be interpreted as telangiectasias.\n- contradiction_check_skill: contradictions={'description': 'The lesion appears slightly elevated and pinkish, which aligns with the morphology analysis, but the presence of fine telangiectasias is not... | missing_links={'description': 'The presence of fine telangiectasias is not quantified or described further in the morphology analysis, which could provide additional conte... | reasoning_gaps={'description': \"The lesion's surface texture is described as smooth, which is a benign feature, but the presence of fine telangiectasias suggests a potentia... | evidence_strength=medium | recommendation_type=descriptive_evidence\n- uncertainty_assessment_skill: uncertainty_level=medium | reasons=The lesion's surface texture is smooth, which is a feature more characteristic of Seborrheic keratosis.; The lesion lacks significant asymmetry or irregular ... | missing_information=Closer surface texture and border-demarcation detail would help differentiate between Actinic keratosis and Seborrheic keratosis.; Confirmation of waxy/stuck... | evidence_strength=medium | recommendation_type=conflict_signal\n- information_gap_detection_skill: missing_information=Closer surface texture and border-demarcation detail; Confirmation of waxy/stuck-on appearance versus flatter actinic roughness | why_it_matters=Surface texture and border demarcation are crucial for differentiating between Actinic keratosis and Seborrheic keratosis.; Waxy or stuck-on appearance is a ... | impact_on_differential=Without detailed surface texture and border demarcation, the differential between Actinic keratosis and Seborrheic keratosis remains unresolved.; Confirmatio... | uncertainty_if_missing=high | evidence_strength=medium | recommendation_type=descriptive_evidence\n- explicit information gaps: Closer surface texture and border-demarcation detail; Confirmation of waxy/stuck-on appearance versus flatter actinic roughness\n- why gaps matter: Surface texture and border demarcation are crucial for differentiating between Actinic keratosis and Seborrheic keratosis.; Waxy or stuck-on appearance is a key feature of Seborrheic keratosis, which helps in distinguishing it from other lesions.\n- impact on differential: Without detailed surface texture and border demarcation, the differential between Actinic keratosis and Seborrheic keratosis remains unresolved.; Confirmation of the waxy/stuck-on appearance would help in favoring Seborrheic keratosis over Actinic keratosis.\n- residual uncertainty if still missing: high\n- escalation needed: unknown\n\n[Planner Rationale]\n- Selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, differential_compare_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill\n- morphology_analysis_skill: Boosted by skill retrieval score=12.00.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.\n- color_pattern_analysis_skill: Boosted by skill retrieval score=12.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.\n- border_surface_analysis_skill: Boosted by skill retrieval score=12.00.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.",
+  "evidence_calibration_debug": {
+    "calibrator_type": "off",
+    "calibrator_version": "v1",
+    "section_plan": {
+      "observation": {
+        "skill_names": [
+          "morphology_analysis_skill",
+          "color_pattern_analysis_skill",
+          "border_surface_analysis_skill",
+          "lesion_description_structuring_skill"
+        ],
+        "merged_groups": [],
+        "raw_case_source_ids": [
+          "ISIC_0000018_downsampled"
+        ]
+      },
+      "comparison": {
+        "skill_names": [
+          "metadata_consistency_skill",
+          "differential_compare_skill",
+          "exclusion_reasoning_skill"
+        ],
+        "merged_groups": [],
+        "tactical_source_ids": [
+          "tac_ISIC_0000027_downsampled_f0152010c15d",
+          "tac_ISIC_0000027_downsampled_e6055fc25fdb"
+        ],
+        "abstract_source_ids": [
+          "abs_confusion_fb61033fa484"
+        ]
+      },
+      "risk": {
+        "skill_names": [
+          "malignancy_risk_assessment_skill"
+        ],
+        "abstract_source_ids": [
+          "abs_composite_4e40b5003e04",
+          "abs_composite_38ebf6b9597c"
+        ]
+      },
+      "conflict_uncertainty": {
+        "skill_names": [
+          "information_gap_detection_skill",
+          "uncertainty_assessment_skill",
+          "contradiction_check_skill"
+        ]
+      },
+      "planner": {
+        "max_reason_skills": 3
+      },
+      "section_order": [
+        "observation",
+        "comparison",
+        "risk",
+        "conflict_uncertainty",
+        "planner"
+      ]
+    },
+    "item_scores": [],
+    "omitted_items": [],
+    "debug": {
+      "reason": "evidence calibrator disabled by policy"
+    }
+  }
+}

@@ -1,0 +1,770 @@
+{
+  "perception": {
+    "image_summary": "A pinkish, slightly elevated lesion with a central depression and surrounding clear fluid.",
+    "ddx_candidates": [
+      "angiokeratoma",
+      "sebaceous cyst",
+      "dermatofibroma"
+    ],
+    "uncertainty": {
+      "level": "low",
+      "reasons": [
+        "Lesion morphology is not highly suggestive of malignancy.",
+        "No significant asymmetry or irregular borders."
+      ]
+    },
+    "notes": [
+      "Central depression suggests possible vascular component.",
+      "Surrounding clear fluid could indicate sebaceous cyst."
+    ]
+  },
+  "retrieved_experience": [
+    {
+      "case_id": "ISIC_0000004",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "A well-circumscribed, slightly elevated lesion with a central area of atrophy and telangiectasia is observed on the posterior torso.; Atypical nevus; Dermatofibroma",
+      "confusion_pair": "Seborrheic Keratosis->MEL",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_confusion_fb61033fa484",
+      "retrieval_score": 6
+    },
+    {
+      "case_id": "ISIC_0000031_downsampled",
+      "source_layer": "abstract_experience",
+      "source_subtype": "composite_skill_seed",
+      "experience_type": "composite_skill_seed",
+      "perception_summary": "ddx=Malignant Melanoma, Atypical Nevus, Dermatofibroma; decision_pattern=compare_then_audit_uncertainty; uncertainty=high",
+      "confusion_pair": null,
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage.",
+        "Promote only after repeated successful supporting cases under a stable trigger pattern."
+      ],
+      "source_id": "abs_composite_a74aeb51c5d8",
+      "retrieval_score": 5
+    },
+    {
+      "case_id": "ISIC_0000031_downsampled",
+      "source_layer": "tactical_experience",
+      "source_subtype": "high_uncertainty",
+      "experience_type": "tactical_experience",
+      "perception_summary": "ddx=Malignant Melanoma, Atypical Nevus, Dermatofibroma; ; uncertainty=high",
+      "confusion_pair": null,
+      "learning_points": [
+        "separated edge evidence from surface evidence",
+        "highlighted margin quality explicitly",
+        "did not lower case uncertainty enough for confident narrowing",
+        "Action pattern: structured_skill_sequence"
+      ],
+      "source_id": "tac_ISIC_0000031_downsampled_f0152010c15d",
+      "retrieval_score": 5
+    },
+    {
+      "case_id": "ISIC_0000000",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "A dark, irregularly shaped lesion with a central area of depigmentation on the anterior torso.; Malignant Melanoma; Atypical Nevus",
+      "confusion_pair": "Malignant Melanoma->NV",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_confusion_8f48b4d56c81",
+      "retrieval_score": 4
+    }
+  ],
+  "skill_outputs": {
+    "morphology_analysis_skill": {
+      "lesion_type": "papule",
+      "size_range": "small to medium",
+      "elevation": "raised",
+      "count": "solitary",
+      "referenced_experiences": [
+        "ISIC_0000042_downsampled",
+        "ISIC_0000031_downsampled"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "color_pattern_analysis_skill": {
+      "primary_color": "pink",
+      "color_variation": "unknown",
+      "pigmentation_pattern": "mixed",
+      "asymmetry_color": "present",
+      "referenced_experiences": [
+        "ISIC_0000042_downsampled",
+        "ISIC_0000031_downsampled"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "border_surface_analysis_skill": {
+      "border_clarity": "poor",
+      "border_irregularity": "irregular",
+      "surface_texture": "smooth",
+      "scaling_presence": "absent",
+      "referenced_experiences": [
+        "abs_confusion_fb61033fa484",
+        "abs_composite_a74aeb51c5d8"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "lesion_description_structuring_skill": {
+      "primary_lesion_morphology": "papule with central depression",
+      "color": [
+        "pink, mixed pigmentation"
+      ],
+      "border": [
+        "irregular, poor clarity"
+      ],
+      "surface": [
+        "smooth, surrounding clear fluid"
+      ],
+      "size_count": [
+        "small to medium, solitary"
+      ],
+      "distribution": [
+        "anterior torso, male patient, age approx. 70"
+      ],
+      "associated_context": [
+        "central depression suggests possible vascular component; surrounding clear fluid could indicate sebaceous cyst"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000042_downsampled",
+        "ISIC_0000031_downsampled"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "metadata_consistency_skill": {
+      "consistency_score": "medium",
+      "conflicts": [],
+      "suspicious_points": [
+        "The lesion has a central depression, which might suggest a vascular component, but the metadata does not mention this feature."
+      ],
+      "referenced_experiences": [
+        "ISIC_0000042_downsampled",
+        "ISIC_0000031_downsampled",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_a74aeb51c5d8",
+        "tac_ISIC_0000031_downsampled_f0152010c15d",
+        "abs_confusion_8f48b4d56c81"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "differential_compare_skill": {
+      "candidate_pairs": [
+        "angiokeratoma vs sebaceous cyst",
+        "angiokeratoma vs dermatofibroma",
+        "sebaceous cyst vs dermatofibroma"
+      ],
+      "supporting_evidence": [
+        "angiokeratoma vs sebaceous cyst: Central depression suggests possible vascular component.; Surrounding clear fluid could indicate sebaceous cyst.",
+        "angiokeratoma vs dermatofibroma: Central depression suggests possible vascular component.; Surrounding clear fluid could indicate sebaceous cyst.",
+        "sebaceous cyst vs dermatofibroma: Surrounding clear fluid could indicate sebaceous cyst."
+      ],
+      "conflicting_evidence": [],
+      "required_missing_evidence": [
+        "angiokeratoma vs sebaceous cyst: Confirmation of vascular component through histopathology.",
+        "angiokeratoma vs dermatofibroma: Histopathological confirmation of the lesion type.",
+        "sebaceous cyst vs dermatofibroma: Histopathological confirmation of the lesion type."
+      ],
+      "referenced_experiences": [
+        "ISIC_0000042_downsampled",
+        "ISIC_0000031_downsampled",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_a74aeb51c5d8",
+        "tac_ISIC_0000031_downsampled_f0152010c15d"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "comparative_support"
+    },
+    "information_gap_detection_skill": {
+      "missing_information": [
+        "Histopathological confirmation of the lesion type.",
+        "Confirmation of the presence of vascular component."
+      ],
+      "why_it_matters": [
+        "Histopathological confirmation is essential for accurate diagnosis and ruling out malignancy.",
+        "Confirmation of the presence of a vascular component helps differentiate between angiokeratoma and sebaceous cyst."
+      ],
+      "impact_on_differential": [
+        "Without histopathological confirmation, the differential diagnosis remains open between angiokeratoma and sebaceous cyst.",
+        "The presence of a vascular component is crucial for distinguishing between angiokeratoma and dermatofibroma."
+      ],
+      "uncertainty_if_missing": "high",
+      "referenced_experiences": [
+        "ISIC_0000042_downsampled",
+        "ISIC_0000031_downsampled",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_a74aeb51c5d8",
+        "tac_ISIC_0000031_downsampled_f0152010c15d",
+        "abs_confusion_8f48b4d56c81"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "uncertainty_signal"
+    },
+    "uncertainty_assessment_skill": {
+      "uncertainty_level": "medium",
+      "reasons": [
+        "The lesion's central depression and surrounding clear fluid suggest possibilities like angiokeratoma or sebaceous cyst.",
+        "The lesion's morphology does not strongly favor any specific diagnosis.",
+        "The lack of histopathological confirmation limits definitive diagnosis."
+      ],
+      "missing_information": [
+        "Histopathological confirmation of the lesion type.",
+        "Confirmation of the vascular component through histopathology."
+      ],
+      "referenced_experiences": [
+        "ISIC_0000042_downsampled",
+        "ISIC_0000031_downsampled",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_a74aeb51c5d8",
+        "tac_ISIC_0000031_downsampled_f0152010c15d",
+        "abs_confusion_8f48b4d56c81"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "uncertainty_signal"
+    },
+    "contradiction_check_skill": {
+      "contradictions": [
+        {
+          "description": "The lesion's central depression and surrounding clear fluid are noted in the initial perception but not explicitly mentioned in the morphology analysis skill output.",
+          "evidence_source": "initial perception",
+          "related_skill_output": "morphology_analysis_skill"
+        }
+      ],
+      "missing_links": [
+        {
+          "description": "The presence of a central depression and surrounding clear fluid needs further evaluation in relation to the lesion's morphology.",
+          "evidence_source": "initial perception",
+          "related_skill_outputs": [
+            "morphology_analysis_skill",
+            "color_pattern_analysis_skill",
+            "border_surface_analysis_skill"
+          ]
+        }
+      ],
+      "reasoning_gaps": [
+        {
+          "description": "The lesion's morphology does not strongly favor any specific diagnosis, which is a known gap in the reasoning process.",
+          "evidence_source": "uncertainty_assessment_skill",
+          "related_skill_outputs": [
+            "morphology_analysis_skill",
+            "color_pattern_analysis_skill",
+            "border_surface_analysis_skill"
+          ]
+        }
+      ],
+      "referenced_experiences": [
+        "ISIC_0000042_downsampled",
+        "ISIC_0000031_downsampled",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_a74aeb51c5d8",
+        "tac_ISIC_0000031_downsampled_f0152010c15d",
+        "abs_confusion_8f48b4d56c81"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    }
+  },
+  "risk_flags": [],
+  "uncertainty": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The lesion's central depression and surrounding clear fluid suggest possibilities like angiokeratoma or sebaceous cyst.",
+      "The lesion's morphology does not strongly favor any specific diagnosis.",
+      "The lack of histopathological confirmation limits definitive diagnosis."
+    ],
+    "missing_information": [
+      "Histopathological confirmation of the lesion type.",
+      "Confirmation of the vascular component through histopathology."
+    ],
+    "referenced_experiences": [
+      "ISIC_0000042_downsampled",
+      "ISIC_0000031_downsampled",
+      "abs_confusion_fb61033fa484",
+      "abs_composite_a74aeb51c5d8",
+      "tac_ISIC_0000031_downsampled_f0152010c15d",
+      "abs_confusion_8f48b4d56c81"
+    ],
+    "evidence_strength": "medium",
+    "recommendation_type": "uncertainty_signal"
+  },
+  "notes": [
+    "Agent generated structured evidence only.",
+    "Qwen remains the sole final diagnostic decision maker.",
+    "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, differential_compare_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill.",
+    "Policy in use: stable_default_policy__full_dermagent.",
+    "Skill retrieval candidates: morphology_analysis_skill, metadata_consistency_skill, color_pattern_analysis_skill, lesion_description_structuring_skill, border_surface_analysis_skill, malignancy_risk_assessment_skill, distribution_analysis_skill, uncertainty_assessment_skill, differential_compare_skill, contradiction_check_skill, temporal_evolution_skill, information_gap_detection_skill, exclusion_reasoning_skill.",
+    "Central depression suggests possible vascular component.",
+    "Surrounding clear fluid could indicate sebaceous cyst.",
+    "Retrieved prior reasoning experience for context."
+  ],
+  "initial_perception_summary": {
+    "image_summary": "A pinkish, slightly elevated lesion with a central depression and surrounding clear fluid.",
+    "ddx_candidates": [
+      "angiokeratoma",
+      "sebaceous cyst",
+      "dermatofibroma"
+    ],
+    "uncertainty_level": "low",
+    "uncertainty_reasons": [
+      "Lesion morphology is not highly suggestive of malignancy.",
+      "No significant asymmetry or irregular borders."
+    ],
+    "observation_notes": [
+      "Central depression suggests possible vascular component.",
+      "Surrounding clear fluid could indicate sebaceous cyst."
+    ]
+  },
+  "retrieved_raw_cases_summary": [
+    {
+      "source_id": "ISIC_0000016",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "ISIC_0000016",
+      "confusion_pair": "None",
+      "perception_summary": "A well-circumscribed, irregularly shaped brown lesion with a mix of lighter and darker pigmentation.",
+      "learning_points": [
+        "Final decision: Nevus",
+        "Correctness: True"
+      ],
+      "retrieval_score": 5.0,
+      "base_retrieval_score": 5.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "ISIC_0000048_downsampled",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "ISIC_0000048_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "A dark, irregularly shaped lesion with a central area of depigmentation on the anterior torso.",
+      "learning_points": [
+        "Final decision: Malignant Melanoma",
+        "Correctness: False"
+      ],
+      "retrieval_score": 4.0,
+      "base_retrieval_score": 4.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "ISIC_0000042_downsampled",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "ISIC_0000042_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "A large, irregularly shaped lesion with a mix of brown and reddish-brown pigmentation, surrounded by a lighter area. Hairs are present within and around the lesion.",
+      "learning_points": [
+        "Final decision: Nevus",
+        "Correctness: True"
+      ],
+      "retrieval_score": 4.0,
+      "base_retrieval_score": 4.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_tactical_experiences_summary": [
+    {
+      "source_id": "tac_ISIC_0000031_downsampled_f0152010c15d",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000031_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Malignant Melanoma, Atypical Nevus, Dermatofibroma; ; uncertainty=high",
+      "learning_points": [
+        "separated edge evidence from surface evidence",
+        "highlighted margin quality explicitly",
+        "did not lower case uncertainty enough for confident narrowing"
+      ],
+      "retrieval_score": 5.0,
+      "base_retrieval_score": 5.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_ISIC_0000031_downsampled_ea7b54e2327b",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000031_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Malignant Melanoma, Atypical Nevus, Dermatofibroma; ; uncertainty=high",
+      "learning_points": [
+        "kept the differential open",
+        "made pairwise reasoning explicit",
+        "did not lower case uncertainty enough for confident narrowing"
+      ],
+      "retrieval_score": 5.0,
+      "base_retrieval_score": 5.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_ISIC_0000031_downsampled_e6055fc25fdb",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000031_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Malignant Melanoma, Atypical Nevus, Dermatofibroma; ; uncertainty=high",
+      "learning_points": [
+        "made pigment variation explicit",
+        "surfaced color asymmetry as auditable evidence",
+        "did not lower case uncertainty enough for confident narrowing"
+      ],
+      "retrieval_score": 5.0,
+      "base_retrieval_score": 5.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_ISIC_0000031_downsampled_e4a8c7c2c58e",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000031_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Malignant Melanoma, Atypical Nevus, Dermatofibroma; ; uncertainty=high",
+      "learning_points": [
+        "did not lower case uncertainty enough for confident narrowing",
+        "Action pattern: structured_skill_sequence"
+      ],
+      "retrieval_score": 5.0,
+      "base_retrieval_score": 5.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_abstract_experiences_summary": [
+    {
+      "source_id": "abs_confusion_fb61033fa484",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "ISIC_0000004",
+      "confusion_pair": "Seborrheic Keratosis->MEL",
+      "perception_summary": "A well-circumscribed, slightly elevated lesion with a central area of atrophy and telangiectasia is observed on the posterior torso.; Atypical nevus; Dermatofibroma",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 6.0,
+      "base_retrieval_score": 6.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_composite_a74aeb51c5d8",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "ISIC_0000031_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Malignant Melanoma, Atypical Nevus, Dermatofibroma; decision_pattern=compare_then_audit_uncertainty; uncertainty=high",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 5.0,
+      "base_retrieval_score": 5.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_confusion_8f48b4d56c81",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "ISIC_0000000",
+      "confusion_pair": "Malignant Melanoma->NV",
+      "perception_summary": "A dark, irregularly shaped lesion with a central area of depigmentation on the anterior torso.; Malignant Melanoma; Atypical Nevus",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 4.0,
+      "base_retrieval_score": 4.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "uncertainty_summary": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The lesion's central depression and surrounding clear fluid suggest possibilities like angiokeratoma or sebaceous cyst.",
+      "The lesion's morphology does not strongly favor any specific diagnosis.",
+      "The lack of histopathological confirmation limits definitive diagnosis."
+    ],
+    "missing_information": [
+      "Histopathological confirmation of the lesion type.",
+      "Confirmation of the vascular component through histopathology."
+    ],
+    "referenced_experiences": [
+      "ISIC_0000042_downsampled",
+      "ISIC_0000031_downsampled",
+      "abs_confusion_fb61033fa484",
+      "abs_composite_a74aeb51c5d8",
+      "tac_ISIC_0000031_downsampled_f0152010c15d",
+      "abs_confusion_8f48b4d56c81"
+    ]
+  },
+  "contradiction_summary": {
+    "contradictions": [
+      "{'description': \"The lesion's central depression and surrounding clear fluid are noted in the initial perception but not explicitly mentioned in the morphology analysis skill output.\", 'evidence_source': 'initial perception', 'related_skill_output': 'morphology_analysis_skill'}"
+    ],
+    "missing_links": [
+      "{'description': \"The presence of a central depression and surrounding clear fluid needs further evaluation in relation to the lesion's morphology.\", 'evidence_source': 'initial perception', 'related_skill_outputs': ['morphology_analysis_skill', 'color_pattern_analysis_skill', 'border_surface_analysis_skill']}"
+    ],
+    "reasoning_gaps": [
+      "{'description': \"The lesion's morphology does not strongly favor any specific diagnosis, which is a known gap in the reasoning process.\", 'evidence_source': 'uncertainty_assessment_skill', 'related_skill_outputs': ['morphology_analysis_skill', 'color_pattern_analysis_skill', 'border_surface_analysis_skill']}"
+    ],
+    "metadata_conflicts": [],
+    "suspicious_points": [
+      "The lesion has a central depression, which might suggest a vascular component, but the metadata does not mention this feature."
+    ]
+  },
+  "information_gap_summary": {
+    "missing_information": [
+      "Histopathological confirmation of the lesion type.",
+      "Confirmation of the presence of vascular component."
+    ],
+    "why_it_matters": [
+      "Histopathological confirmation is essential for accurate diagnosis and ruling out malignancy.",
+      "Confirmation of the presence of a vascular component helps differentiate between angiokeratoma and sebaceous cyst."
+    ],
+    "impact_on_differential": [
+      "Without histopathological confirmation, the differential diagnosis remains open between angiokeratoma and sebaceous cyst.",
+      "The presence of a vascular component is crucial for distinguishing between angiokeratoma and dermatofibroma."
+    ],
+    "uncertainty_if_missing": "high"
+  },
+  "escalation_summary": {
+    "whether_escalation_needed": "unknown",
+    "escalation_reason": [],
+    "suggested_next_check_type": "",
+    "caution_flags": []
+  },
+  "planner_rationale": {
+    "planner_type": "rule_based",
+    "planner_version": "v1",
+    "selected_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "border_surface_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "differential_compare_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill"
+    ],
+    "selection_reasons": {
+      "morphology_analysis_skill": [
+        "Boosted by skill retrieval score=10.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "color_pattern_analysis_skill": [
+        "Boosted by skill retrieval score=10.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "border_surface_analysis_skill": [
+        "Boosted by skill retrieval score=8.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "lesion_description_structuring_skill": [
+        "Boosted by skill retrieval score=8.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "metadata_consistency_skill": [
+        "Boosted by skill retrieval score=10.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "differential_compare_skill": [
+        "Boosted by skill retrieval score=5.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "information_gap_detection_skill": [
+        "Boosted by skill retrieval score=3.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Boosted by cognition.preferred_skills from prior cases."
+      ],
+      "uncertainty_assessment_skill": [
+        "Boosted by skill retrieval score=5.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ],
+      "contradiction_check_skill": [
+        "Boosted by skill retrieval score=5.50.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ]
+    }
+  },
+  "confusion_cluster_summary": {
+    "active_clusters": [],
+    "guidance": []
+  },
+  "selected_evidence": [],
+  "evidence_decision_policy": {
+    "risk_layer": {
+      "risk_flag": "malignancy_risk_unknown",
+      "caution_flags": [
+        "contradictions_present"
+      ],
+      "follow_up_suggestion": "clinical follow-up and closer inspection if concern persists",
+      "selected_evidence": [],
+      "baseline_preview": {
+        "early_ddx_candidates": [
+          "angiokeratoma",
+          "sebaceous cyst",
+          "dermatofibroma"
+        ],
+        "image_summary": "A pinkish, slightly elevated lesion with a central depression and surrounding clear fluid.",
+        "baseline_final_diagnosis": "Nevus",
+        "baseline_differential_diagnoses": [
+          "Nevus",
+          "Actinic Keratosis"
+        ],
+        "baseline_confidence": "Moderate"
+      }
+    },
+    "diagnosis_override_layer": {
+      "workflow_context": {
+        "label_granularity": "fine",
+        "presentation_mode": "focal_lesion",
+        "workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+        "available_tests": [
+          "clinical_photo_only",
+          "lesion_photo"
+        ],
+        "workflow_preference": "morphology_first",
+        "hospital_type": "specialist_clinic",
+        "time_budget": "standard",
+        "metadata_completeness": "partial",
+        "workflow_capabilities": [
+          "image_archive_reasoning",
+          "full_taxonomy_reasoning",
+          "focal_lesion_reasoning",
+          "legacy_agent_final_reasoning"
+        ]
+      },
+      "override_allowed": false,
+      "malignancy_override_allowed": false,
+      "subtype_override_allowed": false,
+      "family_override_allowed": false,
+      "override_mode": "risk_only",
+      "override_reasons": [
+        "uncertainty_not_high"
+      ],
+      "why_not_confident_enough_to_override": [
+        "malignancy risk is not high enough for a diagnosis override",
+        "no curated selected evidence is available to justify overriding the baseline diagnosis",
+        "supporting evidence does not sufficiently outweigh opposing or exclusion evidence",
+        "supporting evidence is not specific enough to justify a subtype override",
+        "no specialist evidence strongly supports the override direction",
+        "contradictions or reasoning gaps remain too numerous",
+        "retrieval evidence does not provide a consistent prototype or confusion-memory anchor",
+        "opposing or exclusion evidence quota is not satisfied"
+      ],
+      "supporting_evidence": [],
+      "opposing_evidence": [],
+      "supporting_score": 0,
+      "opposing_score": 0,
+      "support_margin": 0,
+      "selected_evidence_present": false,
+      "subtype_support_score": 0,
+      "subtype_support_margin": 0,
+      "specialist_support_present": false,
+      "consistent_retrieval_count": 0,
+      "contradiction_count": 4,
+      "uncertainty_level": "medium",
+      "opposing_quota_satisfied": false,
+      "subtype_support_quota_satisfied": false
+    }
+  },
+  "serialized_evidence_text": "[Observation Evidence]\n- Initial image summary: A pinkish, slightly elevated lesion with a central depression and surrounding clear fluid.\n- Early differential candidates: angiokeratoma, sebaceous cyst, dermatofibroma\n- morphology_analysis_skill: lesion_type=papule | size_range=small to medium | elevation=raised | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence\n- color_pattern_analysis_skill: primary_color=pink | pigmentation_pattern=mixed | asymmetry_color=present | evidence_strength=medium | recommendation_type=descriptive_evidence\n- border_surface_analysis_skill: border_clarity=poor | border_irregularity=irregular | surface_texture=smooth | scaling_presence=absent | evidence_strength=medium | recommendation_type=descriptive_evidence\n- lesion_description_structuring_skill: primary_lesion_morphology=papule with central depression | color=pink, mixed pigmentation | border=irregular, poor clarity | surface=smooth, surrounding clear fluid | size_count=small to medium, solitary | distribution=anterior torso, male patient, age approx. 70\n- Raw case reference ISIC_0000016: A well-circumscribed, irregularly shaped brown lesion with a mix of lighter and darker pigmentation.\n\n[Exclusion And Comparison Evidence]\n- metadata_consistency_skill: consistency_score=medium | suspicious_points=The lesion has a central depression, which might suggest a vascular component, but the metadata does not mention this feature. | evidence_strength=medium | recommendation_type=descriptive_evidence\n- differential_compare_skill: candidate_pairs=angiokeratoma vs sebaceous cyst; angiokeratoma vs dermatofibroma; sebaceous cyst vs dermatofibroma | supporting_evidence=angiokeratoma vs sebaceous cyst: Central depression suggests possible vascular component.; Surrounding clear fluid could indicate sebaceous cyst.; angiokerat... | required_missing_evidence=angiokeratoma vs sebaceous cyst: Confirmation of vascular component through histopathology.; angiokeratoma vs dermatofibroma: Histopathological confirmation ... | evidence_strength=medium | recommendation_type=comparative_support\n- Tactical experience tac_ISIC_0000031_downsampled_f0152010c15d: ddx=Malignant Melanoma, Atypical Nevus, Dermatofibroma; ; uncertainty=high; separated edge evidence from surface evidence; highlighted margin quality explicitly; did not lower case uncertainty enough for confident narrowing\n- Tactical experience tac_ISIC_0000031_downsampled_ea7b54e2327b: ddx=Malignant Melanoma, Atypical Nevus, Dermatofibroma; ; uncertainty=high; kept the differential open; made pairwise reasoning explicit; did not lower case uncertainty enough for confident narrowing\n\n[Risk Evidence]\n- Abstract experience abs_confusion_fb61033fa484: A well-circumscribed, slightly elevated lesion with a central area of atrophy and telangiectasia is observed on the posterior torso.; Atypical nevus; Dermatofibroma; When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty\n- Abstract experience abs_composite_a74aeb51c5d8: ddx=Malignant Melanoma, Atypical Nevus, Dermatofibroma; decision_pattern=compare_then_audit_uncertainty; uncertainty=high; Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.; compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill; Candidate only; do not auto-materialize a composite skill in the current stage.\n- Abstract experience abs_confusion_8f48b4d56c81: A dark, irregularly shaped lesion with a central area of depigmentation on the anterior torso.; Malignant Melanoma; Atypical Nevus; When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty\n\n[Conflict And Uncertainty]\n- Uncertainty level: medium\n- Uncertainty reasons: The lesion's central depression and surrounding clear fluid suggest possibilities like angiokeratoma or sebaceous cyst.; The lesion's morphology does not strongly favor any specific diagnosis.; The lack of histopathological confirmation limits definitive diagnosis.\n- Missing information: Histopathological confirmation of the lesion type.; Confirmation of the vascular component through histopathology.\n- contradictions: {'description': \"The lesion's central depression and surrounding clear fluid are noted in the initial perception but not explicitly mentioned in the morphology analysis skill output.\", 'evidence_source': 'initial perception', 'related_skill_output': 'morphology_analysis_skill'}\n- missing links: {'description': \"The presence of a central depression and surrounding clear fluid needs further evaluation in relation to the lesion's morphology.\", 'evidence_source': 'initial perception', 'related_skill_outputs': ['morphology_analysis_skill', 'color_pattern_analysis_skill', 'border_surface_analysis_skill']}\n- reasoning gaps: {'description': \"The lesion's morphology does not strongly favor any specific diagnosis, which is a known gap in the reasoning process.\", 'evidence_source': 'uncertainty_assessment_skill', 'related_skill_outputs': ['morphology_analysis_skill', 'color_pattern_analysis_skill', 'border_surface_analysis_skill']}\n- suspicious points: The lesion has a central depression, which might suggest a vascular component, but the metadata does not mention this feature.\n- contradiction_check_skill: contradictions={'description': \"The lesion's central depression and surrounding clear fluid are noted in the initial perception but not explicitly mentioned in the morpholo... | missing_links={'description': \"The presence of a central depression and surrounding clear fluid needs further evaluation in relation to the lesion's morphology.\", 'evidenc... | reasoning_gaps={'description': \"The lesion's morphology does not strongly favor any specific diagnosis, which is a known gap in the reasoning process.\", 'evidence_source': ... | evidence_strength=medium | recommendation_type=descriptive_evidence\n- uncertainty_assessment_skill: uncertainty_level=medium | reasons=The lesion's central depression and surrounding clear fluid suggest possibilities like angiokeratoma or sebaceous cyst.; The lesion's morphology does not str... | missing_information=Histopathological confirmation of the lesion type.; Confirmation of the vascular component through histopathology. | evidence_strength=medium | recommendation_type=uncertainty_signal\n- information_gap_detection_skill: missing_information=Histopathological confirmation of the lesion type.; Confirmation of the presence of vascular component. | why_it_matters=Histopathological confirmation is essential for accurate diagnosis and ruling out malignancy.; Confirmation of the presence of a vascular component helps dif... | impact_on_differential=Without histopathological confirmation, the differential diagnosis remains open between angiokeratoma and sebaceous cyst.; The presence of a vascular compone... | uncertainty_if_missing=high | evidence_strength=medium | recommendation_type=uncertainty_signal\n- explicit information gaps: Histopathological confirmation of the lesion type.; Confirmation of the presence of vascular component.\n- why gaps matter: Histopathological confirmation is essential for accurate diagnosis and ruling out malignancy.; Confirmation of the presence of a vascular component helps differentiate between angiokeratoma and sebaceous cyst.\n- impact on differential: Without histopathological confirmation, the differential diagnosis remains open between angiokeratoma and sebaceous cyst.; The presence of a vascular component is crucial for distinguishing between angiokeratoma and dermatofibroma.\n- residual uncertainty if still missing: high\n- escalation needed: unknown\n\n[Planner Rationale]\n- Selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, differential_compare_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill\n- morphology_analysis_skill: Boosted by skill retrieval score=10.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.\n- color_pattern_analysis_skill: Boosted by skill retrieval score=10.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.\n- border_surface_analysis_skill: Boosted by skill retrieval score=8.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.",
+  "evidence_calibration_debug": {
+    "calibrator_type": "off",
+    "calibrator_version": "v1",
+    "section_plan": {
+      "observation": {
+        "skill_names": [
+          "morphology_analysis_skill",
+          "color_pattern_analysis_skill",
+          "border_surface_analysis_skill",
+          "lesion_description_structuring_skill"
+        ],
+        "merged_groups": [],
+        "raw_case_source_ids": [
+          "ISIC_0000016"
+        ]
+      },
+      "comparison": {
+        "skill_names": [
+          "metadata_consistency_skill",
+          "differential_compare_skill"
+        ],
+        "merged_groups": [],
+        "tactical_source_ids": [
+          "tac_ISIC_0000031_downsampled_f0152010c15d",
+          "tac_ISIC_0000031_downsampled_ea7b54e2327b"
+        ],
+        "abstract_source_ids": []
+      },
+      "risk": {
+        "skill_names": [],
+        "abstract_source_ids": [
+          "abs_confusion_fb61033fa484",
+          "abs_composite_a74aeb51c5d8",
+          "abs_confusion_8f48b4d56c81"
+        ]
+      },
+      "conflict_uncertainty": {
+        "skill_names": [
+          "information_gap_detection_skill",
+          "uncertainty_assessment_skill",
+          "contradiction_check_skill"
+        ]
+      },
+      "planner": {
+        "max_reason_skills": 3
+      },
+      "section_order": [
+        "observation",
+        "comparison",
+        "risk",
+        "conflict_uncertainty",
+        "planner"
+      ]
+    },
+    "item_scores": [],
+    "omitted_items": [],
+    "debug": {
+      "reason": "evidence calibrator disabled by policy"
+    }
+  }
+}

@@ -11,7 +11,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from agent.label_space import canonicalize_label, is_malignant_label, label_space_snapshot
-from dataio.case_loader import load_case_by_index, resolve_registered_dataset_loader
+from dataio.case_loader import discover_case_source, load_case_by_index, resolve_registered_dataset_loader
 from dataio.scin_loader import load_scin_case_input_by_index, load_scin_case_inputs, load_scin_records
 
 
@@ -140,6 +140,48 @@ def test_scin_case_loader_registration_and_label_space(tmp_path: Path) -> None:
     assert canonicalize_label("Basal Cell Carcinoma", dataset_name="scin") == "BASAL CELL CARCINOMA"
     assert is_malignant_label("Basal Cell Carcinoma", dataset_name="scin") is True
     assert label_space_snapshot(dataset_name="scin")["label_space_id"] == "scin_full"
+
+
+def test_builtin_scin_loader_routes_parent_root_and_discovers_cases_csv(tmp_path: Path) -> None:
+    parent_root = tmp_path / "scin"
+    data_root = parent_root / "official_mirror"
+    _write_csv(
+        data_root / "scin_app_questions.csv",
+        ["question", "answer"],
+        [{"question": "tiny", "answer": "not case metadata"}],
+    )
+    _write_csv(
+        data_root / "scin_cases.csv",
+        ["case_id", "image_1_path"],
+        [{"case_id": "case_001", "image_1_path": "dataset/images/case_001.png"}],
+    )
+    _write_csv(
+        data_root / "scin_labels.csv",
+        ["case_id", "weighted_skin_condition_label"],
+        [{"case_id": "case_001", "weighted_skin_condition_label": "{'Eczema': 1.0}"}],
+    )
+    image_dir = data_root / "images"
+    image_dir.mkdir(parents=True, exist_ok=True)
+    (image_dir / "case_001.png").write_bytes(b"img1")
+
+    from dataio.case_loader import register_dataset_loader
+    from dataio.scin_loader import discover_scin_case_source, load_scin_case_input_by_index, load_scin_case_inputs
+
+    register_dataset_loader(
+        "scin_parent_test",
+        load_by_index=load_scin_case_input_by_index,
+        load_all=load_scin_case_inputs,
+        discover_source=discover_scin_case_source,
+        data_roots=[parent_root, data_root],
+    )
+
+    source = discover_case_source(parent_root)
+    case = load_case_by_index(0, parent_root)
+
+    assert source.metadata_path == data_root / "scin_cases.csv"
+    assert source.metadata_format == "scin_csv"
+    assert case.case_id == "case_001"
+    assert case.source_metadata_path == str(data_root / "scin_cases.csv")
 
 
 def test_scin_full_label_space_prefers_more_specific_full_labels() -> None:

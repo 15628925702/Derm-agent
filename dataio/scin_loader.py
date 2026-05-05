@@ -11,6 +11,7 @@ from typing import Any
 
 from agent.state import CaseInput
 from agent.workflow_profiles import ensure_workflow_context
+from dataio.case_schema import CaseSourceConfig
 
 
 DEFAULT_SCIN_ROOT = Path("/root/DermAgent/data/scin/official_mirror")
@@ -59,7 +60,7 @@ class ScinDatasetSummary:
 
 
 def discover_scin_assets(data_root: str | Path = DEFAULT_SCIN_ROOT) -> ScinDatasetSummary:
-    return _discover_scin_assets_cached(str(Path(data_root)))
+    return _discover_scin_assets_cached(str(_resolve_scin_root(data_root)))
 
 
 @lru_cache(maxsize=16)
@@ -87,7 +88,7 @@ def _discover_scin_assets_cached(data_root: str) -> ScinDatasetSummary:
 
 
 def load_scin_rows(data_root: str | Path = DEFAULT_SCIN_ROOT) -> list[dict[str, Any]]:
-    return list(_load_scin_rows_cached(str(Path(data_root))))
+    return list(_load_scin_rows_cached(str(_resolve_scin_root(data_root))))
 
 
 @lru_cache(maxsize=16)
@@ -120,7 +121,7 @@ def _load_scin_rows_cached(data_root: str) -> tuple[dict[str, Any], ...]:
 
 
 def standardize_scin_row(row: dict[str, Any], *, data_root: str | Path = DEFAULT_SCIN_ROOT) -> ScinCaseRecord:
-    root = Path(data_root)
+    root = _resolve_scin_root(data_root)
     case_id = str(row.get("case_id", "")).strip()
     if not case_id:
         raise ValueError("SCIN row missing case_id")
@@ -201,7 +202,7 @@ def load_scin_case_inputs(
         shuffle=shuffle,
         labeled_only=labeled_only,
     )
-    cases_csv = Path(data_root) / "scin_cases.csv"
+    cases_csv = _resolve_scin_root(data_root) / "scin_cases.csv"
     return [
         CaseInput(
             case_id=record.case_id,
@@ -229,7 +230,7 @@ def load_scin_case_input_by_index(
     data_root: str | Path = DEFAULT_SCIN_ROOT,
 ) -> CaseInput:
     record = load_scin_record_by_index(case_index, data_root=data_root)
-    cases_csv = Path(data_root) / "scin_cases.csv"
+    cases_csv = _resolve_scin_root(data_root) / "scin_cases.csv"
     return CaseInput(
         case_id=record.case_id,
         image_path=record.image_path,
@@ -246,6 +247,30 @@ def load_scin_case_input_by_index(
             workflow_context=None,
         ),
     )
+
+
+def discover_scin_case_source(data_root: str | Path = DEFAULT_SCIN_ROOT) -> CaseSourceConfig:
+    root = _resolve_scin_root(data_root)
+    discover_scin_assets(root)
+    return CaseSourceConfig(
+        data_root=root,
+        metadata_path=root / "scin_cases.csv",
+        image_root=root / "images",
+        image_field="image_1_path",
+        label_field="original_label",
+        case_id_fields=["case_id"],
+        metadata_format="scin_csv",
+    )
+
+
+def _resolve_scin_root(data_root: str | Path = DEFAULT_SCIN_ROOT) -> Path:
+    root = Path(data_root)
+    if (root / "scin_cases.csv").exists() and (root / "scin_labels.csv").exists():
+        return root
+    nested = root / "official_mirror"
+    if (nested / "scin_cases.csv").exists() and (nested / "scin_labels.csv").exists():
+        return nested
+    return root
 
 
 def _extract_original_label(row: dict[str, Any]) -> str:

@@ -1,0 +1,228 @@
+{
+  "eval_id": "compare_agent_vs_qwen_20260422T123755Z",
+  "created_at": "2026-04-22T12:37:55Z",
+  "protocol_version": "paper_eval_protocol_v1",
+  "mode": "compare_agent_vs_qwen",
+  "fairness_constraints": {
+    "same_model": true,
+    "same_case_list": true,
+    "frozen_evaluation_mode": true,
+    "writeback_disabled": true,
+    "online_contamination_guard": true
+  },
+  "model_context": {
+    "agent_client": {
+      "base_url": "http://127.0.0.1:8000/v1",
+      "configured_model_name": "Qwen2.5-VL-7B-Instruct",
+      "served_model_name": "Qwen2.5-VL-7B-Instruct",
+      "timeout": 180.0,
+      "max_retries": 2,
+      "max_images_per_prompt": 1,
+      "prompt_manifest": {
+        "prompt_stack_version": "dermagent_prompt_stack_v1",
+        "initial_perception_prompt_version": "initial_perception_v1",
+        "skill_prompt_version": "skill_reasoning_v1",
+        "final_diagnosis_prompt_version": "final_diagnosis_v1",
+        "baseline_diagnosis_prompt_version": "direct_baseline_v1"
+      }
+    },
+    "baseline_client": {
+      "base_url": "http://127.0.0.1:8000/v1",
+      "configured_model_name": "Qwen2.5-VL-7B-Instruct",
+      "served_model_name": "Qwen2.5-VL-7B-Instruct",
+      "timeout": 180.0,
+      "max_retries": 2,
+      "max_images_per_prompt": 1,
+      "prompt_manifest": {
+        "prompt_stack_version": "dermagent_prompt_stack_v1",
+        "initial_perception_prompt_version": "initial_perception_v1",
+        "skill_prompt_version": "skill_reasoning_v1",
+        "final_diagnosis_prompt_version": "final_diagnosis_v1",
+        "baseline_diagnosis_prompt_version": "direct_baseline_v1"
+      }
+    }
+  },
+  "dataset": {
+    "data_root": "/root/DermAgent/data/sft数据",
+    "case_data_root": "/root/DermAgent/data/sft数据",
+    "dataset_name": "xiangya_sft",
+    "metadata_path": "/root/DermAgent/data/sft数据/skin_xiangya.jsonl",
+    "image_root": "/root/DermAgent/data/sft数据/skin_merge",
+    "case_selection": "explicit_case_index_list",
+    "case_indices": [
+      66,
+      4,
+      29,
+      71,
+      8,
+      31,
+      46,
+      11,
+      62,
+      14,
+      38,
+      23,
+      45
+    ],
+    "case_ids": [
+      "case0089",
+      "case0005",
+      "case0052",
+      "case0094",
+      "case0011",
+      "case0054",
+      "case0069",
+      "case0014",
+      "case0085",
+      "case0017",
+      "case0061",
+      "case0026",
+      "case0068"
+    ],
+    "case_offset": 0,
+    "limit": 13,
+    "seed": 0,
+    "data_split": "test",
+    "split_id": "xiangya_sft_grouped_v1",
+    "split_json_path": "/root/DermAgent/outputs/dataset_adaptation/xiangya_sft_v1/xiangya_sft_split.json",
+    "offset_within_split": 0
+  },
+  "experiment_state": {
+    "data_split": "test",
+    "split_id": "xiangya_sft_grouped_v1",
+    "split_json_path": "/root/DermAgent/outputs/dataset_adaptation/xiangya_sft_v1/xiangya_sft_split.json",
+    "strict_frozen_eval": true,
+    "writeback_enabled": false,
+    "case_selection": {
+      "split_id": "xiangya_sft_grouped_v1",
+      "split_json_path": "/root/DermAgent/outputs/dataset_adaptation/xiangya_sft_v1/xiangya_sft_split.json",
+      "data_split": "test",
+      "selection_mode": "explicit_case_index_list",
+      "case_offset": 0,
+      "offset_within_split": 0,
+      "limit": 13,
+      "case_indices": [
+        66,
+        4,
+        29,
+        71,
+        8,
+        31,
+        46,
+        11,
+        62,
+        14,
+        38,
+        23,
+        45
+      ],
+      "case_ids": [
+        "case0089",
+        "case0005",
+        "case0052",
+        "case0094",
+        "case0011",
+        "case0054",
+        "case0069",
+        "case0014",
+        "case0085",
+        "case0017",
+        "case0061",
+        "case0026",
+        "case0068"
+      ]
+    },
+    "state_paths": {
+      "data_split": "test",
+      "split_state_root": "/root/DermAgent/state/dataset_adaptation/xiangya_sft_v1/split_states/test",
+      "experience_root": "/root/DermAgent/state/dataset_adaptation/xiangya_sft_v1/split_states/test/experience",
+      "cognition_path": "/root/DermAgent/state/dataset_adaptation/xiangya_sft_v1/split_states/test/cognition_state.json",
+      "policy_path": "/root/DermAgent/state/dataset_adaptation/xiangya_sft_v1/policy/current_stable_policy.json",
+      "strict_frozen_eval": true
+    }
+  },
+  "run_targets": [
+    {
+      "target_id": "direct_baseline",
+      "label": "Direct Baseline",
+      "target_type": "baseline",
+      "mode": "baseline",
+      "description": "Direct Qwen baseline with no agent evidence package.",
+      "policy_overrides": {},
+      "execution_overrides": {},
+      "experience_variant": "full",
+      "cognition_variant": "frozen",
+      "ablation_tags": [],
+      "notes": []
+    },
+    {
+      "target_id": "full_dermagent",
+      "label": "Full DermAgent",
+      "target_type": "full_agent",
+      "mode": "agent",
+      "description": "Full DermAgent with frozen experience/cognition/policy state and writeback disabled.",
+      "policy_overrides": {},
+      "execution_overrides": {},
+      "experience_variant": "full",
+      "cognition_variant": "frozen",
+      "ablation_tags": [],
+      "notes": []
+    }
+  ],
+  "frozen_state": {
+    "frozen_root": "/root/DermAgent/outputs/final_round/xiangya_sft/compare/compare_agent_vs_qwen_20260422T123755Z/frozen_state",
+    "run_root": "/root/DermAgent/outputs/final_round/xiangya_sft/compare/compare_agent_vs_qwen_20260422T123755Z",
+    "prompt_version": "dermagent_prompt_stack_v1",
+    "prompt_manifest_path": "/root/DermAgent/outputs/final_round/xiangya_sft/compare/compare_agent_vs_qwen_20260422T123755Z/frozen_state/prompt_manifest.json",
+    "skill_bank_version": "skill_bank_a3abc77966cd",
+    "skill_bank_manifest_path": "/root/DermAgent/outputs/final_round/xiangya_sft/compare/compare_agent_vs_qwen_20260422T123755Z/frozen_state/skill_bank/skill_bank_manifest.json",
+    "experience_bank_version": "experience_bank_6f3b4199b4cb",
+    "experience_state_split": "test",
+    "experience_split_aware_version": "experience_bank:test:b476f74540ce",
+    "experience_manifest_path": "/root/DermAgent/outputs/final_round/xiangya_sft/compare/compare_agent_vs_qwen_20260422T123755Z/frozen_state/experience/manifest.json",
+    "cognition_version": "cognition_state_41c53f95cb44",
+    "cognition_state_split": "test",
+    "cognition_split_aware_version": "cognition_state:test:39e183f70689",
+    "cognition_snapshot_path": "/root/DermAgent/outputs/final_round/xiangya_sft/compare/compare_agent_vs_qwen_20260422T123755Z/frozen_state/cognition_state.json",
+    "policy_version": "policy_config:global:dbac95cc2ef5",
+    "policy_state_split": "global",
+    "policy_snapshot_path": "/root/DermAgent/outputs/final_round/xiangya_sft/compare/compare_agent_vs_qwen_20260422T123755Z/frozen_state/policy.json",
+    "policy_source_path": "/root/DermAgent/state/dataset_adaptation/xiangya_sft_v1/policy/current_stable_policy.json",
+    "registry_version": "registry_2e53b9d721e9",
+    "strict_frozen_eval": true,
+    "requested_state_paths": {
+      "experience_root": "/root/DermAgent/state/dataset_adaptation/xiangya_sft_v1/split_states/test/experience",
+      "cognition_path": "/root/DermAgent/state/dataset_adaptation/xiangya_sft_v1/split_states/test/cognition_state.json",
+      "policy_path": "/root/DermAgent/state/dataset_adaptation/xiangya_sft_v1/policy/current_stable_policy.json"
+    },
+    "state_snapshot_paths": {
+      "experience_root": "/root/DermAgent/outputs/final_round/xiangya_sft/compare/compare_agent_vs_qwen_20260422T123755Z/frozen_state/experience",
+      "cognition_path": "/root/DermAgent/outputs/final_round/xiangya_sft/compare/compare_agent_vs_qwen_20260422T123755Z/frozen_state/cognition_state.json",
+      "policy_path": "/root/DermAgent/outputs/final_round/xiangya_sft/compare/compare_agent_vs_qwen_20260422T123755Z/frozen_state/policy.json",
+      "skill_bank_root": "/root/DermAgent/outputs/final_round/xiangya_sft/compare/compare_agent_vs_qwen_20260422T123755Z/frozen_state/skill_bank"
+    },
+    "source_hashes": {
+      "experience_root_hash": "6f3b4199b4cb6b83e11838ca88ff073f8980d4a5b0efda097dff06d42167add7",
+      "cognition_hash": "41c53f95cb446de063bc10dd5167571853c03e3c7271d59bcf7aeeb8eca56782",
+      "policy_hash": "611be6dc5c886b416837f5a9f7657316f48b170cb31cf7b0a149572bbed9966f",
+      "skill_bank_hash": "a3abc77966cd3d16f002a1f9e350a71c334e5baf43fe90e2426c482a00b557a5"
+    },
+    "state_snapshot_manifest_path": "/root/DermAgent/outputs/final_round/xiangya_sft/compare/compare_agent_vs_qwen_20260422T123755Z/frozen_state/state_snapshot_manifest.json"
+  },
+  "execution_config": {
+    "enable_writeback": false,
+    "persist_artifacts": true,
+    "save_case_execution_records": true,
+    "frozen_output_root": "/root/DermAgent/outputs/final_round/xiangya_sft/compare/compare_agent_vs_qwen_20260422T123755Z/frozen_state"
+  },
+  "ablation_plan": [],
+  "result_paths": {
+    "manifests": [],
+    "targets_root": "/root/DermAgent/outputs/final_round/xiangya_sft/compare/compare_agent_vs_qwen_20260422T123755Z/targets"
+  },
+  "notes": [
+    "Evaluation runs against frozen state snapshots, not live mutable state.",
+    "Qwen remains the only final diagnosis stage in all non-baseline targets.",
+    "Baseline targets may use a different model client than the agent path when explicitly configured."
+  ]
+}

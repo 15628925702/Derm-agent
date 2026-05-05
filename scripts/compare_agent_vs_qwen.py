@@ -18,7 +18,7 @@ DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "outputs" / "comparison"
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Compare direct Qwen baseline against full DermAgent under frozen evaluation mode.")
+    parser = argparse.ArgumentParser(description="Compare a direct model baseline against full DermAgent under frozen evaluation mode.")
     parser.add_argument("--data-root", type=Path, default=DEFAULT_DATA_ROOT, help="Dataset root directory.")
     parser.add_argument("--limit", type=int, default=10, help="Number of cases to evaluate.")
     parser.add_argument("--seed", type=int, default=0, help="Reserved for traceability; current case selection remains deterministic.")
@@ -26,11 +26,32 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR, help="Directory for JSON reports.")
     parser.add_argument("--policy-config", type=Path, default=None, help="Optional policy config JSON. Defaults to the current stable policy.")
     parser.add_argument("--policy-label", type=str, default="", help="Optional human-readable label for this policy run.")
+    parser.add_argument("--agent-base-url", type=str, default=None, help="Optional OpenAI-compatible base URL for the DermAgent path.")
+    parser.add_argument("--agent-api-key", type=str, default=None, help="Optional API key for the DermAgent path.")
+    parser.add_argument("--agent-model", type=str, default=None, help="Optional model name for the DermAgent path.")
+    parser.add_argument("--agent-label", type=str, default="Full DermAgent", help="Human-readable label for the DermAgent target.")
+    parser.add_argument(
+        "--agent-description",
+        type=str,
+        default="Full DermAgent with frozen experience/cognition/policy state and writeback disabled.",
+        help="Description for the DermAgent target.",
+    )
+    parser.add_argument("--baseline-base-url", type=str, default=None, help="Optional OpenAI-compatible base URL for the direct baseline.")
+    parser.add_argument("--baseline-api-key", type=str, default=None, help="Optional API key for the direct baseline.")
+    parser.add_argument("--baseline-model", type=str, default=None, help="Optional model name for the direct baseline.")
+    parser.add_argument("--baseline-label", type=str, default="Direct Baseline", help="Human-readable label for the baseline target.")
+    parser.add_argument(
+        "--baseline-description",
+        type=str,
+        default="Direct model baseline with no agent evidence package.",
+        help="Description for the baseline target.",
+    )
     parser.add_argument("--data-split", type=str, default="test", choices=("val", "test"), help="Evaluation split label for contamination guard and manifests.")
     parser.add_argument("--split-json", type=Path, default=None, help="Optional fixed split JSON. If omitted, the built-in deterministic split is used.")
     parser.add_argument("--non-strict-frozen-eval", action="store_true", help="Allow snapshotting from resolved split state paths even if some files are missing.")
     parser.add_argument("--client-timeout", type=float, default=None, help="Override per-request timeout in seconds.")
     parser.add_argument("--client-max-retries", type=int, default=None, help="Override automatic retries for transient local inference failures.")
+    parser.add_argument("--phase", type=str, default="full", help="Compatibility label for legacy run scripts; recorded but does not alter target selection.")
     return parser.parse_args()
 
 
@@ -38,22 +59,35 @@ def main() -> int:
     args = parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
-    client = DermOpenAIClient(timeout=args.client_timeout, max_retries=args.client_max_retries)
+    client = DermOpenAIClient(
+        base_url=args.agent_base_url,
+        api_key=args.agent_api_key,
+        model=args.agent_model,
+        timeout=args.client_timeout,
+        max_retries=args.client_max_retries,
+    )
+    baseline_client = DermOpenAIClient(
+        base_url=args.baseline_base_url or args.agent_base_url,
+        api_key=args.baseline_api_key or args.agent_api_key,
+        model=args.baseline_model or args.agent_model,
+        timeout=args.client_timeout,
+        max_retries=args.client_max_retries,
+    )
     policy = load_policy(args.policy_config).to_dict() if args.policy_config else load_stable_policy().to_dict()
     target_specs = [
         EvaluationTargetSpec(
             target_id="direct_baseline",
-            label="Direct Baseline",
+            label=args.baseline_label,
             target_type="baseline",
             mode="baseline",
-            description="Direct Qwen baseline with no agent evidence package.",
+            description=args.baseline_description,
         ),
         EvaluationTargetSpec(
             target_id="full_dermagent",
-            label="Full DermAgent",
+            label=args.agent_label,
             target_type="full_agent",
             mode="agent",
-            description="Full DermAgent with frozen experience/cognition/policy state and writeback disabled.",
+            description=args.agent_description,
         ),
     ]
 
@@ -61,6 +95,7 @@ def main() -> int:
         output_root=args.output_dir,
         data_root=args.data_root,
         client=client,
+        baseline_client=baseline_client,
         policy_config=policy,
         target_specs=target_specs,
         limit=args.limit,
@@ -90,11 +125,16 @@ def main() -> int:
             "case_offset": args.case_offset,
             "base_url": client.base_url,
             "model": client.model,
+            "agent_base_url": client.base_url,
+            "agent_model": client.model,
+            "baseline_base_url": baseline_client.base_url,
+            "baseline_model": baseline_client.model,
             "policy_id": policy.get("policy_id"),
             "policy_source_path": policy.get("source_path"),
             "policy_label": args.policy_label,
             "data_split": args.data_split,
             "split_json": str(args.split_json) if args.split_json else "",
+            "phase": args.phase,
             "strict_frozen_eval": not args.non_strict_frozen_eval,
             "evaluation_protocol_version": result_manifest.get("protocol_version"),
         },

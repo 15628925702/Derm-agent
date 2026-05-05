@@ -1,0 +1,1656 @@
+{
+  "perception": {
+    "image_summary": "The image shows a scalp view with hair follicles under magnification, indicating a detailed examination of hair structure.",
+    "ddx_candidates": [
+      "HAIR_DISORDER"
+    ],
+    "uncertainty": {
+      "level": "low",
+      "reasons": [
+        "Insufficient clinical context for definitive diagnosis."
+      ]
+    },
+    "notes": [
+      "Hair follicle examination reveals varying hair diameter and some thinning."
+    ]
+  },
+  "retrieved_experience": [
+    {
+      "case_id": "case0013",
+      "source_layer": "abstract_experience",
+      "source_subtype": "composite_skill_seed",
+      "experience_type": "composite_skill_seed",
+      "perception_summary": "ddx=HAIR_DISORDER; decision_pattern=structured_skill_sequence; uncertainty=low",
+      "confusion_pair": null,
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+distribution_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage.",
+        "Promote only after repeated successful supporting cases under a stable trigger pattern."
+      ],
+      "source_id": "abs_composite_9fa561d70201",
+      "retrieval_score": 6
+    },
+    {
+      "case_id": "case0013",
+      "source_layer": "tactical_experience",
+      "source_subtype": "routine_reasoning",
+      "experience_type": "tactical_experience",
+      "perception_summary": "ddx=HAIR_DISORDER; ; uncertainty=low",
+      "confusion_pair": null,
+      "learning_points": [
+        "kept the differential open",
+        "made pairwise reasoning explicit",
+        "required downstream integration beyond differential_compare_skill",
+        "Action pattern: structured_skill_sequence"
+      ],
+      "source_id": "tac_case0013_ea7b54e2327b",
+      "retrieval_score": 6
+    },
+    {
+      "case_id": "case0088",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "The image shows bilateral lower extremities with multiple small, erythematous papules and some pustules scattered across the legs.; ECZEMA_DERMATITIS; CONTACT_DERMATITIS",
+      "confusion_pair": "CONTACT_DERMATITIS->ATOPIC_DERMATITIS",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "structured_skill_sequence"
+      ],
+      "source_id": "abs_confusion_4bcb433292a2",
+      "retrieval_score": 5
+    }
+  ],
+  "skill_outputs": {
+    "morphology_analysis_skill": {
+      "lesion_type": "unknown",
+      "size_range": "small",
+      "elevation": "flat",
+      "count": "solitary",
+      "referenced_experiences": [
+        "case0013"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "color_pattern_analysis_skill": {
+      "primary_color": "brown",
+      "color_variation": "unknown",
+      "pigmentation_pattern": "reticular",
+      "asymmetry_color": "present",
+      "referenced_experiences": [
+        "tac_case0013_e6055fc25fdb"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "distribution_analysis_skill": {
+      "body_location": "scalp",
+      "symmetry": "uncertain",
+      "localized_vs_generalized": "generalized",
+      "clustering_pattern": "unknown",
+      "referenced_experiences": [
+        "case0013"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "lesion_description_structuring_skill": {
+      "primary_lesion_morphology": "Solitary, flat, small",
+      "color": [
+        "Brown, reticular pigmentation"
+      ],
+      "border": [
+        "Unclear, possibly irregular"
+      ],
+      "surface": [
+        "Smooth"
+      ],
+      "size_count": [
+        "Small, solitary"
+      ],
+      "distribution": [
+        "Generalized, scalp"
+      ],
+      "associated_context": [
+        "Hair follicle examination reveals varying hair diameter and some thinning."
+      ],
+      "referenced_experiences": [
+        "case0013"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "metadata_consistency_skill": {
+      "consistency_score": "medium",
+      "conflicts": [],
+      "suspicious_points": [
+        "The lesion description mentions 'Solitary, flat, small' which aligns with the metadata stating 'Solitary'. However, the lesion's morphology and distribution do not directly correspond to the metadata's description of 'scalp' and 'generalized'. This could indicate a potential mismatch."
+      ],
+      "referenced_experiences": [
+        "case0013",
+        "tac_case0013_ea7b54e2327b",
+        "tac_case0013_e6055fc25fdb",
+        "tac_case0013_e4a8c7c2c58e",
+        "abs_composite_9fa561d70201"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "differential_compare_skill": {
+      "candidate_pairs": [
+        "HAIR_DISORDER"
+      ],
+      "supporting_evidence": [
+        "Hair follicle examination reveals varying hair diameter and some thinning."
+      ],
+      "conflicting_evidence": [],
+      "required_missing_evidence": [
+        "Clinical history and patient symptoms to determine if the hair loss is progressive or sudden."
+      ],
+      "referenced_experiences": [
+        "tac_case0013_ea7b54e2327b",
+        "tac_case0013_e6055fc25fdb",
+        "abs_composite_9fa561d70201"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "contradiction_check_skill": {
+      "contradictions": [
+        {
+          "description": "The lesion description mentions 'Solitary, flat, small' which aligns with the metadata stating 'Solitary'. However, the lesion's morphology and distribution do not directly correspond to the metadata.",
+          "evidence_sources": [
+            "metadata_consistency_skill",
+            "morphology_analysis_skill"
+          ]
+        }
+      ],
+      "missing_links": [
+        {
+          "description": "There is a lack of direct evidence linking the observed hair follicle characteristics to a specific hair disorder.",
+          "evidence_sources": [
+            "morphology_analysis_skill",
+            "color_pattern_analysis_skill",
+            "distribution_analysis_skill"
+          ]
+        }
+      ],
+      "reasoning_gaps": [
+        {
+          "description": "The reasoning chain is underdetermined due to insufficient clinical context and the need for further differentiation among hair disorders.",
+          "evidence_sources": [
+            "initial_perception",
+            "metadata",
+            "prior_skill_outputs"
+          ]
+        }
+      ],
+      "referenced_experiences": [
+        "case0013",
+        "case0093",
+        "tac_case0013_ea7b54e2327b",
+        "tac_case0013_e6055fc25fdb",
+        "tac_case0013_e4a8c7c2c58e",
+        "abs_composite_9fa561d70201",
+        "abs_prototype_0bbaad09ae4f",
+        "abs_confusion_f1451c317195"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    }
+  },
+  "risk_flags": [],
+  "uncertainty": {
+    "uncertainty_level": "low",
+    "reasons": [
+      "Insufficient clinical context for definitive diagnosis."
+    ],
+    "missing_information": []
+  },
+  "notes": [
+    "Agent generated structured evidence only.",
+    "Qwen remains the sole final diagnostic decision maker.",
+    "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, differential_compare_skill, contradiction_check_skill.",
+    "Policy in use: heuristic_with_penalty.",
+    "Skill retrieval candidates: morphology_analysis_skill, metadata_consistency_skill, lesion_description_structuring_skill, distribution_analysis_skill, color_pattern_analysis_skill, differential_compare_skill, contradiction_check_skill, border_surface_analysis_skill.",
+    "Hair follicle examination reveals varying hair diameter and some thinning.",
+    "Retrieved prior reasoning experience for context."
+  ],
+  "initial_perception_summary": {
+    "image_summary": "The image shows a scalp view with hair follicles under magnification, indicating a detailed examination of hair structure.",
+    "ddx_candidates": [
+      "HAIR_DISORDER"
+    ],
+    "uncertainty_level": "low",
+    "uncertainty_reasons": [
+      "Insufficient clinical context for definitive diagnosis."
+    ],
+    "observation_notes": [
+      "Hair follicle examination reveals varying hair diameter and some thinning."
+    ]
+  },
+  "retrieved_raw_cases_summary": [
+    {
+      "source_id": "case0013",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "case0013",
+      "confusion_pair": "None",
+      "perception_summary": "The image shows a scalp with hair under magnification, indicating a detailed examination of hair structure and density.",
+      "learning_points": [
+        "Final decision: HAIR_DISORDER",
+        "Correctness: True"
+      ],
+      "retrieval_score": 5.0,
+      "base_retrieval_score": 5.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "case0093",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "case0093",
+      "confusion_pair": "None",
+      "perception_summary": "The image shows a neck area with a diffuse erythematous rash. The skin appears slightly scaly and there are no visible vesicles or blisters.",
+      "learning_points": [
+        "Final decision: Contact Dermatitis",
+        "Correctness: False"
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "case0079",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "case0079",
+      "confusion_pair": "None",
+      "perception_summary": "The image shows a reddish-brown patch on the back of the neck, surrounded by some scaling and erythema.",
+      "learning_points": [
+        "Final decision: Contact Dermatitis",
+        "Correctness: False"
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_tactical_experiences_summary": [
+    {
+      "source_id": "tac_case0013_ea7b54e2327b",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "case0013",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=HAIR_DISORDER; ; uncertainty=low",
+      "learning_points": [
+        "kept the differential open",
+        "made pairwise reasoning explicit",
+        "required downstream integration beyond differential_compare_skill"
+      ],
+      "retrieval_score": 6.0,
+      "base_retrieval_score": 6.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_case0013_e6055fc25fdb",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "case0013",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=HAIR_DISORDER; ; uncertainty=low",
+      "learning_points": [
+        "made pigment variation explicit",
+        "surfaced color asymmetry as auditable evidence",
+        "required downstream integration beyond color_pattern_analysis_skill"
+      ],
+      "retrieval_score": 6.0,
+      "base_retrieval_score": 6.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_case0013_e4a8c7c2c58e",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "case0013",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=HAIR_DISORDER; ; uncertainty=low",
+      "learning_points": [
+        "required downstream integration beyond lesion_description_structuring_skill",
+        "Action pattern: structured_skill_sequence"
+      ],
+      "retrieval_score": 6.0,
+      "base_retrieval_score": 6.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_case0013_c1a2a425bc3d",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "case0013",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=HAIR_DISORDER; ; uncertainty=low",
+      "learning_points": [
+        "surfaced missing links in the reasoning chain",
+        "audited internal consistency",
+        "required downstream integration beyond contradiction_check_skill"
+      ],
+      "retrieval_score": 6.0,
+      "base_retrieval_score": 6.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_abstract_experiences_summary": [
+    {
+      "source_id": "abs_composite_9fa561d70201",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "case0013",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=HAIR_DISORDER; decision_pattern=structured_skill_sequence; uncertainty=low",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+distribution_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 6.0,
+      "base_retrieval_score": 6.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_confusion_4bcb433292a2",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "case0088",
+      "confusion_pair": "CONTACT_DERMATITIS->ATOPIC_DERMATITIS",
+      "perception_summary": "The image shows bilateral lower extremities with multiple small, erythematous papules and some pustules scattered across the legs.; ECZEMA_DERMATITIS; CONTACT_DERMATITIS",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "structured_skill_sequence"
+      ],
+      "retrieval_score": 5.0,
+      "base_retrieval_score": 5.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_rule_728af0bf29e5",
+      "source_layer": "abstract_experience",
+      "experience_type": "rule",
+      "case_id": "case0088",
+      "confusion_pair": "None",
+      "perception_summary": "The image shows bilateral lower extremities with multiple small, erythematous papules and some pustules scattered across the legs.; ECZEMA_DERMATITIS; CONTACT_DERMATITIS",
+      "learning_points": [
+        "When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Qwen integration.",
+        "structured_skill_sequence"
+      ],
+      "retrieval_score": 4.0,
+      "base_retrieval_score": 4.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "uncertainty_summary": {
+    "uncertainty_level": "low",
+    "reasons": [
+      "Insufficient clinical context for definitive diagnosis."
+    ],
+    "missing_information": [],
+    "referenced_experiences": []
+  },
+  "contradiction_summary": {
+    "contradictions": [
+      "{'description': \"The lesion description mentions 'Solitary, flat, small' which aligns with the metadata stating 'Solitary'. However, the lesion's morphology and distribution do not directly correspond to the metadata.\", 'evidence_sources': ['metadata_consistency_skill', 'morphology_analysis_skill']}"
+    ],
+    "missing_links": [
+      "{'description': 'There is a lack of direct evidence linking the observed hair follicle characteristics to a specific hair disorder.', 'evidence_sources': ['morphology_analysis_skill', 'color_pattern_analysis_skill', 'distribution_analysis_skill']}"
+    ],
+    "reasoning_gaps": [
+      "{'description': 'The reasoning chain is underdetermined due to insufficient clinical context and the need for further differentiation among hair disorders.', 'evidence_sources': ['initial_perception', 'metadata', 'prior_skill_outputs']}"
+    ],
+    "metadata_conflicts": [],
+    "suspicious_points": [
+      "The lesion description mentions 'Solitary, flat, small' which aligns with the metadata stating 'Solitary'. However, the lesion's morphology and distribution do not directly correspond to the metadata's description of 'scalp' and 'generalized'. This could indicate a potential mismatch."
+    ]
+  },
+  "information_gap_summary": {
+    "missing_information": [],
+    "why_it_matters": [],
+    "impact_on_differential": [],
+    "uncertainty_if_missing": "unknown"
+  },
+  "escalation_summary": {
+    "whether_escalation_needed": "unknown",
+    "escalation_reason": [],
+    "suggested_next_check_type": "",
+    "caution_flags": []
+  },
+  "planner_rationale": {
+    "planner_type": "rule_based",
+    "planner_version": "v1",
+    "selected_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "distribution_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "differential_compare_skill",
+      "contradiction_check_skill"
+    ],
+    "selection_reasons": {
+      "morphology_analysis_skill": [
+        "Boosted by skill retrieval score=6.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.95.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "color_pattern_analysis_skill": [
+        "Boosted by skill retrieval score=6.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.95.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "distribution_analysis_skill": [
+        "Boosted by skill retrieval score=6.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.95.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "lesion_description_structuring_skill": [
+        "Boosted by skill retrieval score=6.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "metadata_consistency_skill": [
+        "Boosted by skill retrieval score=6.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.95.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "differential_compare_skill": [
+        "Boosted by skill retrieval score=3.50.",
+        "Boosted by cognition helpful_rate=0.74.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Boosted by cognition.preferred_skills from prior cases."
+      ],
+      "contradiction_check_skill": [
+        "Boosted by skill retrieval score=3.50.",
+        "Boosted by cognition helpful_rate=0.95.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Boosted by cognition.preferred_skills from prior cases."
+      ]
+    }
+  },
+  "confusion_cluster_summary": {
+    "active_clusters": [],
+    "guidance": []
+  },
+  "selected_evidence": [
+    {
+      "item_id": "lesion_description_structuring_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "lesion_description_structuring_skill",
+      "skill_name": "lesion_description_structuring_skill",
+      "retrieval_type": "",
+      "section": "observation",
+      "category": "description",
+      "summary": "lesion_description_structuring_skill: primary_lesion_morphology=Solitary, flat, small | color=Brown, reticular pigmentation | border=Unclear, possibly irregular | surface=Smooth | size_count=Small, solitary | distribution=Generalized, scalp",
+      "score": 8.92,
+      "rank": 1,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "morphology_analysis_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "morphology_analysis_skill",
+      "skill_name": "morphology_analysis_skill",
+      "retrieval_type": "",
+      "section": "observation",
+      "category": "description",
+      "summary": "morphology_analysis_skill: size_range=small | elevation=flat | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence",
+      "score": 7.82,
+      "rank": 2,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "contradiction_check_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "contradiction_check_skill",
+      "skill_name": "contradiction_check_skill",
+      "retrieval_type": "",
+      "section": "conflict_uncertainty",
+      "category": "contradiction_gap",
+      "summary": "contradiction_check_skill: contradictions={'description': \"The lesion description mentions 'Solitary, flat, small' which aligns with the metadata stating 'Solitary'. However, the lesion's morphology ... | missing_links={'description': 'There is a lack of direct evidence linking the observed hair follicle characteristics to a specific hair disorder.', 'evi...",
+      "score": 7.68,
+      "rank": 5,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "metadata_consistency_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "metadata_consistency_skill",
+      "skill_name": "metadata_consistency_skill",
+      "retrieval_type": "",
+      "section": "comparison",
+      "category": "differential_support",
+      "summary": "metadata_consistency_skill: consistency_score=medium | suspicious_points=The lesion description mentions 'Solitary, flat, small' which aligns with the metadata stating 'Solitary'. However, the lesion's morphology and distribution ... | evidence_strength=medium | recommendation_type=descriptive_evidence",
+      "score": 6.82,
+      "rank": 6,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "differential_compare_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "differential_compare_skill",
+      "skill_name": "differential_compare_skill",
+      "retrieval_type": "",
+      "section": "comparison",
+      "category": "differential_support",
+      "summary": "differential_compare_skill: candidate_pairs=HAIR_DISORDER | supporting_evidence=Hair follicle examination reveals varying hair diameter and some thinning. | required_missing_evidence=Clinical history and patient symptoms to determine if the hair loss is progressive or sudden. | evidence_strength=medium | recommendation_type=descriptive_evidence",
+      "score": 6.48,
+      "rank": 7,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "abs_confusion_4bcb433292a2",
+      "item_type": "retrieval_record",
+      "source_type": "retrieval_record",
+      "source_name": "abs_confusion_4bcb433292a2",
+      "skill_name": "",
+      "retrieval_type": "abstract_experience",
+      "section": "abstract_experience",
+      "category": "experience_hint",
+      "summary": "The image shows bilateral lower extremities with multiple small, erythematous papules and some pustules scattered across the legs.; ECZEMA_DERMATITIS; CONTACT_DERMATITIS | When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; structured_skill_sequence | confusion_pair=CONTACT_DERMATITIS->ATOPIC_DERMATITIS",
+      "score": 4.5,
+      "rank": 8,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "abs_composite_9fa561d70201",
+      "item_type": "retrieval_record",
+      "source_type": "retrieval_record",
+      "source_name": "abs_composite_9fa561d70201",
+      "skill_name": "",
+      "retrieval_type": "abstract_experience",
+      "section": "abstract_experience",
+      "category": "experience_hint",
+      "summary": "ddx=HAIR_DISORDER; decision_pattern=structured_skill_sequence; uncertainty=low | Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow sk...; compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+distribution_analysis_skill+lesion_descripti... | confusion_pair=None",
+      "score": 4.2,
+      "rank": 9,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "case0013",
+      "item_type": "retrieval_record",
+      "source_type": "retrieval_record",
+      "source_name": "case0013",
+      "skill_name": "",
+      "retrieval_type": "raw_case_memory",
+      "section": "raw_case_memory",
+      "category": "description",
+      "summary": "The image shows a scalp with hair under magnification, indicating a detailed examination of hair structure and density. | Final decision: HAIR_DISORDER; Correctness: True | confusion_pair=None",
+      "score": 2.3,
+      "rank": 15,
+      "keep_reason": "kept"
+    }
+  ],
+  "evidence_decision_policy": {
+    "risk_layer": {
+      "risk_flag": "malignancy_risk_unknown",
+      "caution_flags": [
+        "contradictions_present"
+      ],
+      "follow_up_suggestion": "clinical follow-up and closer inspection if concern persists",
+      "selected_evidence": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "lesion_description_structuring_skill",
+          "skill_name": "lesion_description_structuring_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "lesion_description_structuring_skill: primary_lesion_morphology=Solitary, flat, small | color=Brown, reticular pigmentation | border=Unclear, possibly irregular | surface=Smooth | size_count=Small, solitary | distribution=Generalized, scalp",
+          "score": 8.92,
+          "rank": 1,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "morphology_analysis_skill",
+          "skill_name": "morphology_analysis_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "morphology_analysis_skill: size_range=small | elevation=flat | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 7.82,
+          "rank": 2,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "contradiction_check_skill",
+          "skill_name": "contradiction_check_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "contradiction_check_skill: contradictions={'description': \"The lesion description mentions 'Solitary, flat, small' which aligns with the metadata stating 'Solitary'. However, the lesion's morphology ... | missing_links={'description': 'There is a lack of direct evidence linking the observed hair follicle characteristics to a specific hair disorder.', 'evi...",
+          "score": 7.68,
+          "rank": 5,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "metadata_consistency_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "metadata_consistency_skill",
+          "skill_name": "metadata_consistency_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "differential_support",
+          "summary": "metadata_consistency_skill: consistency_score=medium | suspicious_points=The lesion description mentions 'Solitary, flat, small' which aligns with the metadata stating 'Solitary'. However, the lesion's morphology and distribution ... | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 6.82,
+          "rank": 6,
+          "keep_reason": "kept"
+        }
+      ],
+      "baseline_preview": {
+        "early_ddx_candidates": [
+          "HAIR_DISORDER"
+        ],
+        "image_summary": "The image shows a scalp view with hair follicles under magnification, indicating a detailed examination of hair structure.",
+        "baseline_final_diagnosis": "OTHER_INFLAMMATORY",
+        "baseline_differential_diagnoses": [
+          "OTHER_INFLAMMATORY",
+          "ANDROGENETIC ALOPECIA",
+          "POLYCYSTIC OVARY SYNDROME (PCOS)",
+          "TRICHOTILLOMORPHIA"
+        ],
+        "baseline_confidence": "MODERATE"
+      }
+    },
+    "diagnosis_override_layer": {
+      "workflow_context": {
+        "label_granularity": "grouped",
+        "presentation_mode": "focal_lesion",
+        "workflow_profile": "eczematous_family_routing_workflow",
+        "available_tests": [
+          "clinical_photo_only",
+          "lesion_photo"
+        ],
+        "workflow_preference": "morphology_first",
+        "hospital_type": "specialist_clinic",
+        "time_budget": "standard",
+        "metadata_completeness": "full",
+        "workflow_capabilities": [
+          "family_routing",
+          "grouped_label_reasoning",
+          "rash_reasoning",
+          "eczematous_family_reasoning",
+          "focal_lesion_reasoning"
+        ]
+      },
+      "override_allowed": true,
+      "malignancy_override_allowed": true,
+      "subtype_override_allowed": false,
+      "family_override_allowed": true,
+      "override_mode": "family_override",
+      "override_reasons": [
+        "supporting_evidence_outweighs_opposition",
+        "subtype_specific_support_present",
+        "family_level_override_allowed",
+        "uncertainty_not_high",
+        "consistent_retrieval_support"
+      ],
+      "why_not_confident_enough_to_override": [
+        "malignancy risk is not high enough for a diagnosis override",
+        "no specialist evidence strongly supports the override direction",
+        "contradictions or reasoning gaps remain too numerous",
+        "opposing or exclusion evidence quota is not satisfied"
+      ],
+      "supporting_evidence": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "lesion_description_structuring_skill",
+          "skill_name": "lesion_description_structuring_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "lesion_description_structuring_skill: primary_lesion_morphology=Solitary, flat, small | color=Brown, reticular pigmentation | border=Unclear, possibly irregular | surface=Smooth | size_count=Small, solitary | distribution=Generalized, scalp",
+          "score": 8.92,
+          "rank": 1,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "morphology_analysis_skill",
+          "skill_name": "morphology_analysis_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "morphology_analysis_skill: size_range=small | elevation=flat | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 7.82,
+          "rank": 2,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "contradiction_check_skill",
+          "skill_name": "contradiction_check_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "contradiction_check_skill: contradictions={'description': \"The lesion description mentions 'Solitary, flat, small' which aligns with the metadata stating 'Solitary'. However, the lesion's morphology ... | missing_links={'description': 'There is a lack of direct evidence linking the observed hair follicle characteristics to a specific hair disorder.', 'evi...",
+          "score": 7.68,
+          "rank": 5,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "metadata_consistency_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "metadata_consistency_skill",
+          "skill_name": "metadata_consistency_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "differential_support",
+          "summary": "metadata_consistency_skill: consistency_score=medium | suspicious_points=The lesion description mentions 'Solitary, flat, small' which aligns with the metadata stating 'Solitary'. However, the lesion's morphology and distribution ... | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 6.82,
+          "rank": 6,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "differential_compare_skill",
+          "skill_name": "differential_compare_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "differential_support",
+          "summary": "differential_compare_skill: candidate_pairs=HAIR_DISORDER | supporting_evidence=Hair follicle examination reveals varying hair diameter and some thinning. | required_missing_evidence=Clinical history and patient symptoms to determine if the hair loss is progressive or sudden. | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 6.48,
+          "rank": 7,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "abs_confusion_4bcb433292a2",
+          "item_type": "retrieval_record",
+          "source_type": "retrieval_record",
+          "source_name": "abs_confusion_4bcb433292a2",
+          "skill_name": "",
+          "retrieval_type": "abstract_experience",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "summary": "The image shows bilateral lower extremities with multiple small, erythematous papules and some pustules scattered across the legs.; ECZEMA_DERMATITIS; CONTACT_DERMATITIS | When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; structured_skill_sequence | confusion_pair=CONTACT_DERMATITIS->ATOPIC_DERMATITIS",
+          "score": 4.5,
+          "rank": 8,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "abs_composite_9fa561d70201",
+          "item_type": "retrieval_record",
+          "source_type": "retrieval_record",
+          "source_name": "abs_composite_9fa561d70201",
+          "skill_name": "",
+          "retrieval_type": "abstract_experience",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "summary": "ddx=HAIR_DISORDER; decision_pattern=structured_skill_sequence; uncertainty=low | Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow sk...; compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+distribution_analysis_skill+lesion_descripti... | confusion_pair=None",
+          "score": 4.2,
+          "rank": 9,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "case0013",
+          "item_type": "retrieval_record",
+          "source_type": "retrieval_record",
+          "source_name": "case0013",
+          "skill_name": "",
+          "retrieval_type": "raw_case_memory",
+          "section": "raw_case_memory",
+          "category": "description",
+          "summary": "The image shows a scalp with hair under magnification, indicating a detailed examination of hair structure and density. | Final decision: HAIR_DISORDER; Correctness: True | confusion_pair=None",
+          "score": 2.3,
+          "rank": 15,
+          "keep_reason": "kept"
+        }
+      ],
+      "opposing_evidence": [],
+      "supporting_score": 48.72,
+      "opposing_score": 0,
+      "support_margin": 48.72,
+      "selected_evidence_present": true,
+      "subtype_support_score": 13.3,
+      "subtype_support_margin": 13.3,
+      "specialist_support_present": false,
+      "consistent_retrieval_count": 1,
+      "contradiction_count": 4,
+      "uncertainty_level": "low",
+      "opposing_quota_satisfied": false,
+      "subtype_support_quota_satisfied": true
+    }
+  },
+  "serialized_evidence_text": "[Observation Evidence]\n- Initial image summary: The image shows a scalp view with hair follicles under magnification, indicating a detailed examination of hair structure.\n- Early differential candidates: HAIR_DISORDER\n- structured lesion observation: lesion_description_structuring_skill: primary_lesion_morphology=Solitary, flat, small | color=Brown, reticular pigmentation | border=Unclear, possibly irregular | surface=Smooth | size_count=Small, solitary | distribution=Generalized, scalp || morphology_analysis_skill: size_range=small | elevation=flat | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Raw case reference case0013: The image shows a scalp with hair under magnification, indicating a detailed examination of hair structure and density.\n\n[Exclusion And Comparison Evidence]\n- metadata_consistency_skill: consistency_score=medium | suspicious_points=The lesion description mentions 'Solitary, flat, small' which aligns with the metadata stating 'Solitary'. However, the lesion's morphology and distribution ... | evidence_strength=medium | recommendation_type=descriptive_evidence\n- differential_compare_skill: candidate_pairs=HAIR_DISORDER | supporting_evidence=Hair follicle examination reveals varying hair diameter and some thinning. | required_missing_evidence=Clinical history and patient symptoms to determine if the hair loss is progressive or sudden. | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Tactical experience tac_case0013_ea7b54e2327b: ddx=HAIR_DISORDER; ; uncertainty=low; kept the differential open; made pairwise reasoning explicit; required downstream integration beyond differential_compare_skill\n- Tactical experience tac_case0013_e6055fc25fdb: ddx=HAIR_DISORDER; ; uncertainty=low; made pigment variation explicit; surfaced color asymmetry as auditable evidence; required downstream integration beyond color_pattern_analysis_skill\n- Tactical experience tac_case0013_e4a8c7c2c58e: ddx=HAIR_DISORDER; ; uncertainty=low; required downstream integration beyond lesion_description_structuring_skill; Action pattern: structured_skill_sequence\n- Tactical experience tac_case0013_c1a2a425bc3d: ddx=HAIR_DISORDER; ; uncertainty=low; surfaced missing links in the reasoning chain; audited internal consistency; required downstream integration beyond contradiction_check_skill\n\n[Risk Evidence]\n- Abstract experience abs_composite_9fa561d70201: ddx=HAIR_DISORDER; decision_pattern=structured_skill_sequence; uncertainty=low; Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.; compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+distribution_analysis_skill+lesion_description_structuring_skill; Candidate only; do not auto-materialize a composite skill in the current stage.\n- Abstract experience abs_confusion_4bcb433292a2: The image shows bilateral lower extremities with multiple small, erythematous papules and some pustules scattered across the legs.; ECZEMA_DERMATITIS; CONTACT_DERMATITIS; When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; structured_skill_sequence\n\n[Conflict And Uncertainty]\n- Uncertainty level: low\n- Uncertainty reasons: Insufficient clinical context for definitive diagnosis.\n- contradictions: {'description': \"The lesion description mentions 'Solitary, flat, small' which aligns with the metadata stating 'Solitary'. However, the lesion's morphology and distribution do not directly correspond to the metadata.\", 'evidence_sources': ['metadata_consistency_skill', 'morphology_analysis_skill']}\n- missing links: {'description': 'There is a lack of direct evidence linking the observed hair follicle characteristics to a specific hair disorder.', 'evidence_sources': ['morphology_analysis_skill', 'color_pattern_analysis_skill', 'distribution_analysis_skill']}\n- reasoning gaps: {'description': 'The reasoning chain is underdetermined due to insufficient clinical context and the need for further differentiation among hair disorders.', 'evidence_sources': ['initial_perception', 'metadata', 'prior_skill_outputs']}\n- suspicious points: The lesion description mentions 'Solitary, flat, small' which aligns with the metadata stating 'Solitary'. However, the lesion's morphology and distribution do not directly correspond to the metadata's description of 'scalp' and 'generalized'. This could indicate a potential mismatch.\n- contradiction_check_skill: contradictions={'description': \"The lesion description mentions 'Solitary, flat, small' which aligns with the metadata stating 'Solitary'. However, the lesion's morphology ... | missing_links={'description': 'There is a lack of direct evidence linking the observed hair follicle characteristics to a specific hair disorder.', 'evidence_sources': ['m... | reasoning_gaps={'description': 'The reasoning chain is underdetermined due to insufficient clinical context and the need for further differentiation among hair disorders.',... | evidence_strength=medium | recommendation_type=descriptive_evidence\n- residual uncertainty if still missing: unknown\n- escalation needed: unknown\n\n[Planner Rationale]\n- Selected skills: morphology_analysis_skill, color_pattern_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, differential_compare_skill, contradiction_check_skill\n- morphology_analysis_skill: Boosted by skill retrieval score=6.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.95.; Matched active trigger profile `foundational_observation`.\n- color_pattern_analysis_skill: Boosted by skill retrieval score=6.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.95.; Matched active trigger profile `foundational_observation`.\n- distribution_analysis_skill: Boosted by skill retrieval score=6.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.95.; Matched active trigger profile `foundational_observation`.",
+  "evidence_calibration_debug": {
+    "calibrator_type": "heuristic",
+    "calibrator_version": "v1",
+    "section_plan": {
+      "observation": {
+        "skill_names": [
+          "lesion_description_structuring_skill",
+          "morphology_analysis_skill"
+        ],
+        "merged_groups": [
+          {
+            "label": "structured_lesion_observation",
+            "skills": [
+              "lesion_description_structuring_skill",
+              "morphology_analysis_skill"
+            ],
+            "max_members": 2
+          }
+        ],
+        "raw_case_source_ids": [
+          "case0013"
+        ]
+      },
+      "comparison": {
+        "skill_names": [
+          "metadata_consistency_skill",
+          "differential_compare_skill"
+        ],
+        "merged_groups": [],
+        "tactical_source_ids": [],
+        "abstract_source_ids": []
+      },
+      "risk": {
+        "skill_names": [],
+        "abstract_source_ids": [
+          "abs_confusion_4bcb433292a2",
+          "abs_composite_9fa561d70201"
+        ]
+      },
+      "conflict_uncertainty": {
+        "skill_names": [
+          "contradiction_check_skill"
+        ]
+      },
+      "planner": {
+        "max_reason_skills": 3
+      },
+      "section_order": [
+        "observation",
+        "comparison",
+        "risk",
+        "conflict_uncertainty",
+        "planner"
+      ]
+    },
+    "item_scores": [
+      {
+        "item_id": "lesion_description_structuring_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 8.92,
+        "learned_score": 0.0,
+        "final_score": 8.92,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 1,
+        "dedup_key": "description:lesion_description_structuring_skill"
+      },
+      {
+        "item_id": "morphology_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.82,
+        "learned_score": 0.0,
+        "final_score": 7.82,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 2,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.72,
+        "learned_score": 0.0,
+        "final_score": 7.72,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "contradiction_check_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 7.68,
+        "learned_score": 0.0,
+        "final_score": 7.68,
+        "selected": true,
+        "reason": "kept",
+        "category": "contradiction_gap",
+        "rank": 3,
+        "dedup_key": "uncertainty:contradiction_check_skill"
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.32,
+        "learned_score": 0.0,
+        "final_score": 7.32,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "metadata_consistency_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 6.82,
+        "learned_score": 0.0,
+        "final_score": 6.82,
+        "selected": true,
+        "reason": "kept",
+        "category": "differential_support",
+        "rank": 4,
+        "dedup_key": "differential_support:metadata_consistency_skill"
+      },
+      {
+        "item_id": "differential_compare_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 6.48,
+        "learned_score": 0.0,
+        "final_score": 6.48,
+        "selected": true,
+        "reason": "kept",
+        "category": "differential_support",
+        "rank": 5,
+        "dedup_key": "differential_support:differential_compare_skill"
+      },
+      {
+        "item_id": "abs_confusion_4bcb433292a2",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 4.5,
+        "learned_score": 0.0,
+        "final_score": 4.5,
+        "selected": true,
+        "reason": "kept",
+        "category": "experience_hint",
+        "rank": 6,
+        "dedup_key": "abstract_experience:abs_confusion_4bcb433292a2"
+      },
+      {
+        "item_id": "abs_composite_9fa561d70201",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 4.2,
+        "learned_score": 0.0,
+        "final_score": 4.2,
+        "selected": true,
+        "reason": "kept",
+        "category": "experience_hint",
+        "rank": 7,
+        "dedup_key": "abstract_experience:abs_composite_9fa561d70201"
+      },
+      {
+        "item_id": "abs_rule_728af0bf29e5",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 4.1,
+        "learned_score": 0.0,
+        "final_score": 4.1,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "abstract_experience:abs_rule_728af0bf29e5"
+      },
+      {
+        "item_id": "tac_case0013_c1a2a425bc3d",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 3.8,
+        "learned_score": 0.0,
+        "final_score": 3.8,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_case0013_c1a2a425bc3d"
+      },
+      {
+        "item_id": "tac_case0013_ea7b54e2327b",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 3.3,
+        "learned_score": 0.0,
+        "final_score": 3.3,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_case0013_ea7b54e2327b"
+      },
+      {
+        "item_id": "tac_case0013_e6055fc25fdb",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 3.3,
+        "learned_score": 0.0,
+        "final_score": 3.3,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_case0013_e6055fc25fdb"
+      },
+      {
+        "item_id": "tac_case0013_e4a8c7c2c58e",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 3.3,
+        "learned_score": 0.0,
+        "final_score": 3.3,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_case0013_e4a8c7c2c58e"
+      },
+      {
+        "item_id": "case0013",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 2.3,
+        "learned_score": 0.0,
+        "final_score": 2.3,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 8,
+        "dedup_key": "raw_case_memory:case0013"
+      },
+      {
+        "item_id": "case0093",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 1.9,
+        "learned_score": 0.0,
+        "final_score": 1.9,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:case0093"
+      },
+      {
+        "item_id": "case0079",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 1.9,
+        "learned_score": 0.0,
+        "final_score": 1.9,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:case0079"
+      }
+    ],
+    "omitted_items": [
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 7.72
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 7.32
+      },
+      {
+        "item_id": "abs_rule_728af0bf29e5",
+        "item_type": "retrieval_record",
+        "reason": "category_quota_exceeded",
+        "section": "abstract_experience",
+        "category": "experience_hint",
+        "score": 4.1
+      },
+      {
+        "item_id": "tac_case0013_c1a2a425bc3d",
+        "item_type": "retrieval_record",
+        "reason": "category_quota_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 3.8
+      },
+      {
+        "item_id": "tac_case0013_e4a8c7c2c58e",
+        "item_type": "retrieval_record",
+        "reason": "category_quota_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 3.3
+      },
+      {
+        "item_id": "tac_case0013_e6055fc25fdb",
+        "item_type": "retrieval_record",
+        "reason": "category_quota_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 3.3
+      },
+      {
+        "item_id": "tac_case0013_ea7b54e2327b",
+        "item_type": "retrieval_record",
+        "reason": "category_quota_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 3.3
+      },
+      {
+        "item_id": "case0079",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 1.9
+      },
+      {
+        "item_id": "case0093",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 1.9
+      }
+    ],
+    "debug": {
+      "policy": {
+        "enable_evidence_calibrator": true,
+        "calibrator_mode": "heuristic",
+        "calibrator_checkpoint_path": "",
+        "learned_calibration_weight": 1.2,
+        "max_total_items": 8,
+        "max_observation_skills": 4,
+        "max_comparison_skills": 3,
+        "max_risk_skills": 2,
+        "max_uncertainty_skills": 3,
+        "max_exclusion_items": 2,
+        "max_experience_hints": 2,
+        "max_raw_cases": 1,
+        "max_tactical": 2,
+        "max_abstract": 2,
+        "max_planner_reasons": 3,
+        "omit_low_value_evidence": true,
+        "min_effective_score": 2.4,
+        "dedup_similar_evidence": true,
+        "cluster_aware_ordering": true,
+        "cluster_opposing_bonus": 1.8,
+        "cluster_exclusion_bonus": 1.4,
+        "risk_overweight_penalty": 1.2,
+        "uncertainty_overweight_penalty": 1.0,
+        "description_priority_bonus": 0.6,
+        "exclusion_priority_bonus": 1.2,
+        "negative_evidence_priority_bonus": 1.0,
+        "allow_family_override": false,
+        "allow_keratinocyte_subtype_override": false,
+        "debug_output": true,
+        "conservative_fusion_mode": "soft"
+      },
+      "learned_scorer_loaded": false,
+      "contradiction_count": 4,
+      "uncertainty_level": "low",
+      "risk_flag_count": 0,
+      "confusion_clusters": [],
+      "kept_items": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "rank": 1,
+          "score": 8.92
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "rank": 2,
+          "score": 7.82
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "rank": 5,
+          "score": 7.68
+        },
+        {
+          "item_id": "metadata_consistency_skill",
+          "item_type": "skill_output",
+          "section": "comparison",
+          "category": "differential_support",
+          "rank": 6,
+          "score": 6.82
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "section": "comparison",
+          "category": "differential_support",
+          "rank": 7,
+          "score": 6.48
+        },
+        {
+          "item_id": "abs_confusion_4bcb433292a2",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "rank": 8,
+          "score": 4.5
+        },
+        {
+          "item_id": "abs_composite_9fa561d70201",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "rank": 9,
+          "score": 4.2
+        },
+        {
+          "item_id": "case0013",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "rank": 15,
+          "score": 2.3
+        }
+      ],
+      "pruned_items": [
+        {
+          "item_id": "color_pattern_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 7.719999999999999,
+          "heuristic_score": 7.719999999999999,
+          "learned_score": 0.0,
+          "payload": {
+            "primary_color": "brown",
+            "color_variation": "unknown",
+            "pigmentation_pattern": "reticular",
+            "asymmetry_color": "present",
+            "referenced_experiences": [
+              "tac_case0013_e6055fc25fdb"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 6.5,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 8.12,
+          "rank": 3,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "distribution_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 7.32,
+          "heuristic_score": 7.32,
+          "learned_score": 0.0,
+          "payload": {
+            "body_location": "scalp",
+            "symmetry": "uncertain",
+            "localized_vs_generalized": "generalized",
+            "clustering_pattern": "unknown",
+            "referenced_experiences": [
+              "case0013"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 6.5,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 7.720000000000001,
+          "rank": 4,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "abs_rule_728af0bf29e5",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "score": 4.1,
+          "heuristic_score": 4.1,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "abs_rule_728af0bf29e5",
+            "source_layer": "abstract_experience",
+            "experience_type": "rule",
+            "case_id": "case0088",
+            "confusion_pair": "None",
+            "perception_summary": "The image shows bilateral lower extremities with multiple small, erythematous papules and some pustules scattered across the legs.; ECZEMA_DERMATITIS; CONTACT_DERMATITIS",
+            "learning_points": [
+              "When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Qwen integration.",
+              "structured_skill_sequence"
+            ],
+            "retrieval_score": 4.0,
+            "base_retrieval_score": 4.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "abstract_experience:abs_rule_728af0bf29e5",
+          "ordering_score": 4.1,
+          "rank": 10,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "tac_case0013_c1a2a425bc3d",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 3.8,
+          "heuristic_score": 3.8,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_case0013_c1a2a425bc3d",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "case0013",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=HAIR_DISORDER; ; uncertainty=low",
+            "learning_points": [
+              "surfaced missing links in the reasoning chain",
+              "audited internal consistency",
+              "required downstream integration beyond contradiction_check_skill"
+            ],
+            "retrieval_score": 6.0,
+            "base_retrieval_score": 6.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_case0013_c1a2a425bc3d",
+          "ordering_score": 3.8,
+          "rank": 11,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "tac_case0013_e4a8c7c2c58e",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 3.3,
+          "heuristic_score": 3.3,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_case0013_e4a8c7c2c58e",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "case0013",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=HAIR_DISORDER; ; uncertainty=low",
+            "learning_points": [
+              "required downstream integration beyond lesion_description_structuring_skill",
+              "Action pattern: structured_skill_sequence"
+            ],
+            "retrieval_score": 6.0,
+            "base_retrieval_score": 6.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_case0013_e4a8c7c2c58e",
+          "ordering_score": 3.3,
+          "rank": 12,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "tac_case0013_e6055fc25fdb",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 3.3,
+          "heuristic_score": 3.3,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_case0013_e6055fc25fdb",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "case0013",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=HAIR_DISORDER; ; uncertainty=low",
+            "learning_points": [
+              "made pigment variation explicit",
+              "surfaced color asymmetry as auditable evidence",
+              "required downstream integration beyond color_pattern_analysis_skill"
+            ],
+            "retrieval_score": 6.0,
+            "base_retrieval_score": 6.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_case0013_e6055fc25fdb",
+          "ordering_score": 3.3,
+          "rank": 13,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "tac_case0013_ea7b54e2327b",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 3.3,
+          "heuristic_score": 3.3,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_case0013_ea7b54e2327b",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "case0013",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=HAIR_DISORDER; ; uncertainty=low",
+            "learning_points": [
+              "kept the differential open",
+              "made pairwise reasoning explicit",
+              "required downstream integration beyond differential_compare_skill"
+            ],
+            "retrieval_score": 6.0,
+            "base_retrieval_score": 6.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_case0013_ea7b54e2327b",
+          "ordering_score": 3.3,
+          "rank": 14,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "case0079",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 1.9000000000000001,
+          "heuristic_score": 1.9000000000000001,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "case0079",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "case0079",
+            "confusion_pair": "None",
+            "perception_summary": "The image shows a reddish-brown patch on the back of the neck, surrounded by some scaling and erythema.",
+            "learning_points": [
+              "Final decision: Contact Dermatitis",
+              "Correctness: False"
+            ],
+            "retrieval_score": 3.0,
+            "base_retrieval_score": 3.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:case0079",
+          "ordering_score": 2.3000000000000003,
+          "rank": 16,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "case0093",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 1.9000000000000001,
+          "heuristic_score": 1.9000000000000001,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "case0093",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "case0093",
+            "confusion_pair": "None",
+            "perception_summary": "The image shows a neck area with a diffuse erythematous rash. The skin appears slightly scaly and there are no visible vesicles or blisters.",
+            "learning_points": [
+              "Final decision: Contact Dermatitis",
+              "Correctness: False"
+            ],
+            "retrieval_score": 3.0,
+            "base_retrieval_score": 3.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:case0093",
+          "ordering_score": 2.3000000000000003,
+          "rank": 17,
+          "reason": "global_budget_exceeded"
+        }
+      ],
+      "reordered_items": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "from_section": "observation",
+          "category": "description",
+          "new_rank": 1
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "from_section": "observation",
+          "category": "description",
+          "new_rank": 2
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "from_section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "new_rank": 3
+        },
+        {
+          "item_id": "metadata_consistency_skill",
+          "item_type": "skill_output",
+          "from_section": "comparison",
+          "category": "differential_support",
+          "new_rank": 4
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "from_section": "comparison",
+          "category": "differential_support",
+          "new_rank": 5
+        },
+        {
+          "item_id": "abs_confusion_4bcb433292a2",
+          "item_type": "retrieval_record",
+          "from_section": "abstract_experience",
+          "category": "experience_hint",
+          "new_rank": 6
+        },
+        {
+          "item_id": "abs_composite_9fa561d70201",
+          "item_type": "retrieval_record",
+          "from_section": "abstract_experience",
+          "category": "experience_hint",
+          "new_rank": 7
+        },
+        {
+          "item_id": "case0013",
+          "item_type": "retrieval_record",
+          "from_section": "raw_case_memory",
+          "category": "description",
+          "new_rank": 8
+        }
+      ],
+      "quota_state": {
+        "max_total_items": 8,
+        "per_category_quota": {
+          "description": 3,
+          "differential_support": 2,
+          "exclusion_opposing": 2,
+          "risk": 1,
+          "contradiction_gap": 2,
+          "experience_hint": 2
+        },
+        "category_counts": {
+          "description": 3,
+          "differential_support": 2,
+          "exclusion_opposing": 0,
+          "risk": 0,
+          "contradiction_gap": 1,
+          "experience_hint": 2
+        }
+      }
+    }
+  }
+}

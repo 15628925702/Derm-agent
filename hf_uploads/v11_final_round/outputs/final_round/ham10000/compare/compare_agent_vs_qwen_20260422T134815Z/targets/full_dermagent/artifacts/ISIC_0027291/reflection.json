@@ -1,0 +1,1926 @@
+{
+  "reasoning_summary": "Perception summary: A close-up view of skin showing scattered dark spots and hair follicles. The background appears slightly uneven with some areas of hyperpigmentation. | Useful skills: morphology_analysis_skill, color_pattern_analysis_skill, lesion_description_structuring_skill, malignancy_risk_assessment_skill, differential_compare_skill, exclusion_reasoning_skill | Final answer: Basal Cell Carcinoma | Uncertainty: low | Risk flags: malignancy_risk:medium",
+  "useful_skills": [
+    "morphology_analysis_skill",
+    "color_pattern_analysis_skill",
+    "lesion_description_structuring_skill",
+    "malignancy_risk_assessment_skill",
+    "differential_compare_skill",
+    "exclusion_reasoning_skill"
+  ],
+  "detected_errors": [],
+  "experience_type": "hard_case_experience",
+  "diagnosis_correct": true,
+  "write_experience": true,
+  "case_outcome": {
+    "status": "success",
+    "has_ground_truth": true,
+    "is_correct": true,
+    "error_type": null,
+    "predicted_label": "Basal Cell Carcinoma",
+    "reference_label": "bcc",
+    "predicted_canonical_label": "BCC",
+    "reference_canonical_label": "BCC",
+    "confidence_level": "moderate",
+    "uncertainty_level": "low",
+    "malignant_flag": {
+      "ground_truth": true,
+      "predicted": true
+    },
+    "confusion_pair": null,
+    "risk_flags": [
+      "malignancy_risk:medium"
+    ],
+    "label_space": {
+      "label_space_id": "ham10000_full",
+      "canonical_labels": [
+        "MEL",
+        "BCC",
+        "NV",
+        "BKL",
+        "DF",
+        "VASC",
+        "AKIEC"
+      ],
+      "malignant_labels": [
+        "MEL",
+        "BCC",
+        "AKIEC"
+      ],
+      "benign_labels": [
+        "NV",
+        "BKL",
+        "DF",
+        "VASC"
+      ]
+    }
+  },
+  "skill_assessments": [
+    {
+      "skill_name": "morphology_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "success",
+      "impact": "helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "BCC",
+          "NV",
+          "AKIEC"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "low",
+        "region": "back"
+      },
+      "helped_aspects": [
+        "stabilized lesion structure",
+        "made morphology explicit for downstream reasoning"
+      ],
+      "failed_aspects": [
+        "required downstream integration beyond morphology_analysis_skill"
+      ],
+      "key_steps": [
+        "inspect dominant lesion silhouette",
+        "judge elevation and lesion count"
+      ],
+      "referenced_experiences": [
+        "ISIC_0031724",
+        "ISIC_0031121"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "morphology_analysis_skill",
+        "ddx:BCC|NV",
+        "risk:malignancy_risk:medium",
+        "region:back",
+        "uncertainty:low"
+      ],
+      "failure_modes": [],
+      "reusable": true,
+      "reuse_reason": "morphology_analysis_skill was useful under the observed case conditions"
+    },
+    {
+      "skill_name": "color_pattern_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "success",
+      "impact": "helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "BCC",
+          "NV",
+          "AKIEC"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "low",
+        "region": "back"
+      },
+      "helped_aspects": [
+        "made pigment variation explicit",
+        "surfaced color asymmetry as auditable evidence"
+      ],
+      "failed_aspects": [
+        "required downstream integration beyond color_pattern_analysis_skill"
+      ],
+      "key_steps": [
+        "inspect dominant color",
+        "compare internal color asymmetry"
+      ],
+      "referenced_experiences": [
+        "tac_ISIC_0030594_e6055fc25fdb"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "color_pattern_analysis_skill",
+        "ddx:BCC|NV",
+        "risk:malignancy_risk:medium",
+        "region:back",
+        "uncertainty:low"
+      ],
+      "failure_modes": [],
+      "reusable": true,
+      "reuse_reason": "color_pattern_analysis_skill was useful under the observed case conditions"
+    },
+    {
+      "skill_name": "lesion_description_structuring_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "success",
+      "impact": "helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "BCC",
+          "NV",
+          "AKIEC"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "low",
+        "region": "back"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "required downstream integration beyond lesion_description_structuring_skill"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "ISIC_0031724",
+        "ISIC_0031121",
+        "tac_ISIC_0030594_ea7b54e2327b",
+        "tac_ISIC_0030594_e6055fc25fdb",
+        "tac_ISIC_0030594_e4a8c7c2c58e",
+        "abs_confusion_3a328c374e34",
+        "abs_composite_90ff6f092744",
+        "abs_composite_1c5fd5852833"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "lesion_description_structuring_skill",
+        "ddx:BCC|NV",
+        "risk:malignancy_risk:medium",
+        "region:back",
+        "uncertainty:low"
+      ],
+      "failure_modes": [],
+      "reusable": true,
+      "reuse_reason": "lesion_description_structuring_skill was useful under the observed case conditions"
+    },
+    {
+      "skill_name": "malignancy_risk_assessment_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "success",
+      "impact": "helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "BCC",
+          "NV",
+          "AKIEC"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "low",
+        "region": "back"
+      },
+      "helped_aspects": [
+        "made risk framing explicit",
+        "highlighted alarm signals without forcing diagnosis"
+      ],
+      "failed_aspects": [
+        "required downstream integration beyond malignancy_risk_assessment_skill"
+      ],
+      "key_steps": [
+        "collect alarm signals",
+        "balance concerning and reassuring evidence"
+      ],
+      "referenced_experiences": [
+        "tac_ISIC_0030594_ea7b54e2327b",
+        "tac_ISIC_0030594_e6055fc25fdb",
+        "tac_ISIC_0030594_e4a8c7c2c58e"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "risk_signal",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 2.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "malignant_support_relevant"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "malignancy_risk_assessment_skill",
+        "ddx:BCC|NV",
+        "risk:malignancy_risk:medium",
+        "region:back",
+        "uncertainty:low"
+      ],
+      "failure_modes": [],
+      "reusable": true,
+      "reuse_reason": "malignancy_risk_assessment_skill was useful under the observed case conditions"
+    },
+    {
+      "skill_name": "differential_compare_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "success",
+      "impact": "helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "BCC",
+          "NV",
+          "AKIEC"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "low",
+        "region": "back"
+      },
+      "helped_aspects": [
+        "kept the differential open",
+        "made pairwise reasoning explicit"
+      ],
+      "failed_aspects": [
+        "required downstream integration beyond differential_compare_skill"
+      ],
+      "key_steps": [
+        "select the most relevant candidate pair",
+        "preserve unresolved comparative evidence"
+      ],
+      "referenced_experiences": [
+        "ISIC_0031724",
+        "ISIC_0031121",
+        "tac_ISIC_0030594_ea7b54e2327b",
+        "tac_ISIC_0030594_e6055fc25fdb",
+        "tac_ISIC_0030594_e4a8c7c2c58e",
+        "abs_confusion_3a328c374e34",
+        "abs_composite_90ff6f092744",
+        "abs_composite_1c5fd5852833"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 1.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "malignant_support_relevant"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "differential_compare_skill",
+        "ddx:BCC|NV",
+        "risk:malignancy_risk:medium",
+        "region:back",
+        "uncertainty:low"
+      ],
+      "failure_modes": [],
+      "reusable": true,
+      "reuse_reason": "differential_compare_skill was useful under the observed case conditions"
+    },
+    {
+      "skill_name": "exclusion_reasoning_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "success",
+      "impact": "helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "BCC",
+          "NV",
+          "AKIEC"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "low",
+        "region": "back"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "required downstream integration beyond exclusion_reasoning_skill"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "ISIC_0031724",
+        "ISIC_0031121"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 1.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "malignant_support_relevant"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "exclusion_reasoning_skill",
+        "ddx:BCC|NV",
+        "risk:malignancy_risk:medium",
+        "region:back",
+        "uncertainty:low"
+      ],
+      "failure_modes": [],
+      "reusable": true,
+      "reuse_reason": "exclusion_reasoning_skill was useful under the observed case conditions"
+    }
+  ],
+  "reflection_extract": {
+    "raw_case_memory_ready": true,
+    "tactical_experience_count": 6,
+    "abstract_experience_candidate_count": 3,
+    "reusable_tactical_count": 6,
+    "composite_skill_seed_count": 1,
+    "composite_skill_seed_ids": [
+      "seed_composite_062001394120"
+    ],
+    "abstract_flags": {
+      "confusion_memory": false,
+      "prototype": true,
+      "rule": true,
+      "rule_candidate": false,
+      "composite_skill_seed": true
+    },
+    "case_status": "success"
+  },
+  "writeback_bundle": {
+    "raw_case_memory": {
+      "case_id": "ISIC_0027291",
+      "image_paths": [
+        "/root/DermAgent/data/ham10000/HAM10000_images_part_1/ISIC_0027291.jpg"
+      ],
+      "metadata": {
+        "lesion_id": "HAM_0006904",
+        "image_id": "ISIC_0027291",
+        "age": "70.0",
+        "sex": "male",
+        "localization": "back",
+        "region": "back",
+        "diagnosis_confidence": "histopathology_confirmed",
+        "has_histopathology": true,
+        "label_space_id": "ham10000_full"
+      },
+      "dataset_name": "HAM10000",
+      "label_space_id": "ham10000_full",
+      "true_label": "bcc",
+      "qwen_output": {
+        "final_diagnosis": "Basal Cell Carcinoma",
+        "differential_diagnoses": [
+          "Basal Cell Carcinoma"
+        ],
+        "rationale": "The lesion appears as a rough, keratotic plaque with a slightly elevated surface, which is characteristic of Bowen's disease (BKL). The presence of keratinized material and the lack of significant pigmentation or atypical cells suggest it is more likely to be a keratotic lesion rather than a melanoma or basal cell carcinoma. However, the differential diagnoses include melanoma due to the potential for pigmented lesions and basal cell carcinoma due to the keratotic appearance. agent conservative fusion: evidence was not strong enough to override the baseline diagnosis, so the baseline label was preserved.",
+        "confidence": "Moderate",
+        "follow_up_considerations": [
+          "G",
+          "i",
+          "v",
+          "e",
+          "n",
+          " ",
+          "t",
+          "h",
+          "e",
+          " ",
+          "h",
+          "i",
+          "s",
+          "t",
+          "o",
+          "p",
+          "a",
+          "t",
+          "h",
+          "o",
+          "l",
+          "o",
+          "g",
+          "y",
+          " ",
+          "c",
+          "o",
+          "n",
+          "f",
+          "i",
+          "r",
+          "m",
+          "a",
+          "t",
+          "i",
+          "o",
+          "n",
+          ",",
+          " ",
+          "f",
+          "u",
+          "r",
+          "t",
+          "h",
+          "e",
+          "r",
+          " ",
+          "c",
+          "l",
+          "i",
+          "n",
+          "i",
+          "c",
+          "a",
+          "l",
+          " ",
+          "f",
+          "o",
+          "l",
+          "l",
+          "o",
+          "w",
+          "-",
+          "u",
+          "p",
+          " ",
+          "i",
+          "s",
+          " ",
+          "n",
+          "o",
+          "t",
+          " ",
+          "n",
+          "e",
+          "c",
+          "e",
+          "s",
+          "s",
+          "a",
+          "r",
+          "y",
+          ".",
+          " ",
+          "H",
+          "o",
+          "w",
+          "e",
+          "v",
+          "e",
+          "r",
+          ",",
+          " ",
+          "i",
+          "f",
+          " ",
+          "t",
+          "h",
+          "e",
+          "r",
+          "e",
+          " ",
+          "w",
+          "e",
+          "r",
+          "e",
+          " ",
+          "a",
+          "n",
+          "y",
+          " ",
+          "c",
+          "o",
+          "n",
+          "c",
+          "e",
+          "r",
+          "n",
+          "s",
+          " ",
+          "a",
+          "b",
+          "o",
+          "u",
+          "t",
+          " ",
+          "t",
+          "h",
+          "e",
+          " ",
+          "d",
+          "i",
+          "f",
+          "f",
+          "e",
+          "r",
+          "e",
+          "n",
+          "t",
+          "i",
+          "a",
+          "l",
+          " ",
+          "d",
+          "i",
+          "a",
+          "g",
+          "n",
+          "o",
+          "s",
+          "e",
+          "s",
+          ",",
+          " ",
+          "a",
+          " ",
+          "b",
+          "i",
+          "o",
+          "p",
+          "s",
+          "y",
+          " ",
+          "w",
+          "o",
+          "u",
+          "l",
+          "d",
+          " ",
+          "b",
+          "e",
+          " ",
+          "r",
+          "e",
+          "q",
+          "u",
+          "i",
+          "r",
+          "e",
+          "d",
+          " ",
+          "t",
+          "o",
+          " ",
+          "r",
+          "u",
+          "l",
+          "e",
+          " ",
+          "o",
+          "u",
+          "t",
+          " ",
+          "o",
+          "t",
+          "h",
+          "e",
+          "r",
+          " ",
+          "p",
+          "o",
+          "s",
+          "s",
+          "i",
+          "b",
+          "i",
+          "l",
+          "i",
+          "t",
+          "i",
+          "e",
+          "s",
+          ".",
+          "Fusion note: malignancy_override_not_allowed; fallback_to_baseline"
+        ],
+        "fusion_decision": {
+          "use_agent_output": false,
+          "fusion_mode": "soft",
+          "merge_baseline_differentials": false,
+          "consensus_override_label": "",
+          "consensus_candidates": [],
+          "baseline_label": "Basal Cell Carcinoma",
+          "agent_label": "Nevus",
+          "baseline_confidence": "moderate",
+          "agent_confidence": "low",
+          "selected_evidence_present": true,
+          "override_allowed": false,
+          "malignancy_override_allowed": false,
+          "subtype_override_allowed": false,
+          "family_override_allowed": false,
+          "override_mode": "risk_only",
+          "support_margin": 40.16,
+          "subtype_support_margin": 6.32,
+          "uncertainty_level": "low",
+          "workflow_profile": "sparse_lesion_workflow",
+          "baseline_preview": {
+            "early_ddx_candidates": [
+              "BCC",
+              "NV",
+              "AKIEC"
+            ],
+            "image_summary": "A close-up view of skin showing scattered dark spots and hair follicles. The background appears slightly uneven with some areas of hyperpigmentation.",
+            "baseline_final_diagnosis": "Basal Cell Carcinoma",
+            "baseline_differential_diagnoses": [
+              "Basal Cell Carcinoma"
+            ],
+            "baseline_confidence": "Moderate"
+          },
+          "reasons": [
+            "malignancy_override_not_allowed",
+            "fallback_to_baseline"
+          ]
+        }
+      },
+      "agent_output": {
+        "perception": {
+          "image_summary": "A close-up view of skin showing scattered dark spots and hair follicles. The background appears slightly uneven with some areas of hyperpigmentation.",
+          "ddx_candidates": [
+            "BCC",
+            "NV",
+            "AKIEC"
+          ],
+          "uncertainty": {
+            "level": "low",
+            "reasons": [
+              "The image lacks clear morphological features to definitively rule out other possibilities."
+            ]
+          },
+          "notes": [
+            "Dark spots could be indicative of basal cell carcinoma (BCC) or nevus (NV).",
+            "The presence of hair follicles suggests this is a skin lesion rather than a mucosal one.",
+            "Hyperpigmentation could be related to actinic keratosis (AKIEC)."
+          ]
+        },
+        "skill_outputs": {
+          "morphology_analysis_skill": {
+            "lesion_type": "unknown",
+            "size_range": "small",
+            "elevation": "flat",
+            "count": "multiple",
+            "referenced_experiences": [
+              "ISIC_0031724",
+              "ISIC_0031121"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "color_pattern_analysis_skill": {
+            "primary_color": "dark",
+            "color_variation": "marked",
+            "pigmentation_pattern": "reticular",
+            "asymmetry_color": "present",
+            "referenced_experiences": [
+              "tac_ISIC_0030594_e6055fc25fdb"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "lesion_description_structuring_skill": {
+            "primary_lesion_morphology": "multiple small, flat lesions",
+            "color": [
+              "dark"
+            ],
+            "border": [
+              "irregular"
+            ],
+            "surface": [
+              "smooth"
+            ],
+            "size_count": [
+              "size_range: small, count: multiple"
+            ],
+            "distribution": [
+              "site: back, pattern: scattered"
+            ],
+            "associated_context": [
+              "age: 70.0, sex: male, localization: back, region: back, diagnosis_confidence: histopathology_confirmed, has_histopathology: True, label_space_id: ham10000_full"
+            ],
+            "referenced_experiences": [
+              "ISIC_0031724",
+              "ISIC_0031121",
+              "tac_ISIC_0030594_ea7b54e2327b",
+              "tac_ISIC_0030594_e6055fc25fdb",
+              "tac_ISIC_0030594_e4a8c7c2c58e",
+              "abs_confusion_3a328c374e34",
+              "abs_composite_90ff6f092744",
+              "abs_composite_1c5fd5852833"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "malignancy_risk_assessment_skill": {
+            "risk_level": "medium",
+            "risk_evidence": [
+              "{'alarm_signals': ['Irregular border', 'Marked color variation', 'Reticular pigmentation pattern'], 'benign_reassuring_features': ['Small size', 'Smooth surface texture']}"
+            ],
+            "alarm_signals": [
+              "Irregular border",
+              "Marked color variation",
+              "Reticular pigmentation pattern"
+            ],
+            "benign_reassuring_features": [
+              "Small size",
+              "Smooth surface texture"
+            ],
+            "referenced_experiences": [
+              "tac_ISIC_0030594_ea7b54e2327b",
+              "tac_ISIC_0030594_e6055fc25fdb",
+              "tac_ISIC_0030594_e4a8c7c2c58e"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "risk_signal"
+          },
+          "differential_compare_skill": {
+            "candidate_pairs": [
+              "BCC vs NV",
+              "BCC vs AKIEC",
+              "NV vs AKIEC"
+            ],
+            "supporting_evidence": [
+              "BCC vs NV: Dark spots could be indicative of basal cell carcinoma (BCC) or nevus (NV).; The presence of hair follicles suggests this is a skin lesion rather than a mucosal one.",
+              "BCC vs AKIEC: Dark spots could be indicative of basal cell carcinoma (BCC) or nevus (NV).; The presence of hair follicles suggests this is a skin lesion rather than a mucosal one.",
+              "NV vs AKIEC: Dark spots could be indicative of basal cell carcinoma (BCC) or nevus (NV).; The presence of hair follicles suggests this is a skin lesion rather than a mucosal one."
+            ],
+            "conflicting_evidence": [],
+            "required_missing_evidence": [
+              "BCC vs NV: Clear morphological features to definitively rule out other possibilities.",
+              "BCC vs AKIEC: Clear morphological features to definitively rule out other possibilities.",
+              "NV vs AKIEC: Clear morphological features to definitively rule out other possibilities."
+            ],
+            "referenced_experiences": [
+              "ISIC_0031724",
+              "ISIC_0031121",
+              "tac_ISIC_0030594_ea7b54e2327b",
+              "tac_ISIC_0030594_e6055fc25fdb",
+              "tac_ISIC_0030594_e4a8c7c2c58e",
+              "abs_confusion_3a328c374e34",
+              "abs_composite_90ff6f092744",
+              "abs_composite_1c5fd5852833"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "exclusion_reasoning_skill": {
+            "unlikely_candidates": [
+              "BCC"
+            ],
+            "exclusion_evidence": [
+              "The lesion lacks clear morphological features to definitively rule out other possibilities."
+            ],
+            "required_missing_evidence": [
+              "Clear morphological features to definitively rule out other possibilities."
+            ],
+            "exclusion_confidence": "medium",
+            "referenced_experiences": [
+              "ISIC_0031724",
+              "ISIC_0031121"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          }
+        },
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty": {
+          "uncertainty_level": "low",
+          "reasons": [
+            "The image lacks clear morphological features to definitively rule out other possibilities."
+          ],
+          "missing_information": []
+        },
+        "retrieved_experience_refs": [
+          "abs_confusion_583f1e541f60",
+          "abs_confusion_3a328c374e34",
+          "abs_composite_1c5fd5852833",
+          "tac_ISIC_0030594_ea7b54e2327b"
+        ],
+        "notes": [
+          "Agent generated structured evidence only.",
+          "Qwen remains the sole final diagnostic decision maker.",
+          "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, lesion_description_structuring_skill, malignancy_risk_assessment_skill, differential_compare_skill, exclusion_reasoning_skill.",
+          "Policy in use: ham10000_v2_heuristic_stable__full_dermagent.",
+          "Skill retrieval candidates: metadata_consistency_skill, color_pattern_analysis_skill, lesion_description_structuring_skill, distribution_analysis_skill, morphology_analysis_skill, malignancy_risk_assessment_skill, uncertainty_assessment_skill, temporal_evolution_skill, border_surface_analysis_skill, contradiction_check_skill, escalation_recommendation_skill, information_gap_detection_skill, differential_compare_skill, exclusion_reasoning_skill.",
+          "Dark spots could be indicative of basal cell carcinoma (BCC) or nevus (NV).",
+          "The presence of hair follicles suggests this is a skin lesion rather than a mucosal one.",
+          "Hyperpigmentation could be related to actinic keratosis (AKIEC).",
+          "Retrieved prior reasoning experience for context."
+        ],
+        "skill_assessments": [
+          {
+            "skill_name": "morphology_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "success",
+            "impact": "helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "BCC",
+                "NV",
+                "AKIEC"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "low",
+              "region": "back"
+            },
+            "helped_aspects": [
+              "stabilized lesion structure",
+              "made morphology explicit for downstream reasoning"
+            ],
+            "failed_aspects": [
+              "required downstream integration beyond morphology_analysis_skill"
+            ],
+            "key_steps": [
+              "inspect dominant lesion silhouette",
+              "judge elevation and lesion count"
+            ],
+            "referenced_experiences": [
+              "ISIC_0031724",
+              "ISIC_0031121"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "morphology_analysis_skill",
+              "ddx:BCC|NV",
+              "risk:malignancy_risk:medium",
+              "region:back",
+              "uncertainty:low"
+            ],
+            "failure_modes": [],
+            "reusable": true,
+            "reuse_reason": "morphology_analysis_skill was useful under the observed case conditions"
+          },
+          {
+            "skill_name": "color_pattern_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "success",
+            "impact": "helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "BCC",
+                "NV",
+                "AKIEC"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "low",
+              "region": "back"
+            },
+            "helped_aspects": [
+              "made pigment variation explicit",
+              "surfaced color asymmetry as auditable evidence"
+            ],
+            "failed_aspects": [
+              "required downstream integration beyond color_pattern_analysis_skill"
+            ],
+            "key_steps": [
+              "inspect dominant color",
+              "compare internal color asymmetry"
+            ],
+            "referenced_experiences": [
+              "tac_ISIC_0030594_e6055fc25fdb"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "color_pattern_analysis_skill",
+              "ddx:BCC|NV",
+              "risk:malignancy_risk:medium",
+              "region:back",
+              "uncertainty:low"
+            ],
+            "failure_modes": [],
+            "reusable": true,
+            "reuse_reason": "color_pattern_analysis_skill was useful under the observed case conditions"
+          },
+          {
+            "skill_name": "lesion_description_structuring_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "success",
+            "impact": "helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "BCC",
+                "NV",
+                "AKIEC"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "low",
+              "region": "back"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "required downstream integration beyond lesion_description_structuring_skill"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "ISIC_0031724",
+              "ISIC_0031121",
+              "tac_ISIC_0030594_ea7b54e2327b",
+              "tac_ISIC_0030594_e6055fc25fdb",
+              "tac_ISIC_0030594_e4a8c7c2c58e",
+              "abs_confusion_3a328c374e34",
+              "abs_composite_90ff6f092744",
+              "abs_composite_1c5fd5852833"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "lesion_description_structuring_skill",
+              "ddx:BCC|NV",
+              "risk:malignancy_risk:medium",
+              "region:back",
+              "uncertainty:low"
+            ],
+            "failure_modes": [],
+            "reusable": true,
+            "reuse_reason": "lesion_description_structuring_skill was useful under the observed case conditions"
+          },
+          {
+            "skill_name": "malignancy_risk_assessment_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "success",
+            "impact": "helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "BCC",
+                "NV",
+                "AKIEC"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "low",
+              "region": "back"
+            },
+            "helped_aspects": [
+              "made risk framing explicit",
+              "highlighted alarm signals without forcing diagnosis"
+            ],
+            "failed_aspects": [
+              "required downstream integration beyond malignancy_risk_assessment_skill"
+            ],
+            "key_steps": [
+              "collect alarm signals",
+              "balance concerning and reassuring evidence"
+            ],
+            "referenced_experiences": [
+              "tac_ISIC_0030594_ea7b54e2327b",
+              "tac_ISIC_0030594_e6055fc25fdb",
+              "tac_ISIC_0030594_e4a8c7c2c58e"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "risk_signal",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 2.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "malignant_support_relevant"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "malignancy_risk_assessment_skill",
+              "ddx:BCC|NV",
+              "risk:malignancy_risk:medium",
+              "region:back",
+              "uncertainty:low"
+            ],
+            "failure_modes": [],
+            "reusable": true,
+            "reuse_reason": "malignancy_risk_assessment_skill was useful under the observed case conditions"
+          },
+          {
+            "skill_name": "differential_compare_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "success",
+            "impact": "helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "BCC",
+                "NV",
+                "AKIEC"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "low",
+              "region": "back"
+            },
+            "helped_aspects": [
+              "kept the differential open",
+              "made pairwise reasoning explicit"
+            ],
+            "failed_aspects": [
+              "required downstream integration beyond differential_compare_skill"
+            ],
+            "key_steps": [
+              "select the most relevant candidate pair",
+              "preserve unresolved comparative evidence"
+            ],
+            "referenced_experiences": [
+              "ISIC_0031724",
+              "ISIC_0031121",
+              "tac_ISIC_0030594_ea7b54e2327b",
+              "tac_ISIC_0030594_e6055fc25fdb",
+              "tac_ISIC_0030594_e4a8c7c2c58e",
+              "abs_confusion_3a328c374e34",
+              "abs_composite_90ff6f092744",
+              "abs_composite_1c5fd5852833"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 1.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "malignant_support_relevant"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "differential_compare_skill",
+              "ddx:BCC|NV",
+              "risk:malignancy_risk:medium",
+              "region:back",
+              "uncertainty:low"
+            ],
+            "failure_modes": [],
+            "reusable": true,
+            "reuse_reason": "differential_compare_skill was useful under the observed case conditions"
+          },
+          {
+            "skill_name": "exclusion_reasoning_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "success",
+            "impact": "helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "BCC",
+                "NV",
+                "AKIEC"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "low",
+              "region": "back"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "required downstream integration beyond exclusion_reasoning_skill"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "ISIC_0031724",
+              "ISIC_0031121"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 1.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "malignant_support_relevant"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "exclusion_reasoning_skill",
+              "ddx:BCC|NV",
+              "risk:malignancy_risk:medium",
+              "region:back",
+              "uncertainty:low"
+            ],
+            "failure_modes": [],
+            "reusable": true,
+            "reuse_reason": "exclusion_reasoning_skill was useful under the observed case conditions"
+          }
+        ]
+      },
+      "final_decision": {
+        "label": "Basal Cell Carcinoma",
+        "source": "qwen_final_diagnosis",
+        "canonical_label": "BCC"
+      },
+      "correctness": {
+        "has_ground_truth": true,
+        "is_correct": true,
+        "error_type": null
+      },
+      "malignant_flag": {
+        "ground_truth": true,
+        "predicted": true
+      }
+    },
+    "tactical_experiences": [
+      {
+        "exp_id": "tac_ISIC_0027291_38cb14500658",
+        "case_id": "ISIC_0027291",
+        "condition": {
+          "trigger_type": "risk_review",
+          "confusion_pair": null,
+          "observed_state": {
+            "ddx_candidates": [
+              "BCC",
+              "NV",
+              "AKIEC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "low",
+            "region": "back"
+          },
+          "constraints": [
+            "single_image"
+          ]
+        },
+        "action": {
+          "skill_name": "morphology_analysis_skill",
+          "skills_used": [
+            "morphology_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "stabilized lesion structure",
+          "made morphology explicit for downstream reasoning",
+          "required downstream integration beyond morphology_analysis_skill"
+        ],
+        "step_trace": [
+          "inspect dominant lesion silhouette",
+          "judge elevation and lesion count"
+        ],
+        "outcome": {
+          "result": "success",
+          "case_status": "success",
+          "error_type": null,
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "morphology_analysis_skill",
+            "BCC",
+            "NV",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0027291_e6055fc25fdb",
+        "case_id": "ISIC_0027291",
+        "condition": {
+          "trigger_type": "risk_review",
+          "confusion_pair": null,
+          "observed_state": {
+            "ddx_candidates": [
+              "BCC",
+              "NV",
+              "AKIEC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "low",
+            "region": "back"
+          },
+          "constraints": [
+            "single_image"
+          ]
+        },
+        "action": {
+          "skill_name": "color_pattern_analysis_skill",
+          "skills_used": [
+            "color_pattern_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made pigment variation explicit",
+          "surfaced color asymmetry as auditable evidence",
+          "required downstream integration beyond color_pattern_analysis_skill"
+        ],
+        "step_trace": [
+          "inspect dominant color",
+          "compare internal color asymmetry"
+        ],
+        "outcome": {
+          "result": "success",
+          "case_status": "success",
+          "error_type": null,
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "color_pattern_analysis_skill",
+            "BCC",
+            "NV",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0027291_e4a8c7c2c58e",
+        "case_id": "ISIC_0027291",
+        "condition": {
+          "trigger_type": "risk_review",
+          "confusion_pair": null,
+          "observed_state": {
+            "ddx_candidates": [
+              "BCC",
+              "NV",
+              "AKIEC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "low",
+            "region": "back"
+          },
+          "constraints": [
+            "single_image"
+          ]
+        },
+        "action": {
+          "skill_name": "lesion_description_structuring_skill",
+          "skills_used": [
+            "lesion_description_structuring_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "required downstream integration beyond lesion_description_structuring_skill"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "success",
+          "case_status": "success",
+          "error_type": null,
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "lesion_description_structuring_skill",
+            "BCC",
+            "NV",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0027291_c1a9ed2e3973",
+        "case_id": "ISIC_0027291",
+        "condition": {
+          "trigger_type": "risk_review",
+          "confusion_pair": null,
+          "observed_state": {
+            "ddx_candidates": [
+              "BCC",
+              "NV",
+              "AKIEC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "low",
+            "region": "back"
+          },
+          "constraints": [
+            "single_image"
+          ]
+        },
+        "action": {
+          "skill_name": "malignancy_risk_assessment_skill",
+          "skills_used": [
+            "malignancy_risk_assessment_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made risk framing explicit",
+          "highlighted alarm signals without forcing diagnosis",
+          "required downstream integration beyond malignancy_risk_assessment_skill"
+        ],
+        "step_trace": [
+          "collect alarm signals",
+          "balance concerning and reassuring evidence"
+        ],
+        "outcome": {
+          "result": "success",
+          "case_status": "success",
+          "error_type": null,
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "malignancy_risk_assessment_skill",
+            "BCC",
+            "NV",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0027291_ea7b54e2327b",
+        "case_id": "ISIC_0027291",
+        "condition": {
+          "trigger_type": "risk_review",
+          "confusion_pair": null,
+          "observed_state": {
+            "ddx_candidates": [
+              "BCC",
+              "NV",
+              "AKIEC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "low",
+            "region": "back"
+          },
+          "constraints": [
+            "single_image"
+          ]
+        },
+        "action": {
+          "skill_name": "differential_compare_skill",
+          "skills_used": [
+            "differential_compare_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "kept the differential open",
+          "made pairwise reasoning explicit",
+          "required downstream integration beyond differential_compare_skill"
+        ],
+        "step_trace": [
+          "select the most relevant candidate pair",
+          "preserve unresolved comparative evidence"
+        ],
+        "outcome": {
+          "result": "success",
+          "case_status": "success",
+          "error_type": null,
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "differential_compare_skill",
+            "BCC",
+            "NV",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0027291_517a52591e8e",
+        "case_id": "ISIC_0027291",
+        "condition": {
+          "trigger_type": "risk_review",
+          "confusion_pair": null,
+          "observed_state": {
+            "ddx_candidates": [
+              "BCC",
+              "NV",
+              "AKIEC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "low",
+            "region": "back"
+          },
+          "constraints": [
+            "single_image"
+          ]
+        },
+        "action": {
+          "skill_name": "exclusion_reasoning_skill",
+          "skills_used": [
+            "exclusion_reasoning_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "required downstream integration beyond exclusion_reasoning_skill"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "success",
+          "case_status": "success",
+          "error_type": null,
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "exclusion_reasoning_skill",
+            "BCC",
+            "NV",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      }
+    ],
+    "abstract_experiences": [
+      {
+        "abs_id": "abs_rule_728af0bf29e5",
+        "type": "rule",
+        "concept": "structured_skill_sequence",
+        "pattern_summary": {
+          "supporting_pattern": [
+            "A close-up view of skin showing scattered dark spots and hair follicles. The background appears slightly uneven with some areas of hyperpigmentation.",
+            "BCC",
+            "NV",
+            "malignancy_risk:medium"
+          ],
+          "failure_pattern": []
+        },
+        "supporting_cases": [
+          "ISIC_0027291"
+        ],
+        "counter_cases": [],
+        "derived_rule": {
+          "rule_text": "When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Qwen integration.",
+          "action_hint": "structured_skill_sequence"
+        },
+        "version": "v1",
+        "seed_id": null,
+        "composite_skill_seed": {},
+        "provenance": {}
+      },
+      {
+        "abs_id": "abs_composite_062001394120",
+        "type": "composite_skill_seed",
+        "concept": "structured_skill_sequence",
+        "pattern_summary": {
+          "supporting_pattern": [
+            "A close-up view of skin showing scattered dark spots and hair follicles. The background appears slightly uneven with some areas of hyperpigmentation.",
+            "BCC",
+            "NV",
+            "malignancy_risk:medium"
+          ],
+          "trigger_pattern": {
+            "decision_pattern": "structured_skill_sequence",
+            "ddx_candidates": [
+              "BCC",
+              "NV",
+              "AKIEC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "low",
+            "confusion_pair": null,
+            "region": "back"
+          },
+          "seed_skills": [
+            "morphology_analysis_skill",
+            "color_pattern_analysis_skill",
+            "lesion_description_structuring_skill",
+            "malignancy_risk_assessment_skill",
+            "differential_compare_skill",
+            "exclusion_reasoning_skill"
+          ]
+        },
+        "supporting_cases": [
+          "ISIC_0027291"
+        ],
+        "counter_cases": [],
+        "derived_rule": {
+          "rule_text": "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+          "action_hint": "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+lesion_description_structuring_skill+malignancy_risk_assessment_skill",
+          "promotion_interface": {
+            "builder": "promote_composite_skill_seed",
+            "future_skill_id": "composite_workflow_062001394120",
+            "future_skill_type": "composite_workflow_skill",
+            "required_min_success_count": 2,
+            "component_skills": [
+              "morphology_analysis_skill",
+              "color_pattern_analysis_skill",
+              "lesion_description_structuring_skill",
+              "malignancy_risk_assessment_skill",
+              "differential_compare_skill",
+              "exclusion_reasoning_skill"
+            ],
+            "trigger_pattern_source": "composite_skill_seed.trigger_pattern",
+            "output_contract_source": "component_skill_union"
+          }
+        },
+        "version": "v2",
+        "seed_id": "seed_composite_062001394120",
+        "composite_skill_seed": {
+          "seed_id": "seed_composite_062001394120",
+          "trigger_pattern": {
+            "decision_pattern": "structured_skill_sequence",
+            "ddx_candidates": [
+              "BCC",
+              "NV",
+              "AKIEC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "low",
+            "confusion_pair": null,
+            "region": "back"
+          },
+          "skill_sequence": [
+            "morphology_analysis_skill",
+            "color_pattern_analysis_skill",
+            "lesion_description_structuring_skill",
+            "malignancy_risk_assessment_skill",
+            "differential_compare_skill",
+            "exclusion_reasoning_skill"
+          ],
+          "supporting_cases": [
+            "ISIC_0027291"
+          ],
+          "success_count": 1,
+          "notes": [
+            "Candidate only; do not auto-materialize a composite skill in the current stage.",
+            "Promote only after repeated successful supporting cases under a stable trigger pattern.",
+            "Observed decision pattern: structured_skill_sequence"
+          ],
+          "promotion_interface": {
+            "builder": "promote_composite_skill_seed",
+            "future_skill_id": "composite_workflow_062001394120",
+            "future_skill_type": "composite_workflow_skill",
+            "required_min_success_count": 2,
+            "component_skills": [
+              "morphology_analysis_skill",
+              "color_pattern_analysis_skill",
+              "lesion_description_structuring_skill",
+              "malignancy_risk_assessment_skill",
+              "differential_compare_skill",
+              "exclusion_reasoning_skill"
+            ],
+            "trigger_pattern_source": "composite_skill_seed.trigger_pattern",
+            "output_contract_source": "component_skill_union"
+          }
+        },
+        "provenance": {}
+      },
+      {
+        "abs_id": "abs_prototype_94ec287866b9",
+        "type": "prototype",
+        "concept": "basal_cell_carcinoma",
+        "pattern_summary": {
+          "supporting_pattern": [
+            "A close-up view of skin showing scattered dark spots and hair follicles. The background appears slightly uneven with some areas of hyperpigmentation.",
+            "BCC",
+            "NV",
+            "malignancy_risk:medium"
+          ],
+          "failure_pattern": []
+        },
+        "supporting_cases": [
+          "ISIC_0027291"
+        ],
+        "counter_cases": [],
+        "derived_rule": {
+          "rule_text": "Prototype memories capture recurring structured observation patterns linked to stable final outcomes.",
+          "action_hint": "retrieve_as_reference_pattern"
+        },
+        "version": "v1",
+        "seed_id": null,
+        "composite_skill_seed": {},
+        "provenance": {}
+      }
+    ],
+    "cognition_update": {
+      "total_cases_increment": 1,
+      "failed_cases_increment": 0,
+      "confusion_cases_increment": 0,
+      "hard_cases_increment": 1,
+      "confusion_pair": null,
+      "preferred_skills": [
+        "morphology_analysis_skill",
+        "color_pattern_analysis_skill",
+        "lesion_description_structuring_skill",
+        "malignancy_risk_assessment_skill",
+        "differential_compare_skill",
+        "exclusion_reasoning_skill"
+      ]
+    },
+    "skill_stats_update": [
+      {
+        "skill_name": "morphology_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 1,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "color_pattern_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 1,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "lesion_description_structuring_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 1,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "malignancy_risk_assessment_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 1,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "differential_compare_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 1,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "exclusion_reasoning_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 1,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      }
+    ],
+    "reflection_extract": {
+      "raw_case_memory_ready": true,
+      "tactical_experience_count": 6,
+      "abstract_experience_candidate_count": 3,
+      "reusable_tactical_count": 6,
+      "composite_skill_seed_count": 1,
+      "composite_skill_seed_ids": [
+        "seed_composite_062001394120"
+      ],
+      "abstract_flags": {
+        "confusion_memory": false,
+        "prototype": true,
+        "rule": true,
+        "rule_candidate": false,
+        "composite_skill_seed": true
+      },
+      "case_status": "success"
+    }
+  },
+  "cognition_update": {
+    "total_cases_increment": 1,
+    "failed_cases_increment": 0,
+    "confusion_cases_increment": 0,
+    "hard_cases_increment": 1,
+    "confusion_pair": null,
+    "preferred_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "lesion_description_structuring_skill",
+      "malignancy_risk_assessment_skill",
+      "differential_compare_skill",
+      "exclusion_reasoning_skill"
+    ]
+  }
+}

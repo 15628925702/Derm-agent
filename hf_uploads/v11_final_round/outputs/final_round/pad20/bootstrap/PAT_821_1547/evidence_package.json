@@ -1,0 +1,2263 @@
+{
+  "perception": {
+    "image_summary": "A raised, slightly erythematous lesion on the nose with some scaling and crusting.",
+    "ddx_candidates": [
+      "Seborrheic Keratosis",
+      "Actinic Keratosis",
+      "Basal Cell Carcinoma"
+    ],
+    "uncertainty": {
+      "level": "high",
+      "reasons": [
+        "Lesion size and location suggest a possibility of malignancy but cannot be definitively ruled out without biopsy."
+      ]
+    },
+    "notes": [
+      "The lesion is located on the nose, which is a common site for skin cancers.",
+      "The patient has a history of skin cancer, increasing the risk of malignancy.",
+      "The lesion appears to have a central depression, which is less typical of seborrheic keratosis."
+    ]
+  },
+  "retrieved_experience": [
+    {
+      "case_id": "PAT_778_1471",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "A raised, irregularly shaped lesion on hairy skin.; Seborrheic Keratosis; Actinic Keratosis",
+      "confusion_pair": "Actinic Keratosis->BCC",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_confusion_a139aaeb6603",
+      "retrieval_score": 20
+    },
+    {
+      "case_id": "PAT_821_1547",
+      "source_layer": "tactical_experience",
+      "source_subtype": "confusion_pair",
+      "experience_type": "tactical_experience",
+      "perception_summary": "ddx=Actinic Keratosis, Seborrheic Keratosis, Basal Cell Carcinoma; risk=malignancy_risk:medium; uncertainty=high",
+      "confusion_pair": "Actinic Keratosis->BCC",
+      "learning_points": [
+        "kept the differential open",
+        "made pairwise reasoning explicit",
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing"
+      ],
+      "source_id": "tac_PAT_821_1547_bce72efcf1a2",
+      "retrieval_score": 20
+    },
+    {
+      "case_id": "PAT_365_751",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "A raised, slightly erythematous lesion with a central depression and some surrounding pigmentation is observed on the face.; Actinic keratosis; Seborrheic keratosis",
+      "confusion_pair": "Basal cell carcinoma->SCC",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_confusion_99ef37af934d",
+      "retrieval_score": 17
+    },
+    {
+      "case_id": "PAT_55_84",
+      "source_layer": "abstract_experience",
+      "source_subtype": "composite_skill_seed",
+      "experience_type": "composite_skill_seed",
+      "perception_summary": "ddx=Actinic keratosis, Seborrheic keratosis, Basal cell carcinoma; decision_pattern=risk_then_uncertainty_audit; uncertainty=high; risk=malignancy_risk:high",
+      "confusion_pair": null,
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+distribution_analysis_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage.",
+        "Promote only after repeated successful supporting cases under a stable trigger pattern."
+      ],
+      "source_id": "abs_composite_f2560c123c50",
+      "retrieval_score": 15
+    },
+    {
+      "case_id": "PAT_981_1848",
+      "source_layer": "raw_case_memory",
+      "source_subtype": "case_reference",
+      "experience_type": "raw_case_memory",
+      "perception_summary": "The image shows a close-up of a nose with multiple small, raised lesions that appear slightly erythematous. The skin texture is somewhat rough, and there are some areas of hyperpigmentation.",
+      "confusion_pair": null,
+      "learning_points": [
+        "Final decision: Actinic keratosis",
+        "Correctness: False"
+      ],
+      "source_id": "PAT_981_1848",
+      "retrieval_score": 11
+    }
+  ],
+  "skill_outputs": {
+    "morphology_analysis_skill": {
+      "lesion_type": "papule",
+      "size_range": "small",
+      "elevation": "raised",
+      "count": "multiple",
+      "referenced_experiences": [
+        "PAT_981_1848",
+        "PAT_967_1827"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "color_pattern_analysis_skill": {
+      "primary_color": "Pink",
+      "color_variation": "Marked",
+      "pigmentation_pattern": "Reticular",
+      "asymmetry_color": "Present",
+      "referenced_experiences": [
+        "PAT_981_1848",
+        "PAT_967_1827"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "distribution_analysis_skill": {
+      "body_location": "nose",
+      "symmetry": "asymmetric",
+      "localized_vs_generalized": "generalized",
+      "clustering_pattern": "solitary",
+      "referenced_experiences": [
+        "PAT_981_1848",
+        "PAT_967_1827"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "lesion_description_structuring_skill": {
+      "primary_lesion_morphology": "Raised papule",
+      "color": [
+        "Pink, marked variation, reticular pigmentation, asymmetry present"
+      ],
+      "border": [
+        "Irregular, slightly elevated"
+      ],
+      "surface": [
+        "Scaly, crusty"
+      ],
+      "size_count": [
+        "Multiple small lesions"
+      ],
+      "distribution": [
+        "Generalized, localized on the nose"
+      ],
+      "associated_context": [
+        "Patient has a history of skin cancer, increased malignancy risk, located on the nose, Fitzpatrick skin type 2.0"
+      ],
+      "referenced_experiences": [
+        "PAT_981_1848",
+        "PAT_967_1827"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "metadata_consistency_skill": {
+      "consistency_score": "medium",
+      "conflicts": [],
+      "suspicious_points": [
+        "The lesion appears to have a central depression, which is less typical of seborrheic keratosis."
+      ],
+      "referenced_experiences": [
+        "PAT_981_1848",
+        "PAT_967_1827",
+        "tac_PAT_821_1547_bce72efcf1a2",
+        "tac_PAT_409_812_bce72efcf1a2",
+        "tac_PAT_920_1747_bce72efcf1a2",
+        "abs_confusion_a139aaeb6603",
+        "abs_confusion_99ef37af934d",
+        "abs_confusion_59d106779ad3"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "differential_compare_skill": {
+      "candidate_pairs": [
+        "Actinic Keratosis vs. Basal Cell Carcinoma",
+        "Seborrheic Keratosis vs. Actinic Keratosis"
+      ],
+      "supporting_evidence": [
+        "Actinic Keratosis vs. Basal Cell Carcinoma: The lesion appears to have a central depression, which is less typical of basal cell carcinoma.; The patient has a history of skin cancer, increasing the risk of malignancy.",
+        "Seborrheic Keratosis vs. Actinic Keratosis: The lesion has a waxy, stuck-on appearance, which is characteristic of seborrheic keratosis.; The lesion is located on the nose, which is a common site for seborrheic keratosis."
+      ],
+      "conflicting_evidence": [
+        "Actinic Keratosis vs. Basal Cell Carcinoma: The lesion is raised and slightly erythematous, which can be seen in both actinic keratosis and basal cell carcinoma.",
+        "Seborrheic Keratosis vs. Actinic Keratosis: The lesion has a central depression, which is less typical of seborrheic keratosis."
+      ],
+      "required_missing_evidence": [
+        "Actinic Keratosis vs. Basal Cell Carcinoma: Missing closer surface/border inspection for pearly or rolled-edge detail.",
+        "Seborrheic Keratosis vs. Actinic Keratosis: Missing confirmation of waxy/stuck-on appearance versus flatter actinic roughness."
+      ],
+      "referenced_experiences": [
+        "PAT_981_1848",
+        "PAT_967_1827",
+        "tac_PAT_821_1547_bce72efcf1a2",
+        "tac_PAT_409_812_bce72efcf1a2",
+        "tac_PAT_920_1747_bce72efcf1a2",
+        "abs_confusion_a139aaeb6603",
+        "abs_confusion_99ef37af934d",
+        "abs_confusion_59d106779ad3"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "comparative_support"
+    },
+    "ack_scc_specialist_skill": {
+      "differentiation_features": [
+        "Presence of central depression",
+        "Surrounding erythema",
+        "Minimal scale and crust"
+      ],
+      "supporting_evidence": [
+        "Central depression suggests possible malignancy",
+        "Erythema around the lesion is concerning for malignancy"
+      ],
+      "opposing_evidence": [
+        "Minimal scale and crust argue against SCC or ACK",
+        "No clear pearly or translucent features"
+      ],
+      "required_missing_evidence": [
+        "Closer inspection of surface texture and border demarcation",
+        "Confirmation of waxy or stuck-on appearance"
+      ],
+      "uncertainty_under_current_evidence": "medium",
+      "further_observation_suggestions": [
+        "Examine the surface texture and border demarcation more closely",
+        "Look for any subtle pearly or translucent features"
+      ],
+      "cluster_watchouts": [
+        "Do not equate crust, irritation, or roughness by itself with SCC",
+        "Do not exclude BCC without naming at least one explicit opposing clue and one still-missing check"
+      ],
+      "referenced_confusion_patterns": [
+        "Actinic Keratosis->BCC",
+        "Basal cell carcinoma->SCC",
+        "Superficial Spreading Melanoma->BCC"
+      ],
+      "critical_supporting_evidence": [
+        "Central depression",
+        "Erythema around the lesion"
+      ],
+      "counterexample_watchouts": [
+        "Do not use keratin or scale as a shortcut to either ACK or SEK",
+        "Do not hide uncertainty when stuck-on/waxy morphology is not clearly seen"
+      ],
+      "referenced_experiences": [
+        "PAT_981_1848",
+        "PAT_967_1827",
+        "tac_PAT_821_1547_bce72efcf1a2",
+        "tac_PAT_409_812_bce72efcf1a2",
+        "tac_PAT_920_1747_bce72efcf1a2",
+        "abs_confusion_a139aaeb6603",
+        "abs_confusion_99ef37af934d",
+        "abs_confusion_59d106779ad3"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "comparative_support"
+    },
+    "exclusion_reasoning_skill": {
+      "unlikely_candidates": [
+        "Seborrheic Keratosis"
+      ],
+      "exclusion_evidence": [
+        "The lesion has a central depression, which is less typical of seborrheic keratosis."
+      ],
+      "required_missing_evidence": [
+        "Closer inspection of surface texture and border demarcation",
+        "Confirmation of waxy or stuck-on appearance"
+      ],
+      "exclusion_confidence": "medium",
+      "referenced_experiences": [
+        "PAT_981_1848",
+        "PAT_967_1827"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "information_gap_detection_skill": {
+      "missing_information": [
+        "Close-up inspection of the surface texture and border demarcation",
+        "Confirmation of waxy or stuck-on appearance versus flatter actinic roughness"
+      ],
+      "why_it_matters": [
+        "These details are crucial for distinguishing between actinic keratosis and basal cell carcinoma, as well as seborrheic keratosis and actinic keratosis."
+      ],
+      "impact_on_differential": [
+        "Without these details, it's challenging to rule out malignancy and differentiate between the differential candidates effectively."
+      ],
+      "uncertainty_if_missing": "high",
+      "referenced_experiences": [
+        "tac_PAT_821_1547_bce72efcf1a2",
+        "tac_PAT_409_812_bce72efcf1a2",
+        "tac_PAT_920_1747_bce72efcf1a2"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "uncertainty_assessment_skill": {
+      "uncertainty_level": "high",
+      "reasons": [
+        "The lesion's central depression is less typical of seborrheic keratosis.",
+        "The lesion is raised and slightly erythematous, which can be seen in both actinic keratosis and basal cell carcinoma.",
+        "The patient has a history of skin cancer, increasing the risk of malignancy."
+      ],
+      "missing_information": [
+        "Closer surface/border inspection for pearly or rolled-edge detail.",
+        "Confirmation of waxy/stuck-on appearance versus flatter actinic roughness."
+      ],
+      "referenced_experiences": [
+        "PAT_981_1848",
+        "PAT_967_1827",
+        "tac_PAT_821_1547_bce72efcf1a2",
+        "tac_PAT_409_812_bce72efcf1a2",
+        "tac_PAT_920_1747_bce72efcf1a2",
+        "abs_confusion_a139aaeb6603",
+        "abs_confusion_99ef37af934d",
+        "abs_confusion_59d106779ad3"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "uncertainty_signal"
+    },
+    "contradiction_check_skill": {
+      "contradictions": [
+        {
+          "description": "The lesion appears to have a central depression, which is less typical of seborrheic keratosis.",
+          "source": "morphology_analysis_skill"
+        },
+        {
+          "description": "The lesion is raised and slightly erythematous, which can be seen in both actinic keratosis and basal cell carcinoma.",
+          "source": "morphology_analysis_skill"
+        }
+      ],
+      "missing_links": [
+        {
+          "description": "Closer surface/border inspection for pearly or rolled-edge detail.",
+          "source": "uncertainty_assessment_skill"
+        },
+        {
+          "description": "Confirmation of waxy/stuck-on appearance versus flatter actinic roughness.",
+          "source": "uncertainty_assessment_skill"
+        }
+      ],
+      "reasoning_gaps": [
+        {
+          "description": "The lesion's central depression is less typical of seborrheic keratosis, but it does not definitively rule out other possibilities.",
+          "source": "morphology_analysis_skill"
+        },
+        {
+          "description": "The patient's history of skin cancer increases the risk of malignancy, but it does not provide enough information to narrow down the differential diagnosis.",
+          "source": "uncertainty_assessment_skill"
+        }
+      ],
+      "referenced_experiences": [
+        "PAT_981_1848",
+        "PAT_967_1827",
+        "tac_PAT_821_1547_bce72efcf1a2",
+        "tac_PAT_409_812_bce72efcf1a2",
+        "tac_PAT_920_1747_bce72efcf1a2",
+        "abs_confusion_a139aaeb6603",
+        "abs_confusion_99ef37af934d",
+        "abs_confusion_59d106779ad3"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "uncertainty_signal"
+    },
+    "escalation_recommendation_skill": {
+      "whether_escalation_needed": "yes",
+      "escalation_reason": [
+        "High uncertainty regarding the differential diagnosis due to overlapping clinical features and lack of definitive morphological characteristics."
+      ],
+      "suggested_next_check_type": "Biopsy",
+      "caution_flags": [
+        "High uncertainty in the differential diagnosis",
+        "Need for closer inspection of surface texture and border demarcation"
+      ],
+      "referenced_experiences": [
+        "PAT_981_1848",
+        "PAT_967_1827"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "risk_signal"
+    }
+  },
+  "risk_flags": [],
+  "uncertainty": {
+    "uncertainty_level": "high",
+    "reasons": [
+      "The lesion's central depression is less typical of seborrheic keratosis.",
+      "The lesion is raised and slightly erythematous, which can be seen in both actinic keratosis and basal cell carcinoma.",
+      "The patient has a history of skin cancer, increasing the risk of malignancy."
+    ],
+    "missing_information": [
+      "Closer surface/border inspection for pearly or rolled-edge detail.",
+      "Confirmation of waxy/stuck-on appearance versus flatter actinic roughness."
+    ],
+    "referenced_experiences": [
+      "PAT_981_1848",
+      "PAT_967_1827",
+      "tac_PAT_821_1547_bce72efcf1a2",
+      "tac_PAT_409_812_bce72efcf1a2",
+      "tac_PAT_920_1747_bce72efcf1a2",
+      "abs_confusion_a139aaeb6603",
+      "abs_confusion_99ef37af934d",
+      "abs_confusion_59d106779ad3"
+    ],
+    "evidence_strength": "medium",
+    "recommendation_type": "uncertainty_signal"
+  },
+  "notes": [
+    "Agent generated structured evidence only.",
+    "Qwen remains the sole final diagnostic decision maker.",
+    "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, differential_compare_skill, ack_scc_specialist_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill.",
+    "Policy in use: mainline_parameterized_agent_20260331.",
+    "Skill retrieval candidates: metadata_consistency_skill, ack_scc_specialist_skill, distribution_analysis_skill, lesion_description_structuring_skill, contradiction_check_skill, malignancy_risk_assessment_skill, morphology_analysis_skill, exclusion_reasoning_skill, uncertainty_assessment_skill, color_pattern_analysis_skill, differential_compare_skill, temporal_evolution_skill, information_gap_detection_skill, escalation_recommendation_skill.",
+    "The lesion is located on the nose, which is a common site for skin cancers.",
+    "The patient has a history of skin cancer, increasing the risk of malignancy.",
+    "The lesion appears to have a central depression, which is less typical of seborrheic keratosis.",
+    "Retrieved prior reasoning experience for context.",
+    "High uncertainty detected in MVP skeleton."
+  ],
+  "initial_perception_summary": {
+    "image_summary": "A raised, slightly erythematous lesion on the nose with some scaling and crusting.",
+    "ddx_candidates": [
+      "Seborrheic Keratosis",
+      "Actinic Keratosis",
+      "Basal Cell Carcinoma"
+    ],
+    "uncertainty_level": "high",
+    "uncertainty_reasons": [
+      "Lesion size and location suggest a possibility of malignancy but cannot be definitively ruled out without biopsy."
+    ],
+    "observation_notes": [
+      "The lesion is located on the nose, which is a common site for skin cancers.",
+      "The patient has a history of skin cancer, increasing the risk of malignancy.",
+      "The lesion appears to have a central depression, which is less typical of seborrheic keratosis."
+    ]
+  },
+  "retrieved_raw_cases_summary": [
+    {
+      "source_id": "PAT_981_1848",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "PAT_981_1848",
+      "confusion_pair": "None",
+      "perception_summary": "The image shows a close-up of a nose with multiple small, raised lesions that appear slightly erythematous. The skin texture is somewhat rough, and there are some areas of hyperpigmentation.",
+      "learning_points": [
+        "Final decision: Actinic keratosis",
+        "Correctness: False"
+      ],
+      "retrieval_score": 11.0,
+      "base_retrieval_score": 11.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "PAT_963_1820",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "PAT_963_1820",
+      "confusion_pair": "None",
+      "perception_summary": "A slightly raised, reddish-brown lesion is present on the back of a person with light skin.",
+      "learning_points": [
+        "Final decision: Actinic Keratosis",
+        "Correctness: True"
+      ],
+      "retrieval_score": 11.0,
+      "base_retrieval_score": 11.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "PAT_963_1819",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "PAT_963_1819",
+      "confusion_pair": "None",
+      "perception_summary": "A small, slightly raised, pinkish lesion with a central depression and some white crusts is present on the back.",
+      "learning_points": [
+        "Final decision: Actinic Keratosis",
+        "Correctness: False"
+      ],
+      "retrieval_score": 11.0,
+      "base_retrieval_score": 11.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_tactical_experiences_summary": [
+    {
+      "source_id": "tac_PAT_821_1547_bce72efcf1a2",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "PAT_821_1547",
+      "confusion_pair": "Actinic Keratosis->BCC",
+      "perception_summary": "ddx=Actinic Keratosis, Seborrheic Keratosis, Basal Cell Carcinoma; risk=malignancy_risk:medium; uncertainty=high",
+      "learning_points": [
+        "kept the differential open",
+        "made pairwise reasoning explicit",
+        "did not fully resolve the active confusion pattern"
+      ],
+      "retrieval_score": 20.0,
+      "base_retrieval_score": 20.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_PAT_409_812_bce72efcf1a2",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "PAT_409_812",
+      "confusion_pair": "Actinic keratosis->BCC",
+      "perception_summary": "ddx=Actinic keratosis, Seborrheic keratosis, Basal cell carcinoma; risk=malignancy_risk:medium; uncertainty=high",
+      "learning_points": [
+        "kept the differential open",
+        "made pairwise reasoning explicit",
+        "did not fully resolve the active confusion pattern"
+      ],
+      "retrieval_score": 20.0,
+      "base_retrieval_score": 20.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_PAT_920_1747_bce72efcf1a2",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "PAT_920_1747",
+      "confusion_pair": "Actinic Keratosis->BCC",
+      "perception_summary": "ddx=Actinic keratosis, Seborrheic keratosis, Basal cell carcinoma; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "kept the differential open",
+        "made pairwise reasoning explicit",
+        "did not fully resolve the active confusion pattern"
+      ],
+      "retrieval_score": 19.0,
+      "base_retrieval_score": 19.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_PAT_920_1747_8eed343a7164",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "PAT_920_1747",
+      "confusion_pair": "Actinic Keratosis->BCC",
+      "perception_summary": "ddx=Actinic keratosis, Seborrheic keratosis, Basal cell carcinoma; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "surfaced missing links in the reasoning chain",
+        "audited internal consistency",
+        "did not fully resolve the active confusion pattern"
+      ],
+      "retrieval_score": 19.0,
+      "base_retrieval_score": 19.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_abstract_experiences_summary": [
+    {
+      "source_id": "abs_confusion_a139aaeb6603",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "PAT_778_1471",
+      "confusion_pair": "Actinic Keratosis->BCC",
+      "perception_summary": "A raised, irregularly shaped lesion on hairy skin.; Seborrheic Keratosis; Actinic Keratosis",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 20.0,
+      "base_retrieval_score": 20.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_confusion_99ef37af934d",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "PAT_365_751",
+      "confusion_pair": "Basal cell carcinoma->SCC",
+      "perception_summary": "A raised, slightly erythematous lesion with a central depression and some surrounding pigmentation is observed on the face.; Actinic keratosis; Seborrheic keratosis",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 17.0,
+      "base_retrieval_score": 17.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_composite_f2560c123c50",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "PAT_55_84",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Actinic keratosis, Seborrheic keratosis, Basal cell carcinoma; decision_pattern=risk_then_uncertainty_audit; uncertainty=high; risk=malignancy_risk:high",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+distribution_analysis_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 15.0,
+      "base_retrieval_score": 15.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "uncertainty_summary": {
+    "uncertainty_level": "high",
+    "reasons": [
+      "The lesion's central depression is less typical of seborrheic keratosis.",
+      "The lesion is raised and slightly erythematous, which can be seen in both actinic keratosis and basal cell carcinoma.",
+      "The patient has a history of skin cancer, increasing the risk of malignancy."
+    ],
+    "missing_information": [
+      "Closer surface/border inspection for pearly or rolled-edge detail.",
+      "Confirmation of waxy/stuck-on appearance versus flatter actinic roughness."
+    ],
+    "referenced_experiences": [
+      "PAT_981_1848",
+      "PAT_967_1827",
+      "tac_PAT_821_1547_bce72efcf1a2",
+      "tac_PAT_409_812_bce72efcf1a2",
+      "tac_PAT_920_1747_bce72efcf1a2",
+      "abs_confusion_a139aaeb6603"
+    ]
+  },
+  "contradiction_summary": {
+    "contradictions": [
+      "{'description': 'The lesion appears to have a central depression, which is less typical of seborrheic keratosis.', 'source': 'morphology_analysis_skill'}",
+      "{'description': 'The lesion is raised and slightly erythematous, which can be seen in both actinic keratosis and basal cell carcinoma.', 'source': 'morphology_analysis_skill'}"
+    ],
+    "missing_links": [
+      "{'description': 'Closer surface/border inspection for pearly or rolled-edge detail.', 'source': 'uncertainty_assessment_skill'}",
+      "{'description': 'Confirmation of waxy/stuck-on appearance versus flatter actinic roughness.', 'source': 'uncertainty_assessment_skill'}"
+    ],
+    "reasoning_gaps": [
+      "{'description': \"The lesion's central depression is less typical of seborrheic keratosis, but it does not definitively rule out other possibilities.\", 'source': 'morphology_analysis_skill'}",
+      "{'description': \"The patient's history of skin cancer increases the risk of malignancy, but it does not provide enough information to narrow down the differential diagnosis.\", 'source': 'uncertainty_assessment_skill'}"
+    ],
+    "metadata_conflicts": [],
+    "suspicious_points": [
+      "The lesion appears to have a central depression, which is less typical of seborrheic keratosis."
+    ]
+  },
+  "information_gap_summary": {
+    "missing_information": [
+      "Close-up inspection of the surface texture and border demarcation",
+      "Confirmation of waxy or stuck-on appearance versus flatter actinic roughness"
+    ],
+    "why_it_matters": [
+      "These details are crucial for distinguishing between actinic keratosis and basal cell carcinoma, as well as seborrheic keratosis and actinic keratosis."
+    ],
+    "impact_on_differential": [
+      "Without these details, it's challenging to rule out malignancy and differentiate between the differential candidates effectively."
+    ],
+    "uncertainty_if_missing": "high"
+  },
+  "escalation_summary": {
+    "whether_escalation_needed": "yes",
+    "escalation_reason": [
+      "High uncertainty regarding the differential diagnosis due to overlapping clinical features and lack of definitive morphological characteristics."
+    ],
+    "suggested_next_check_type": "Biopsy",
+    "caution_flags": [
+      "High uncertainty in the differential diagnosis",
+      "Need for closer inspection of surface texture and border demarcation"
+    ]
+  },
+  "planner_rationale": {
+    "planner_type": "rule_based",
+    "planner_version": "v1",
+    "selected_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "distribution_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "differential_compare_skill",
+      "ack_scc_specialist_skill",
+      "exclusion_reasoning_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill",
+      "escalation_recommendation_skill"
+    ],
+    "selection_reasons": {
+      "morphology_analysis_skill": [
+        "Boosted by skill retrieval score=15.00.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "color_pattern_analysis_skill": [
+        "Boosted by skill retrieval score=13.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "distribution_analysis_skill": [
+        "Boosted by skill retrieval score=19.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "lesion_description_structuring_skill": [
+        "Boosted by skill retrieval score=19.40.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Boosted by active confusion cluster(s): ack_bcc_scc, ack_sek (bonus=0.9)."
+      ],
+      "metadata_consistency_skill": [
+        "Boosted by skill retrieval score=24.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "differential_compare_skill": [
+        "Boosted by skill retrieval score=12.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Boosted by active confusion cluster(s): ack_bcc_scc, ack_sek (bonus=1.0).",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "ack_scc_specialist_skill": [
+        "Boosted by skill retrieval score=21.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Boosted by active confusion cluster(s): ack_bcc_scc, ack_sek (bonus=2.0).",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "exclusion_reasoning_skill": [
+        "Boosted by skill retrieval score=15.00.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Boosted by active confusion cluster(s): ack_bcc_scc, ack_sek (bonus=1.5).",
+        "Matched active trigger profile `high_uncertainty`."
+      ],
+      "information_gap_detection_skill": [
+        "Boosted by skill retrieval score=9.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "uncertainty_assessment_skill": [
+        "Boosted by skill retrieval score=14.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "contradiction_check_skill": [
+        "Boosted by skill retrieval score=18.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`."
+      ],
+      "escalation_recommendation_skill": [
+        "Boosted by skill retrieval score=9.50.",
+        "Boosted by cognition helpful_rate=0.93.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `malignancy_possible`."
+      ]
+    }
+  },
+  "confusion_cluster_summary": {
+    "active_clusters": [
+      "ack_bcc_scc",
+      "ack_sek"
+    ],
+    "guidance": [
+      {
+        "cluster_id": "ack_bcc_scc",
+        "label": "ACK / BCC / SCC",
+        "supporting_clues": [
+          "Separate keratotic scale from pearly/translucent or rolled-border cues.",
+          "Keep focal ulcer/crust from being treated as automatic SCC support when BCC-like morphology remains plausible."
+        ],
+        "opposing_clues": [
+          "Absence of clear pearly/rolled-border or translucency weakens BCC confidence.",
+          "Absence of thicker hyperkeratosis, deeper surface destruction, or more invasive texture weakens SCC-style escalation."
+        ],
+        "required_missing_evidence": [
+          "Missing closer surface/border inspection for pearly or rolled-edge detail.",
+          "Missing vessel/ulcer depth detail that would better separate superficial scale from invasive disruption."
+        ],
+        "watch_outs": [
+          "Do not equate crust, irritation, or roughness by itself with SCC.",
+          "Do not exclude BCC without naming at least one explicit opposing clue and one still-missing check."
+        ]
+      },
+      {
+        "cluster_id": "ack_sek",
+        "label": "ACK / SEK",
+        "supporting_clues": [
+          "Explicitly contrast stuck-on/waxy/verrucous clues against flatter actinic roughness.",
+          "State whether the lesion reads as sharply demarcated keratotic plaque versus more actinic field-type change."
+        ],
+        "opposing_clues": [
+          "Scale alone is not enough to favor ACK when waxy or stuck-on cues dominate.",
+          "Seborrheic-looking keratin does not exclude ACK if actinic roughness and malignant-risk context remain active."
+        ],
+        "required_missing_evidence": [
+          "Missing closer surface texture and border-demarcation detail.",
+          "Missing confirmation of waxy/stuck-on appearance versus flatter actinic roughness."
+        ],
+        "watch_outs": [
+          "Do not use keratin or scale as a shortcut to either ACK or SEK.",
+          "Do not hide uncertainty when stuck-on/waxy morphology is not clearly seen."
+        ]
+      }
+    ]
+  },
+  "selected_evidence": [
+    {
+      "item_id": "ack_scc_specialist_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "ack_scc_specialist_skill",
+      "skill_name": "ack_scc_specialist_skill",
+      "retrieval_type": "",
+      "section": "comparison",
+      "category": "exclusion_opposing",
+      "summary": "ack_scc_specialist_skill: differentiation_features=Presence of central depression; Surrounding erythema; Minimal scale and crust | supporting_evidence=Central depression suggests possible malignancy; Erythema around the lesion is concerning for malignancy | opposing_evidence=Minimal scale and crust argue against SCC or ACK; No clear pearly or translucent ...",
+      "score": 16.8,
+      "rank": 1,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "lesion_description_structuring_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "lesion_description_structuring_skill",
+      "skill_name": "lesion_description_structuring_skill",
+      "retrieval_type": "",
+      "section": "observation",
+      "category": "description",
+      "summary": "lesion_description_structuring_skill: primary_lesion_morphology=Raised papule | color=Pink, marked variation, reticular pigmentation, asymmetry present | border=Irregular, slightly elevated | surface=Scaly, crusty | size_count=Multiple small lesions | distribution=Generalized, localized on the nose",
+      "score": 10.53,
+      "rank": 3,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "differential_compare_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "differential_compare_skill",
+      "skill_name": "differential_compare_skill",
+      "retrieval_type": "",
+      "section": "comparison",
+      "category": "differential_support",
+      "summary": "differential_compare_skill: candidate_pairs=Actinic Keratosis vs. Basal Cell Carcinoma; Seborrheic Keratosis vs. Actinic Keratosis | supporting_evidence=Actinic Keratosis vs. Basal Cell Carcinoma: The lesion appears to have a central depression, which is less typical of basal cell carcinoma.; The patient has ... | conflicting_evidence=Actinic Keratosis vs...",
+      "score": 8.3,
+      "rank": 4,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "contradiction_check_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "contradiction_check_skill",
+      "skill_name": "contradiction_check_skill",
+      "retrieval_type": "",
+      "section": "conflict_uncertainty",
+      "category": "contradiction_gap",
+      "summary": "contradiction_check_skill: contradictions={'description': 'The lesion appears to have a central depression, which is less typical of seborrheic keratosis.', 'source': 'morphology_analysis_skill'}; {'... | missing_links={'description': 'Closer surface/border inspection for pearly or rolled-edge detail.', 'source': 'uncertainty_assessment_skill'}; {'descrip...",
+      "score": 9.18,
+      "rank": 5,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "morphology_analysis_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "morphology_analysis_skill",
+      "skill_name": "morphology_analysis_skill",
+      "retrieval_type": "",
+      "section": "observation",
+      "category": "description",
+      "summary": "morphology_analysis_skill: lesion_type=papule | size_range=small | elevation=raised | count=multiple | evidence_strength=medium | recommendation_type=descriptive_evidence",
+      "score": 8.6,
+      "rank": 6,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "abs_confusion_a139aaeb6603",
+      "item_type": "retrieval_record",
+      "source_type": "retrieval_record",
+      "source_name": "abs_confusion_a139aaeb6603",
+      "skill_name": "",
+      "retrieval_type": "abstract_experience",
+      "section": "abstract_experience",
+      "category": "experience_hint",
+      "summary": "A raised, irregularly shaped lesion on hairy skin.; Seborrheic Keratosis; Actinic Keratosis | When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty | confusion_pair=Actinic Keratosis->BCC",
+      "score": 8.8,
+      "rank": 8,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "abs_confusion_99ef37af934d",
+      "item_type": "retrieval_record",
+      "source_type": "retrieval_record",
+      "source_name": "abs_confusion_99ef37af934d",
+      "skill_name": "",
+      "retrieval_type": "abstract_experience",
+      "section": "abstract_experience",
+      "category": "experience_hint",
+      "summary": "A raised, slightly erythematous lesion with a central depression and some surrounding pigmentation is observed on the face.; Actinic keratosis; Seborrheic keratosis | When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty | confusion_pair=Basal cell carcinoma->SCC",
+      "score": 8.2,
+      "rank": 10,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "information_gap_detection_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "information_gap_detection_skill",
+      "skill_name": "information_gap_detection_skill",
+      "retrieval_type": "",
+      "section": "conflict_uncertainty",
+      "category": "contradiction_gap",
+      "summary": "information_gap_detection_skill: missing_information=Close-up inspection of the surface texture and border demarcation; Confirmation of waxy or stuck-on appearance versus flatter actinic roughness | why_it_matters=These details are crucial for distinguishing between actinic keratosis and basal cell carcinoma, as well as seborrheic keratosis and actinic ke...",
+      "score": 8.06,
+      "rank": 11,
+      "keep_reason": "kept"
+    }
+  ],
+  "evidence_decision_policy": {
+    "risk_layer": {
+      "risk_flag": "malignancy_risk_unknown",
+      "caution_flags": [
+        "uncertainty_high",
+        "contradictions_present",
+        "follow_up_or_biopsy_consideration"
+      ],
+      "follow_up_suggestion": "Biopsy",
+      "selected_evidence": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "lesion_description_structuring_skill",
+          "skill_name": "lesion_description_structuring_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "lesion_description_structuring_skill: primary_lesion_morphology=Raised papule | color=Pink, marked variation, reticular pigmentation, asymmetry present | border=Irregular, slightly elevated | surface=Scaly, crusty | size_count=Multiple small lesions | distribution=Generalized, localized on the nose",
+          "score": 10.53,
+          "rank": 3,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "differential_compare_skill",
+          "skill_name": "differential_compare_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "differential_support",
+          "summary": "differential_compare_skill: candidate_pairs=Actinic Keratosis vs. Basal Cell Carcinoma; Seborrheic Keratosis vs. Actinic Keratosis | supporting_evidence=Actinic Keratosis vs. Basal Cell Carcinoma: The lesion appears to have a central depression, which is less typical of basal cell carcinoma.; The patient has ... | conflicting_evidence=Actinic Keratosis vs...",
+          "score": 8.3,
+          "rank": 4,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "contradiction_check_skill",
+          "skill_name": "contradiction_check_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "contradiction_check_skill: contradictions={'description': 'The lesion appears to have a central depression, which is less typical of seborrheic keratosis.', 'source': 'morphology_analysis_skill'}; {'... | missing_links={'description': 'Closer surface/border inspection for pearly or rolled-edge detail.', 'source': 'uncertainty_assessment_skill'}; {'descrip...",
+          "score": 9.18,
+          "rank": 5,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "morphology_analysis_skill",
+          "skill_name": "morphology_analysis_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "morphology_analysis_skill: lesion_type=papule | size_range=small | elevation=raised | count=multiple | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 8.6,
+          "rank": 6,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "ack_scc_specialist_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "ack_scc_specialist_skill",
+          "skill_name": "ack_scc_specialist_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "exclusion_opposing",
+          "summary": "ack_scc_specialist_skill: differentiation_features=Presence of central depression; Surrounding erythema; Minimal scale and crust | supporting_evidence=Central depression suggests possible malignancy; Erythema around the lesion is concerning for malignancy | opposing_evidence=Minimal scale and crust argue against SCC or ACK; No clear pearly or translucent ...",
+          "score": 16.8,
+          "rank": 1,
+          "keep_reason": "kept"
+        }
+      ],
+      "baseline_preview": {
+        "early_ddx_candidates": [
+          "Seborrheic Keratosis",
+          "Actinic Keratosis",
+          "Basal Cell Carcinoma"
+        ],
+        "image_summary": "A raised, slightly erythematous lesion on the nose with some scaling and crusting.",
+        "baseline_final_diagnosis": "Seborrheic Keratosis",
+        "baseline_differential_diagnoses": [
+          "Seborrheic Keratosis",
+          "Actinic Keratosis",
+          "Basal Cell Carcinoma",
+          "Squamous Cell Carcinoma"
+        ],
+        "baseline_confidence": "Moderate"
+      }
+    },
+    "diagnosis_override_layer": {
+      "workflow_context": {
+        "label_granularity": "unknown",
+        "presentation_mode": "focal_lesion",
+        "workflow_profile": "clinical_full_taxonomy_lesion_workflow",
+        "available_tests": [
+          "clinical_photo_only",
+          "lesion_photo"
+        ],
+        "workflow_preference": "morphology_first",
+        "hospital_type": "specialist_clinic",
+        "time_budget": "standard",
+        "metadata_completeness": "full",
+        "workflow_capabilities": [
+          "clinical_metadata_reasoning",
+          "full_taxonomy_reasoning",
+          "focal_lesion_reasoning",
+          "legacy_agent_final_reasoning"
+        ]
+      },
+      "override_allowed": false,
+      "malignancy_override_allowed": false,
+      "subtype_override_allowed": false,
+      "family_override_allowed": false,
+      "override_mode": "risk_only",
+      "override_reasons": [
+        "supporting_evidence_outweighs_opposition",
+        "subtype_specific_support_present",
+        "consistent_retrieval_support",
+        "opposing_quota_satisfied"
+      ],
+      "why_not_confident_enough_to_override": [
+        "malignancy risk is not high enough for a diagnosis override",
+        "no specialist evidence strongly supports the override direction",
+        "uncertainty remains too high for a confident diagnosis override",
+        "contradictions or reasoning gaps remain too numerous"
+      ],
+      "supporting_evidence": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "lesion_description_structuring_skill",
+          "skill_name": "lesion_description_structuring_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "lesion_description_structuring_skill: primary_lesion_morphology=Raised papule | color=Pink, marked variation, reticular pigmentation, asymmetry present | border=Irregular, slightly elevated | surface=Scaly, crusty | size_count=Multiple small lesions | distribution=Generalized, localized on the nose",
+          "score": 10.53,
+          "rank": 3,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "differential_compare_skill",
+          "skill_name": "differential_compare_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "differential_support",
+          "summary": "differential_compare_skill: candidate_pairs=Actinic Keratosis vs. Basal Cell Carcinoma; Seborrheic Keratosis vs. Actinic Keratosis | supporting_evidence=Actinic Keratosis vs. Basal Cell Carcinoma: The lesion appears to have a central depression, which is less typical of basal cell carcinoma.; The patient has ... | conflicting_evidence=Actinic Keratosis vs...",
+          "score": 8.3,
+          "rank": 4,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "contradiction_check_skill",
+          "skill_name": "contradiction_check_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "contradiction_check_skill: contradictions={'description': 'The lesion appears to have a central depression, which is less typical of seborrheic keratosis.', 'source': 'morphology_analysis_skill'}; {'... | missing_links={'description': 'Closer surface/border inspection for pearly or rolled-edge detail.', 'source': 'uncertainty_assessment_skill'}; {'descrip...",
+          "score": 9.18,
+          "rank": 5,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "morphology_analysis_skill",
+          "skill_name": "morphology_analysis_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "morphology_analysis_skill: lesion_type=papule | size_range=small | elevation=raised | count=multiple | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 8.6,
+          "rank": 6,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "abs_confusion_a139aaeb6603",
+          "item_type": "retrieval_record",
+          "source_type": "retrieval_record",
+          "source_name": "abs_confusion_a139aaeb6603",
+          "skill_name": "",
+          "retrieval_type": "abstract_experience",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "summary": "A raised, irregularly shaped lesion on hairy skin.; Seborrheic Keratosis; Actinic Keratosis | When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty | confusion_pair=Actinic Keratosis->BCC",
+          "score": 8.8,
+          "rank": 8,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "abs_confusion_99ef37af934d",
+          "item_type": "retrieval_record",
+          "source_type": "retrieval_record",
+          "source_name": "abs_confusion_99ef37af934d",
+          "skill_name": "",
+          "retrieval_type": "abstract_experience",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "summary": "A raised, slightly erythematous lesion with a central depression and some surrounding pigmentation is observed on the face.; Actinic keratosis; Seborrheic keratosis | When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty | confusion_pair=Basal cell carcinoma->SCC",
+          "score": 8.2,
+          "rank": 10,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "information_gap_detection_skill",
+          "skill_name": "information_gap_detection_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "information_gap_detection_skill: missing_information=Close-up inspection of the surface texture and border demarcation; Confirmation of waxy or stuck-on appearance versus flatter actinic roughness | why_it_matters=These details are crucial for distinguishing between actinic keratosis and basal cell carcinoma, as well as seborrheic keratosis and actinic ke...",
+          "score": 8.06,
+          "rank": 11,
+          "keep_reason": "kept"
+        }
+      ],
+      "opposing_evidence": [
+        {
+          "item_id": "ack_scc_specialist_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "ack_scc_specialist_skill",
+          "skill_name": "ack_scc_specialist_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "exclusion_opposing",
+          "summary": "ack_scc_specialist_skill: differentiation_features=Presence of central depression; Surrounding erythema; Minimal scale and crust | supporting_evidence=Central depression suggests possible malignancy; Erythema around the lesion is concerning for malignancy | opposing_evidence=Minimal scale and crust argue against SCC or ACK; No clear pearly or translucent ...",
+          "score": 16.8,
+          "rank": 1,
+          "keep_reason": "kept"
+        }
+      ],
+      "supporting_score": 61.67,
+      "opposing_score": 16.8,
+      "support_margin": 44.87,
+      "selected_evidence_present": true,
+      "subtype_support_score": 33.36,
+      "subtype_support_margin": 16.56,
+      "specialist_support_present": false,
+      "consistent_retrieval_count": 2,
+      "contradiction_count": 7,
+      "uncertainty_level": "high",
+      "opposing_quota_satisfied": true,
+      "subtype_support_quota_satisfied": true
+    }
+  },
+  "serialized_evidence_text": "[Observation Evidence]\n- Initial image summary: A raised, slightly erythematous lesion on the nose with some scaling and crusting.\n- Early differential candidates: Seborrheic Keratosis, Actinic Keratosis, Basal Cell Carcinoma\n- structured lesion observation: lesion_description_structuring_skill: primary_lesion_morphology=Raised papule | color=Pink, marked variation, reticular pigmentation, asymmetry present | border=Irregular, slightly elevated | surface=Scaly, crusty | size_count=Multiple small lesions | distribution=Generalized, localized on the nose || morphology_analysis_skill: lesion_type=papule | size_range=small | elevation=raised | count=multiple | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Raw case reference PAT_981_1848: The image shows a close-up of a nose with multiple small, raised lesions that appear slightly erythematous. The skin texture is somewhat rough, and there are some areas of hyperpigmentation.\n- Raw case reference PAT_963_1820: A slightly raised, reddish-brown lesion is present on the back of a person with light skin.\n- Raw case reference PAT_963_1819: A small, slightly raised, pinkish lesion with a central depression and some white crusts is present on the back.\n\n[Exclusion And Comparison Evidence]\n- Active confusion clusters: ack_bcc_scc, ack_sek\n- ACK / BCC / SCC watch-out: Do not equate crust, irritation, or roughness by itself with SCC.; Do not exclude BCC without naming at least one explicit opposing clue and one still-missing check.\n- ACK / SEK watch-out: Do not use keratin or scale as a shortcut to either ACK or SEK.; Do not hide uncertainty when stuck-on/waxy morphology is not clearly seen.\n- ack_scc_specialist_skill: differentiation_features=Presence of central depression; Surrounding erythema; Minimal scale and crust | supporting_evidence=Central depression suggests possible malignancy; Erythema around the lesion is concerning for malignancy | opposing_evidence=Minimal scale and crust argue against SCC or ACK; No clear pearly or translucent features | required_missing_evidence=Closer inspection of surface texture and border demarcation; Confirmation of waxy or stuck-on appearance | uncertainty_under_current_evidence=medium | further_observation_suggestions=Examine the surface texture and border demarcation more closely; Look for any subtle pearly or translucent features\n- differential_compare_skill: candidate_pairs=Actinic Keratosis vs. Basal Cell Carcinoma; Seborrheic Keratosis vs. Actinic Keratosis | supporting_evidence=Actinic Keratosis vs. Basal Cell Carcinoma: The lesion appears to have a central depression, which is less typical of basal cell carcinoma.; The patient has ... | conflicting_evidence=Actinic Keratosis vs. Basal Cell Carcinoma: The lesion is raised and slightly erythematous, which can be seen in both actinic keratosis and basal cell carcin... | required_missing_evidence=Actinic Keratosis vs. Basal Cell Carcinoma: Missing closer surface/border inspection for pearly or rolled-edge detail.; Seborrheic Keratosis vs. Actinic Kera... | evidence_strength=medium | recommendation_type=comparative_support\n- Tactical experience tac_PAT_821_1547_bce72efcf1a2: ddx=Actinic Keratosis, Seborrheic Keratosis, Basal Cell Carcinoma; risk=malignancy_risk:medium; uncertainty=high; kept the differential open; made pairwise reasoning explicit; did not fully resolve the active confusion pattern\n- Tactical experience tac_PAT_409_812_bce72efcf1a2: ddx=Actinic keratosis, Seborrheic keratosis, Basal cell carcinoma; risk=malignancy_risk:medium; uncertainty=high; kept the differential open; made pairwise reasoning explicit; did not fully resolve the active confusion pattern\n- Tactical experience tac_PAT_920_1747_bce72efcf1a2: ddx=Actinic keratosis, Seborrheic keratosis, Basal cell carcinoma; risk=malignancy_risk:medium; uncertainty=medium; kept the differential open; made pairwise reasoning explicit; did not fully resolve the active confusion pattern\n- Tactical experience tac_PAT_920_1747_8eed343a7164: ddx=Actinic keratosis, Seborrheic keratosis, Basal cell carcinoma; risk=malignancy_risk:medium; uncertainty=medium; surfaced missing links in the reasoning chain; audited internal consistency; did not fully resolve the active confusion pattern\n- Abstract comparison memory abs_confusion_a139aaeb6603: A raised, irregularly shaped lesion on hairy skin.; Seborrheic Keratosis; Actinic Keratosis; When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty\n- Abstract comparison memory abs_confusion_99ef37af934d: A raised, slightly erythematous lesion with a central depression and some surrounding pigmentation is observed on the face.; Actinic keratosis; Seborrheic keratosis; When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty\n\n[Risk Evidence]\n\n[Conflict And Uncertainty]\n- Uncertainty level: high\n- Uncertainty reasons: The lesion's central depression is less typical of seborrheic keratosis.; The lesion is raised and slightly erythematous, which can be seen in both actinic keratosis and basal cell carcinoma.; The patient has a history of skin cancer, increasing the risk of malignancy.\n- Missing information: Closer surface/border inspection for pearly or rolled-edge detail.; Confirmation of waxy/stuck-on appearance versus flatter actinic roughness.\n- contradictions: {'description': 'The lesion appears to have a central depression, which is less typical of seborrheic keratosis.', 'source': 'morphology_analysis_skill'}; {'description': 'The lesion is raised and slightly erythematous, which can be seen in both actinic keratosis and basal cell carcinoma.', 'source': 'morphology_analysis_skill'}\n- missing links: {'description': 'Closer surface/border inspection for pearly or rolled-edge detail.', 'source': 'uncertainty_assessment_skill'}; {'description': 'Confirmation of waxy/stuck-on appearance versus flatter actinic roughness.', 'source': 'uncertainty_assessment_skill'}\n- reasoning gaps: {'description': \"The lesion's central depression is less typical of seborrheic keratosis, but it does not definitively rule out other possibilities.\", 'source': 'morphology_analysis_skill'}; {'description': \"The patient's history of skin cancer increases the risk of malignancy, but it does not provide enough information to narrow down the differential diagnosis.\", 'source': 'uncertainty_assessment_skill'}\n- suspicious points: The lesion appears to have a central depression, which is less typical of seborrheic keratosis.\n- contradiction_check_skill: contradictions={'description': 'The lesion appears to have a central depression, which is less typical of seborrheic keratosis.', 'source': 'morphology_analysis_skill'}; {'... | missing_links={'description': 'Closer surface/border inspection for pearly or rolled-edge detail.', 'source': 'uncertainty_assessment_skill'}; {'description': 'Confirmatio... | reasoning_gaps={'description': \"The lesion's central depression is less typical of seborrheic keratosis, but it does not definitively rule out other possibilities.\", 'sourc... | evidence_strength=medium | recommendation_type=uncertainty_signal\n- information_gap_detection_skill: missing_information=Close-up inspection of the surface texture and border demarcation; Confirmation of waxy or stuck-on appearance versus flatter actinic roughness | why_it_matters=These details are crucial for distinguishing between actinic keratosis and basal cell carcinoma, as well as seborrheic keratosis and actinic keratosis. | impact_on_differential=Without these details, it's challenging to rule out malignancy and differentiate between the differential candidates effectively. | uncertainty_if_missing=high | evidence_strength=medium | recommendation_type=descriptive_evidence\n- explicit information gaps: Close-up inspection of the surface texture and border demarcation; Confirmation of waxy or stuck-on appearance versus flatter actinic roughness\n- why gaps matter: These details are crucial for distinguishing between actinic keratosis and basal cell carcinoma, as well as seborrheic keratosis and actinic keratosis.\n- impact on differential: Without these details, it's challenging to rule out malignancy and differentiate between the differential candidates effectively.\n- residual uncertainty if still missing: high\n- escalation needed: yes\n- escalation reasons: High uncertainty regarding the differential diagnosis due to overlapping clinical features and lack of definitive morphological characteristics.\n- suggested next check type: Biopsy\n- caution flags: High uncertainty in the differential diagnosis; Need for closer inspection of surface texture and border demarcation\n\n[Planner Rationale]\n- Selected skills: morphology_analysis_skill, color_pattern_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, differential_compare_skill, ack_scc_specialist_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill\n- morphology_analysis_skill: Boosted by skill retrieval score=15.00.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=1.00.; Matched active trigger profile `foundational_observation`.\n- color_pattern_analysis_skill: Boosted by skill retrieval score=13.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=1.00.; Matched active trigger profile `foundational_observation`.\n- distribution_analysis_skill: Boosted by skill retrieval score=19.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=1.00.; Matched active trigger profile `foundational_observation`.",
+  "evidence_calibration_debug": {
+    "calibrator_type": "heuristic",
+    "calibrator_version": "v1",
+    "section_plan": {
+      "observation": {
+        "skill_names": [
+          "lesion_description_structuring_skill",
+          "morphology_analysis_skill"
+        ],
+        "merged_groups": [
+          {
+            "label": "structured_lesion_observation",
+            "skills": [
+              "lesion_description_structuring_skill",
+              "morphology_analysis_skill"
+            ],
+            "max_members": 2
+          }
+        ],
+        "raw_case_source_ids": []
+      },
+      "comparison": {
+        "skill_names": [
+          "ack_scc_specialist_skill",
+          "differential_compare_skill"
+        ],
+        "merged_groups": [],
+        "tactical_source_ids": [],
+        "abstract_source_ids": [
+          "abs_confusion_a139aaeb6603",
+          "abs_confusion_99ef37af934d"
+        ]
+      },
+      "risk": {
+        "skill_names": [],
+        "abstract_source_ids": []
+      },
+      "conflict_uncertainty": {
+        "skill_names": [
+          "contradiction_check_skill",
+          "information_gap_detection_skill"
+        ]
+      },
+      "planner": {
+        "max_reason_skills": 3
+      },
+      "section_order": [
+        "observation",
+        "comparison",
+        "risk",
+        "conflict_uncertainty",
+        "planner"
+      ]
+    },
+    "item_scores": [
+      {
+        "item_id": "ack_scc_specialist_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 16.8,
+        "learned_score": 0.0,
+        "final_score": 16.8,
+        "selected": true,
+        "reason": "kept",
+        "category": "exclusion_opposing",
+        "rank": 1,
+        "dedup_key": "comparison:negative_evidence"
+      },
+      {
+        "item_id": "exclusion_reasoning_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 14.75,
+        "learned_score": 0.0,
+        "final_score": 14.75,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "exclusion_opposing",
+        "rank": 0,
+        "dedup_key": "comparison:negative_evidence"
+      },
+      {
+        "item_id": "lesion_description_structuring_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 10.53,
+        "learned_score": 0.0,
+        "final_score": 10.53,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 2,
+        "dedup_key": "description:lesion_description_structuring_skill"
+      },
+      {
+        "item_id": "contradiction_check_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 9.18,
+        "learned_score": 0.0,
+        "final_score": 9.18,
+        "selected": true,
+        "reason": "kept",
+        "category": "contradiction_gap",
+        "rank": 4,
+        "dedup_key": "uncertainty:contradiction_check_skill"
+      },
+      {
+        "item_id": "abs_confusion_a139aaeb6603",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 8.8,
+        "learned_score": 0.0,
+        "final_score": 8.8,
+        "selected": true,
+        "reason": "kept",
+        "category": "experience_hint",
+        "rank": 6,
+        "dedup_key": "abstract_experience:abs_confusion_a139aaeb6603"
+      },
+      {
+        "item_id": "morphology_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 8.6,
+        "learned_score": 0.0,
+        "final_score": 8.6,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 5,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 8.4,
+        "learned_score": 0.0,
+        "final_score": 8.4,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 8.38,
+        "learned_score": 0.0,
+        "final_score": 8.38,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "differential_compare_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 8.3,
+        "learned_score": 0.0,
+        "final_score": 8.3,
+        "selected": true,
+        "reason": "kept",
+        "category": "differential_support",
+        "rank": 3,
+        "dedup_key": "differential_support:differential_compare_skill"
+      },
+      {
+        "item_id": "abs_confusion_99ef37af934d",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 8.2,
+        "learned_score": 0.0,
+        "final_score": 8.2,
+        "selected": true,
+        "reason": "kept",
+        "category": "experience_hint",
+        "rank": 7,
+        "dedup_key": "abstract_experience:abs_confusion_99ef37af934d"
+      },
+      {
+        "item_id": "information_gap_detection_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 8.06,
+        "learned_score": 0.0,
+        "final_score": 8.06,
+        "selected": true,
+        "reason": "kept",
+        "category": "contradiction_gap",
+        "rank": 8,
+        "dedup_key": "uncertainty:information_gap_detection_skill"
+      },
+      {
+        "item_id": "uncertainty_assessment_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 7.86,
+        "learned_score": 0.0,
+        "final_score": 7.86,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "contradiction_gap",
+        "rank": 0,
+        "dedup_key": "uncertainty:uncertainty_assessment_skill"
+      },
+      {
+        "item_id": "metadata_consistency_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 7.8,
+        "learned_score": 0.0,
+        "final_score": 7.8,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "differential_support",
+        "rank": 0,
+        "dedup_key": "differential_support:metadata_consistency_skill"
+      },
+      {
+        "item_id": "escalation_recommendation_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 7.46,
+        "learned_score": 0.0,
+        "final_score": 7.46,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "contradiction_gap",
+        "rank": 0,
+        "dedup_key": "uncertainty:escalation_recommendation_skill"
+      },
+      {
+        "item_id": "tac_PAT_821_1547_bce72efcf1a2",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 6.6,
+        "learned_score": 0.0,
+        "final_score": 6.6,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_PAT_821_1547_bce72efcf1a2"
+      },
+      {
+        "item_id": "tac_PAT_409_812_bce72efcf1a2",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 6.6,
+        "learned_score": 0.0,
+        "final_score": 6.6,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_PAT_409_812_bce72efcf1a2"
+      },
+      {
+        "item_id": "abs_composite_f2560c123c50",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 6.5,
+        "learned_score": 0.0,
+        "final_score": 6.5,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "abstract_experience:abs_composite_f2560c123c50"
+      },
+      {
+        "item_id": "tac_PAT_920_1747_bce72efcf1a2",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 6.4,
+        "learned_score": 0.0,
+        "final_score": 6.4,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_PAT_920_1747_bce72efcf1a2"
+      },
+      {
+        "item_id": "tac_PAT_920_1747_8eed343a7164",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 6.4,
+        "learned_score": 0.0,
+        "final_score": 6.4,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_PAT_920_1747_8eed343a7164"
+      },
+      {
+        "item_id": "PAT_981_1848",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 3.5,
+        "learned_score": 0.0,
+        "final_score": 3.5,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:PAT_981_1848"
+      },
+      {
+        "item_id": "PAT_963_1820",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 3.5,
+        "learned_score": 0.0,
+        "final_score": 3.5,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:PAT_963_1820"
+      },
+      {
+        "item_id": "PAT_963_1819",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 3.5,
+        "learned_score": 0.0,
+        "final_score": 3.5,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:PAT_963_1819"
+      }
+    ],
+    "omitted_items": [
+      {
+        "item_id": "exclusion_reasoning_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "comparison",
+        "category": "exclusion_opposing",
+        "score": 14.75
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 8.4
+      },
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 8.38
+      },
+      {
+        "item_id": "uncertainty_assessment_skill",
+        "item_type": "skill_output",
+        "reason": "global_budget_exceeded",
+        "section": "conflict_uncertainty",
+        "category": "contradiction_gap",
+        "score": 7.86
+      },
+      {
+        "item_id": "metadata_consistency_skill",
+        "item_type": "skill_output",
+        "reason": "global_budget_exceeded",
+        "section": "comparison",
+        "category": "differential_support",
+        "score": 7.8
+      },
+      {
+        "item_id": "escalation_recommendation_skill",
+        "item_type": "skill_output",
+        "reason": "global_budget_exceeded",
+        "section": "conflict_uncertainty",
+        "category": "contradiction_gap",
+        "score": 7.46
+      },
+      {
+        "item_id": "tac_PAT_409_812_bce72efcf1a2",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 6.6
+      },
+      {
+        "item_id": "tac_PAT_821_1547_bce72efcf1a2",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 6.6
+      },
+      {
+        "item_id": "abs_composite_f2560c123c50",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "abstract_experience",
+        "category": "experience_hint",
+        "score": 6.5
+      },
+      {
+        "item_id": "tac_PAT_920_1747_8eed343a7164",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 6.4
+      },
+      {
+        "item_id": "tac_PAT_920_1747_bce72efcf1a2",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 6.4
+      },
+      {
+        "item_id": "PAT_963_1819",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 3.5
+      },
+      {
+        "item_id": "PAT_963_1820",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 3.5
+      },
+      {
+        "item_id": "PAT_981_1848",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 3.5
+      }
+    ],
+    "debug": {
+      "policy": {
+        "enable_evidence_calibrator": true,
+        "calibrator_mode": "heuristic",
+        "calibrator_checkpoint_path": "",
+        "learned_calibration_weight": 1.2,
+        "max_total_items": 8,
+        "max_observation_skills": 4,
+        "max_comparison_skills": 3,
+        "max_risk_skills": 2,
+        "max_uncertainty_skills": 3,
+        "max_exclusion_items": 2,
+        "max_experience_hints": 2,
+        "max_raw_cases": 1,
+        "max_tactical": 2,
+        "max_abstract": 2,
+        "max_planner_reasons": 3,
+        "omit_low_value_evidence": true,
+        "min_effective_score": 2.4,
+        "dedup_similar_evidence": true,
+        "cluster_aware_ordering": true,
+        "cluster_opposing_bonus": 1.8,
+        "cluster_exclusion_bonus": 1.4,
+        "risk_overweight_penalty": 1.2,
+        "uncertainty_overweight_penalty": 1.0,
+        "description_priority_bonus": 0.6,
+        "exclusion_priority_bonus": 1.2,
+        "negative_evidence_priority_bonus": 1.0,
+        "allow_family_override": false,
+        "allow_keratinocyte_subtype_override": false,
+        "debug_output": true,
+        "conservative_fusion_mode": "off"
+      },
+      "learned_scorer_loaded": false,
+      "contradiction_count": 7,
+      "uncertainty_level": "high",
+      "risk_flag_count": 0,
+      "confusion_clusters": [
+        "ack_bcc_scc",
+        "ack_sek"
+      ],
+      "kept_items": [
+        {
+          "item_id": "ack_scc_specialist_skill",
+          "item_type": "skill_output",
+          "section": "comparison",
+          "category": "exclusion_opposing",
+          "rank": 1,
+          "score": 16.8
+        },
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "rank": 3,
+          "score": 10.53
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "section": "comparison",
+          "category": "differential_support",
+          "rank": 4,
+          "score": 8.3
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "rank": 5,
+          "score": 9.18
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "rank": 6,
+          "score": 8.6
+        },
+        {
+          "item_id": "abs_confusion_a139aaeb6603",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "rank": 8,
+          "score": 8.8
+        },
+        {
+          "item_id": "abs_confusion_99ef37af934d",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "rank": 10,
+          "score": 8.2
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "rank": 11,
+          "score": 8.06
+        }
+      ],
+      "pruned_items": [
+        {
+          "item_id": "exclusion_reasoning_skill",
+          "item_type": "skill_output",
+          "section": "comparison",
+          "category": "exclusion_opposing",
+          "score": 14.75,
+          "heuristic_score": 14.75,
+          "learned_score": 0.0,
+          "payload": {
+            "unlikely_candidates": [
+              "Seborrheic Keratosis"
+            ],
+            "exclusion_evidence": [
+              "The lesion has a central depression, which is less typical of seborrheic keratosis."
+            ],
+            "required_missing_evidence": [
+              "Closer inspection of surface texture and border demarcation",
+              "Confirmation of waxy or stuck-on appearance"
+            ],
+            "exclusion_confidence": "medium",
+            "referenced_experiences": [
+              "PAT_981_1848",
+              "PAT_967_1827"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 15.0,
+          "dedup_key": "comparison:negative_evidence",
+          "ordering_score": 17.25,
+          "rank": 2,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "distribution_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 8.4,
+          "heuristic_score": 8.4,
+          "learned_score": 0.0,
+          "payload": {
+            "body_location": "nose",
+            "symmetry": "asymmetric",
+            "localized_vs_generalized": "generalized",
+            "clustering_pattern": "solitary",
+            "referenced_experiences": [
+              "PAT_981_1848",
+              "PAT_967_1827"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 19.5,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 8.8,
+          "rank": 7,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "color_pattern_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 8.38,
+          "heuristic_score": 8.38,
+          "learned_score": 0.0,
+          "payload": {
+            "primary_color": "Pink",
+            "color_variation": "Marked",
+            "pigmentation_pattern": "Reticular",
+            "asymmetry_color": "Present",
+            "referenced_experiences": [
+              "PAT_981_1848",
+              "PAT_967_1827"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 13.5,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 8.780000000000001,
+          "rank": 9,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "uncertainty_assessment_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "score": 7.859999999999999,
+          "heuristic_score": 7.859999999999999,
+          "learned_score": 0.0,
+          "payload": {
+            "uncertainty_level": "high",
+            "reasons": [
+              "The lesion's central depression is less typical of seborrheic keratosis.",
+              "The lesion is raised and slightly erythematous, which can be seen in both actinic keratosis and basal cell carcinoma.",
+              "The patient has a history of skin cancer, increasing the risk of malignancy."
+            ],
+            "missing_information": [
+              "Closer surface/border inspection for pearly or rolled-edge detail.",
+              "Confirmation of waxy/stuck-on appearance versus flatter actinic roughness."
+            ],
+            "referenced_experiences": [
+              "PAT_981_1848",
+              "PAT_967_1827",
+              "tac_PAT_821_1547_bce72efcf1a2",
+              "tac_PAT_409_812_bce72efcf1a2",
+              "tac_PAT_920_1747_bce72efcf1a2",
+              "abs_confusion_a139aaeb6603",
+              "abs_confusion_99ef37af934d",
+              "abs_confusion_59d106779ad3"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "uncertainty_signal"
+          },
+          "retrieval_score": 14.5,
+          "dedup_key": "uncertainty:uncertainty_assessment_skill",
+          "ordering_score": 7.859999999999999,
+          "rank": 12,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "metadata_consistency_skill",
+          "item_type": "skill_output",
+          "section": "comparison",
+          "category": "differential_support",
+          "score": 7.8,
+          "heuristic_score": 7.8,
+          "learned_score": 0.0,
+          "payload": {
+            "consistency_score": "medium",
+            "conflicts": [],
+            "suspicious_points": [
+              "The lesion appears to have a central depression, which is less typical of seborrheic keratosis."
+            ],
+            "referenced_experiences": [
+              "PAT_981_1848",
+              "PAT_967_1827",
+              "tac_PAT_821_1547_bce72efcf1a2",
+              "tac_PAT_409_812_bce72efcf1a2",
+              "tac_PAT_920_1747_bce72efcf1a2",
+              "abs_confusion_a139aaeb6603",
+              "abs_confusion_99ef37af934d",
+              "abs_confusion_59d106779ad3"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 24.5,
+          "dedup_key": "differential_support:metadata_consistency_skill",
+          "ordering_score": 7.8,
+          "rank": 13,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "escalation_recommendation_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "score": 7.460000000000001,
+          "heuristic_score": 7.460000000000001,
+          "learned_score": 0.0,
+          "payload": {
+            "whether_escalation_needed": "yes",
+            "escalation_reason": [
+              "High uncertainty regarding the differential diagnosis due to overlapping clinical features and lack of definitive morphological characteristics."
+            ],
+            "suggested_next_check_type": "Biopsy",
+            "caution_flags": [
+              "High uncertainty in the differential diagnosis",
+              "Need for closer inspection of surface texture and border demarcation"
+            ],
+            "referenced_experiences": [
+              "PAT_981_1848",
+              "PAT_967_1827"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "risk_signal"
+          },
+          "retrieval_score": 9.5,
+          "dedup_key": "uncertainty:escalation_recommendation_skill",
+          "ordering_score": 7.460000000000001,
+          "rank": 14,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_PAT_409_812_bce72efcf1a2",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 6.6,
+          "heuristic_score": 6.6,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_PAT_409_812_bce72efcf1a2",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "PAT_409_812",
+            "confusion_pair": "Actinic keratosis->BCC",
+            "perception_summary": "ddx=Actinic keratosis, Seborrheic keratosis, Basal cell carcinoma; risk=malignancy_risk:medium; uncertainty=high",
+            "learning_points": [
+              "kept the differential open",
+              "made pairwise reasoning explicit",
+              "did not fully resolve the active confusion pattern"
+            ],
+            "retrieval_score": 20.0,
+            "base_retrieval_score": 20.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_PAT_409_812_bce72efcf1a2",
+          "ordering_score": 6.6,
+          "rank": 15,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_PAT_821_1547_bce72efcf1a2",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 6.6,
+          "heuristic_score": 6.6,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_PAT_821_1547_bce72efcf1a2",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "PAT_821_1547",
+            "confusion_pair": "Actinic Keratosis->BCC",
+            "perception_summary": "ddx=Actinic Keratosis, Seborrheic Keratosis, Basal Cell Carcinoma; risk=malignancy_risk:medium; uncertainty=high",
+            "learning_points": [
+              "kept the differential open",
+              "made pairwise reasoning explicit",
+              "did not fully resolve the active confusion pattern"
+            ],
+            "retrieval_score": 20.0,
+            "base_retrieval_score": 20.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_PAT_821_1547_bce72efcf1a2",
+          "ordering_score": 6.6,
+          "rank": 16,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "abs_composite_f2560c123c50",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "score": 6.5,
+          "heuristic_score": 6.5,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "abs_composite_f2560c123c50",
+            "source_layer": "abstract_experience",
+            "experience_type": "composite_skill_seed",
+            "case_id": "PAT_55_84",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=Actinic keratosis, Seborrheic keratosis, Basal cell carcinoma; decision_pattern=risk_then_uncertainty_audit; uncertainty=high; risk=malignancy_risk:high",
+            "learning_points": [
+              "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+              "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+distribution_analysis_skill",
+              "Candidate only; do not auto-materialize a composite skill in the current stage."
+            ],
+            "retrieval_score": 15.0,
+            "base_retrieval_score": 15.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "abstract_experience:abs_composite_f2560c123c50",
+          "ordering_score": 6.5,
+          "rank": 17,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_PAT_920_1747_8eed343a7164",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 6.4,
+          "heuristic_score": 6.4,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_PAT_920_1747_8eed343a7164",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "PAT_920_1747",
+            "confusion_pair": "Actinic Keratosis->BCC",
+            "perception_summary": "ddx=Actinic keratosis, Seborrheic keratosis, Basal cell carcinoma; risk=malignancy_risk:medium; uncertainty=medium",
+            "learning_points": [
+              "surfaced missing links in the reasoning chain",
+              "audited internal consistency",
+              "did not fully resolve the active confusion pattern"
+            ],
+            "retrieval_score": 19.0,
+            "base_retrieval_score": 19.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_PAT_920_1747_8eed343a7164",
+          "ordering_score": 6.4,
+          "rank": 18,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_PAT_920_1747_bce72efcf1a2",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 6.4,
+          "heuristic_score": 6.4,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_PAT_920_1747_bce72efcf1a2",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "PAT_920_1747",
+            "confusion_pair": "Actinic Keratosis->BCC",
+            "perception_summary": "ddx=Actinic keratosis, Seborrheic keratosis, Basal cell carcinoma; risk=malignancy_risk:medium; uncertainty=medium",
+            "learning_points": [
+              "kept the differential open",
+              "made pairwise reasoning explicit",
+              "did not fully resolve the active confusion pattern"
+            ],
+            "retrieval_score": 19.0,
+            "base_retrieval_score": 19.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_PAT_920_1747_bce72efcf1a2",
+          "ordering_score": 6.4,
+          "rank": 19,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "PAT_963_1819",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 3.5,
+          "heuristic_score": 3.5,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "PAT_963_1819",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "PAT_963_1819",
+            "confusion_pair": "None",
+            "perception_summary": "A small, slightly raised, pinkish lesion with a central depression and some white crusts is present on the back.",
+            "learning_points": [
+              "Final decision: Actinic Keratosis",
+              "Correctness: False"
+            ],
+            "retrieval_score": 11.0,
+            "base_retrieval_score": 11.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:PAT_963_1819",
+          "ordering_score": 3.9,
+          "rank": 20,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "PAT_963_1820",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 3.5,
+          "heuristic_score": 3.5,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "PAT_963_1820",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "PAT_963_1820",
+            "confusion_pair": "None",
+            "perception_summary": "A slightly raised, reddish-brown lesion is present on the back of a person with light skin.",
+            "learning_points": [
+              "Final decision: Actinic Keratosis",
+              "Correctness: True"
+            ],
+            "retrieval_score": 11.0,
+            "base_retrieval_score": 11.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:PAT_963_1820",
+          "ordering_score": 3.9,
+          "rank": 21,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "PAT_981_1848",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 3.5,
+          "heuristic_score": 3.5,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "PAT_981_1848",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "PAT_981_1848",
+            "confusion_pair": "None",
+            "perception_summary": "The image shows a close-up of a nose with multiple small, raised lesions that appear slightly erythematous. The skin texture is somewhat rough, and there are some areas of hyperpigmentation.",
+            "learning_points": [
+              "Final decision: Actinic keratosis",
+              "Correctness: False"
+            ],
+            "retrieval_score": 11.0,
+            "base_retrieval_score": 11.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:PAT_981_1848",
+          "ordering_score": 3.9,
+          "rank": 22,
+          "reason": "global_budget_exceeded"
+        }
+      ],
+      "reordered_items": [
+        {
+          "item_id": "ack_scc_specialist_skill",
+          "item_type": "skill_output",
+          "from_section": "comparison",
+          "category": "exclusion_opposing",
+          "new_rank": 1
+        },
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "from_section": "observation",
+          "category": "description",
+          "new_rank": 2
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "from_section": "comparison",
+          "category": "differential_support",
+          "new_rank": 3
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "from_section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "new_rank": 4
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "from_section": "observation",
+          "category": "description",
+          "new_rank": 5
+        },
+        {
+          "item_id": "abs_confusion_a139aaeb6603",
+          "item_type": "retrieval_record",
+          "from_section": "abstract_experience",
+          "category": "experience_hint",
+          "new_rank": 6
+        },
+        {
+          "item_id": "abs_confusion_99ef37af934d",
+          "item_type": "retrieval_record",
+          "from_section": "abstract_experience",
+          "category": "experience_hint",
+          "new_rank": 7
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "from_section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "new_rank": 8
+        }
+      ],
+      "quota_state": {
+        "max_total_items": 8,
+        "per_category_quota": {
+          "description": 3,
+          "differential_support": 2,
+          "exclusion_opposing": 2,
+          "risk": 1,
+          "contradiction_gap": 2,
+          "experience_hint": 2
+        },
+        "category_counts": {
+          "description": 2,
+          "differential_support": 1,
+          "exclusion_opposing": 1,
+          "risk": 0,
+          "contradiction_gap": 2,
+          "experience_hint": 2
+        }
+      }
+    }
+  }
+}

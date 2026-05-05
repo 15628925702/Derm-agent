@@ -1,0 +1,2836 @@
+{
+  "reasoning_summary": "Perception summary: A small, irregularly shaped lesion with a slightly raised border and uneven pigmentation is present on the face. | Useful skills: morphology_analysis_skill, color_pattern_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, differential_compare_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill | Final answer: Basal Cell Carcinoma | Uncertainty: medium | Risk flags: malignancy_risk:medium | Detected errors: final_diagnosis_mismatch_reference",
+  "useful_skills": [
+    "morphology_analysis_skill",
+    "color_pattern_analysis_skill",
+    "distribution_analysis_skill",
+    "lesion_description_structuring_skill",
+    "metadata_consistency_skill",
+    "malignancy_risk_assessment_skill",
+    "differential_compare_skill",
+    "information_gap_detection_skill",
+    "uncertainty_assessment_skill",
+    "contradiction_check_skill",
+    "escalation_recommendation_skill"
+  ],
+  "detected_errors": [
+    "final_diagnosis_mismatch_reference"
+  ],
+  "experience_type": "confusion_experience",
+  "diagnosis_correct": false,
+  "write_experience": true,
+  "case_outcome": {
+    "status": "failure",
+    "has_ground_truth": true,
+    "is_correct": false,
+    "error_type": "final_diagnosis_mismatch_reference",
+    "predicted_label": "Basal Cell Carcinoma",
+    "reference_label": "NEV",
+    "predicted_canonical_label": "BCC",
+    "reference_canonical_label": "NEV",
+    "confidence_level": "moderate",
+    "uncertainty_level": "medium",
+    "malignant_flag": {
+      "ground_truth": false,
+      "predicted": true
+    },
+    "confusion_pair": "Basal Cell Carcinoma->NEV",
+    "risk_flags": [
+      "malignancy_risk:medium"
+    ],
+    "label_space": {
+      "label_space_id": "derm_six",
+      "canonical_labels": [
+        "BCC",
+        "ACK",
+        "NEV",
+        "SEK",
+        "SCC",
+        "MEL"
+      ],
+      "malignant_labels": [
+        "BCC",
+        "ACK",
+        "SCC",
+        "MEL"
+      ],
+      "benign_labels": [
+        "NEV",
+        "SEK"
+      ]
+    }
+  },
+  "skill_assessments": [
+    {
+      "skill_name": "morphology_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "NEV",
+          "BCC"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [
+        "stabilized lesion structure",
+        "made morphology explicit for downstream reasoning"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "inspect dominant lesion silhouette",
+        "judge elevation and lesion count"
+      ],
+      "referenced_experiences": [
+        "PAT_778_1471",
+        "PAT_724_1369"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "morphology_analysis_skill",
+        "ddx:NEV|BCC",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Basal Cell Carcinoma->NEV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "morphology_analysis_skill remains reusable for Basal Cell Carcinoma->NEV style confusion"
+    },
+    {
+      "skill_name": "color_pattern_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "NEV",
+          "BCC"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [
+        "made pigment variation explicit",
+        "surfaced color asymmetry as auditable evidence"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "inspect dominant color",
+        "compare internal color asymmetry"
+      ],
+      "referenced_experiences": [
+        "PAT_778_1471",
+        "PAT_724_1369"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "color_pattern_analysis_skill",
+        "ddx:NEV|BCC",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Basal Cell Carcinoma->NEV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "color_pattern_analysis_skill remains reusable for Basal Cell Carcinoma->NEV style confusion"
+    },
+    {
+      "skill_name": "distribution_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "NEV",
+          "BCC"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [
+        "made location and extent assumptions explicit",
+        "captured distribution context for later comparison"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "identify likely anatomic site",
+        "judge extent and clustering"
+      ],
+      "referenced_experiences": [
+        "PAT_778_1471",
+        "PAT_724_1369",
+        "abs_confusion_e862d24b71bb",
+        "abs_confusion_5c941c029995",
+        "abs_confusion_1e693232c979"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "distribution_analysis_skill",
+        "ddx:NEV|BCC",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Basal Cell Carcinoma->NEV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "distribution_analysis_skill remains reusable for Basal Cell Carcinoma->NEV style confusion"
+    },
+    {
+      "skill_name": "lesion_description_structuring_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "NEV",
+          "BCC"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "PAT_778_1471",
+        "PAT_724_1369",
+        "abs_confusion_e862d24b71bb",
+        "abs_confusion_5c941c029995",
+        "abs_confusion_1e693232c979"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 1.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "lesion_description_structuring_skill",
+        "ddx:NEV|BCC",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Basal Cell Carcinoma->NEV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "lesion_description_structuring_skill remains reusable for Basal Cell Carcinoma->NEV style confusion"
+    },
+    {
+      "skill_name": "metadata_consistency_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "NEV",
+          "BCC"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [
+        "checked image-metadata coherence",
+        "flagged reliability issues before integration"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "compare visible cues against metadata",
+        "separate direct conflicts from soft concerns"
+      ],
+      "referenced_experiences": [
+        "PAT_778_1471",
+        "PAT_724_1369",
+        "abs_confusion_e862d24b71bb",
+        "abs_confusion_5c941c029995",
+        "abs_confusion_1e693232c979"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": true,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "metadata_consistency_skill",
+        "ddx:NEV|BCC",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Basal Cell Carcinoma->NEV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "metadata_consistency_skill remains reusable for Basal Cell Carcinoma->NEV style confusion"
+    },
+    {
+      "skill_name": "malignancy_risk_assessment_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "NEV",
+          "BCC"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [
+        "made risk framing explicit",
+        "highlighted alarm signals without forcing diagnosis"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "collect alarm signals",
+        "balance concerning and reassuring evidence"
+      ],
+      "referenced_experiences": [
+        "PAT_778_1471",
+        "PAT_724_1369",
+        "abs_confusion_e862d24b71bb",
+        "abs_confusion_5c941c029995",
+        "abs_confusion_1e693232c979"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "risk_signal",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 1.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "malignancy_risk_assessment_skill",
+        "ddx:NEV|BCC",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Basal Cell Carcinoma->NEV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "malignancy_risk_assessment_skill remains reusable for Basal Cell Carcinoma->NEV style confusion"
+    },
+    {
+      "skill_name": "differential_compare_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "NEV",
+          "BCC"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [
+        "kept the differential open",
+        "made pairwise reasoning explicit"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "select the most relevant candidate pair",
+        "preserve unresolved comparative evidence"
+      ],
+      "referenced_experiences": [
+        "PAT_778_1471",
+        "PAT_724_1369",
+        "abs_confusion_e862d24b71bb",
+        "abs_confusion_5c941c029995",
+        "abs_confusion_1e693232c979"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "conflict_signal",
+      "uncertainty_reduction": true,
+      "contradiction_detected": true,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 1.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "contradiction_signal_supported",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "differential_compare_skill",
+        "ddx:NEV|BCC",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Basal Cell Carcinoma->NEV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "differential_compare_skill remains reusable for Basal Cell Carcinoma->NEV style confusion"
+    },
+    {
+      "skill_name": "information_gap_detection_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "NEV",
+          "BCC"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "PAT_778_1471",
+        "PAT_724_1369"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 1.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "information_gap_detection_skill",
+        "ddx:NEV|BCC",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Basal Cell Carcinoma->NEV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "information_gap_detection_skill remains reusable for Basal Cell Carcinoma->NEV style confusion"
+    },
+    {
+      "skill_name": "uncertainty_assessment_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "NEV",
+          "BCC"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [
+        "made evidence limits explicit",
+        "prevented overconfident downstream use"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "scan ambiguity across evidence streams",
+        "name missing information explicitly"
+      ],
+      "referenced_experiences": [
+        "PAT_778_1471",
+        "PAT_724_1369",
+        "abs_confusion_e862d24b71bb",
+        "abs_confusion_5c941c029995",
+        "abs_confusion_1e693232c979"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "uncertainty_signal",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 2.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "uncertainty_assessment_skill",
+        "ddx:NEV|BCC",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Basal Cell Carcinoma->NEV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "uncertainty_assessment_skill remains reusable for Basal Cell Carcinoma->NEV style confusion"
+    },
+    {
+      "skill_name": "contradiction_check_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "NEV",
+          "BCC"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [
+        "surfaced missing links in the reasoning chain",
+        "audited internal consistency"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "scan for conflicts across evidence sources",
+        "surface missing links in the reasoning chain"
+      ],
+      "referenced_experiences": [
+        "PAT_778_1471",
+        "PAT_724_1369",
+        "abs_confusion_e862d24b71bb",
+        "abs_confusion_5c941c029995",
+        "abs_confusion_1e693232c979"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "conflict_signal",
+      "uncertainty_reduction": true,
+      "contradiction_detected": true,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 2.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "contradiction_signal_supported",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "contradiction_check_skill",
+        "ddx:NEV|BCC",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Basal Cell Carcinoma->NEV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "contradiction_check_skill remains reusable for Basal Cell Carcinoma->NEV style confusion"
+    },
+    {
+      "skill_name": "escalation_recommendation_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "NEV",
+          "BCC"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "medium",
+        "region": "FACE"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "PAT_778_1471",
+        "PAT_724_1369"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "risk_signal",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 2.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "escalation_recommendation_skill",
+        "ddx:NEV|BCC",
+        "risk:malignancy_risk:medium",
+        "region:face",
+        "uncertainty:medium",
+        "confusion:Basal Cell Carcinoma->NEV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "escalation_recommendation_skill remains reusable for Basal Cell Carcinoma->NEV style confusion"
+    }
+  ],
+  "reflection_extract": {
+    "raw_case_memory_ready": true,
+    "tactical_experience_count": 11,
+    "abstract_experience_candidate_count": 2,
+    "reusable_tactical_count": 11,
+    "composite_skill_seed_count": 0,
+    "composite_skill_seed_ids": [],
+    "abstract_flags": {
+      "confusion_memory": true,
+      "prototype": false,
+      "rule": true,
+      "rule_candidate": false,
+      "composite_skill_seed": false
+    },
+    "case_status": "failure"
+  },
+  "writeback_bundle": {
+    "raw_case_memory": {
+      "case_id": "PAT_100_393",
+      "image_paths": [
+        "/root/DermAgent/data/pad_ufes_20/images/imgs_part_1/PAT_100_393_898.png"
+      ],
+      "metadata": {
+        "patient_id": "PAT_100",
+        "lesion_id": "393",
+        "smoke": "False",
+        "drink": "False",
+        "background_father": "POMERANIA",
+        "background_mother": "POMERANIA",
+        "age": "14",
+        "pesticide": "False",
+        "gender": "MALE",
+        "skin_cancer_history": "False",
+        "cancer_history": "True",
+        "has_piped_water": "False",
+        "has_sewage_system": "False",
+        "fitspatrick": "1.0",
+        "region": "FACE",
+        "diameter_1": "7.0",
+        "diameter_2": "3.0",
+        "diagnostic": "NEV",
+        "itch": "False",
+        "grew": "False",
+        "hurt": "False",
+        "changed": "False",
+        "bleed": "False",
+        "elevation": "False",
+        "img_id": "PAT_100_393_898.png",
+        "biopsed": "True"
+      },
+      "dataset_name": "pad_ufes_20",
+      "label_space_id": null,
+      "true_label": "NEV",
+      "qwen_output": {
+        "final_diagnosis": "Basal Cell Carcinoma",
+        "differential_diagnoses": [
+          "Basal Cell Carcinoma",
+          "Malignant Melanoma",
+          "Actinic Keratosis",
+          "Seborrheic Keratosis"
+        ],
+        "rationale": "The lesion exhibits concerning features such as an uneven border, marked color variation, and evolution, which increase the risk of malignancy. The lesion's size and location suggest it could be benign or potentially malignant. However, the supporting evidence does not outweigh the opposing evidence, and the uncertainty level is medium. The lesion's characteristics align with those of Basal Cell Carcinoma, but further evaluation is recommended.",
+        "confidence": "Moderate",
+        "follow_up_considerations": "Consider dermoscopy for further evaluation. The lesion should be monitored for any changes in size, shape, or color. If the lesion persists or changes, a biopsy may be necessary to confirm the diagnosis."
+      },
+      "agent_output": {
+        "perception": {
+          "image_summary": "A small, irregularly shaped lesion with a slightly raised border and uneven pigmentation is present on the face.",
+          "ddx_candidates": [
+            "NEV",
+            "BCC"
+          ],
+          "uncertainty": {
+            "level": "low",
+            "reasons": [
+              "Lesion size and location suggest it could be benign or potentially malignant."
+            ]
+          },
+          "notes": [
+            "The lesion has a slightly elevated border and uneven pigmentation.",
+            "No symptoms such as bleeding, itching, or pain are reported."
+          ]
+        },
+        "skill_outputs": {
+          "morphology_analysis_skill": {
+            "lesion_type": "macule",
+            "size_range": "small",
+            "elevation": "flat",
+            "count": "solitary",
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_724_1369"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "color_pattern_analysis_skill": {
+            "primary_color": "Brown",
+            "color_variation": "Marked",
+            "pigmentation_pattern": "Reticular",
+            "asymmetry_color": "Present",
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_724_1369"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "distribution_analysis_skill": {
+            "body_location": "face",
+            "symmetry": "asymmetric",
+            "localized_vs_generalized": "localized",
+            "clustering_pattern": "solitary",
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_724_1369",
+              "abs_confusion_e862d24b71bb",
+              "abs_confusion_5c941c029995",
+              "abs_confusion_1e693232c979"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "lesion_description_structuring_skill": {
+            "primary_lesion_morphology": "irregularly shaped macule",
+            "color": [
+              "brown, uneven pigmentation"
+            ],
+            "border": [
+              "slightly raised, uneven"
+            ],
+            "surface": [
+              "smooth, slightly elevated"
+            ],
+            "size_count": [
+              "size: small, count: solitary"
+            ],
+            "distribution": [
+              "body_location: face, symmetry: asymmetric, localized_vs_generalized: localized"
+            ],
+            "associated_context": [
+              "age: 14, gender: male, skin_cancer_history: false, cancer_history: true, fitspatrick: 1.0, region: face"
+            ],
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_724_1369",
+              "abs_confusion_e862d24b71bb",
+              "abs_confusion_5c941c029995",
+              "abs_confusion_1e693232c979"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "metadata_consistency_skill": {
+            "consistency_score": "medium",
+            "conflicts": [],
+            "suspicious_points": [
+              {
+                "issue": "The lesion's color is described as 'brown' but the image shows a darker, more uniform brown without significant variation.",
+                "confidence_level": "soft"
+              },
+              {
+                "issue": "The lesion's surface is described as 'smooth, slightly elevated' but the image suggests a more uneven surface.",
+                "confidence_level": "soft"
+              }
+            ],
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_724_1369",
+              "abs_confusion_e862d24b71bb",
+              "abs_confusion_5c941c029995",
+              "abs_confusion_1e693232c979"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "malignancy_risk_assessment_skill": {
+            "risk_level": "medium",
+            "risk_evidence": [
+              "{'type': 'border', 'description': 'The lesion has an uneven border, which is a concerning feature for malignancy.'}",
+              "{'type': 'color', 'description': 'There is marked color variation within the lesion, suggesting atypical pigmentation.'}",
+              "{'type': 'evolution', 'description': 'The lesion appears to have evolved over time, as indicated by the change in appearance.'}"
+            ],
+            "alarm_signals": [
+              "Irregular border",
+              "Marked color variation",
+              "Evolution"
+            ],
+            "benign_reassuring_features": [
+              "Symmetry (bilateral or radial)",
+              "Regular border (smooth, well-defined)",
+              "Uniform color (single color, homogeneous)"
+            ],
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_724_1369",
+              "abs_confusion_e862d24b71bb",
+              "abs_confusion_5c941c029995",
+              "abs_confusion_1e693232c979"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "risk_signal"
+          },
+          "differential_compare_skill": {
+            "candidate_pairs": [
+              "NEV vs BCC"
+            ],
+            "supporting_evidence": [
+              "The lesion has an uneven border, which is a concerning feature for malignancy.",
+              "There is marked color variation within the lesion, suggesting atypical pigmentation."
+            ],
+            "conflicting_evidence": [
+              "The lesion is small and located on the face, which are factors favoring a benign lesion like NEV."
+            ],
+            "required_missing_evidence": [
+              "More detailed information about the lesion's evolution over time would help differentiate between NEV and BCC."
+            ],
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_724_1369",
+              "abs_confusion_e862d24b71bb",
+              "abs_confusion_5c941c029995",
+              "abs_confusion_1e693232c979"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "conflict_signal"
+          },
+          "information_gap_detection_skill": {
+            "missing_information": [
+              "Evolution of the lesion over time",
+              "Family history of skin cancer"
+            ],
+            "why_it_matters": [
+              "Understanding the evolution of the lesion can provide insights into its nature, especially regarding malignancy. Family history of skin cancer can influence the risk assessment and guide further investigation."
+            ],
+            "impact_on_differential": [
+              "The lack of information about lesion evolution and family history makes it difficult to rule out malignancy, keeping the differential open between NEV and BCC."
+            ],
+            "uncertainty_if_missing": "high",
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_724_1369"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "uncertainty_assessment_skill": {
+            "uncertainty_level": "medium",
+            "reasons": [
+              "The lesion's exact size and growth pattern over time are not clear.",
+              "The patient's medical history, including family history of skin cancer, is incomplete.",
+              "The lesion's evolution and response to external factors (e.g., sun exposure) are unknown."
+            ],
+            "missing_information": [
+              "Detailed lesion size measurements (diameter, depth).",
+              "Information on lesion evolution over time.",
+              "Patient's medical history, including family history of skin cancer and sun exposure habits."
+            ],
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_724_1369",
+              "abs_confusion_e862d24b71bb",
+              "abs_confusion_5c941c029995",
+              "abs_confusion_1e693232c979"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "uncertainty_signal"
+          },
+          "contradiction_check_skill": {
+            "contradictions": [
+              {
+                "source": "morphology_analysis_skill",
+                "target": "image_summary",
+                "description": "The lesion described as 'macule' contradicts the image summary indicating an 'irregularly shaped lesion with a slightly raised border'."
+              },
+              {
+                "source": "color_pattern_analysis_skill",
+                "target": "image_summary",
+                "description": "The presence of 'Marked color variation' contradicts the image summary stating there is no significant color variation."
+              }
+            ],
+            "missing_links": [
+              {
+                "description": "Missing detailed lesion size measurements (diameter, depth) to assess the lesion's dimensions accurately."
+              },
+              {
+                "description": "Lack of information about the lesion's evolution over time to determine if it has changed in appearance."
+              },
+              {
+                "description": "Insufficient patient medical history, including family history of skin cancer and sun exposure habits, to provide a more comprehensive risk assessment."
+              }
+            ],
+            "reasoning_gaps": [
+              {
+                "description": "The lesion's exact size and growth pattern over time are unclear, making it difficult to assess the lesion's behavior."
+              },
+              {
+                "description": "The patient's medical history, including family history of skin cancer, is incomplete, which affects the risk assessment."
+              },
+              {
+                "description": "The lesion's evolution and response to external factors (e.g., sun exposure) are unknown, impacting the overall assessment."
+              }
+            ],
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_724_1369",
+              "abs_confusion_e862d24b71bb",
+              "abs_confusion_5c941c029995",
+              "abs_confusion_1e693232c979"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "conflict_signal"
+          },
+          "escalation_recommendation_skill": {
+            "whether_escalation_needed": "consider",
+            "escalation_reason": [
+              "The lesion exhibits concerning features such as an uneven border, marked color variation, and evolution, which increase the risk of malignancy. The uncertainty level is medium due to missing information about lesion evolution, family history, and detailed size measurements."
+            ],
+            "suggested_next_check_type": "dermoscopy",
+            "caution_flags": [
+              "Irregular border",
+              "Marked color variation",
+              "Evolution",
+              "Missing detailed lesion size measurements",
+              "Incomplete patient medical history"
+            ],
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_724_1369"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "risk_signal"
+          }
+        },
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty": {
+          "uncertainty_level": "medium",
+          "reasons": [
+            "The lesion's exact size and growth pattern over time are not clear.",
+            "The patient's medical history, including family history of skin cancer, is incomplete.",
+            "The lesion's evolution and response to external factors (e.g., sun exposure) are unknown."
+          ],
+          "missing_information": [
+            "Detailed lesion size measurements (diameter, depth).",
+            "Information on lesion evolution over time.",
+            "Patient's medical history, including family history of skin cancer and sun exposure habits."
+          ],
+          "referenced_experiences": [
+            "PAT_778_1471",
+            "PAT_724_1369",
+            "abs_confusion_e862d24b71bb",
+            "abs_confusion_5c941c029995",
+            "abs_confusion_1e693232c979"
+          ],
+          "evidence_strength": "medium",
+          "recommendation_type": "uncertainty_signal"
+        },
+        "retrieved_experience_refs": [
+          "abs_confusion_5c941c029995",
+          "abs_confusion_1e693232c979",
+          "tac_PAT_1653_2916_e5b6956c8c26",
+          "tac_PAT_1653_2916_e21fa70f1cb7",
+          "abs_confusion_995a3aba2dd7",
+          "PAT_1653_2916",
+          "PAT_1552_1895"
+        ],
+        "notes": [
+          "Agent generated structured evidence only.",
+          "Qwen remains the sole final diagnostic decision maker.",
+          "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, differential_compare_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill.",
+          "Policy in use: mainline_parameterized_agent_20260331__full_dermagent.",
+          "Skill retrieval candidates: metadata_consistency_skill, lesion_description_structuring_skill, morphology_analysis_skill, malignancy_risk_assessment_skill, color_pattern_analysis_skill, distribution_analysis_skill, uncertainty_assessment_skill, temporal_evolution_skill, contradiction_check_skill, border_surface_analysis_skill, differential_compare_skill, information_gap_detection_skill, escalation_recommendation_skill, exclusion_reasoning_skill.",
+          "The lesion has a slightly elevated border and uneven pigmentation.",
+          "No symptoms such as bleeding, itching, or pain are reported.",
+          "Retrieved prior reasoning experience for context."
+        ],
+        "skill_assessments": [
+          {
+            "skill_name": "morphology_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "NEV",
+                "BCC"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [
+              "stabilized lesion structure",
+              "made morphology explicit for downstream reasoning"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "inspect dominant lesion silhouette",
+              "judge elevation and lesion count"
+            ],
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_724_1369"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "morphology_analysis_skill",
+              "ddx:NEV|BCC",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Basal Cell Carcinoma->NEV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "morphology_analysis_skill remains reusable for Basal Cell Carcinoma->NEV style confusion"
+          },
+          {
+            "skill_name": "color_pattern_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "NEV",
+                "BCC"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [
+              "made pigment variation explicit",
+              "surfaced color asymmetry as auditable evidence"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "inspect dominant color",
+              "compare internal color asymmetry"
+            ],
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_724_1369"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "color_pattern_analysis_skill",
+              "ddx:NEV|BCC",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Basal Cell Carcinoma->NEV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "color_pattern_analysis_skill remains reusable for Basal Cell Carcinoma->NEV style confusion"
+          },
+          {
+            "skill_name": "distribution_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "NEV",
+                "BCC"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [
+              "made location and extent assumptions explicit",
+              "captured distribution context for later comparison"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "identify likely anatomic site",
+              "judge extent and clustering"
+            ],
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_724_1369",
+              "abs_confusion_e862d24b71bb",
+              "abs_confusion_5c941c029995",
+              "abs_confusion_1e693232c979"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "distribution_analysis_skill",
+              "ddx:NEV|BCC",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Basal Cell Carcinoma->NEV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "distribution_analysis_skill remains reusable for Basal Cell Carcinoma->NEV style confusion"
+          },
+          {
+            "skill_name": "lesion_description_structuring_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "NEV",
+                "BCC"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_724_1369",
+              "abs_confusion_e862d24b71bb",
+              "abs_confusion_5c941c029995",
+              "abs_confusion_1e693232c979"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 1.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "lesion_description_structuring_skill",
+              "ddx:NEV|BCC",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Basal Cell Carcinoma->NEV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "lesion_description_structuring_skill remains reusable for Basal Cell Carcinoma->NEV style confusion"
+          },
+          {
+            "skill_name": "metadata_consistency_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "NEV",
+                "BCC"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [
+              "checked image-metadata coherence",
+              "flagged reliability issues before integration"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "compare visible cues against metadata",
+              "separate direct conflicts from soft concerns"
+            ],
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_724_1369",
+              "abs_confusion_e862d24b71bb",
+              "abs_confusion_5c941c029995",
+              "abs_confusion_1e693232c979"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": true,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "metadata_consistency_skill",
+              "ddx:NEV|BCC",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Basal Cell Carcinoma->NEV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "metadata_consistency_skill remains reusable for Basal Cell Carcinoma->NEV style confusion"
+          },
+          {
+            "skill_name": "malignancy_risk_assessment_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "NEV",
+                "BCC"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [
+              "made risk framing explicit",
+              "highlighted alarm signals without forcing diagnosis"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "collect alarm signals",
+              "balance concerning and reassuring evidence"
+            ],
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_724_1369",
+              "abs_confusion_e862d24b71bb",
+              "abs_confusion_5c941c029995",
+              "abs_confusion_1e693232c979"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "risk_signal",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 1.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "malignancy_risk_assessment_skill",
+              "ddx:NEV|BCC",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Basal Cell Carcinoma->NEV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "malignancy_risk_assessment_skill remains reusable for Basal Cell Carcinoma->NEV style confusion"
+          },
+          {
+            "skill_name": "differential_compare_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "NEV",
+                "BCC"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [
+              "kept the differential open",
+              "made pairwise reasoning explicit"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "select the most relevant candidate pair",
+              "preserve unresolved comparative evidence"
+            ],
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_724_1369",
+              "abs_confusion_e862d24b71bb",
+              "abs_confusion_5c941c029995",
+              "abs_confusion_1e693232c979"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "conflict_signal",
+            "uncertainty_reduction": true,
+            "contradiction_detected": true,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 1.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "contradiction_signal_supported",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "differential_compare_skill",
+              "ddx:NEV|BCC",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Basal Cell Carcinoma->NEV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "differential_compare_skill remains reusable for Basal Cell Carcinoma->NEV style confusion"
+          },
+          {
+            "skill_name": "information_gap_detection_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "NEV",
+                "BCC"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_724_1369"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 1.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "information_gap_detection_skill",
+              "ddx:NEV|BCC",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Basal Cell Carcinoma->NEV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "information_gap_detection_skill remains reusable for Basal Cell Carcinoma->NEV style confusion"
+          },
+          {
+            "skill_name": "uncertainty_assessment_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "NEV",
+                "BCC"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [
+              "made evidence limits explicit",
+              "prevented overconfident downstream use"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "scan ambiguity across evidence streams",
+              "name missing information explicitly"
+            ],
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_724_1369",
+              "abs_confusion_e862d24b71bb",
+              "abs_confusion_5c941c029995",
+              "abs_confusion_1e693232c979"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "uncertainty_signal",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 2.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "uncertainty_assessment_skill",
+              "ddx:NEV|BCC",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Basal Cell Carcinoma->NEV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "uncertainty_assessment_skill remains reusable for Basal Cell Carcinoma->NEV style confusion"
+          },
+          {
+            "skill_name": "contradiction_check_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "NEV",
+                "BCC"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [
+              "surfaced missing links in the reasoning chain",
+              "audited internal consistency"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "scan for conflicts across evidence sources",
+              "surface missing links in the reasoning chain"
+            ],
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_724_1369",
+              "abs_confusion_e862d24b71bb",
+              "abs_confusion_5c941c029995",
+              "abs_confusion_1e693232c979"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "conflict_signal",
+            "uncertainty_reduction": true,
+            "contradiction_detected": true,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 2.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "contradiction_signal_supported",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "contradiction_check_skill",
+              "ddx:NEV|BCC",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Basal Cell Carcinoma->NEV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "contradiction_check_skill remains reusable for Basal Cell Carcinoma->NEV style confusion"
+          },
+          {
+            "skill_name": "escalation_recommendation_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "NEV",
+                "BCC"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "medium",
+              "region": "FACE"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_724_1369"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "risk_signal",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 2.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "escalation_recommendation_skill",
+              "ddx:NEV|BCC",
+              "risk:malignancy_risk:medium",
+              "region:face",
+              "uncertainty:medium",
+              "confusion:Basal Cell Carcinoma->NEV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "escalation_recommendation_skill remains reusable for Basal Cell Carcinoma->NEV style confusion"
+          }
+        ]
+      },
+      "final_decision": {
+        "label": "Basal Cell Carcinoma",
+        "source": "qwen_final_diagnosis",
+        "canonical_label": "BCC"
+      },
+      "correctness": {
+        "has_ground_truth": true,
+        "is_correct": false,
+        "error_type": "final_diagnosis_mismatch_reference"
+      },
+      "malignant_flag": {
+        "ground_truth": false,
+        "predicted": true
+      }
+    },
+    "tactical_experiences": [
+      {
+        "exp_id": "tac_PAT_100_393_e5b6956c8c26",
+        "case_id": "PAT_100_393",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Basal Cell Carcinoma->NEV",
+          "observed_state": {
+            "ddx_candidates": [
+              "NEV",
+              "BCC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed lesion size measurements (diameter, depth).",
+            "missing:Information on lesion evolution over time.",
+            "missing:Patient's medical history, including family history of skin cancer and sun exposure habits."
+          ]
+        },
+        "action": {
+          "skill_name": "morphology_analysis_skill",
+          "skills_used": [
+            "morphology_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "stabilized lesion structure",
+          "made morphology explicit for downstream reasoning",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "inspect dominant lesion silhouette",
+          "judge elevation and lesion count"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "morphology_analysis_skill",
+            "Basal Cell Carcinoma->NEV",
+            "NEV",
+            "BCC",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_100_393_5d8de46f6089",
+        "case_id": "PAT_100_393",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Basal Cell Carcinoma->NEV",
+          "observed_state": {
+            "ddx_candidates": [
+              "NEV",
+              "BCC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed lesion size measurements (diameter, depth).",
+            "missing:Information on lesion evolution over time.",
+            "missing:Patient's medical history, including family history of skin cancer and sun exposure habits."
+          ]
+        },
+        "action": {
+          "skill_name": "color_pattern_analysis_skill",
+          "skills_used": [
+            "color_pattern_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made pigment variation explicit",
+          "surfaced color asymmetry as auditable evidence",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "inspect dominant color",
+          "compare internal color asymmetry"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "color_pattern_analysis_skill",
+            "Basal Cell Carcinoma->NEV",
+            "NEV",
+            "BCC",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_100_393_586325b3723c",
+        "case_id": "PAT_100_393",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Basal Cell Carcinoma->NEV",
+          "observed_state": {
+            "ddx_candidates": [
+              "NEV",
+              "BCC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed lesion size measurements (diameter, depth).",
+            "missing:Information on lesion evolution over time.",
+            "missing:Patient's medical history, including family history of skin cancer and sun exposure habits."
+          ]
+        },
+        "action": {
+          "skill_name": "distribution_analysis_skill",
+          "skills_used": [
+            "distribution_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made location and extent assumptions explicit",
+          "captured distribution context for later comparison",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "identify likely anatomic site",
+          "judge extent and clustering"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "distribution_analysis_skill",
+            "Basal Cell Carcinoma->NEV",
+            "NEV",
+            "BCC",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_100_393_8fa365c666e8",
+        "case_id": "PAT_100_393",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Basal Cell Carcinoma->NEV",
+          "observed_state": {
+            "ddx_candidates": [
+              "NEV",
+              "BCC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed lesion size measurements (diameter, depth).",
+            "missing:Information on lesion evolution over time.",
+            "missing:Patient's medical history, including family history of skin cancer and sun exposure habits."
+          ]
+        },
+        "action": {
+          "skill_name": "lesion_description_structuring_skill",
+          "skills_used": [
+            "lesion_description_structuring_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "lesion_description_structuring_skill",
+            "Basal Cell Carcinoma->NEV",
+            "NEV",
+            "BCC",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_100_393_2f79c85a7fb8",
+        "case_id": "PAT_100_393",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Basal Cell Carcinoma->NEV",
+          "observed_state": {
+            "ddx_candidates": [
+              "NEV",
+              "BCC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed lesion size measurements (diameter, depth).",
+            "missing:Information on lesion evolution over time.",
+            "missing:Patient's medical history, including family history of skin cancer and sun exposure habits."
+          ]
+        },
+        "action": {
+          "skill_name": "metadata_consistency_skill",
+          "skills_used": [
+            "metadata_consistency_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "checked image-metadata coherence",
+          "flagged reliability issues before integration",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "compare visible cues against metadata",
+          "separate direct conflicts from soft concerns"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "metadata_consistency_skill",
+            "Basal Cell Carcinoma->NEV",
+            "NEV",
+            "BCC",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_100_393_47d9748366d2",
+        "case_id": "PAT_100_393",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Basal Cell Carcinoma->NEV",
+          "observed_state": {
+            "ddx_candidates": [
+              "NEV",
+              "BCC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed lesion size measurements (diameter, depth).",
+            "missing:Information on lesion evolution over time.",
+            "missing:Patient's medical history, including family history of skin cancer and sun exposure habits."
+          ]
+        },
+        "action": {
+          "skill_name": "malignancy_risk_assessment_skill",
+          "skills_used": [
+            "malignancy_risk_assessment_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made risk framing explicit",
+          "highlighted alarm signals without forcing diagnosis",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "collect alarm signals",
+          "balance concerning and reassuring evidence"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "malignancy_risk_assessment_skill",
+            "Basal Cell Carcinoma->NEV",
+            "NEV",
+            "BCC",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_100_393_bce72efcf1a2",
+        "case_id": "PAT_100_393",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Basal Cell Carcinoma->NEV",
+          "observed_state": {
+            "ddx_candidates": [
+              "NEV",
+              "BCC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed lesion size measurements (diameter, depth).",
+            "missing:Information on lesion evolution over time.",
+            "missing:Patient's medical history, including family history of skin cancer and sun exposure habits."
+          ]
+        },
+        "action": {
+          "skill_name": "differential_compare_skill",
+          "skills_used": [
+            "differential_compare_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "kept the differential open",
+          "made pairwise reasoning explicit",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "select the most relevant candidate pair",
+          "preserve unresolved comparative evidence"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "differential_compare_skill",
+            "Basal Cell Carcinoma->NEV",
+            "NEV",
+            "BCC",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_100_393_3195d993f5b8",
+        "case_id": "PAT_100_393",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Basal Cell Carcinoma->NEV",
+          "observed_state": {
+            "ddx_candidates": [
+              "NEV",
+              "BCC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed lesion size measurements (diameter, depth).",
+            "missing:Information on lesion evolution over time.",
+            "missing:Patient's medical history, including family history of skin cancer and sun exposure habits."
+          ]
+        },
+        "action": {
+          "skill_name": "information_gap_detection_skill",
+          "skills_used": [
+            "information_gap_detection_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "information_gap_detection_skill",
+            "Basal Cell Carcinoma->NEV",
+            "NEV",
+            "BCC",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_100_393_e21fa70f1cb7",
+        "case_id": "PAT_100_393",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Basal Cell Carcinoma->NEV",
+          "observed_state": {
+            "ddx_candidates": [
+              "NEV",
+              "BCC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed lesion size measurements (diameter, depth).",
+            "missing:Information on lesion evolution over time.",
+            "missing:Patient's medical history, including family history of skin cancer and sun exposure habits."
+          ]
+        },
+        "action": {
+          "skill_name": "uncertainty_assessment_skill",
+          "skills_used": [
+            "uncertainty_assessment_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made evidence limits explicit",
+          "prevented overconfident downstream use",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "scan ambiguity across evidence streams",
+          "name missing information explicitly"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "uncertainty_assessment_skill",
+            "Basal Cell Carcinoma->NEV",
+            "NEV",
+            "BCC",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_100_393_8eed343a7164",
+        "case_id": "PAT_100_393",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Basal Cell Carcinoma->NEV",
+          "observed_state": {
+            "ddx_candidates": [
+              "NEV",
+              "BCC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed lesion size measurements (diameter, depth).",
+            "missing:Information on lesion evolution over time.",
+            "missing:Patient's medical history, including family history of skin cancer and sun exposure habits."
+          ]
+        },
+        "action": {
+          "skill_name": "contradiction_check_skill",
+          "skills_used": [
+            "contradiction_check_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "surfaced missing links in the reasoning chain",
+          "audited internal consistency",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "scan for conflicts across evidence sources",
+          "surface missing links in the reasoning chain"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "contradiction_check_skill",
+            "Basal Cell Carcinoma->NEV",
+            "NEV",
+            "BCC",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_PAT_100_393_3f9fb737051a",
+        "case_id": "PAT_100_393",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Basal Cell Carcinoma->NEV",
+          "observed_state": {
+            "ddx_candidates": [
+              "NEV",
+              "BCC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "medium",
+            "region": "FACE"
+          },
+          "constraints": [
+            "single_image",
+            "missing:Detailed lesion size measurements (diameter, depth).",
+            "missing:Information on lesion evolution over time.",
+            "missing:Patient's medical history, including family history of skin cancer and sun exposure habits."
+          ]
+        },
+        "action": {
+          "skill_name": "escalation_recommendation_skill",
+          "skills_used": [
+            "escalation_recommendation_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "escalation_recommendation_skill",
+            "Basal Cell Carcinoma->NEV",
+            "NEV",
+            "BCC",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      }
+    ],
+    "abstract_experiences": [
+      {
+        "abs_id": "abs_confusion_5c941c029995",
+        "type": "confusion_memory",
+        "concept": "basal_cell_carcinoma->nev",
+        "pattern_summary": {
+          "confusion_pair": "Basal Cell Carcinoma->NEV",
+          "supporting_pattern": [
+            "A small, irregularly shaped lesion with a slightly raised border and uneven pigmentation is present on the face.",
+            "NEV",
+            "BCC",
+            "malignancy_risk:medium"
+          ],
+          "failure_pattern": [
+            "final_diagnosis_mismatch_reference"
+          ]
+        },
+        "supporting_cases": [
+          "PAT_100_393"
+        ],
+        "counter_cases": [],
+        "derived_rule": {
+          "rule_text": "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+          "action_hint": "compare_then_audit_uncertainty"
+        },
+        "version": "v1",
+        "seed_id": null,
+        "composite_skill_seed": {},
+        "provenance": {}
+      },
+      {
+        "abs_id": "abs_rule_97a155a28150",
+        "type": "rule",
+        "concept": "compare_then_audit_uncertainty",
+        "pattern_summary": {
+          "supporting_pattern": [
+            "A small, irregularly shaped lesion with a slightly raised border and uneven pigmentation is present on the face.",
+            "NEV",
+            "BCC",
+            "malignancy_risk:medium"
+          ],
+          "failure_pattern": [
+            "final_diagnosis_mismatch_reference"
+          ]
+        },
+        "supporting_cases": [
+          "PAT_100_393"
+        ],
+        "counter_cases": [],
+        "derived_rule": {
+          "rule_text": "When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Qwen integration.",
+          "action_hint": "compare_then_audit_uncertainty"
+        },
+        "version": "v1",
+        "seed_id": null,
+        "composite_skill_seed": {},
+        "provenance": {}
+      }
+    ],
+    "cognition_update": {
+      "total_cases_increment": 1,
+      "failed_cases_increment": 1,
+      "confusion_cases_increment": 1,
+      "hard_cases_increment": 0,
+      "confusion_pair": "Basal Cell Carcinoma->NEV",
+      "preferred_skills": [
+        "morphology_analysis_skill",
+        "color_pattern_analysis_skill",
+        "distribution_analysis_skill",
+        "lesion_description_structuring_skill",
+        "metadata_consistency_skill",
+        "malignancy_risk_assessment_skill",
+        "differential_compare_skill",
+        "information_gap_detection_skill",
+        "uncertainty_assessment_skill",
+        "contradiction_check_skill",
+        "escalation_recommendation_skill"
+      ]
+    },
+    "skill_stats_update": [
+      {
+        "skill_name": "morphology_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "color_pattern_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "distribution_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "lesion_description_structuring_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "metadata_consistency_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 1,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "malignancy_risk_assessment_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "differential_compare_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 1,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "information_gap_detection_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "uncertainty_assessment_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "contradiction_check_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 1,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "escalation_recommendation_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      }
+    ],
+    "reflection_extract": {
+      "raw_case_memory_ready": true,
+      "tactical_experience_count": 11,
+      "abstract_experience_candidate_count": 2,
+      "reusable_tactical_count": 11,
+      "composite_skill_seed_count": 0,
+      "composite_skill_seed_ids": [],
+      "abstract_flags": {
+        "confusion_memory": true,
+        "prototype": false,
+        "rule": true,
+        "rule_candidate": false,
+        "composite_skill_seed": false
+      },
+      "case_status": "failure"
+    }
+  },
+  "cognition_update": {
+    "total_cases_increment": 1,
+    "failed_cases_increment": 1,
+    "confusion_cases_increment": 1,
+    "hard_cases_increment": 0,
+    "confusion_pair": "Basal Cell Carcinoma->NEV",
+    "preferred_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "distribution_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "malignancy_risk_assessment_skill",
+      "differential_compare_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill",
+      "escalation_recommendation_skill"
+    ]
+  }
+}

@@ -1,0 +1,2178 @@
+{
+  "perception": {
+    "image_summary": "The image shows a close-up view of skin with a patch of redness and some irregularities in the hair distribution.",
+    "ddx_candidates": [
+      "Cutaneous T-Cell Lymphoma",
+      "Actinic Keratosis",
+      "Rosacea"
+    ],
+    "uncertainty": {
+      "level": "high",
+      "reasons": [
+        "The image lacks clinical context and history.",
+        "The redness could be due to various causes including infection or inflammation."
+      ]
+    },
+    "notes": [
+      "The red patch appears to be localized and may be indicative of an inflammatory process.",
+      "Hair distribution seems uneven, which might suggest a condition affecting the skin."
+    ]
+  },
+  "retrieved_experience": [
+    {
+      "case_id": "sd198_000001",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "The image shows a close-up of the nape of the neck with multiple small, red papules and pustules. There is a noticeable area of erythema and some scaling around the lesions.; Acne Keloidalis Nuchae; Rosacea",
+      "confusion_pair": "Actinic Keratosis->Acne Keloidalis Nuchae",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_confusion_5959804dddab",
+      "retrieval_score": 10
+    },
+    {
+      "case_id": "sd198_000130",
+      "source_layer": "abstract_experience",
+      "source_subtype": "composite_skill_seed",
+      "experience_type": "composite_skill_seed",
+      "perception_summary": "ddx=Actinic Keratosis, Malignant Skin Cancer, Pigmentary Nevus; decision_pattern=compare_then_audit_uncertainty; uncertainty=high; risk=malignancy_risk:medium",
+      "confusion_pair": null,
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+distribution_analysis_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage.",
+        "Promote only after repeated successful supporting cases under a stable trigger pattern."
+      ],
+      "source_id": "abs_composite_1a5f693dc1c5",
+      "retrieval_score": 9
+    },
+    {
+      "case_id": "sd198_001017",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "The image shows a red, raised lesion on a hairy skin surface. The lesion appears to be slightly elevated and has a rough texture.; Bowen's Disease; Actinic Keratosis",
+      "confusion_pair": "Actinic Keratosis->MALIGNANT_SKIN_CANCER",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_confusion_d3ba2ed5e7e2",
+      "retrieval_score": 8
+    },
+    {
+      "case_id": "sd198_000130",
+      "source_layer": "tactical_experience",
+      "source_subtype": "high_uncertainty",
+      "experience_type": "tactical_experience",
+      "perception_summary": "ddx=Actinic Keratosis, Malignant Skin Cancer, Pigmentary Nevus; risk=malignancy_risk:medium; uncertainty=high",
+      "confusion_pair": null,
+      "learning_points": [
+        "separated edge evidence from surface evidence",
+        "highlighted margin quality explicitly",
+        "did not lower case uncertainty enough for confident narrowing",
+        "Action pattern: structured_skill_sequence"
+      ],
+      "source_id": "tac_sd198_000130_f0152010c15d",
+      "retrieval_score": 8
+    }
+  ],
+  "skill_outputs": {
+    "morphology_analysis_skill": {
+      "lesion_type": "macule",
+      "size_range": "small",
+      "elevation": "flat",
+      "count": "solitary",
+      "referenced_experiences": [
+        "abs_confusion_5959804dddab"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "color_pattern_analysis_skill": {
+      "primary_color": "Red",
+      "color_variation": "Marked",
+      "pigmentation_pattern": "Reticular",
+      "asymmetry_color": "Present",
+      "referenced_experiences": [
+        "abs_confusion_5959804dddab"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "border_surface_analysis_skill": {
+      "border_clarity": "poorly defined",
+      "border_irregularity": "irregular",
+      "surface_texture": "keratotic",
+      "scaling_presence": "absent",
+      "referenced_experiences": [
+        "abs_confusion_5959804dddab"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "distribution_analysis_skill": {
+      "body_location": "scalp",
+      "symmetry": "asymmetric",
+      "localized_vs_generalized": "localized",
+      "clustering_pattern": "solitary",
+      "referenced_experiences": [
+        "sd198_000925",
+        "sd198_000010",
+        "abs_confusion_5959804dddab",
+        "tac_sd198_000925_e5b6956c8c26",
+        "tac_sd198_000925_e21fa70f1cb7",
+        "abs_confusion_38915f0dddd3",
+        "abs_confusion_d55efae3028a"
+      ],
+      "evidence_strength": "low",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "lesion_description_structuring_skill": {
+      "primary_lesion_morphology": "Macule",
+      "color": [
+        "Red, Reticular Pigmentation Pattern"
+      ],
+      "border": [
+        "Poorly Defined, Irregular"
+      ],
+      "surface": [
+        "Keratotic"
+      ],
+      "size_count": [
+        "Small, Solitary"
+      ],
+      "distribution": [
+        "Localized, Scalp"
+      ],
+      "associated_context": [
+        "Uneven hair distribution, possible inflammatory process"
+      ],
+      "referenced_experiences": [
+        "sd198_000925",
+        "sd198_000010"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "malignancy_risk_assessment_skill": {
+      "risk_level": "medium",
+      "risk_evidence": [
+        "{'type': 'color_pattern', 'description': 'Marked color variation with a reticular pigmentation pattern.', 'evidence_strength': 'medium'}",
+        "{'type': 'border', 'description': 'Poorly defined, irregular border.', 'evidence_strength': 'medium'}"
+      ],
+      "alarm_signals": [
+        "{'type': 'color_pattern', 'description': 'Marked color variation.'}",
+        "{'type': 'border', 'description': 'Poorly defined, irregular border.'}"
+      ],
+      "benign_reassuring_features": [
+        "{'type': 'symmetry', 'description': 'Asymmetric distribution.'}",
+        "{'type': 'size', 'description': 'Solitary lesion.'}"
+      ],
+      "referenced_experiences": [
+        "sd198_000925",
+        "sd198_000010",
+        "abs_confusion_5959804dddab",
+        "tac_sd198_000925_e5b6956c8c26",
+        "tac_sd198_000925_e21fa70f1cb7"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "risk_signal"
+    },
+    "differential_compare_skill": {
+      "candidate_pairs": [
+        "Cutaneous T-Cell Lymphoma vs Actinic Keratosis",
+        "Cutaneous T-Cell Lymphoma vs Rosacea"
+      ],
+      "supporting_evidence": [
+        "Cutaneous T-Cell Lymphoma vs Actinic Keratosis: The lesion has a poorly defined, irregular border, which is less typical for Actinic Keratosis.; The presence of a red patch with uneven hair distribution suggests a condition affecting the skin.",
+        "Cutaneous T-Cell Lymphoma vs Rosacea: The redness and irregular hair distribution could be indicative of an inflammatory process, which is consistent with Rosacea."
+      ],
+      "conflicting_evidence": [
+        "Cutaneous T-Cell Lymphoma vs Actinic Keratosis: The lesion size and morphology (small macule) are more characteristic of Actinic Keratosis.",
+        "Cutaneous T-Cell Lymphoma vs Rosacea: The lesion size and morphology (small macule) are more characteristic of Actinic Keratosis."
+      ],
+      "required_missing_evidence": [
+        "Cutaneous T-Cell Lymphoma vs Actinic Keratosis: Clinical history and patient symptoms would help differentiate between these conditions.",
+        "Cutaneous T-Cell Lymphoma vs Rosacea: Clinical history and patient symptoms would help differentiate between these conditions."
+      ],
+      "referenced_experiences": [
+        "sd198_000925",
+        "sd198_000010",
+        "abs_confusion_5959804dddab",
+        "tac_sd198_000925_e5b6956c8c26",
+        "tac_sd198_000925_e21fa70f1cb7",
+        "abs_confusion_38915f0dddd3",
+        "abs_confusion_d55efae3028a"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "exclusion_reasoning_skill": {
+      "unlikely_candidates": [
+        "Cutaneous T-Cell Lymphoma"
+      ],
+      "exclusion_evidence": [
+        "The lesion does not exhibit the typical features of Cutaneous T-Cell Lymphoma, such as a well-defined border and lack of keratotic surface texture."
+      ],
+      "required_missing_evidence": [
+        "Clinical history and patient symptoms would help differentiate between Cutaneous T-Cell Lymphoma and other conditions like Actinic Keratosis or Rosacea."
+      ],
+      "exclusion_confidence": "medium",
+      "referenced_experiences": [
+        "abs_confusion_5959804dddab",
+        "tac_sd198_000925_e5b6956c8c26",
+        "tac_sd198_000925_e21fa70f1cb7"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "information_gap_detection_skill": {
+      "missing_information": [
+        "Clinical history",
+        "Patient symptoms",
+        "Duration of the lesion"
+      ],
+      "why_it_matters": [
+        "Clinical history and patient symptoms are crucial for differentiating between Cutaneous T-Cell Lymphoma, Actinic Keratosis, and Rosacea.",
+        "The duration of the lesion can provide important clues about the chronicity and progression of the condition."
+      ],
+      "impact_on_differential": [
+        "Clinical history and patient symptoms would help narrow down the differential by providing insights into the nature of the lesion, such as whether it is acute or chronic, and whether it is associated with systemic symptoms.",
+        "The duration of the lesion can indicate whether it is a new development or a longstanding condition, which is important for ruling out certain diagnoses."
+      ],
+      "uncertainty_if_missing": "high",
+      "referenced_experiences": [
+        "abs_confusion_5959804dddab",
+        "tac_sd198_000925_e5b6956c8c26",
+        "tac_sd198_000925_e21fa70f1cb7"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "uncertainty_assessment_skill": {
+      "uncertainty_level": "high",
+      "reasons": [
+        "The image lacks clinical context and history.",
+        "The redness could be due to various causes including infection or inflammation.",
+        "The differential diagnosis is not conclusive without additional information."
+      ],
+      "missing_information": [
+        "Clinical history and patient symptoms would help differentiate between the differential diagnoses.",
+        "Detailed medical history, including past medical conditions and treatments.",
+        "Laboratory tests and other diagnostic procedures results."
+      ],
+      "referenced_experiences": [
+        "sd198_000925",
+        "sd198_000010",
+        "abs_confusion_5959804dddab",
+        "tac_sd198_000925_e5b6956c8c26",
+        "tac_sd198_000925_e21fa70f1cb7",
+        "abs_confusion_38915f0dddd3",
+        "abs_confusion_d55efae3028a"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "uncertainty_signal"
+    },
+    "contradiction_check_skill": {
+      "contradictions": [
+        {
+          "type": "image_and_metadata",
+          "description": "The image shows a close-up view of skin with a patch of redness and some irregularities in the hair distribution, but the metadata indicates the image is labeled as Cutaneous T-Cell Lymphoma."
+        }
+      ],
+      "missing_links": [
+        {
+          "type": "clinical_context",
+          "description": "The image lacks clinical context and history, which is crucial for differential diagnosis."
+        },
+        {
+          "type": "additional_diagnostic_information",
+          "description": "Laboratory tests and other diagnostic procedures results are missing, which could provide additional insights into the condition."
+        }
+      ],
+      "reasoning_gaps": [
+        {
+          "type": "differential_narrowing",
+          "description": "The differential diagnosis candidates (Cutaneous T-Cell Lymphoma, Actinic Keratosis, Rosacea) need further evaluation with additional information to narrow down the possibilities."
+        }
+      ],
+      "referenced_experiences": [
+        "sd198_000925",
+        "sd198_000010",
+        "abs_confusion_5959804dddab",
+        "tac_sd198_000925_e5b6956c8c26",
+        "tac_sd198_000925_e21fa70f1cb7",
+        "abs_confusion_38915f0dddd3",
+        "abs_confusion_d55efae3028a"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "conflict_signal"
+    },
+    "escalation_recommendation_skill": {
+      "whether_escalation_needed": "consider",
+      "escalation_reason": [
+        "High uncertainty and missing clinical context and history make it difficult to differentiate between the differential diagnoses."
+      ],
+      "suggested_next_check_type": "Clinical examination and history taking",
+      "caution_flags": [
+        "High uncertainty level",
+        "Missing clinical context and history"
+      ],
+      "referenced_experiences": [
+        "sd198_000925",
+        "sd198_000010"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "uncertainty_signal"
+    }
+  },
+  "risk_flags": [
+    "malignancy_risk:medium"
+  ],
+  "uncertainty": {
+    "uncertainty_level": "high",
+    "reasons": [
+      "The image lacks clinical context and history.",
+      "The redness could be due to various causes including infection or inflammation.",
+      "The differential diagnosis is not conclusive without additional information."
+    ],
+    "missing_information": [
+      "Clinical history and patient symptoms would help differentiate between the differential diagnoses.",
+      "Detailed medical history, including past medical conditions and treatments.",
+      "Laboratory tests and other diagnostic procedures results."
+    ],
+    "referenced_experiences": [
+      "sd198_000925",
+      "sd198_000010",
+      "abs_confusion_5959804dddab",
+      "tac_sd198_000925_e5b6956c8c26",
+      "tac_sd198_000925_e21fa70f1cb7",
+      "abs_confusion_38915f0dddd3",
+      "abs_confusion_d55efae3028a"
+    ],
+    "evidence_strength": "medium",
+    "recommendation_type": "uncertainty_signal"
+  },
+  "notes": [
+    "Agent generated structured evidence only.",
+    "Qwen remains the sole final diagnostic decision maker.",
+    "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, malignancy_risk_assessment_skill, differential_compare_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill.",
+    "Policy in use: stable_default_policy.",
+    "Skill retrieval candidates: uncertainty_assessment_skill, metadata_consistency_skill, escalation_recommendation_skill, border_surface_analysis_skill, information_gap_detection_skill, color_pattern_analysis_skill, lesion_description_structuring_skill, malignancy_risk_assessment_skill, differential_compare_skill, contradiction_check_skill, distribution_analysis_skill, morphology_analysis_skill, exclusion_reasoning_skill, temporal_evolution_skill.",
+    "The red patch appears to be localized and may be indicative of an inflammatory process.",
+    "Hair distribution seems uneven, which might suggest a condition affecting the skin.",
+    "Retrieved prior reasoning experience for context.",
+    "High uncertainty detected in MVP skeleton."
+  ],
+  "initial_perception_summary": {
+    "image_summary": "The image shows a close-up view of skin with a patch of redness and some irregularities in the hair distribution.",
+    "ddx_candidates": [
+      "Cutaneous T-Cell Lymphoma",
+      "Actinic Keratosis",
+      "Rosacea"
+    ],
+    "uncertainty_level": "high",
+    "uncertainty_reasons": [
+      "The image lacks clinical context and history.",
+      "The redness could be due to various causes including infection or inflammation."
+    ],
+    "observation_notes": [
+      "The red patch appears to be localized and may be indicative of an inflammatory process.",
+      "Hair distribution seems uneven, which might suggest a condition affecting the skin."
+    ]
+  },
+  "retrieved_raw_cases_summary": [
+    {
+      "source_id": "sd198_000925",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "sd198_000925",
+      "confusion_pair": "None",
+      "perception_summary": "A small, raised, keratotic lesion is present on the skin near the eyelid margin.",
+      "learning_points": [
+        "Final decision: Actinic Keratosis",
+        "Correctness: False"
+      ],
+      "retrieval_score": 6.0,
+      "base_retrieval_score": 6.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "sd198_000010",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "sd198_000010",
+      "confusion_pair": "None",
+      "perception_summary": "The image shows a close-up of a neck area with multiple small, red papules and pustules. The skin appears inflamed and there is some hair present.",
+      "learning_points": [
+        "Final decision: Seborrheic Keratosis",
+        "Correctness: False"
+      ],
+      "retrieval_score": 6.0,
+      "base_retrieval_score": 6.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "sd198_001274",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "sd198_001274",
+      "confusion_pair": "None",
+      "perception_summary": "A close-up view of skin showing a small, dark lesion on a background of sun-damaged skin.",
+      "learning_points": [
+        "Final decision: Nevus",
+        "Correctness: True"
+      ],
+      "retrieval_score": 5.0,
+      "base_retrieval_score": 5.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_tactical_experiences_summary": [
+    {
+      "source_id": "tac_sd198_000130_f0152010c15d",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "sd198_000130",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Actinic Keratosis, Malignant Skin Cancer, Pigmentary Nevus; risk=malignancy_risk:medium; uncertainty=high",
+      "learning_points": [
+        "separated edge evidence from surface evidence",
+        "highlighted margin quality explicitly",
+        "did not lower case uncertainty enough for confident narrowing"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_sd198_000130_ea7b54e2327b",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "sd198_000130",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Actinic Keratosis, Malignant Skin Cancer, Pigmentary Nevus; risk=malignancy_risk:medium; uncertainty=high",
+      "learning_points": [
+        "kept the differential open",
+        "made pairwise reasoning explicit",
+        "did not lower case uncertainty enough for confident narrowing"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_sd198_000130_e6055fc25fdb",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "sd198_000130",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Actinic Keratosis, Malignant Skin Cancer, Pigmentary Nevus; risk=malignancy_risk:medium; uncertainty=high",
+      "learning_points": [
+        "made pigment variation explicit",
+        "surfaced color asymmetry as auditable evidence",
+        "did not lower case uncertainty enough for confident narrowing"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_sd198_000130_e4a8c7c2c58e",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "sd198_000130",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Actinic Keratosis, Malignant Skin Cancer, Pigmentary Nevus; risk=malignancy_risk:medium; uncertainty=high",
+      "learning_points": [
+        "did not lower case uncertainty enough for confident narrowing",
+        "Action pattern: structured_skill_sequence"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_abstract_experiences_summary": [
+    {
+      "source_id": "abs_confusion_5959804dddab",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "sd198_000001",
+      "confusion_pair": "Actinic Keratosis->Acne Keloidalis Nuchae",
+      "perception_summary": "The image shows a close-up of the nape of the neck with multiple small, red papules and pustules. There is a noticeable area of erythema and some scaling around the lesions.; Acne Keloidalis Nuchae; Rosacea",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 10.0,
+      "base_retrieval_score": 10.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_composite_1a5f693dc1c5",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "sd198_000130",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Actinic Keratosis, Malignant Skin Cancer, Pigmentary Nevus; decision_pattern=compare_then_audit_uncertainty; uncertainty=high; risk=malignancy_risk:medium",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+distribution_analysis_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_confusion_d3ba2ed5e7e2",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "sd198_001017",
+      "confusion_pair": "Actinic Keratosis->MALIGNANT_SKIN_CANCER",
+      "perception_summary": "The image shows a red, raised lesion on a hairy skin surface. The lesion appears to be slightly elevated and has a rough texture.; Bowen's Disease; Actinic Keratosis",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "uncertainty_summary": {
+    "uncertainty_level": "high",
+    "reasons": [
+      "The image lacks clinical context and history.",
+      "The redness could be due to various causes including infection or inflammation.",
+      "The differential diagnosis is not conclusive without additional information."
+    ],
+    "missing_information": [
+      "Clinical history and patient symptoms would help differentiate between the differential diagnoses.",
+      "Detailed medical history, including past medical conditions and treatments.",
+      "Laboratory tests and other diagnostic procedures results."
+    ],
+    "referenced_experiences": [
+      "sd198_000925",
+      "sd198_000010",
+      "abs_confusion_5959804dddab",
+      "tac_sd198_000925_e5b6956c8c26",
+      "tac_sd198_000925_e21fa70f1cb7",
+      "abs_confusion_38915f0dddd3"
+    ]
+  },
+  "contradiction_summary": {
+    "contradictions": [
+      "{'type': 'image_and_metadata', 'description': 'The image shows a close-up view of skin with a patch of redness and some irregularities in the hair distribution, but the metadata indicates the image is labeled as Cutaneous T-Cell Lymphoma.'}"
+    ],
+    "missing_links": [
+      "{'type': 'clinical_context', 'description': 'The image lacks clinical context and history, which is crucial for differential diagnosis.'}",
+      "{'type': 'additional_diagnostic_information', 'description': 'Laboratory tests and other diagnostic procedures results are missing, which could provide additional insights into the condition.'}"
+    ],
+    "reasoning_gaps": [
+      "{'type': 'differential_narrowing', 'description': 'The differential diagnosis candidates (Cutaneous T-Cell Lymphoma, Actinic Keratosis, Rosacea) need further evaluation with additional information to narrow down the possibilities.'}"
+    ],
+    "metadata_conflicts": [],
+    "suspicious_points": []
+  },
+  "information_gap_summary": {
+    "missing_information": [
+      "Clinical history",
+      "Patient symptoms",
+      "Duration of the lesion"
+    ],
+    "why_it_matters": [
+      "Clinical history and patient symptoms are crucial for differentiating between Cutaneous T-Cell Lymphoma, Actinic Keratosis, and Rosacea.",
+      "The duration of the lesion can provide important clues about the chronicity and progression of the condition."
+    ],
+    "impact_on_differential": [
+      "Clinical history and patient symptoms would help narrow down the differential by providing insights into the nature of the lesion, such as whether it is acute or chronic, and whether it is associated with systemic symptoms.",
+      "The duration of the lesion can indicate whether it is a new development or a longstanding condition, which is important for ruling out certain diagnoses."
+    ],
+    "uncertainty_if_missing": "high"
+  },
+  "escalation_summary": {
+    "whether_escalation_needed": "consider",
+    "escalation_reason": [
+      "High uncertainty and missing clinical context and history make it difficult to differentiate between the differential diagnoses."
+    ],
+    "suggested_next_check_type": "Clinical examination and history taking",
+    "caution_flags": [
+      "High uncertainty level",
+      "Missing clinical context and history"
+    ]
+  },
+  "planner_rationale": {
+    "planner_type": "rule_based",
+    "planner_version": "v1",
+    "selected_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "border_surface_analysis_skill",
+      "distribution_analysis_skill",
+      "lesion_description_structuring_skill",
+      "malignancy_risk_assessment_skill",
+      "differential_compare_skill",
+      "exclusion_reasoning_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill",
+      "escalation_recommendation_skill"
+    ],
+    "selection_reasons": {
+      "morphology_analysis_skill": [
+        "Boosted by skill retrieval score=8.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "color_pattern_analysis_skill": [
+        "Boosted by skill retrieval score=11.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "border_surface_analysis_skill": [
+        "Boosted by skill retrieval score=12.00.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "distribution_analysis_skill": [
+        "Boosted by skill retrieval score=9.00.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "lesion_description_structuring_skill": [
+        "Boosted by skill retrieval score=11.00.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "malignancy_risk_assessment_skill": [
+        "Boosted by skill retrieval score=9.50.",
+        "Boosted by cognition helpful_rate=0.98.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`."
+      ],
+      "differential_compare_skill": [
+        "Boosted by skill retrieval score=9.50.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`."
+      ],
+      "exclusion_reasoning_skill": [
+        "Boosted by skill retrieval score=8.00.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "information_gap_detection_skill": [
+        "Boosted by skill retrieval score=11.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "uncertainty_assessment_skill": [
+        "Boosted by skill retrieval score=12.00.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "contradiction_check_skill": [
+        "Boosted by skill retrieval score=9.50.",
+        "Boosted by cognition helpful_rate=0.97.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`."
+      ],
+      "escalation_recommendation_skill": [
+        "Boosted by skill retrieval score=12.00.",
+        "Boosted by cognition helpful_rate=0.85.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `malignancy_possible`."
+      ]
+    }
+  },
+  "confusion_cluster_summary": {
+    "active_clusters": [],
+    "guidance": []
+  },
+  "selected_evidence": [
+    {
+      "item_id": "exclusion_reasoning_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "exclusion_reasoning_skill",
+      "skill_name": "exclusion_reasoning_skill",
+      "retrieval_type": "",
+      "section": "comparison",
+      "category": "exclusion_opposing",
+      "summary": "exclusion_reasoning_skill: unlikely_candidates=Cutaneous T-Cell Lymphoma | exclusion_evidence=The lesion does not exhibit the typical features of Cutaneous T-Cell Lymphoma, such as a well-defined border and lack of keratotic surface texture. | required_missing_evidence=Clinical history and patient symptoms would help differentiate between Cutaneous T-Cell...",
+      "score": 12.04,
+      "rank": 1,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "lesion_description_structuring_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "lesion_description_structuring_skill",
+      "skill_name": "lesion_description_structuring_skill",
+      "retrieval_type": "",
+      "section": "observation",
+      "category": "description",
+      "summary": "lesion_description_structuring_skill: primary_lesion_morphology=Macule | color=Red, Reticular Pigmentation Pattern | border=Poorly Defined, Irregular | surface=Keratotic | size_count=Small, Solitary | distribution=Localized, Scalp",
+      "score": 9.28,
+      "rank": 2,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "malignancy_risk_assessment_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "malignancy_risk_assessment_skill",
+      "skill_name": "malignancy_risk_assessment_skill",
+      "retrieval_type": "",
+      "section": "risk",
+      "category": "risk",
+      "summary": "malignancy_risk_assessment_skill: risk_level=medium | risk_evidence={'type': 'color_pattern', 'description': 'Marked color variation with a reticular pigmentation pattern.', 'evidence_strength': 'medium'}; {'type': 'border', ... | alarm_signals={'type': 'color_pattern', 'description': 'Marked color variation.'}; {'type': 'border', 'description': 'Poorly d...",
+      "score": 9.36,
+      "rank": 3,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "escalation_recommendation_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "escalation_recommendation_skill",
+      "skill_name": "escalation_recommendation_skill",
+      "retrieval_type": "",
+      "section": "conflict_uncertainty",
+      "category": "contradiction_gap",
+      "summary": "escalation_recommendation_skill: whether_escalation_needed=consider | escalation_reason=High uncertainty and missing clinical context and history make it difficult to differentiate between the differential diagnoses. | suggested_next_check_type=Clinical examination and history taking | caution_flags=High uncertainty level; Missing clinical context and his...",
+      "score": 9.36,
+      "rank": 4,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "information_gap_detection_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "information_gap_detection_skill",
+      "skill_name": "information_gap_detection_skill",
+      "retrieval_type": "",
+      "section": "conflict_uncertainty",
+      "category": "contradiction_gap",
+      "summary": "information_gap_detection_skill: missing_information=Clinical history; Patient symptoms; Duration of the lesion | why_it_matters=Clinical history and patient symptoms are crucial for differentiating between Cutaneous T-Cell Lymphoma, Actinic Keratosis, and Rosacea.; The duration of the... | impact_on_differential=Clinical history and patient symptoms woul...",
+      "score": 9.22,
+      "rank": 5,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "color_pattern_analysis_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "color_pattern_analysis_skill",
+      "skill_name": "color_pattern_analysis_skill",
+      "retrieval_type": "",
+      "section": "observation",
+      "category": "description",
+      "summary": "color_pattern_analysis_skill: primary_color=Red | color_variation=Marked | pigmentation_pattern=Reticular | asymmetry_color=Present | evidence_strength=medium | recommendation_type=descriptive_evidence",
+      "score": 8.22,
+      "rank": 8,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "differential_compare_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "differential_compare_skill",
+      "skill_name": "differential_compare_skill",
+      "retrieval_type": "",
+      "section": "comparison",
+      "category": "differential_support",
+      "summary": "differential_compare_skill: candidate_pairs=Cutaneous T-Cell Lymphoma vs Actinic Keratosis; Cutaneous T-Cell Lymphoma vs Rosacea | supporting_evidence=Cutaneous T-Cell Lymphoma vs Actinic Keratosis: The lesion has a poorly defined, irregular border, which is less typical for Actinic Keratosis.; The presence... | conflicting_evidence=Cutaneous T-Cell Lymph...",
+      "score": 7.06,
+      "rank": 12,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "abs_confusion_5959804dddab",
+      "item_type": "retrieval_record",
+      "source_type": "retrieval_record",
+      "source_name": "abs_confusion_5959804dddab",
+      "skill_name": "",
+      "retrieval_type": "abstract_experience",
+      "section": "abstract_experience",
+      "category": "experience_hint",
+      "summary": "The image shows a close-up of the nape of the neck with multiple small, red papules and pustules. There is a noticeable area of erythema and some scaling around the lesions.; Ac... | When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty | confusion_pair=Actinic Keratosis->Acn...",
+      "score": 6.0,
+      "rank": 13,
+      "keep_reason": "kept"
+    }
+  ],
+  "evidence_decision_policy": {
+    "risk_layer": {
+      "risk_flag": "malignancy_risk_medium",
+      "caution_flags": [
+        "uncertainty_high",
+        "contradictions_present",
+        "follow_up_or_biopsy_consideration"
+      ],
+      "follow_up_suggestion": "Clinical examination and history taking",
+      "selected_evidence": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "lesion_description_structuring_skill",
+          "skill_name": "lesion_description_structuring_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "lesion_description_structuring_skill: primary_lesion_morphology=Macule | color=Red, Reticular Pigmentation Pattern | border=Poorly Defined, Irregular | surface=Keratotic | size_count=Small, Solitary | distribution=Localized, Scalp",
+          "score": 9.28,
+          "rank": 2,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "malignancy_risk_assessment_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "malignancy_risk_assessment_skill",
+          "skill_name": "malignancy_risk_assessment_skill",
+          "retrieval_type": "",
+          "section": "risk",
+          "category": "risk",
+          "summary": "malignancy_risk_assessment_skill: risk_level=medium | risk_evidence={'type': 'color_pattern', 'description': 'Marked color variation with a reticular pigmentation pattern.', 'evidence_strength': 'medium'}; {'type': 'border', ... | alarm_signals={'type': 'color_pattern', 'description': 'Marked color variation.'}; {'type': 'border', 'description': 'Poorly d...",
+          "score": 9.36,
+          "rank": 3,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "escalation_recommendation_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "escalation_recommendation_skill",
+          "skill_name": "escalation_recommendation_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "escalation_recommendation_skill: whether_escalation_needed=consider | escalation_reason=High uncertainty and missing clinical context and history make it difficult to differentiate between the differential diagnoses. | suggested_next_check_type=Clinical examination and history taking | caution_flags=High uncertainty level; Missing clinical context and his...",
+          "score": 9.36,
+          "rank": 4,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "information_gap_detection_skill",
+          "skill_name": "information_gap_detection_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "information_gap_detection_skill: missing_information=Clinical history; Patient symptoms; Duration of the lesion | why_it_matters=Clinical history and patient symptoms are crucial for differentiating between Cutaneous T-Cell Lymphoma, Actinic Keratosis, and Rosacea.; The duration of the... | impact_on_differential=Clinical history and patient symptoms woul...",
+          "score": 9.22,
+          "rank": 5,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "exclusion_reasoning_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "exclusion_reasoning_skill",
+          "skill_name": "exclusion_reasoning_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "exclusion_opposing",
+          "summary": "exclusion_reasoning_skill: unlikely_candidates=Cutaneous T-Cell Lymphoma | exclusion_evidence=The lesion does not exhibit the typical features of Cutaneous T-Cell Lymphoma, such as a well-defined border and lack of keratotic surface texture. | required_missing_evidence=Clinical history and patient symptoms would help differentiate between Cutaneous T-Cell...",
+          "score": 12.04,
+          "rank": 1,
+          "keep_reason": "kept"
+        }
+      ],
+      "baseline_preview": {
+        "early_ddx_candidates": [
+          "Cutaneous T-Cell Lymphoma",
+          "Actinic Keratosis",
+          "Rosacea"
+        ],
+        "image_summary": "The image shows a close-up view of skin with a patch of redness and some irregularities in the hair distribution.",
+        "baseline_final_diagnosis": "Actinic Keratosis",
+        "baseline_differential_diagnoses": [
+          "Actinic Keratosis",
+          "Nevus",
+          "Contact Dermatitis"
+        ],
+        "baseline_confidence": "High"
+      }
+    },
+    "diagnosis_override_layer": {
+      "workflow_context": {
+        "label_granularity": "grouped",
+        "presentation_mode": "focal_lesion",
+        "workflow_profile": "coarse_taxonomy_workflow",
+        "available_tests": [
+          "clinical_photo_only",
+          "lesion_photo"
+        ],
+        "workflow_preference": "morphology_first",
+        "hospital_type": "specialist_clinic",
+        "time_budget": "standard",
+        "metadata_completeness": "full",
+        "workflow_capabilities": [
+          "coarse_taxonomy_reasoning",
+          "grouped_label_reasoning",
+          "focal_lesion_reasoning"
+        ]
+      },
+      "override_allowed": false,
+      "malignancy_override_allowed": false,
+      "subtype_override_allowed": false,
+      "family_override_allowed": false,
+      "override_mode": "risk_only",
+      "override_reasons": [
+        "supporting_evidence_outweighs_opposition",
+        "subtype_specific_support_present",
+        "consistent_retrieval_support",
+        "opposing_quota_satisfied"
+      ],
+      "why_not_confident_enough_to_override": [
+        "malignancy risk is not high enough for a diagnosis override",
+        "no specialist evidence strongly supports the override direction",
+        "uncertainty remains too high for a confident diagnosis override",
+        "contradictions or reasoning gaps remain too numerous"
+      ],
+      "supporting_evidence": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "lesion_description_structuring_skill",
+          "skill_name": "lesion_description_structuring_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "lesion_description_structuring_skill: primary_lesion_morphology=Macule | color=Red, Reticular Pigmentation Pattern | border=Poorly Defined, Irregular | surface=Keratotic | size_count=Small, Solitary | distribution=Localized, Scalp",
+          "score": 9.28,
+          "rank": 2,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "malignancy_risk_assessment_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "malignancy_risk_assessment_skill",
+          "skill_name": "malignancy_risk_assessment_skill",
+          "retrieval_type": "",
+          "section": "risk",
+          "category": "risk",
+          "summary": "malignancy_risk_assessment_skill: risk_level=medium | risk_evidence={'type': 'color_pattern', 'description': 'Marked color variation with a reticular pigmentation pattern.', 'evidence_strength': 'medium'}; {'type': 'border', ... | alarm_signals={'type': 'color_pattern', 'description': 'Marked color variation.'}; {'type': 'border', 'description': 'Poorly d...",
+          "score": 9.36,
+          "rank": 3,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "escalation_recommendation_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "escalation_recommendation_skill",
+          "skill_name": "escalation_recommendation_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "escalation_recommendation_skill: whether_escalation_needed=consider | escalation_reason=High uncertainty and missing clinical context and history make it difficult to differentiate between the differential diagnoses. | suggested_next_check_type=Clinical examination and history taking | caution_flags=High uncertainty level; Missing clinical context and his...",
+          "score": 9.36,
+          "rank": 4,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "information_gap_detection_skill",
+          "skill_name": "information_gap_detection_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "information_gap_detection_skill: missing_information=Clinical history; Patient symptoms; Duration of the lesion | why_it_matters=Clinical history and patient symptoms are crucial for differentiating between Cutaneous T-Cell Lymphoma, Actinic Keratosis, and Rosacea.; The duration of the... | impact_on_differential=Clinical history and patient symptoms woul...",
+          "score": 9.22,
+          "rank": 5,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "color_pattern_analysis_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "color_pattern_analysis_skill",
+          "skill_name": "color_pattern_analysis_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "color_pattern_analysis_skill: primary_color=Red | color_variation=Marked | pigmentation_pattern=Reticular | asymmetry_color=Present | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 8.22,
+          "rank": 8,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "differential_compare_skill",
+          "skill_name": "differential_compare_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "differential_support",
+          "summary": "differential_compare_skill: candidate_pairs=Cutaneous T-Cell Lymphoma vs Actinic Keratosis; Cutaneous T-Cell Lymphoma vs Rosacea | supporting_evidence=Cutaneous T-Cell Lymphoma vs Actinic Keratosis: The lesion has a poorly defined, irregular border, which is less typical for Actinic Keratosis.; The presence... | conflicting_evidence=Cutaneous T-Cell Lymph...",
+          "score": 7.06,
+          "rank": 12,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "abs_confusion_5959804dddab",
+          "item_type": "retrieval_record",
+          "source_type": "retrieval_record",
+          "source_name": "abs_confusion_5959804dddab",
+          "skill_name": "",
+          "retrieval_type": "abstract_experience",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "summary": "The image shows a close-up of the nape of the neck with multiple small, red papules and pustules. There is a noticeable area of erythema and some scaling around the lesions.; Ac... | When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty | confusion_pair=Actinic Keratosis->Acn...",
+          "score": 6.0,
+          "rank": 13,
+          "keep_reason": "kept"
+        }
+      ],
+      "opposing_evidence": [
+        {
+          "item_id": "exclusion_reasoning_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "exclusion_reasoning_skill",
+          "skill_name": "exclusion_reasoning_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "exclusion_opposing",
+          "summary": "exclusion_reasoning_skill: unlikely_candidates=Cutaneous T-Cell Lymphoma | exclusion_evidence=The lesion does not exhibit the typical features of Cutaneous T-Cell Lymphoma, such as a well-defined border and lack of keratotic surface texture. | required_missing_evidence=Clinical history and patient symptoms would help differentiate between Cutaneous T-Cell...",
+          "score": 12.04,
+          "rank": 1,
+          "keep_reason": "kept"
+        }
+      ],
+      "supporting_score": 58.5,
+      "opposing_score": 12.04,
+      "support_margin": 46.46,
+      "selected_evidence_present": true,
+      "subtype_support_score": 22.28,
+      "subtype_support_margin": 10.24,
+      "specialist_support_present": false,
+      "consistent_retrieval_count": 1,
+      "contradiction_count": 4,
+      "uncertainty_level": "high",
+      "opposing_quota_satisfied": true,
+      "subtype_support_quota_satisfied": true
+    }
+  },
+  "serialized_evidence_text": "[Observation Evidence]\n- Initial image summary: The image shows a close-up view of skin with a patch of redness and some irregularities in the hair distribution.\n- Early differential candidates: Cutaneous T-Cell Lymphoma, Actinic Keratosis, Rosacea\n- structured lesion observation: lesion_description_structuring_skill: primary_lesion_morphology=Macule | color=Red, Reticular Pigmentation Pattern | border=Poorly Defined, Irregular | surface=Keratotic | size_count=Small, Solitary | distribution=Localized, Scalp || color_pattern_analysis_skill: primary_color=Red | color_variation=Marked | pigmentation_pattern=Reticular | asymmetry_color=Present | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Raw case reference sd198_000925: A small, raised, keratotic lesion is present on the skin near the eyelid margin.\n- Raw case reference sd198_000010: The image shows a close-up of a neck area with multiple small, red papules and pustules. The skin appears inflamed and there is some hair present.\n- Raw case reference sd198_001274: A close-up view of skin showing a small, dark lesion on a background of sun-damaged skin.\n\n[Exclusion And Comparison Evidence]\n- differential and exclusion reasoning: differential_compare_skill: candidate_pairs=Cutaneous T-Cell Lymphoma vs Actinic Keratosis; Cutaneous T-Cell Lymphoma vs Rosacea | supporting_evidence=Cutaneous T-Cell Lymphoma vs Actinic Keratosis: The lesion has a poorly defined, irregular border, which is less typical for Actinic Keratosis.; The presence... | conflicting_evidence=Cutaneous T-Cell Lymphoma vs Actinic Keratosis: The lesion size and morphology (small macule) are more characteristic of Actinic Keratosis.; Cutaneous T-Cell... | required_missing_evidence=Cutaneous T-Cell Lymphoma vs Actinic Keratosis: Clinical history and patient symptoms would help differentiate between these conditions.; Cutaneous T-Cell Ly... | evidence_strength=medium | recommendation_type=descriptive_evidence || exclusion_reasoning_skill: unlikely_candidates=Cutaneous T-Cell Lymphoma | exclusion_evidence=The lesion does not exhibit the typical features of Cutaneous T-Cell Lymphoma, such as a well-defined border and lack of keratotic surface texture. | required_missing_evidence=Clinical history and patient symptoms would help differentiate between Cutaneous T-Cell Lymphoma and other conditions like Actinic Keratosis or Rosacea. | exclusion_confidence=medium | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Tactical experience tac_sd198_000130_f0152010c15d: ddx=Actinic Keratosis, Malignant Skin Cancer, Pigmentary Nevus; risk=malignancy_risk:medium; uncertainty=high; separated edge evidence from surface evidence; highlighted margin quality explicitly; did not lower case uncertainty enough for confident narrowing\n- Tactical experience tac_sd198_000130_ea7b54e2327b: ddx=Actinic Keratosis, Malignant Skin Cancer, Pigmentary Nevus; risk=malignancy_risk:medium; uncertainty=high; kept the differential open; made pairwise reasoning explicit; did not lower case uncertainty enough for confident narrowing\n- Tactical experience tac_sd198_000130_e6055fc25fdb: ddx=Actinic Keratosis, Malignant Skin Cancer, Pigmentary Nevus; risk=malignancy_risk:medium; uncertainty=high; made pigment variation explicit; surfaced color asymmetry as auditable evidence; did not lower case uncertainty enough for confident narrowing\n- Tactical experience tac_sd198_000130_e4a8c7c2c58e: ddx=Actinic Keratosis, Malignant Skin Cancer, Pigmentary Nevus; risk=malignancy_risk:medium; uncertainty=high; did not lower case uncertainty enough for confident narrowing; Action pattern: structured_skill_sequence\n\n[Risk Evidence]\n- Risk flags: malignancy_risk:medium\n- malignancy_risk_assessment_skill: risk_level=medium | risk_evidence={'type': 'color_pattern', 'description': 'Marked color variation with a reticular pigmentation pattern.', 'evidence_strength': 'medium'}; {'type': 'border', ... | alarm_signals={'type': 'color_pattern', 'description': 'Marked color variation.'}; {'type': 'border', 'description': 'Poorly defined, irregular border.'} | benign_reassuring_features={'type': 'symmetry', 'description': 'Asymmetric distribution.'}; {'type': 'size', 'description': 'Solitary lesion.'} | evidence_strength=medium | recommendation_type=risk_signal\n- Abstract experience abs_confusion_5959804dddab: The image shows a close-up of the nape of the neck with multiple small, red papules and pustules. There is a noticeable area of erythema and some scaling around the lesions.; Acne Keloidalis Nuchae; Rosacea; When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty\n\n[Conflict And Uncertainty]\n- Uncertainty level: high\n- Uncertainty reasons: The image lacks clinical context and history.; The redness could be due to various causes including infection or inflammation.; The differential diagnosis is not conclusive without additional information.\n- Missing information: Clinical history and patient symptoms would help differentiate between the differential diagnoses.; Detailed medical history, including past medical conditions and treatments.; Laboratory tests and other diagnostic procedures results.\n- contradictions: {'type': 'image_and_metadata', 'description': 'The image shows a close-up view of skin with a patch of redness and some irregularities in the hair distribution, but the metadata indicates the image is labeled as Cutaneous T-Cell Lymphoma.'}\n- missing links: {'type': 'clinical_context', 'description': 'The image lacks clinical context and history, which is crucial for differential diagnosis.'}; {'type': 'additional_diagnostic_information', 'description': 'Laboratory tests and other diagnostic procedures results are missing, which could provide additional insights into the condition.'}\n- reasoning gaps: {'type': 'differential_narrowing', 'description': 'The differential diagnosis candidates (Cutaneous T-Cell Lymphoma, Actinic Keratosis, Rosacea) need further evaluation with additional information to narrow down the possibilities.'}\n- information_gap_detection_skill: missing_information=Clinical history; Patient symptoms; Duration of the lesion | why_it_matters=Clinical history and patient symptoms are crucial for differentiating between Cutaneous T-Cell Lymphoma, Actinic Keratosis, and Rosacea.; The duration of the... | impact_on_differential=Clinical history and patient symptoms would help narrow down the differential by providing insights into the nature of the lesion, such as whether it is acut... | uncertainty_if_missing=high | evidence_strength=medium | recommendation_type=descriptive_evidence\n- explicit information gaps: Clinical history; Patient symptoms; Duration of the lesion\n- why gaps matter: Clinical history and patient symptoms are crucial for differentiating between Cutaneous T-Cell Lymphoma, Actinic Keratosis, and Rosacea.; The duration of the lesion can provide important clues about the chronicity and progression of the condition.\n- impact on differential: Clinical history and patient symptoms would help narrow down the differential by providing insights into the nature of the lesion, such as whether it is acute or chronic, and whether it is associated with systemic symptoms.; The duration of the lesion can indicate whether it is a new development or a longstanding condition, which is important for ruling out certain diagnoses.\n- residual uncertainty if still missing: high\n- escalation_recommendation_skill: whether_escalation_needed=consider | escalation_reason=High uncertainty and missing clinical context and history make it difficult to differentiate between the differential diagnoses. | suggested_next_check_type=Clinical examination and history taking | caution_flags=High uncertainty level; Missing clinical context and history | evidence_strength=medium | recommendation_type=uncertainty_signal\n- escalation needed: consider\n- escalation reasons: High uncertainty and missing clinical context and history make it difficult to differentiate between the differential diagnoses.\n- suggested next check type: Clinical examination and history taking\n- caution flags: High uncertainty level; Missing clinical context and history\n\n[Planner Rationale]\n- Selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, malignancy_risk_assessment_skill, differential_compare_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill\n- morphology_analysis_skill: Boosted by skill retrieval score=8.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.\n- color_pattern_analysis_skill: Boosted by skill retrieval score=11.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.\n- border_surface_analysis_skill: Boosted by skill retrieval score=12.00.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.",
+  "evidence_calibration_debug": {
+    "calibrator_type": "heuristic",
+    "calibrator_version": "v1",
+    "section_plan": {
+      "observation": {
+        "skill_names": [
+          "lesion_description_structuring_skill",
+          "color_pattern_analysis_skill"
+        ],
+        "merged_groups": [
+          {
+            "label": "structured_lesion_observation",
+            "skills": [
+              "lesion_description_structuring_skill",
+              "color_pattern_analysis_skill"
+            ],
+            "max_members": 2
+          }
+        ],
+        "raw_case_source_ids": []
+      },
+      "comparison": {
+        "skill_names": [
+          "exclusion_reasoning_skill",
+          "differential_compare_skill"
+        ],
+        "merged_groups": [
+          {
+            "label": "differential_and_exclusion_reasoning",
+            "skills": [
+              "differential_compare_skill",
+              "exclusion_reasoning_skill"
+            ],
+            "max_members": 1
+          }
+        ],
+        "tactical_source_ids": [],
+        "abstract_source_ids": []
+      },
+      "risk": {
+        "skill_names": [
+          "malignancy_risk_assessment_skill"
+        ],
+        "abstract_source_ids": [
+          "abs_confusion_5959804dddab"
+        ]
+      },
+      "conflict_uncertainty": {
+        "skill_names": [
+          "escalation_recommendation_skill",
+          "information_gap_detection_skill"
+        ]
+      },
+      "planner": {
+        "max_reason_skills": 3
+      },
+      "section_order": [
+        "observation",
+        "comparison",
+        "risk",
+        "conflict_uncertainty",
+        "planner"
+      ]
+    },
+    "item_scores": [
+      {
+        "item_id": "exclusion_reasoning_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 12.04,
+        "learned_score": 0.0,
+        "final_score": 12.04,
+        "selected": true,
+        "reason": "kept",
+        "category": "exclusion_opposing",
+        "rank": 1,
+        "dedup_key": "comparison:negative_evidence"
+      },
+      {
+        "item_id": "malignancy_risk_assessment_skill",
+        "item_type": "skill_output",
+        "section": "risk",
+        "heuristic_score": 9.36,
+        "learned_score": 0.0,
+        "final_score": 9.36,
+        "selected": true,
+        "reason": "kept",
+        "category": "risk",
+        "rank": 3,
+        "dedup_key": "risk:malignancy"
+      },
+      {
+        "item_id": "escalation_recommendation_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 9.36,
+        "learned_score": 0.0,
+        "final_score": 9.36,
+        "selected": true,
+        "reason": "kept",
+        "category": "contradiction_gap",
+        "rank": 4,
+        "dedup_key": "uncertainty:escalation_recommendation_skill"
+      },
+      {
+        "item_id": "lesion_description_structuring_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 9.28,
+        "learned_score": 0.0,
+        "final_score": 9.28,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 2,
+        "dedup_key": "description:lesion_description_structuring_skill"
+      },
+      {
+        "item_id": "information_gap_detection_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 9.22,
+        "learned_score": 0.0,
+        "final_score": 9.22,
+        "selected": true,
+        "reason": "kept",
+        "category": "contradiction_gap",
+        "rank": 5,
+        "dedup_key": "uncertainty:information_gap_detection_skill"
+      },
+      {
+        "item_id": "uncertainty_assessment_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 8.66,
+        "learned_score": 0.0,
+        "final_score": 8.66,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "contradiction_gap",
+        "rank": 0,
+        "dedup_key": "uncertainty:uncertainty_assessment_skill"
+      },
+      {
+        "item_id": "contradiction_check_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 8.66,
+        "learned_score": 0.0,
+        "final_score": 8.66,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "contradiction_gap",
+        "rank": 0,
+        "dedup_key": "uncertainty:contradiction_check_skill"
+      },
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 8.22,
+        "learned_score": 0.0,
+        "final_score": 8.22,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 6,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "border_surface_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 8.16,
+        "learned_score": 0.0,
+        "final_score": 8.16,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "morphology_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 8.08,
+        "learned_score": 0.0,
+        "final_score": 8.08,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "differential_compare_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 7.06,
+        "learned_score": 0.0,
+        "final_score": 7.06,
+        "selected": true,
+        "reason": "kept",
+        "category": "differential_support",
+        "rank": 7,
+        "dedup_key": "differential_support:differential_compare_skill"
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 6.72,
+        "learned_score": 0.0,
+        "final_score": 6.72,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "abs_confusion_5959804dddab",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 6.0,
+        "learned_score": 0.0,
+        "final_score": 6.0,
+        "selected": true,
+        "reason": "kept",
+        "category": "experience_hint",
+        "rank": 8,
+        "dedup_key": "abstract_experience:abs_confusion_5959804dddab"
+      },
+      {
+        "item_id": "abs_composite_1a5f693dc1c5",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 5.7,
+        "learned_score": 0.0,
+        "final_score": 5.7,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "abstract_experience:abs_composite_1a5f693dc1c5"
+      },
+      {
+        "item_id": "abs_confusion_d3ba2ed5e7e2",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 5.6,
+        "learned_score": 0.0,
+        "final_score": 5.6,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "abstract_experience:abs_confusion_d3ba2ed5e7e2"
+      },
+      {
+        "item_id": "tac_sd198_000130_f0152010c15d",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 4.6,
+        "learned_score": 0.0,
+        "final_score": 4.6,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_sd198_000130_f0152010c15d"
+      },
+      {
+        "item_id": "tac_sd198_000130_ea7b54e2327b",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 4.6,
+        "learned_score": 0.0,
+        "final_score": 4.6,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_sd198_000130_ea7b54e2327b"
+      },
+      {
+        "item_id": "tac_sd198_000130_e6055fc25fdb",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 4.6,
+        "learned_score": 0.0,
+        "final_score": 4.6,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_sd198_000130_e6055fc25fdb"
+      },
+      {
+        "item_id": "tac_sd198_000130_e4a8c7c2c58e",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 4.6,
+        "learned_score": 0.0,
+        "final_score": 4.6,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_sd198_000130_e4a8c7c2c58e"
+      },
+      {
+        "item_id": "sd198_000925",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 2.5,
+        "learned_score": 0.0,
+        "final_score": 2.5,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:sd198_000925"
+      },
+      {
+        "item_id": "sd198_000010",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 2.5,
+        "learned_score": 0.0,
+        "final_score": 2.5,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:sd198_000010"
+      },
+      {
+        "item_id": "sd198_001274",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 2.3,
+        "learned_score": 0.0,
+        "final_score": 2.3,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:sd198_001274"
+      }
+    ],
+    "omitted_items": [
+      {
+        "item_id": "contradiction_check_skill",
+        "item_type": "skill_output",
+        "reason": "category_quota_exceeded",
+        "section": "conflict_uncertainty",
+        "category": "contradiction_gap",
+        "score": 8.66
+      },
+      {
+        "item_id": "uncertainty_assessment_skill",
+        "item_type": "skill_output",
+        "reason": "category_quota_exceeded",
+        "section": "conflict_uncertainty",
+        "category": "contradiction_gap",
+        "score": 8.66
+      },
+      {
+        "item_id": "border_surface_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 8.16
+      },
+      {
+        "item_id": "morphology_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 8.08
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 6.72
+      },
+      {
+        "item_id": "abs_composite_1a5f693dc1c5",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "abstract_experience",
+        "category": "experience_hint",
+        "score": 5.7
+      },
+      {
+        "item_id": "abs_confusion_d3ba2ed5e7e2",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "abstract_experience",
+        "category": "experience_hint",
+        "score": 5.6
+      },
+      {
+        "item_id": "tac_sd198_000130_e4a8c7c2c58e",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 4.6
+      },
+      {
+        "item_id": "tac_sd198_000130_e6055fc25fdb",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 4.6
+      },
+      {
+        "item_id": "tac_sd198_000130_ea7b54e2327b",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 4.6
+      },
+      {
+        "item_id": "tac_sd198_000130_f0152010c15d",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 4.6
+      },
+      {
+        "item_id": "sd198_000010",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 2.5
+      },
+      {
+        "item_id": "sd198_000925",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 2.5
+      },
+      {
+        "item_id": "sd198_001274",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 2.3
+      }
+    ],
+    "debug": {
+      "policy": {
+        "enable_evidence_calibrator": true,
+        "calibrator_mode": "heuristic",
+        "calibrator_checkpoint_path": "",
+        "learned_calibration_weight": 1.2,
+        "max_total_items": 8,
+        "max_observation_skills": 4,
+        "max_comparison_skills": 3,
+        "max_risk_skills": 2,
+        "max_uncertainty_skills": 3,
+        "max_exclusion_items": 2,
+        "max_experience_hints": 2,
+        "max_raw_cases": 1,
+        "max_tactical": 2,
+        "max_abstract": 2,
+        "max_planner_reasons": 3,
+        "omit_low_value_evidence": true,
+        "min_effective_score": 2.4,
+        "dedup_similar_evidence": true,
+        "cluster_aware_ordering": true,
+        "cluster_opposing_bonus": 1.8,
+        "cluster_exclusion_bonus": 1.4,
+        "risk_overweight_penalty": 1.2,
+        "uncertainty_overweight_penalty": 1.0,
+        "description_priority_bonus": 0.6,
+        "exclusion_priority_bonus": 1.2,
+        "negative_evidence_priority_bonus": 1.0,
+        "allow_family_override": false,
+        "allow_keratinocyte_subtype_override": false,
+        "debug_output": true,
+        "conservative_fusion_mode": "soft"
+      },
+      "learned_scorer_loaded": false,
+      "contradiction_count": 4,
+      "uncertainty_level": "high",
+      "risk_flag_count": 1,
+      "confusion_clusters": [],
+      "kept_items": [
+        {
+          "item_id": "exclusion_reasoning_skill",
+          "item_type": "skill_output",
+          "section": "comparison",
+          "category": "exclusion_opposing",
+          "rank": 1,
+          "score": 12.04
+        },
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "rank": 2,
+          "score": 9.28
+        },
+        {
+          "item_id": "malignancy_risk_assessment_skill",
+          "item_type": "skill_output",
+          "section": "risk",
+          "category": "risk",
+          "rank": 3,
+          "score": 9.36
+        },
+        {
+          "item_id": "escalation_recommendation_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "rank": 4,
+          "score": 9.36
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "rank": 5,
+          "score": 9.22
+        },
+        {
+          "item_id": "color_pattern_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "rank": 8,
+          "score": 8.22
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "section": "comparison",
+          "category": "differential_support",
+          "rank": 12,
+          "score": 7.06
+        },
+        {
+          "item_id": "abs_confusion_5959804dddab",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "rank": 13,
+          "score": 6.0
+        }
+      ],
+      "pruned_items": [
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "score": 8.66,
+          "heuristic_score": 8.66,
+          "learned_score": 0.0,
+          "payload": {
+            "contradictions": [
+              {
+                "type": "image_and_metadata",
+                "description": "The image shows a close-up view of skin with a patch of redness and some irregularities in the hair distribution, but the metadata indicates the image is labeled as Cutaneous T-Cell Lymphoma."
+              }
+            ],
+            "missing_links": [
+              {
+                "type": "clinical_context",
+                "description": "The image lacks clinical context and history, which is crucial for differential diagnosis."
+              },
+              {
+                "type": "additional_diagnostic_information",
+                "description": "Laboratory tests and other diagnostic procedures results are missing, which could provide additional insights into the condition."
+              }
+            ],
+            "reasoning_gaps": [
+              {
+                "type": "differential_narrowing",
+                "description": "The differential diagnosis candidates (Cutaneous T-Cell Lymphoma, Actinic Keratosis, Rosacea) need further evaluation with additional information to narrow down the possibilities."
+              }
+            ],
+            "referenced_experiences": [
+              "sd198_000925",
+              "sd198_000010",
+              "abs_confusion_5959804dddab",
+              "tac_sd198_000925_e5b6956c8c26",
+              "tac_sd198_000925_e21fa70f1cb7",
+              "abs_confusion_38915f0dddd3",
+              "abs_confusion_d55efae3028a"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "conflict_signal"
+          },
+          "retrieval_score": 9.5,
+          "dedup_key": "uncertainty:contradiction_check_skill",
+          "ordering_score": 8.66,
+          "rank": 6,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "uncertainty_assessment_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "score": 8.66,
+          "heuristic_score": 8.66,
+          "learned_score": 0.0,
+          "payload": {
+            "uncertainty_level": "high",
+            "reasons": [
+              "The image lacks clinical context and history.",
+              "The redness could be due to various causes including infection or inflammation.",
+              "The differential diagnosis is not conclusive without additional information."
+            ],
+            "missing_information": [
+              "Clinical history and patient symptoms would help differentiate between the differential diagnoses.",
+              "Detailed medical history, including past medical conditions and treatments.",
+              "Laboratory tests and other diagnostic procedures results."
+            ],
+            "referenced_experiences": [
+              "sd198_000925",
+              "sd198_000010",
+              "abs_confusion_5959804dddab",
+              "tac_sd198_000925_e5b6956c8c26",
+              "tac_sd198_000925_e21fa70f1cb7",
+              "abs_confusion_38915f0dddd3",
+              "abs_confusion_d55efae3028a"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "uncertainty_signal"
+          },
+          "retrieval_score": 12.0,
+          "dedup_key": "uncertainty:uncertainty_assessment_skill",
+          "ordering_score": 8.66,
+          "rank": 7,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "border_surface_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 8.16,
+          "heuristic_score": 8.16,
+          "learned_score": 0.0,
+          "payload": {
+            "border_clarity": "poorly defined",
+            "border_irregularity": "irregular",
+            "surface_texture": "keratotic",
+            "scaling_presence": "absent",
+            "referenced_experiences": [
+              "abs_confusion_5959804dddab"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 12.0,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 8.56,
+          "rank": 9,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 8.08,
+          "heuristic_score": 8.08,
+          "learned_score": 0.0,
+          "payload": {
+            "lesion_type": "macule",
+            "size_range": "small",
+            "elevation": "flat",
+            "count": "solitary",
+            "referenced_experiences": [
+              "abs_confusion_5959804dddab"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 8.5,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 8.48,
+          "rank": 10,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "distribution_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 6.72,
+          "heuristic_score": 6.72,
+          "learned_score": 0.0,
+          "payload": {
+            "body_location": "scalp",
+            "symmetry": "asymmetric",
+            "localized_vs_generalized": "localized",
+            "clustering_pattern": "solitary",
+            "referenced_experiences": [
+              "sd198_000925",
+              "sd198_000010",
+              "abs_confusion_5959804dddab",
+              "tac_sd198_000925_e5b6956c8c26",
+              "tac_sd198_000925_e21fa70f1cb7",
+              "abs_confusion_38915f0dddd3",
+              "abs_confusion_d55efae3028a"
+            ],
+            "evidence_strength": "low",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 9.0,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 7.12,
+          "rank": 11,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "abs_composite_1a5f693dc1c5",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "score": 5.7,
+          "heuristic_score": 5.7,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "abs_composite_1a5f693dc1c5",
+            "source_layer": "abstract_experience",
+            "experience_type": "composite_skill_seed",
+            "case_id": "sd198_000130",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=Actinic Keratosis, Malignant Skin Cancer, Pigmentary Nevus; decision_pattern=compare_then_audit_uncertainty; uncertainty=high; risk=malignancy_risk:medium",
+            "learning_points": [
+              "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+              "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+distribution_analysis_skill",
+              "Candidate only; do not auto-materialize a composite skill in the current stage."
+            ],
+            "retrieval_score": 9.0,
+            "base_retrieval_score": 9.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "abstract_experience:abs_composite_1a5f693dc1c5",
+          "ordering_score": 5.7,
+          "rank": 14,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "abs_confusion_d3ba2ed5e7e2",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "score": 5.6000000000000005,
+          "heuristic_score": 5.6000000000000005,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "abs_confusion_d3ba2ed5e7e2",
+            "source_layer": "abstract_experience",
+            "experience_type": "confusion_memory",
+            "case_id": "sd198_001017",
+            "confusion_pair": "Actinic Keratosis->MALIGNANT_SKIN_CANCER",
+            "perception_summary": "The image shows a red, raised lesion on a hairy skin surface. The lesion appears to be slightly elevated and has a rough texture.; Bowen's Disease; Actinic Keratosis",
+            "learning_points": [
+              "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+              "compare_then_audit_uncertainty"
+            ],
+            "retrieval_score": 8.0,
+            "base_retrieval_score": 8.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "abstract_experience:abs_confusion_d3ba2ed5e7e2",
+          "ordering_score": 5.6000000000000005,
+          "rank": 15,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_sd198_000130_e4a8c7c2c58e",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 4.6000000000000005,
+          "heuristic_score": 4.6000000000000005,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_sd198_000130_e4a8c7c2c58e",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "sd198_000130",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=Actinic Keratosis, Malignant Skin Cancer, Pigmentary Nevus; risk=malignancy_risk:medium; uncertainty=high",
+            "learning_points": [
+              "did not lower case uncertainty enough for confident narrowing",
+              "Action pattern: structured_skill_sequence"
+            ],
+            "retrieval_score": 8.0,
+            "base_retrieval_score": 8.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_sd198_000130_e4a8c7c2c58e",
+          "ordering_score": 4.6000000000000005,
+          "rank": 16,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_sd198_000130_e6055fc25fdb",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 4.6000000000000005,
+          "heuristic_score": 4.6000000000000005,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_sd198_000130_e6055fc25fdb",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "sd198_000130",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=Actinic Keratosis, Malignant Skin Cancer, Pigmentary Nevus; risk=malignancy_risk:medium; uncertainty=high",
+            "learning_points": [
+              "made pigment variation explicit",
+              "surfaced color asymmetry as auditable evidence",
+              "did not lower case uncertainty enough for confident narrowing"
+            ],
+            "retrieval_score": 8.0,
+            "base_retrieval_score": 8.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_sd198_000130_e6055fc25fdb",
+          "ordering_score": 4.6000000000000005,
+          "rank": 17,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_sd198_000130_ea7b54e2327b",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 4.6000000000000005,
+          "heuristic_score": 4.6000000000000005,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_sd198_000130_ea7b54e2327b",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "sd198_000130",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=Actinic Keratosis, Malignant Skin Cancer, Pigmentary Nevus; risk=malignancy_risk:medium; uncertainty=high",
+            "learning_points": [
+              "kept the differential open",
+              "made pairwise reasoning explicit",
+              "did not lower case uncertainty enough for confident narrowing"
+            ],
+            "retrieval_score": 8.0,
+            "base_retrieval_score": 8.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_sd198_000130_ea7b54e2327b",
+          "ordering_score": 4.6000000000000005,
+          "rank": 18,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_sd198_000130_f0152010c15d",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 4.6000000000000005,
+          "heuristic_score": 4.6000000000000005,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_sd198_000130_f0152010c15d",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "sd198_000130",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=Actinic Keratosis, Malignant Skin Cancer, Pigmentary Nevus; risk=malignancy_risk:medium; uncertainty=high",
+            "learning_points": [
+              "separated edge evidence from surface evidence",
+              "highlighted margin quality explicitly",
+              "did not lower case uncertainty enough for confident narrowing"
+            ],
+            "retrieval_score": 8.0,
+            "base_retrieval_score": 8.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_sd198_000130_f0152010c15d",
+          "ordering_score": 4.6000000000000005,
+          "rank": 19,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "sd198_000010",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 2.5,
+          "heuristic_score": 2.5,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "sd198_000010",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "sd198_000010",
+            "confusion_pair": "None",
+            "perception_summary": "The image shows a close-up of a neck area with multiple small, red papules and pustules. The skin appears inflamed and there is some hair present.",
+            "learning_points": [
+              "Final decision: Seborrheic Keratosis",
+              "Correctness: False"
+            ],
+            "retrieval_score": 6.0,
+            "base_retrieval_score": 6.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:sd198_000010",
+          "ordering_score": 2.9,
+          "rank": 20,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "sd198_000925",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 2.5,
+          "heuristic_score": 2.5,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "sd198_000925",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "sd198_000925",
+            "confusion_pair": "None",
+            "perception_summary": "A small, raised, keratotic lesion is present on the skin near the eyelid margin.",
+            "learning_points": [
+              "Final decision: Actinic Keratosis",
+              "Correctness: False"
+            ],
+            "retrieval_score": 6.0,
+            "base_retrieval_score": 6.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:sd198_000925",
+          "ordering_score": 2.9,
+          "rank": 21,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "sd198_001274",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 2.3,
+          "heuristic_score": 2.3,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "sd198_001274",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "sd198_001274",
+            "confusion_pair": "None",
+            "perception_summary": "A close-up view of skin showing a small, dark lesion on a background of sun-damaged skin.",
+            "learning_points": [
+              "Final decision: Nevus",
+              "Correctness: True"
+            ],
+            "retrieval_score": 5.0,
+            "base_retrieval_score": 5.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:sd198_001274",
+          "ordering_score": 2.6999999999999997,
+          "rank": 22,
+          "reason": "global_budget_exceeded"
+        }
+      ],
+      "reordered_items": [
+        {
+          "item_id": "exclusion_reasoning_skill",
+          "item_type": "skill_output",
+          "from_section": "comparison",
+          "category": "exclusion_opposing",
+          "new_rank": 1
+        },
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "from_section": "observation",
+          "category": "description",
+          "new_rank": 2
+        },
+        {
+          "item_id": "malignancy_risk_assessment_skill",
+          "item_type": "skill_output",
+          "from_section": "risk",
+          "category": "risk",
+          "new_rank": 3
+        },
+        {
+          "item_id": "escalation_recommendation_skill",
+          "item_type": "skill_output",
+          "from_section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "new_rank": 4
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "from_section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "new_rank": 5
+        },
+        {
+          "item_id": "color_pattern_analysis_skill",
+          "item_type": "skill_output",
+          "from_section": "observation",
+          "category": "description",
+          "new_rank": 6
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "from_section": "comparison",
+          "category": "differential_support",
+          "new_rank": 7
+        },
+        {
+          "item_id": "abs_confusion_5959804dddab",
+          "item_type": "retrieval_record",
+          "from_section": "abstract_experience",
+          "category": "experience_hint",
+          "new_rank": 8
+        }
+      ],
+      "quota_state": {
+        "max_total_items": 8,
+        "per_category_quota": {
+          "description": 3,
+          "differential_support": 2,
+          "exclusion_opposing": 2,
+          "risk": 1,
+          "contradiction_gap": 2,
+          "experience_hint": 2
+        },
+        "category_counts": {
+          "description": 2,
+          "differential_support": 1,
+          "exclusion_opposing": 1,
+          "risk": 1,
+          "contradiction_gap": 2,
+          "experience_hint": 1
+        }
+      }
+    }
+  }
+}

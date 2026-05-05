@@ -1,0 +1,3171 @@
+{
+  "reasoning_summary": "Perception summary: A dark, irregularly shaped lesion with a central depression and some surrounding hyperpigmentation. | Useful skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, differential_compare_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill | Final answer: Seborrheic Keratosis | Uncertainty: high | Risk flags: malignancy_risk:medium | Detected errors: final_diagnosis_mismatch_reference",
+  "useful_skills": [
+    "morphology_analysis_skill",
+    "color_pattern_analysis_skill",
+    "border_surface_analysis_skill",
+    "lesion_description_structuring_skill",
+    "metadata_consistency_skill",
+    "malignancy_risk_assessment_skill",
+    "differential_compare_skill",
+    "exclusion_reasoning_skill",
+    "information_gap_detection_skill",
+    "uncertainty_assessment_skill",
+    "contradiction_check_skill",
+    "escalation_recommendation_skill"
+  ],
+  "detected_errors": [
+    "final_diagnosis_mismatch_reference"
+  ],
+  "experience_type": "confusion_experience",
+  "diagnosis_correct": false,
+  "write_experience": true,
+  "case_outcome": {
+    "status": "failure",
+    "has_ground_truth": true,
+    "is_correct": false,
+    "error_type": "final_diagnosis_mismatch_reference",
+    "predicted_label": "Seborrheic Keratosis",
+    "reference_label": "NV",
+    "predicted_canonical_label": "BKL",
+    "reference_canonical_label": "NV",
+    "confidence_level": "medium",
+    "uncertainty_level": "high",
+    "malignant_flag": {
+      "ground_truth": false,
+      "predicted": false
+    },
+    "confusion_pair": "Seborrheic Keratosis->NV",
+    "risk_flags": [
+      "malignancy_risk:medium"
+    ],
+    "label_space": {
+      "label_space_id": "isic2019_full",
+      "canonical_labels": [
+        "MEL",
+        "NV",
+        "BCC",
+        "AK",
+        "BKL",
+        "DF",
+        "VASC",
+        "SCC",
+        "UNK"
+      ],
+      "malignant_labels": [
+        "MEL",
+        "BCC",
+        "AK",
+        "SCC"
+      ],
+      "benign_labels": [
+        "NV",
+        "BKL",
+        "DF",
+        "VASC",
+        "UNK"
+      ]
+    }
+  },
+  "skill_assessments": [
+    {
+      "skill_name": "morphology_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "DF",
+          "BKL",
+          "NV"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": ""
+      },
+      "helped_aspects": [
+        "stabilized lesion structure",
+        "made morphology explicit for downstream reasoning"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "inspect dominant lesion silhouette",
+        "judge elevation and lesion count"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000042_downsampled",
+        "ISIC_0000023_downsampled"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "morphology_analysis_skill",
+        "ddx:DF|BKL",
+        "risk:malignancy_risk:medium",
+        "uncertainty:high",
+        "confusion:Seborrheic Keratosis->NV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "morphology_analysis_skill remains reusable for Seborrheic Keratosis->NV style confusion"
+    },
+    {
+      "skill_name": "color_pattern_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "DF",
+          "BKL",
+          "NV"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": ""
+      },
+      "helped_aspects": [
+        "made pigment variation explicit",
+        "surfaced color asymmetry as auditable evidence"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "inspect dominant color",
+        "compare internal color asymmetry"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000042_downsampled"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "color_pattern_analysis_skill",
+        "ddx:DF|BKL",
+        "risk:malignancy_risk:medium",
+        "uncertainty:high",
+        "confusion:Seborrheic Keratosis->NV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "color_pattern_analysis_skill remains reusable for Seborrheic Keratosis->NV style confusion"
+    },
+    {
+      "skill_name": "border_surface_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "DF",
+          "BKL",
+          "NV"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": ""
+      },
+      "helped_aspects": [
+        "separated edge evidence from surface evidence",
+        "highlighted margin quality explicitly"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "judge border definition",
+        "inspect surface change and scale"
+      ],
+      "referenced_experiences": [
+        "abs_composite_85802b5142ee",
+        "abs_composite_7ea3cabb18e5",
+        "abs_composite_7de6a616ea40"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "border_surface_analysis_skill",
+        "ddx:DF|BKL",
+        "risk:malignancy_risk:medium",
+        "uncertainty:high",
+        "confusion:Seborrheic Keratosis->NV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "border_surface_analysis_skill remains reusable for Seborrheic Keratosis->NV style confusion"
+    },
+    {
+      "skill_name": "lesion_description_structuring_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "DF",
+          "BKL",
+          "NV"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": ""
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000042_downsampled",
+        "ISIC_0000023_downsampled",
+        "tac_ISIC_0000044_downsampled_38cb14500658",
+        "tac_ISIC_0000042_downsampled_38cb14500658",
+        "tac_ISIC_0000041_downsampled_38cb14500658",
+        "abs_composite_85802b5142ee",
+        "abs_composite_7ea3cabb18e5",
+        "abs_composite_7de6a616ea40"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 1.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "lesion_description_structuring_skill",
+        "ddx:DF|BKL",
+        "risk:malignancy_risk:medium",
+        "uncertainty:high",
+        "confusion:Seborrheic Keratosis->NV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "lesion_description_structuring_skill remains reusable for Seborrheic Keratosis->NV style confusion"
+    },
+    {
+      "skill_name": "metadata_consistency_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "DF",
+          "BKL",
+          "NV"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": ""
+      },
+      "helped_aspects": [
+        "checked image-metadata coherence",
+        "flagged reliability issues before integration"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "compare visible cues against metadata",
+        "separate direct conflicts from soft concerns"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000042_downsampled",
+        "ISIC_0000023_downsampled",
+        "tac_ISIC_0000044_downsampled_38cb14500658",
+        "tac_ISIC_0000042_downsampled_38cb14500658",
+        "tac_ISIC_0000041_downsampled_38cb14500658",
+        "abs_composite_85802b5142ee",
+        "abs_composite_7ea3cabb18e5",
+        "abs_composite_7de6a616ea40"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": true,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "metadata_consistency_skill",
+        "ddx:DF|BKL",
+        "risk:malignancy_risk:medium",
+        "uncertainty:high",
+        "confusion:Seborrheic Keratosis->NV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "metadata_consistency_skill remains reusable for Seborrheic Keratosis->NV style confusion"
+    },
+    {
+      "skill_name": "malignancy_risk_assessment_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "DF",
+          "BKL",
+          "NV"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": ""
+      },
+      "helped_aspects": [
+        "made risk framing explicit",
+        "highlighted alarm signals without forcing diagnosis"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "collect alarm signals",
+        "balance concerning and reassuring evidence"
+      ],
+      "referenced_experiences": [
+        "tac_ISIC_0000044_downsampled_38cb14500658",
+        "tac_ISIC_0000042_downsampled_38cb14500658",
+        "tac_ISIC_0000041_downsampled_38cb14500658"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "risk_signal",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 1.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "malignancy_risk_assessment_skill",
+        "ddx:DF|BKL",
+        "risk:malignancy_risk:medium",
+        "uncertainty:high",
+        "confusion:Seborrheic Keratosis->NV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "malignancy_risk_assessment_skill remains reusable for Seborrheic Keratosis->NV style confusion"
+    },
+    {
+      "skill_name": "differential_compare_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "DF",
+          "BKL",
+          "NV"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": ""
+      },
+      "helped_aspects": [
+        "kept the differential open",
+        "made pairwise reasoning explicit"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "select the most relevant candidate pair",
+        "preserve unresolved comparative evidence"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000042_downsampled",
+        "ISIC_0000023_downsampled",
+        "tac_ISIC_0000044_downsampled_38cb14500658",
+        "tac_ISIC_0000042_downsampled_38cb14500658",
+        "tac_ISIC_0000041_downsampled_38cb14500658",
+        "abs_composite_85802b5142ee",
+        "abs_composite_7ea3cabb18e5",
+        "abs_composite_7de6a616ea40"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 1.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "differential_compare_skill",
+        "ddx:DF|BKL",
+        "risk:malignancy_risk:medium",
+        "uncertainty:high",
+        "confusion:Seborrheic Keratosis->NV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "differential_compare_skill remains reusable for Seborrheic Keratosis->NV style confusion"
+    },
+    {
+      "skill_name": "exclusion_reasoning_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "DF",
+          "BKL",
+          "NV"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": ""
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000042_downsampled",
+        "ISIC_0000023_downsampled",
+        "tac_ISIC_0000044_downsampled_38cb14500658",
+        "tac_ISIC_0000042_downsampled_38cb14500658",
+        "tac_ISIC_0000041_downsampled_38cb14500658",
+        "abs_composite_85802b5142ee",
+        "abs_composite_7ea3cabb18e5",
+        "abs_composite_7de6a616ea40"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 1.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "exclusion_reasoning_skill",
+        "ddx:DF|BKL",
+        "risk:malignancy_risk:medium",
+        "uncertainty:high",
+        "confusion:Seborrheic Keratosis->NV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "exclusion_reasoning_skill remains reusable for Seborrheic Keratosis->NV style confusion"
+    },
+    {
+      "skill_name": "information_gap_detection_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "DF",
+          "BKL",
+          "NV"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": ""
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000042_downsampled",
+        "ISIC_0000023_downsampled",
+        "tac_ISIC_0000044_downsampled_38cb14500658",
+        "tac_ISIC_0000042_downsampled_38cb14500658",
+        "tac_ISIC_0000041_downsampled_38cb14500658",
+        "abs_composite_85802b5142ee",
+        "abs_composite_7ea3cabb18e5",
+        "abs_composite_7de6a616ea40"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 1.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "information_gap_detection_skill",
+        "ddx:DF|BKL",
+        "risk:malignancy_risk:medium",
+        "uncertainty:high",
+        "confusion:Seborrheic Keratosis->NV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "information_gap_detection_skill remains reusable for Seborrheic Keratosis->NV style confusion"
+    },
+    {
+      "skill_name": "uncertainty_assessment_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "DF",
+          "BKL",
+          "NV"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": ""
+      },
+      "helped_aspects": [
+        "made evidence limits explicit",
+        "prevented overconfident downstream use"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "scan ambiguity across evidence streams",
+        "name missing information explicitly"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000042_downsampled",
+        "ISIC_0000023_downsampled",
+        "tac_ISIC_0000044_downsampled_38cb14500658",
+        "tac_ISIC_0000042_downsampled_38cb14500658",
+        "tac_ISIC_0000041_downsampled_38cb14500658",
+        "abs_composite_85802b5142ee",
+        "abs_composite_7ea3cabb18e5",
+        "abs_composite_7de6a616ea40"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "uncertainty_signal",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 2.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "uncertainty_assessment_skill",
+        "ddx:DF|BKL",
+        "risk:malignancy_risk:medium",
+        "uncertainty:high",
+        "confusion:Seborrheic Keratosis->NV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "uncertainty_assessment_skill remains reusable for Seborrheic Keratosis->NV style confusion"
+    },
+    {
+      "skill_name": "contradiction_check_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "DF",
+          "BKL",
+          "NV"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": ""
+      },
+      "helped_aspects": [
+        "surfaced missing links in the reasoning chain",
+        "audited internal consistency"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "scan for conflicts across evidence sources",
+        "surface missing links in the reasoning chain"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000042_downsampled",
+        "ISIC_0000023_downsampled",
+        "tac_ISIC_0000044_downsampled_38cb14500658",
+        "tac_ISIC_0000042_downsampled_38cb14500658",
+        "tac_ISIC_0000041_downsampled_38cb14500658",
+        "abs_composite_85802b5142ee",
+        "abs_composite_7ea3cabb18e5",
+        "abs_composite_7de6a616ea40"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "conflict_signal",
+      "uncertainty_reduction": false,
+      "contradiction_detected": true,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 1.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "contradiction_signal_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "contradiction_check_skill",
+        "ddx:DF|BKL",
+        "risk:malignancy_risk:medium",
+        "uncertainty:high",
+        "confusion:Seborrheic Keratosis->NV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "contradiction_check_skill remains reusable for Seborrheic Keratosis->NV style confusion"
+    },
+    {
+      "skill_name": "escalation_recommendation_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "DF",
+          "BKL",
+          "NV"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "high",
+        "region": ""
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "tac_ISIC_0000044_downsampled_38cb14500658",
+        "tac_ISIC_0000042_downsampled_38cb14500658",
+        "tac_ISIC_0000041_downsampled_38cb14500658"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "uncertainty_signal",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 2.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "escalation_recommendation_skill",
+        "ddx:DF|BKL",
+        "risk:malignancy_risk:medium",
+        "uncertainty:high",
+        "confusion:Seborrheic Keratosis->NV"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "uncertainty_remained_high",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "escalation_recommendation_skill remains reusable for Seborrheic Keratosis->NV style confusion"
+    }
+  ],
+  "reflection_extract": {
+    "raw_case_memory_ready": true,
+    "tactical_experience_count": 12,
+    "abstract_experience_candidate_count": 2,
+    "reusable_tactical_count": 12,
+    "composite_skill_seed_count": 0,
+    "composite_skill_seed_ids": [],
+    "abstract_flags": {
+      "confusion_memory": true,
+      "prototype": false,
+      "rule": true,
+      "rule_candidate": false,
+      "composite_skill_seed": false
+    },
+    "case_status": "failure"
+  },
+  "writeback_bundle": {
+    "raw_case_memory": {
+      "case_id": "ISIC_0067366",
+      "image_paths": [
+        "/root/DermAgent/data/isic2019/images/ISIC_2019_Training_Input/ISIC_0067366.jpg"
+      ],
+      "metadata": {
+        "image": "ISIC_0067366",
+        "age_approx": "50",
+        "anatom_site_general": "anterior torso",
+        "lesion_id": "BCN_0001269",
+        "sex": "female",
+        "original_label": "NV",
+        "label_space_id": "isic2019_full"
+      },
+      "dataset_name": "ISIC2019",
+      "label_space_id": "isic2019_full",
+      "true_label": "NV",
+      "qwen_output": {
+        "final_diagnosis": "Seborrheic Keratosis",
+        "differential_diagnoses": [
+          "Seborrheic Keratosis",
+          "Actinic Keratosis",
+          "Basal Cell Carcinoma",
+          "Nevus"
+        ],
+        "rationale": "The lesion exhibits features consistent with Seborrheic Keratosis, including a dark, irregularly shaped lesion with a central depression and surrounding hyperpigmentation. The morphology, color pattern, and surface texture align with typical characteristics of Seborrheic Keratosis. However, the presence of a central depression raises some concern, which is why a high uncertainty level is maintained. Further histopathological examination is recommended to rule out other possibilities.",
+        "confidence": "Medium",
+        "follow_up_considerations": "Given the high uncertainty and the presence of a central depression, a biopsy is recommended to confirm the diagnosis and rule out other potential conditions such as Basal Cell Carcinoma or Actinic Keratosis."
+      },
+      "agent_output": {
+        "perception": {
+          "image_summary": "A dark, irregularly shaped lesion with a central depression and some surrounding hyperpigmentation.",
+          "ddx_candidates": [
+            "DF",
+            "BKL",
+            "NV"
+          ],
+          "uncertainty": {
+            "level": "high",
+            "reasons": [
+              "Irregular borders and asymmetry suggest malignancy but cannot be confirmed without further information."
+            ]
+          },
+          "notes": [
+            "Central depression may indicate a scar or atrophy."
+          ]
+        },
+        "skill_outputs": {
+          "morphology_analysis_skill": {
+            "lesion_type": "plaque",
+            "size_range": "large",
+            "elevation": "flat",
+            "count": "solitary",
+            "referenced_experiences": [
+              "ISIC_0000042_downsampled",
+              "ISIC_0000023_downsampled"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "color_pattern_analysis_skill": {
+            "primary_color": "Dark blue",
+            "color_variation": "Marked",
+            "pigmentation_pattern": "Reticular",
+            "asymmetry_color": "Present",
+            "referenced_experiences": [
+              "ISIC_0000042_downsampled"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "border_surface_analysis_skill": {
+            "border_clarity": "poor",
+            "border_irregularity": "irregular",
+            "surface_texture": "keratotic",
+            "scaling_presence": "present",
+            "referenced_experiences": [
+              "abs_composite_85802b5142ee",
+              "abs_composite_7ea3cabb18e5",
+              "abs_composite_7de6a616ea40"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "lesion_description_structuring_skill": {
+            "primary_lesion_morphology": "Plaque",
+            "color": [
+              "Dark blue, marked variation, reticular pigmentation"
+            ],
+            "border": [
+              "Irregular, poor clarity"
+            ],
+            "surface": [
+              "Keratotic, scaling presence"
+            ],
+            "size_count": [
+              "size: Large, count: Solitary"
+            ],
+            "distribution": [
+              "site: Anterior torso, anatom_site_general: anterior torso"
+            ],
+            "associated_context": [
+              "age_approx: 50, sex: female, label_space_id: isic2019_full"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000042_downsampled",
+              "ISIC_0000023_downsampled",
+              "tac_ISIC_0000044_downsampled_38cb14500658",
+              "tac_ISIC_0000042_downsampled_38cb14500658",
+              "tac_ISIC_0000041_downsampled_38cb14500658",
+              "abs_composite_85802b5142ee",
+              "abs_composite_7ea3cabb18e5",
+              "abs_composite_7de6a616ea40"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "metadata_consistency_skill": {
+            "consistency_score": "medium",
+            "conflicts": [],
+            "suspicious_points": [
+              "The lesion has a central depression, which could be indicative of a scar or atrophy, but the metadata does not specify this detail."
+            ],
+            "referenced_experiences": [
+              "ISIC_0000042_downsampled",
+              "ISIC_0000023_downsampled",
+              "tac_ISIC_0000044_downsampled_38cb14500658",
+              "tac_ISIC_0000042_downsampled_38cb14500658",
+              "tac_ISIC_0000041_downsampled_38cb14500658",
+              "abs_composite_85802b5142ee",
+              "abs_composite_7ea3cabb18e5",
+              "abs_composite_7de6a616ea40"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "malignancy_risk_assessment_skill": {
+            "risk_level": "medium",
+            "risk_evidence": [
+              "Irregular border with poor clarity suggests malignancy.",
+              "Marked color variation and reticular pigmentation are concerning.",
+              "Central depression may indicate a scar or atrophy, but the lesion's irregular shape and color variation raise suspicion."
+            ],
+            "alarm_signals": [
+              "Irregular border with poor clarity",
+              "Marked color variation and reticular pigmentation"
+            ],
+            "benign_reassuring_features": [
+              "Lack of structural irregularity",
+              "No ulceration or rapid growth observed"
+            ],
+            "referenced_experiences": [
+              "tac_ISIC_0000044_downsampled_38cb14500658",
+              "tac_ISIC_0000042_downsampled_38cb14500658",
+              "tac_ISIC_0000041_downsampled_38cb14500658"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "risk_signal"
+          },
+          "differential_compare_skill": {
+            "candidate_pairs": [
+              "DF vs BKL",
+              "DF vs NV",
+              "BKL vs NV"
+            ],
+            "supporting_evidence": [
+              "DF vs BKL: Irregular border with poor clarity suggests malignancy.; Marked color variation and reticular pigmentation are concerning.",
+              "DF vs NV: Irregular border with poor clarity suggests malignancy.; Marked color variation and reticular pigmentation are concerning.",
+              "BKL vs NV: Central depression may indicate a scar or atrophy."
+            ],
+            "conflicting_evidence": [],
+            "required_missing_evidence": [
+              "DF vs BKL: Further histopathological examination to confirm the nature of the central depression.",
+              "DF vs NV: Further histopathological examination to confirm the nature of the central depression.",
+              "BKL vs NV: Further histopathological examination to confirm the nature of the central depression."
+            ],
+            "referenced_experiences": [
+              "ISIC_0000042_downsampled",
+              "ISIC_0000023_downsampled",
+              "tac_ISIC_0000044_downsampled_38cb14500658",
+              "tac_ISIC_0000042_downsampled_38cb14500658",
+              "tac_ISIC_0000041_downsampled_38cb14500658",
+              "abs_composite_85802b5142ee",
+              "abs_composite_7ea3cabb18e5",
+              "abs_composite_7de6a616ea40"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "exclusion_reasoning_skill": {
+            "unlikely_candidates": [
+              "DF"
+            ],
+            "exclusion_evidence": [
+              "The lesion has a central depression, which could be indicative of a scar or atrophy, but the metadata does not specify this detail."
+            ],
+            "required_missing_evidence": [
+              "Further histopathological examination to confirm the nature of the central depression."
+            ],
+            "exclusion_confidence": "medium",
+            "referenced_experiences": [
+              "ISIC_0000042_downsampled",
+              "ISIC_0000023_downsampled",
+              "tac_ISIC_0000044_downsampled_38cb14500658",
+              "tac_ISIC_0000042_downsampled_38cb14500658",
+              "tac_ISIC_0000041_downsampled_38cb14500658",
+              "abs_composite_85802b5142ee",
+              "abs_composite_7ea3cabb18e5",
+              "abs_composite_7de6a616ea40"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "information_gap_detection_skill": {
+            "missing_information": [
+              "Histopathological examination results",
+              "Detailed clinical history"
+            ],
+            "why_it_matters": [
+              "Histopathological examination is crucial for confirming the nature of the central depression and ruling out malignancy.",
+              "A detailed clinical history helps in understanding the patient's symptoms, risk factors, and medical history, which are important for differential diagnosis."
+            ],
+            "impact_on_differential": [
+              "Without histopathological confirmation, the differential diagnosis remains open between DF (Dermatofibroma), BKL (Bowen's Intraepithelial Carcinoma), and NV (Nevus).",
+              "Clinical history can help differentiate between benign and potentially malignant lesions based on the patient's presentation and risk factors."
+            ],
+            "uncertainty_if_missing": "high",
+            "referenced_experiences": [
+              "ISIC_0000042_downsampled",
+              "ISIC_0000023_downsampled",
+              "tac_ISIC_0000044_downsampled_38cb14500658",
+              "tac_ISIC_0000042_downsampled_38cb14500658",
+              "tac_ISIC_0000041_downsampled_38cb14500658",
+              "abs_composite_85802b5142ee",
+              "abs_composite_7ea3cabb18e5",
+              "abs_composite_7de6a616ea40"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "uncertainty_assessment_skill": {
+            "uncertainty_level": "high",
+            "reasons": [
+              "The lesion has irregular borders and asymmetry, which are concerning for malignancy.",
+              "The central depression could be indicative of a scar or atrophy, but further histopathological examination is needed to confirm its nature.",
+              "The lesion's size and location on the anterior torso do not provide additional diagnostic clues."
+            ],
+            "missing_information": [
+              "Further histopathological examination to confirm the nature of the central depression.",
+              "Additional imaging studies (e.g., ultrasound) to assess the depth and characteristics of the lesion."
+            ],
+            "referenced_experiences": [
+              "ISIC_0000042_downsampled",
+              "ISIC_0000023_downsampled",
+              "tac_ISIC_0000044_downsampled_38cb14500658",
+              "tac_ISIC_0000042_downsampled_38cb14500658",
+              "tac_ISIC_0000041_downsampled_38cb14500658",
+              "abs_composite_85802b5142ee",
+              "abs_composite_7ea3cabb18e5",
+              "abs_composite_7de6a616ea40"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "uncertainty_signal"
+          },
+          "contradiction_check_skill": {
+            "contradictions": [
+              {
+                "description": "The image shows a lesion with a central depression, which is noted in the notes as potentially indicating a scar or atrophy. However, the morphology analysis skill suggests the lesion is a plaque with a flat elevation, which contradicts the presence of a central depression.",
+                "evidence_sources": [
+                  "initial_perception",
+                  "morphology_analysis_skill"
+                ]
+              }
+            ],
+            "missing_links": [
+              {
+                "description": "There is no direct evidence linking the central depression to a scar or atrophy, nor is there a clear indication of the lesion's depth or the nature of the central depression.",
+                "evidence_sources": [
+                  "initial_perception",
+                  "morphology_analysis_skill"
+                ]
+              }
+            ],
+            "reasoning_gaps": [
+              {
+                "description": "The reasoning chain lacks specific information about the lesion's depth, which would help in differentiating between a scar or atrophy and a more concerning lesion.",
+                "evidence_sources": [
+                  "initial_perception",
+                  "morphology_analysis_skill"
+                ]
+              }
+            ],
+            "referenced_experiences": [
+              "ISIC_0000042_downsampled",
+              "ISIC_0000023_downsampled",
+              "tac_ISIC_0000044_downsampled_38cb14500658",
+              "tac_ISIC_0000042_downsampled_38cb14500658",
+              "tac_ISIC_0000041_downsampled_38cb14500658",
+              "abs_composite_85802b5142ee",
+              "abs_composite_7ea3cabb18e5",
+              "abs_composite_7de6a616ea40"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "conflict_signal"
+          },
+          "escalation_recommendation_skill": {
+            "whether_escalation_needed": "yes",
+            "escalation_reason": [
+              "High uncertainty regarding the nature of the central depression and the lesion's overall malignancy risk due to missing histopathological examination and detailed clinical history."
+            ],
+            "suggested_next_check_type": "histopathological examination",
+            "caution_flags": [
+              "High uncertainty level",
+              "Missing histopathological examination",
+              "Missing detailed clinical history"
+            ],
+            "referenced_experiences": [
+              "tac_ISIC_0000044_downsampled_38cb14500658",
+              "tac_ISIC_0000042_downsampled_38cb14500658",
+              "tac_ISIC_0000041_downsampled_38cb14500658"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "uncertainty_signal"
+          }
+        },
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty": {
+          "uncertainty_level": "high",
+          "reasons": [
+            "The lesion has irregular borders and asymmetry, which are concerning for malignancy.",
+            "The central depression could be indicative of a scar or atrophy, but further histopathological examination is needed to confirm its nature.",
+            "The lesion's size and location on the anterior torso do not provide additional diagnostic clues."
+          ],
+          "missing_information": [
+            "Further histopathological examination to confirm the nature of the central depression.",
+            "Additional imaging studies (e.g., ultrasound) to assess the depth and characteristics of the lesion."
+          ],
+          "referenced_experiences": [
+            "ISIC_0000042_downsampled",
+            "ISIC_0000023_downsampled",
+            "tac_ISIC_0000044_downsampled_38cb14500658",
+            "tac_ISIC_0000042_downsampled_38cb14500658",
+            "tac_ISIC_0000041_downsampled_38cb14500658",
+            "abs_composite_85802b5142ee",
+            "abs_composite_7ea3cabb18e5",
+            "abs_composite_7de6a616ea40"
+          ],
+          "evidence_strength": "medium",
+          "recommendation_type": "uncertainty_signal"
+        },
+        "retrieved_experience_refs": [
+          "abs_composite_85802b5142ee",
+          "abs_composite_5b4523f649e8"
+        ],
+        "notes": [
+          "Agent generated structured evidence only.",
+          "Qwen remains the sole final diagnostic decision maker.",
+          "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, differential_compare_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill.",
+          "Policy in use: stable_default_policy__full_dermagent.",
+          "Skill retrieval candidates: metadata_consistency_skill, benign_mimic_specialist_skill, color_pattern_analysis_skill, uncertainty_assessment_skill, differential_compare_skill, contradiction_check_skill, morphology_analysis_skill, lesion_description_structuring_skill, malignancy_risk_assessment_skill, information_gap_detection_skill, escalation_recommendation_skill, border_surface_analysis_skill, exclusion_reasoning_skill, distribution_analysis_skill.",
+          "Central depression may indicate a scar or atrophy.",
+          "Retrieved prior reasoning experience for context.",
+          "High uncertainty detected in MVP skeleton."
+        ],
+        "skill_assessments": [
+          {
+            "skill_name": "morphology_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "DF",
+                "BKL",
+                "NV"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": ""
+            },
+            "helped_aspects": [
+              "stabilized lesion structure",
+              "made morphology explicit for downstream reasoning"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "inspect dominant lesion silhouette",
+              "judge elevation and lesion count"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000042_downsampled",
+              "ISIC_0000023_downsampled"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "morphology_analysis_skill",
+              "ddx:DF|BKL",
+              "risk:malignancy_risk:medium",
+              "uncertainty:high",
+              "confusion:Seborrheic Keratosis->NV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "morphology_analysis_skill remains reusable for Seborrheic Keratosis->NV style confusion"
+          },
+          {
+            "skill_name": "color_pattern_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "DF",
+                "BKL",
+                "NV"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": ""
+            },
+            "helped_aspects": [
+              "made pigment variation explicit",
+              "surfaced color asymmetry as auditable evidence"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "inspect dominant color",
+              "compare internal color asymmetry"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000042_downsampled"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "color_pattern_analysis_skill",
+              "ddx:DF|BKL",
+              "risk:malignancy_risk:medium",
+              "uncertainty:high",
+              "confusion:Seborrheic Keratosis->NV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "color_pattern_analysis_skill remains reusable for Seborrheic Keratosis->NV style confusion"
+          },
+          {
+            "skill_name": "border_surface_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "DF",
+                "BKL",
+                "NV"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": ""
+            },
+            "helped_aspects": [
+              "separated edge evidence from surface evidence",
+              "highlighted margin quality explicitly"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "judge border definition",
+              "inspect surface change and scale"
+            ],
+            "referenced_experiences": [
+              "abs_composite_85802b5142ee",
+              "abs_composite_7ea3cabb18e5",
+              "abs_composite_7de6a616ea40"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "border_surface_analysis_skill",
+              "ddx:DF|BKL",
+              "risk:malignancy_risk:medium",
+              "uncertainty:high",
+              "confusion:Seborrheic Keratosis->NV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "border_surface_analysis_skill remains reusable for Seborrheic Keratosis->NV style confusion"
+          },
+          {
+            "skill_name": "lesion_description_structuring_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "DF",
+                "BKL",
+                "NV"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": ""
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000042_downsampled",
+              "ISIC_0000023_downsampled",
+              "tac_ISIC_0000044_downsampled_38cb14500658",
+              "tac_ISIC_0000042_downsampled_38cb14500658",
+              "tac_ISIC_0000041_downsampled_38cb14500658",
+              "abs_composite_85802b5142ee",
+              "abs_composite_7ea3cabb18e5",
+              "abs_composite_7de6a616ea40"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 1.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "lesion_description_structuring_skill",
+              "ddx:DF|BKL",
+              "risk:malignancy_risk:medium",
+              "uncertainty:high",
+              "confusion:Seborrheic Keratosis->NV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "lesion_description_structuring_skill remains reusable for Seborrheic Keratosis->NV style confusion"
+          },
+          {
+            "skill_name": "metadata_consistency_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "DF",
+                "BKL",
+                "NV"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": ""
+            },
+            "helped_aspects": [
+              "checked image-metadata coherence",
+              "flagged reliability issues before integration"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "compare visible cues against metadata",
+              "separate direct conflicts from soft concerns"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000042_downsampled",
+              "ISIC_0000023_downsampled",
+              "tac_ISIC_0000044_downsampled_38cb14500658",
+              "tac_ISIC_0000042_downsampled_38cb14500658",
+              "tac_ISIC_0000041_downsampled_38cb14500658",
+              "abs_composite_85802b5142ee",
+              "abs_composite_7ea3cabb18e5",
+              "abs_composite_7de6a616ea40"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": true,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "metadata_consistency_skill",
+              "ddx:DF|BKL",
+              "risk:malignancy_risk:medium",
+              "uncertainty:high",
+              "confusion:Seborrheic Keratosis->NV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "metadata_consistency_skill remains reusable for Seborrheic Keratosis->NV style confusion"
+          },
+          {
+            "skill_name": "malignancy_risk_assessment_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "DF",
+                "BKL",
+                "NV"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": ""
+            },
+            "helped_aspects": [
+              "made risk framing explicit",
+              "highlighted alarm signals without forcing diagnosis"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "collect alarm signals",
+              "balance concerning and reassuring evidence"
+            ],
+            "referenced_experiences": [
+              "tac_ISIC_0000044_downsampled_38cb14500658",
+              "tac_ISIC_0000042_downsampled_38cb14500658",
+              "tac_ISIC_0000041_downsampled_38cb14500658"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "risk_signal",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 1.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "malignancy_risk_assessment_skill",
+              "ddx:DF|BKL",
+              "risk:malignancy_risk:medium",
+              "uncertainty:high",
+              "confusion:Seborrheic Keratosis->NV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "malignancy_risk_assessment_skill remains reusable for Seborrheic Keratosis->NV style confusion"
+          },
+          {
+            "skill_name": "differential_compare_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "DF",
+                "BKL",
+                "NV"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": ""
+            },
+            "helped_aspects": [
+              "kept the differential open",
+              "made pairwise reasoning explicit"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "select the most relevant candidate pair",
+              "preserve unresolved comparative evidence"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000042_downsampled",
+              "ISIC_0000023_downsampled",
+              "tac_ISIC_0000044_downsampled_38cb14500658",
+              "tac_ISIC_0000042_downsampled_38cb14500658",
+              "tac_ISIC_0000041_downsampled_38cb14500658",
+              "abs_composite_85802b5142ee",
+              "abs_composite_7ea3cabb18e5",
+              "abs_composite_7de6a616ea40"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 1.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "differential_compare_skill",
+              "ddx:DF|BKL",
+              "risk:malignancy_risk:medium",
+              "uncertainty:high",
+              "confusion:Seborrheic Keratosis->NV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "differential_compare_skill remains reusable for Seborrheic Keratosis->NV style confusion"
+          },
+          {
+            "skill_name": "exclusion_reasoning_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "DF",
+                "BKL",
+                "NV"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": ""
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000042_downsampled",
+              "ISIC_0000023_downsampled",
+              "tac_ISIC_0000044_downsampled_38cb14500658",
+              "tac_ISIC_0000042_downsampled_38cb14500658",
+              "tac_ISIC_0000041_downsampled_38cb14500658",
+              "abs_composite_85802b5142ee",
+              "abs_composite_7ea3cabb18e5",
+              "abs_composite_7de6a616ea40"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 1.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "exclusion_reasoning_skill",
+              "ddx:DF|BKL",
+              "risk:malignancy_risk:medium",
+              "uncertainty:high",
+              "confusion:Seborrheic Keratosis->NV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "exclusion_reasoning_skill remains reusable for Seborrheic Keratosis->NV style confusion"
+          },
+          {
+            "skill_name": "information_gap_detection_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "DF",
+                "BKL",
+                "NV"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": ""
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000042_downsampled",
+              "ISIC_0000023_downsampled",
+              "tac_ISIC_0000044_downsampled_38cb14500658",
+              "tac_ISIC_0000042_downsampled_38cb14500658",
+              "tac_ISIC_0000041_downsampled_38cb14500658",
+              "abs_composite_85802b5142ee",
+              "abs_composite_7ea3cabb18e5",
+              "abs_composite_7de6a616ea40"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 1.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "information_gap_detection_skill",
+              "ddx:DF|BKL",
+              "risk:malignancy_risk:medium",
+              "uncertainty:high",
+              "confusion:Seborrheic Keratosis->NV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "information_gap_detection_skill remains reusable for Seborrheic Keratosis->NV style confusion"
+          },
+          {
+            "skill_name": "uncertainty_assessment_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "DF",
+                "BKL",
+                "NV"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": ""
+            },
+            "helped_aspects": [
+              "made evidence limits explicit",
+              "prevented overconfident downstream use"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "scan ambiguity across evidence streams",
+              "name missing information explicitly"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000042_downsampled",
+              "ISIC_0000023_downsampled",
+              "tac_ISIC_0000044_downsampled_38cb14500658",
+              "tac_ISIC_0000042_downsampled_38cb14500658",
+              "tac_ISIC_0000041_downsampled_38cb14500658",
+              "abs_composite_85802b5142ee",
+              "abs_composite_7ea3cabb18e5",
+              "abs_composite_7de6a616ea40"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "uncertainty_signal",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 2.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "uncertainty_assessment_skill",
+              "ddx:DF|BKL",
+              "risk:malignancy_risk:medium",
+              "uncertainty:high",
+              "confusion:Seborrheic Keratosis->NV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "uncertainty_assessment_skill remains reusable for Seborrheic Keratosis->NV style confusion"
+          },
+          {
+            "skill_name": "contradiction_check_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "DF",
+                "BKL",
+                "NV"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": ""
+            },
+            "helped_aspects": [
+              "surfaced missing links in the reasoning chain",
+              "audited internal consistency"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "scan for conflicts across evidence sources",
+              "surface missing links in the reasoning chain"
+            ],
+            "referenced_experiences": [
+              "ISIC_0000042_downsampled",
+              "ISIC_0000023_downsampled",
+              "tac_ISIC_0000044_downsampled_38cb14500658",
+              "tac_ISIC_0000042_downsampled_38cb14500658",
+              "tac_ISIC_0000041_downsampled_38cb14500658",
+              "abs_composite_85802b5142ee",
+              "abs_composite_7ea3cabb18e5",
+              "abs_composite_7de6a616ea40"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "conflict_signal",
+            "uncertainty_reduction": false,
+            "contradiction_detected": true,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 1.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "contradiction_signal_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "contradiction_check_skill",
+              "ddx:DF|BKL",
+              "risk:malignancy_risk:medium",
+              "uncertainty:high",
+              "confusion:Seborrheic Keratosis->NV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "contradiction_check_skill remains reusable for Seborrheic Keratosis->NV style confusion"
+          },
+          {
+            "skill_name": "escalation_recommendation_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "DF",
+                "BKL",
+                "NV"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "high",
+              "region": ""
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not lower case uncertainty enough for confident narrowing",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "tac_ISIC_0000044_downsampled_38cb14500658",
+              "tac_ISIC_0000042_downsampled_38cb14500658",
+              "tac_ISIC_0000041_downsampled_38cb14500658"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "uncertainty_signal",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 2.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "escalation_recommendation_skill",
+              "ddx:DF|BKL",
+              "risk:malignancy_risk:medium",
+              "uncertainty:high",
+              "confusion:Seborrheic Keratosis->NV"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "uncertainty_remained_high",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "escalation_recommendation_skill remains reusable for Seborrheic Keratosis->NV style confusion"
+          }
+        ]
+      },
+      "final_decision": {
+        "label": "Seborrheic Keratosis",
+        "source": "qwen_final_diagnosis",
+        "canonical_label": "BKL"
+      },
+      "correctness": {
+        "has_ground_truth": true,
+        "is_correct": false,
+        "error_type": "final_diagnosis_mismatch_reference"
+      },
+      "malignant_flag": {
+        "ground_truth": false,
+        "predicted": false
+      }
+    },
+    "tactical_experiences": [
+      {
+        "exp_id": "tac_ISIC_0067366_e5b6956c8c26",
+        "case_id": "ISIC_0067366",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Seborrheic Keratosis->NV",
+          "observed_state": {
+            "ddx_candidates": [
+              "DF",
+              "BKL",
+              "NV"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:Further histopathological examination to confirm the nature of the central depression.",
+            "missing:Additional imaging studies (e.g., ultrasound) to assess the depth and characteristics of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "morphology_analysis_skill",
+          "skills_used": [
+            "morphology_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "stabilized lesion structure",
+          "made morphology explicit for downstream reasoning",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "inspect dominant lesion silhouette",
+          "judge elevation and lesion count"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "morphology_analysis_skill",
+            "Seborrheic Keratosis->NV",
+            "DF",
+            "BKL",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0067366_5d8de46f6089",
+        "case_id": "ISIC_0067366",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Seborrheic Keratosis->NV",
+          "observed_state": {
+            "ddx_candidates": [
+              "DF",
+              "BKL",
+              "NV"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:Further histopathological examination to confirm the nature of the central depression.",
+            "missing:Additional imaging studies (e.g., ultrasound) to assess the depth and characteristics of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "color_pattern_analysis_skill",
+          "skills_used": [
+            "color_pattern_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made pigment variation explicit",
+          "surfaced color asymmetry as auditable evidence",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "inspect dominant color",
+          "compare internal color asymmetry"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "color_pattern_analysis_skill",
+            "Seborrheic Keratosis->NV",
+            "DF",
+            "BKL",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0067366_88ae3d2a1aaf",
+        "case_id": "ISIC_0067366",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Seborrheic Keratosis->NV",
+          "observed_state": {
+            "ddx_candidates": [
+              "DF",
+              "BKL",
+              "NV"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:Further histopathological examination to confirm the nature of the central depression.",
+            "missing:Additional imaging studies (e.g., ultrasound) to assess the depth and characteristics of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "border_surface_analysis_skill",
+          "skills_used": [
+            "border_surface_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "separated edge evidence from surface evidence",
+          "highlighted margin quality explicitly",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "judge border definition",
+          "inspect surface change and scale"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "border_surface_analysis_skill",
+            "Seborrheic Keratosis->NV",
+            "DF",
+            "BKL",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0067366_8fa365c666e8",
+        "case_id": "ISIC_0067366",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Seborrheic Keratosis->NV",
+          "observed_state": {
+            "ddx_candidates": [
+              "DF",
+              "BKL",
+              "NV"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:Further histopathological examination to confirm the nature of the central depression.",
+            "missing:Additional imaging studies (e.g., ultrasound) to assess the depth and characteristics of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "lesion_description_structuring_skill",
+          "skills_used": [
+            "lesion_description_structuring_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "lesion_description_structuring_skill",
+            "Seborrheic Keratosis->NV",
+            "DF",
+            "BKL",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0067366_2f79c85a7fb8",
+        "case_id": "ISIC_0067366",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Seborrheic Keratosis->NV",
+          "observed_state": {
+            "ddx_candidates": [
+              "DF",
+              "BKL",
+              "NV"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:Further histopathological examination to confirm the nature of the central depression.",
+            "missing:Additional imaging studies (e.g., ultrasound) to assess the depth and characteristics of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "metadata_consistency_skill",
+          "skills_used": [
+            "metadata_consistency_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "checked image-metadata coherence",
+          "flagged reliability issues before integration",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "compare visible cues against metadata",
+          "separate direct conflicts from soft concerns"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "metadata_consistency_skill",
+            "Seborrheic Keratosis->NV",
+            "DF",
+            "BKL",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0067366_47d9748366d2",
+        "case_id": "ISIC_0067366",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Seborrheic Keratosis->NV",
+          "observed_state": {
+            "ddx_candidates": [
+              "DF",
+              "BKL",
+              "NV"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:Further histopathological examination to confirm the nature of the central depression.",
+            "missing:Additional imaging studies (e.g., ultrasound) to assess the depth and characteristics of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "malignancy_risk_assessment_skill",
+          "skills_used": [
+            "malignancy_risk_assessment_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made risk framing explicit",
+          "highlighted alarm signals without forcing diagnosis",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "collect alarm signals",
+          "balance concerning and reassuring evidence"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "malignancy_risk_assessment_skill",
+            "Seborrheic Keratosis->NV",
+            "DF",
+            "BKL",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0067366_bce72efcf1a2",
+        "case_id": "ISIC_0067366",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Seborrheic Keratosis->NV",
+          "observed_state": {
+            "ddx_candidates": [
+              "DF",
+              "BKL",
+              "NV"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:Further histopathological examination to confirm the nature of the central depression.",
+            "missing:Additional imaging studies (e.g., ultrasound) to assess the depth and characteristics of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "differential_compare_skill",
+          "skills_used": [
+            "differential_compare_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "kept the differential open",
+          "made pairwise reasoning explicit",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "select the most relevant candidate pair",
+          "preserve unresolved comparative evidence"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "differential_compare_skill",
+            "Seborrheic Keratosis->NV",
+            "DF",
+            "BKL",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0067366_77b666058907",
+        "case_id": "ISIC_0067366",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Seborrheic Keratosis->NV",
+          "observed_state": {
+            "ddx_candidates": [
+              "DF",
+              "BKL",
+              "NV"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:Further histopathological examination to confirm the nature of the central depression.",
+            "missing:Additional imaging studies (e.g., ultrasound) to assess the depth and characteristics of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "exclusion_reasoning_skill",
+          "skills_used": [
+            "exclusion_reasoning_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "exclusion_reasoning_skill",
+            "Seborrheic Keratosis->NV",
+            "DF",
+            "BKL",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0067366_3195d993f5b8",
+        "case_id": "ISIC_0067366",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Seborrheic Keratosis->NV",
+          "observed_state": {
+            "ddx_candidates": [
+              "DF",
+              "BKL",
+              "NV"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:Further histopathological examination to confirm the nature of the central depression.",
+            "missing:Additional imaging studies (e.g., ultrasound) to assess the depth and characteristics of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "information_gap_detection_skill",
+          "skills_used": [
+            "information_gap_detection_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "information_gap_detection_skill",
+            "Seborrheic Keratosis->NV",
+            "DF",
+            "BKL",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0067366_e21fa70f1cb7",
+        "case_id": "ISIC_0067366",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Seborrheic Keratosis->NV",
+          "observed_state": {
+            "ddx_candidates": [
+              "DF",
+              "BKL",
+              "NV"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:Further histopathological examination to confirm the nature of the central depression.",
+            "missing:Additional imaging studies (e.g., ultrasound) to assess the depth and characteristics of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "uncertainty_assessment_skill",
+          "skills_used": [
+            "uncertainty_assessment_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made evidence limits explicit",
+          "prevented overconfident downstream use",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "scan ambiguity across evidence streams",
+          "name missing information explicitly"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "uncertainty_assessment_skill",
+            "Seborrheic Keratosis->NV",
+            "DF",
+            "BKL",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0067366_8eed343a7164",
+        "case_id": "ISIC_0067366",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Seborrheic Keratosis->NV",
+          "observed_state": {
+            "ddx_candidates": [
+              "DF",
+              "BKL",
+              "NV"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:Further histopathological examination to confirm the nature of the central depression.",
+            "missing:Additional imaging studies (e.g., ultrasound) to assess the depth and characteristics of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "contradiction_check_skill",
+          "skills_used": [
+            "contradiction_check_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "surfaced missing links in the reasoning chain",
+          "audited internal consistency",
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "scan for conflicts across evidence sources",
+          "surface missing links in the reasoning chain"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "contradiction_check_skill",
+            "Seborrheic Keratosis->NV",
+            "DF",
+            "BKL",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0067366_3f9fb737051a",
+        "case_id": "ISIC_0067366",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Seborrheic Keratosis->NV",
+          "observed_state": {
+            "ddx_candidates": [
+              "DF",
+              "BKL",
+              "NV"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "high",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:Further histopathological examination to confirm the nature of the central depression.",
+            "missing:Additional imaging studies (e.g., ultrasound) to assess the depth and characteristics of the lesion."
+          ]
+        },
+        "action": {
+          "skill_name": "escalation_recommendation_skill",
+          "skills_used": [
+            "escalation_recommendation_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not lower case uncertainty enough for confident narrowing",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "medium"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "escalation_recommendation_skill",
+            "Seborrheic Keratosis->NV",
+            "DF",
+            "BKL",
+            "malignancy_risk:medium",
+            "high_uncertainty_case"
+          ],
+          "priority": "high"
+        }
+      }
+    ],
+    "abstract_experiences": [
+      {
+        "abs_id": "abs_confusion_b09c50c44ca8",
+        "type": "confusion_memory",
+        "concept": "seborrheic_keratosis->nv",
+        "pattern_summary": {
+          "confusion_pair": "Seborrheic Keratosis->NV",
+          "supporting_pattern": [
+            "A dark, irregularly shaped lesion with a central depression and some surrounding hyperpigmentation.",
+            "DF",
+            "BKL",
+            "malignancy_risk:medium"
+          ],
+          "failure_pattern": [
+            "final_diagnosis_mismatch_reference"
+          ]
+        },
+        "supporting_cases": [
+          "ISIC_0067366"
+        ],
+        "counter_cases": [],
+        "derived_rule": {
+          "rule_text": "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+          "action_hint": "compare_then_audit_uncertainty"
+        },
+        "version": "v1",
+        "seed_id": null,
+        "composite_skill_seed": {},
+        "provenance": {}
+      },
+      {
+        "abs_id": "abs_rule_97a155a28150",
+        "type": "rule",
+        "concept": "compare_then_audit_uncertainty",
+        "pattern_summary": {
+          "supporting_pattern": [
+            "A dark, irregularly shaped lesion with a central depression and some surrounding hyperpigmentation.",
+            "DF",
+            "BKL",
+            "malignancy_risk:medium"
+          ],
+          "failure_pattern": [
+            "final_diagnosis_mismatch_reference"
+          ]
+        },
+        "supporting_cases": [
+          "ISIC_0067366"
+        ],
+        "counter_cases": [],
+        "derived_rule": {
+          "rule_text": "When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Qwen integration.",
+          "action_hint": "compare_then_audit_uncertainty"
+        },
+        "version": "v1",
+        "seed_id": null,
+        "composite_skill_seed": {},
+        "provenance": {}
+      }
+    ],
+    "cognition_update": {
+      "total_cases_increment": 1,
+      "failed_cases_increment": 1,
+      "confusion_cases_increment": 1,
+      "hard_cases_increment": 0,
+      "confusion_pair": "Seborrheic Keratosis->NV",
+      "preferred_skills": [
+        "morphology_analysis_skill",
+        "color_pattern_analysis_skill",
+        "border_surface_analysis_skill",
+        "lesion_description_structuring_skill",
+        "metadata_consistency_skill",
+        "malignancy_risk_assessment_skill",
+        "differential_compare_skill",
+        "exclusion_reasoning_skill",
+        "information_gap_detection_skill",
+        "uncertainty_assessment_skill",
+        "contradiction_check_skill",
+        "escalation_recommendation_skill"
+      ]
+    },
+    "skill_stats_update": [
+      {
+        "skill_name": "morphology_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "color_pattern_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "border_surface_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "lesion_description_structuring_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "metadata_consistency_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 1,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "malignancy_risk_assessment_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "differential_compare_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "exclusion_reasoning_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "information_gap_detection_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "uncertainty_assessment_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "contradiction_check_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 1,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "escalation_recommendation_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      }
+    ],
+    "reflection_extract": {
+      "raw_case_memory_ready": true,
+      "tactical_experience_count": 12,
+      "abstract_experience_candidate_count": 2,
+      "reusable_tactical_count": 12,
+      "composite_skill_seed_count": 0,
+      "composite_skill_seed_ids": [],
+      "abstract_flags": {
+        "confusion_memory": true,
+        "prototype": false,
+        "rule": true,
+        "rule_candidate": false,
+        "composite_skill_seed": false
+      },
+      "case_status": "failure"
+    }
+  },
+  "cognition_update": {
+    "total_cases_increment": 1,
+    "failed_cases_increment": 1,
+    "confusion_cases_increment": 1,
+    "hard_cases_increment": 0,
+    "confusion_pair": "Seborrheic Keratosis->NV",
+    "preferred_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "border_surface_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "malignancy_risk_assessment_skill",
+      "differential_compare_skill",
+      "exclusion_reasoning_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill",
+      "escalation_recommendation_skill"
+    ]
+  }
+}

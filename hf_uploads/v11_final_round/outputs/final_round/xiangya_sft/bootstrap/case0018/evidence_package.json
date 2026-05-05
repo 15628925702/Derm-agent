@@ -1,0 +1,2076 @@
+{
+  "perception": {
+    "image_summary": "The patient presents with a diffuse erythematous rash on the face, with some areas showing small papules and vesicles. The microscopic examination reveals dilated capillaries and follicular hyperkeratosis.",
+    "ddx_candidates": [
+      "CONTACT_DERMATITIS",
+      "ECZEMA_DERMATITIS"
+    ],
+    "uncertainty": {
+      "level": "high",
+      "reasons": [
+        "The rash appears diffuse and not strictly localized, which is less typical for contact dermatitis.",
+        "The presence of small papules and vesicles suggests an inflammatory process, but the lack of a clear contact history makes it difficult to definitively rule out eczema."
+      ]
+    },
+    "notes": [
+      "Diffuse erythematous rash with small papules and vesicles.",
+      "Microscopic findings consistent with inflammation and possible follicular involvement.",
+      "History and clinical presentation are inconclusive for a definitive diagnosis."
+    ]
+  },
+  "retrieved_experience": [
+    {
+      "case_id": "case0088",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "The image shows bilateral lower extremities with multiple small, erythematous papules and some pustules scattered across the legs.; ECZEMA_DERMATITIS; CONTACT_DERMATITIS",
+      "confusion_pair": "CONTACT_DERMATITIS->ATOPIC_DERMATITIS",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "structured_skill_sequence"
+      ],
+      "source_id": "abs_confusion_4bcb433292a2",
+      "retrieval_score": 11
+    },
+    {
+      "case_id": "case0088",
+      "source_layer": "abstract_experience",
+      "source_subtype": "rule",
+      "experience_type": "rule",
+      "perception_summary": "The image shows bilateral lower extremities with multiple small, erythematous papules and some pustules scattered across the legs.; ECZEMA_DERMATITIS; CONTACT_DERMATITIS",
+      "confusion_pair": null,
+      "learning_points": [
+        "When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Qwen integration.",
+        "structured_skill_sequence"
+      ],
+      "source_id": "abs_rule_728af0bf29e5",
+      "retrieval_score": 10
+    },
+    {
+      "case_id": "case0018",
+      "source_layer": "abstract_experience",
+      "source_subtype": "composite_skill_seed",
+      "experience_type": "composite_skill_seed",
+      "perception_summary": "ddx=CONTACT_DERMATITIS, ECZEMA_DERMATITIS; decision_pattern=structured_skill_sequence; uncertainty=low",
+      "confusion_pair": null,
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+distribution_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage.",
+        "Promote only after repeated successful supporting cases under a stable trigger pattern."
+      ],
+      "source_id": "abs_composite_8b2fb142b1d1",
+      "retrieval_score": 10
+    }
+  ],
+  "skill_outputs": {
+    "morphology_analysis_skill": {
+      "lesion_type": "papule",
+      "size_range": "small",
+      "elevation": "raised",
+      "count": "multiple",
+      "referenced_experiences": [
+        "case0088",
+        "case0066"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "color_pattern_analysis_skill": {
+      "primary_color": "erythematous",
+      "color_variation": "mild",
+      "pigmentation_pattern": "patchy",
+      "asymmetry_color": "present",
+      "referenced_experiences": [
+        "case0088",
+        "case0066"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "distribution_analysis_skill": {
+      "body_location": "face",
+      "symmetry": "asymmetric",
+      "localized_vs_generalized": "generalized",
+      "clustering_pattern": "clustered",
+      "referenced_experiences": [
+        "case0088",
+        "case0066",
+        "abs_confusion_fc1adf875cca",
+        "abs_confusion_9d22403097e4",
+        "abs_confusion_72c4b1fa17fe"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "lesion_description_structuring_skill": {
+      "primary_lesion_morphology": "Multiple small papules and vesicles",
+      "color": [
+        "erythematous"
+      ],
+      "border": [
+        "well-defined"
+      ],
+      "surface": [
+        "smooth"
+      ],
+      "size_count": [
+        "size_range: small, count: multiple"
+      ],
+      "distribution": [
+        "body_location: face, symmetry: asymmetric, localized_vs_generalized: generalized, clustering_pattern: clustered"
+      ],
+      "associated_context": [
+        "label_space_id: xiangya_sft_grouped, case_source: xiangya_sft, image_count: 3, related_category: RASH, dominant_family: eczematous_family, task_type: diagnosis_and_management, language: zh, source_case_id: case0018, source_case_dir: 0018"
+      ],
+      "referenced_experiences": [
+        "case0088",
+        "case0066"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "metadata_consistency_skill": {
+      "consistency_score": "medium",
+      "conflicts": [],
+      "suspicious_points": [
+        {
+          "description": "The microscopic examination mentions dilated capillaries, which could suggest inflammation, but the image summary does not mention any specific microscopic findings.",
+          "type": "soft"
+        },
+        {
+          "description": "The image summary mentions a diffuse erythematous rash with small papules and vesicles, while the microscopic examination notes dilated capillaries. These details do not directly contradict each other but might indicate different aspects of the condition.",
+          "type": "soft"
+        }
+      ],
+      "referenced_experiences": [
+        "case0088",
+        "case0066",
+        "abs_confusion_fc1adf875cca",
+        "abs_confusion_9d22403097e4",
+        "abs_confusion_72c4b1fa17fe"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "differential_compare_skill": {
+      "candidate_pairs": [
+        "CONTACT_DERMATITIS vs ECZEMA_DERMATITIS"
+      ],
+      "supporting_evidence": [
+        "The rash appears diffuse and not strictly localized, which is less typical for contact dermatitis.",
+        "The presence of small papules and vesicles suggests an inflammatory process."
+      ],
+      "conflicting_evidence": [
+        "The lack of a clear contact history makes it difficult to definitively rule out eczema."
+      ],
+      "required_missing_evidence": [
+        "A detailed contact history to determine if the rash is due to contact dermatitis."
+      ],
+      "referenced_experiences": [
+        "case0088",
+        "case0066",
+        "abs_confusion_fc1adf875cca",
+        "abs_confusion_9d22403097e4",
+        "abs_confusion_72c4b1fa17fe"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "conflict_signal"
+    },
+    "exclusion_reasoning_skill": {
+      "unlikely_candidates": [
+        "CONTACT_DERMATITIS"
+      ],
+      "exclusion_evidence": [
+        "The rash appears diffuse and not strictly localized, which is less typical for contact dermatitis."
+      ],
+      "required_missing_evidence": [
+        "A detailed contact history to determine if the rash is due to contact dermatitis."
+      ],
+      "exclusion_confidence": "medium",
+      "referenced_experiences": [
+        "case0088",
+        "case0066",
+        "abs_confusion_fc1adf875cca",
+        "abs_confusion_9d22403097e4",
+        "abs_confusion_72c4b1fa17fe"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "information_gap_detection_skill": {
+      "missing_information": [
+        "Detailed contact history",
+        "Patient's medical history (including previous skin conditions)"
+      ],
+      "why_it_matters": [
+        "A detailed contact history is crucial to differentiate between contact dermatitis and eczema, especially given the diffuse nature of the rash.",
+        "Patient's medical history can provide insights into potential underlying conditions that might influence the diagnosis."
+      ],
+      "impact_on_differential": [
+        "Without a detailed contact history, it is challenging to rule out contact dermatitis definitively, as the rash could be due to an allergen or irritant.",
+        "Patient's medical history can help identify predisposing factors for eczema, such as atopic dermatitis or other chronic skin conditions."
+      ],
+      "uncertainty_if_missing": "high",
+      "referenced_experiences": [
+        "case0088",
+        "case0066",
+        "abs_confusion_fc1adf875cca",
+        "abs_confusion_9d22403097e4",
+        "abs_confusion_72c4b1fa17fe"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "uncertainty_assessment_skill": {
+      "uncertainty_level": "high",
+      "reasons": [
+        "The rash appears diffuse and not strictly localized, which is less typical for contact dermatitis.",
+        "The presence of small papules and vesicles suggests an inflammatory process, but the lack of a clear contact history makes it difficult to definitively rule out eczema."
+      ],
+      "missing_information": [
+        "A detailed contact history to determine if the rash is due to contact dermatitis.",
+        "More clinical details about the patient's medical history and symptoms.",
+        "Confirmation of the presence or absence of contact allergens."
+      ],
+      "referenced_experiences": [
+        "case0088",
+        "case0066",
+        "abs_confusion_fc1adf875cca",
+        "abs_confusion_9d22403097e4",
+        "abs_confusion_72c4b1fa17fe"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "conflict_signal"
+    },
+    "contradiction_check_skill": {
+      "contradictions": [
+        {
+          "description": "The microscopic examination report mentions dilated capillaries, while the image summary does not mention any specific microscopic findings.",
+          "evidence_sources": [
+            "initial_perception",
+            "morphology_analysis_skill"
+          ]
+        }
+      ],
+      "missing_links": [
+        {
+          "description": "There is a lack of information regarding the patient's contact history, which is crucial for differentiating between contact dermatitis and eczema.",
+          "evidence_sources": [
+            "initial_perception",
+            "uncertainty_assessment_skill"
+          ]
+        },
+        {
+          "description": "The microscopic findings are not fully described in the image summary, which could provide more clarity for differential diagnosis.",
+          "evidence_sources": [
+            "initial_perception",
+            "morphology_analysis_skill"
+          ]
+        }
+      ],
+      "reasoning_gaps": [
+        {
+          "description": "The differential diagnosis candidates (CONTACT_DERMATITIS and ECZEMA_DERMATITIS) need further differentiation based on additional clinical and laboratory data.",
+          "evidence_sources": [
+            "initial_perception",
+            "uncertainty_assessment_skill"
+          ]
+        }
+      ],
+      "referenced_experiences": [
+        "case0088",
+        "case0066",
+        "abs_confusion_fc1adf875cca",
+        "abs_confusion_9d22403097e4",
+        "abs_confusion_72c4b1fa17fe"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "conflict_signal"
+    },
+    "escalation_recommendation_skill": {
+      "whether_escalation_needed": "consider",
+      "escalation_reason": [
+        "The rash appears diffuse and not strictly localized, which is less typical for contact dermatitis. The presence of small papules and vesicles suggests an inflammatory process, but the lack of a clear contact history makes it difficult to definitively rule out eczema."
+      ],
+      "suggested_next_check_type": "Detailed contact history and patch testing",
+      "caution_flags": [
+        "Diffuse rash pattern",
+        "Inflammatory process",
+        "Lack of clear contact history"
+      ],
+      "referenced_experiences": [
+        "case0088",
+        "case0066"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "risk_signal"
+    }
+  },
+  "risk_flags": [],
+  "uncertainty": {
+    "uncertainty_level": "high",
+    "reasons": [
+      "The rash appears diffuse and not strictly localized, which is less typical for contact dermatitis.",
+      "The presence of small papules and vesicles suggests an inflammatory process, but the lack of a clear contact history makes it difficult to definitively rule out eczema."
+    ],
+    "missing_information": [
+      "A detailed contact history to determine if the rash is due to contact dermatitis.",
+      "More clinical details about the patient's medical history and symptoms.",
+      "Confirmation of the presence or absence of contact allergens."
+    ],
+    "referenced_experiences": [
+      "case0088",
+      "case0066",
+      "abs_confusion_fc1adf875cca",
+      "abs_confusion_9d22403097e4",
+      "abs_confusion_72c4b1fa17fe"
+    ],
+    "evidence_strength": "medium",
+    "recommendation_type": "conflict_signal"
+  },
+  "notes": [
+    "Agent generated structured evidence only.",
+    "Qwen remains the sole final diagnostic decision maker.",
+    "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, differential_compare_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill.",
+    "Policy in use: heuristic_with_penalty.",
+    "Skill retrieval candidates: metadata_consistency_skill, morphology_analysis_skill, lesion_description_structuring_skill, distribution_analysis_skill, color_pattern_analysis_skill, differential_compare_skill, contradiction_check_skill, exclusion_reasoning_skill, uncertainty_assessment_skill, information_gap_detection_skill, escalation_recommendation_skill, border_surface_analysis_skill, malignancy_risk_assessment_skill.",
+    "Diffuse erythematous rash with small papules and vesicles.",
+    "Microscopic findings consistent with inflammation and possible follicular involvement.",
+    "History and clinical presentation are inconclusive for a definitive diagnosis.",
+    "Retrieved prior reasoning experience for context.",
+    "High uncertainty detected in MVP skeleton."
+  ],
+  "initial_perception_summary": {
+    "image_summary": "The patient presents with a diffuse erythematous rash on the face, with some areas showing small papules and vesicles. The microscopic examination reveals dilated capillaries and follicular hyperkeratosis.",
+    "ddx_candidates": [
+      "CONTACT_DERMATITIS",
+      "ECZEMA_DERMATITIS"
+    ],
+    "uncertainty_level": "high",
+    "uncertainty_reasons": [
+      "The rash appears diffuse and not strictly localized, which is less typical for contact dermatitis.",
+      "The presence of small papules and vesicles suggests an inflammatory process, but the lack of a clear contact history makes it difficult to definitively rule out eczema."
+    ],
+    "observation_notes": [
+      "Diffuse erythematous rash with small papules and vesicles.",
+      "Microscopic findings consistent with inflammation and possible follicular involvement.",
+      "History and clinical presentation are inconclusive for a definitive diagnosis."
+    ]
+  },
+  "retrieved_raw_cases_summary": [
+    {
+      "source_id": "case0088",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "case0088",
+      "confusion_pair": "None",
+      "perception_summary": "The image shows bilateral lower extremities with multiple small, erythematous papules and some pustules scattered across the legs.",
+      "learning_points": [
+        "Final decision: CONTACT_DERMATITIS",
+        "Correctness: False"
+      ],
+      "retrieval_score": 7.0,
+      "base_retrieval_score": 7.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "case0066",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "case0066",
+      "confusion_pair": "None",
+      "perception_summary": "The image shows two arms with small, red, raised lesions on the inner aspect of the upper arms. The skin appears slightly erythematous around the lesions.",
+      "learning_points": [
+        "Final decision: Contact Dermatitis",
+        "Correctness: False"
+      ],
+      "retrieval_score": 7.0,
+      "base_retrieval_score": 7.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "case0079",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "case0079",
+      "confusion_pair": "None",
+      "perception_summary": "The image shows a reddish-brown patch on the back of the neck, surrounded by some scaling and erythema.",
+      "learning_points": [
+        "Final decision: Contact Dermatitis",
+        "Correctness: False"
+      ],
+      "retrieval_score": 6.0,
+      "base_retrieval_score": 6.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_tactical_experiences_summary": [
+    {
+      "source_id": "tac_case0025_ea7b54e2327b",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "case0025",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=CONTACT_DERMATITIS, ECZEMA_DERMATITIS; ; uncertainty=low",
+      "learning_points": [
+        "kept the differential open",
+        "made pairwise reasoning explicit",
+        "required downstream integration beyond differential_compare_skill"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_case0025_e6055fc25fdb",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "case0025",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=CONTACT_DERMATITIS, ECZEMA_DERMATITIS; ; uncertainty=low",
+      "learning_points": [
+        "made pigment variation explicit",
+        "surfaced color asymmetry as auditable evidence",
+        "required downstream integration beyond color_pattern_analysis_skill"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_case0025_e4a8c7c2c58e",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "case0025",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=CONTACT_DERMATITIS, ECZEMA_DERMATITIS; ; uncertainty=low",
+      "learning_points": [
+        "required downstream integration beyond lesion_description_structuring_skill",
+        "Action pattern: structured_skill_sequence"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_case0025_8eed343a7164",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "case0025",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=CONTACT_DERMATITIS, ECZEMA_DERMATITIS; ; uncertainty=low",
+      "learning_points": [
+        "surfaced missing links in the reasoning chain",
+        "audited internal consistency",
+        "required downstream integration beyond contradiction_check_skill"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_abstract_experiences_summary": [
+    {
+      "source_id": "abs_confusion_4bcb433292a2",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "case0088",
+      "confusion_pair": "CONTACT_DERMATITIS->ATOPIC_DERMATITIS",
+      "perception_summary": "The image shows bilateral lower extremities with multiple small, erythematous papules and some pustules scattered across the legs.; ECZEMA_DERMATITIS; CONTACT_DERMATITIS",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "structured_skill_sequence"
+      ],
+      "retrieval_score": 11.0,
+      "base_retrieval_score": 11.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_rule_728af0bf29e5",
+      "source_layer": "abstract_experience",
+      "experience_type": "rule",
+      "case_id": "case0088",
+      "confusion_pair": "None",
+      "perception_summary": "The image shows bilateral lower extremities with multiple small, erythematous papules and some pustules scattered across the legs.; ECZEMA_DERMATITIS; CONTACT_DERMATITIS",
+      "learning_points": [
+        "When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Qwen integration.",
+        "structured_skill_sequence"
+      ],
+      "retrieval_score": 10.0,
+      "base_retrieval_score": 10.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_composite_8b2fb142b1d1",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "case0018",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=CONTACT_DERMATITIS, ECZEMA_DERMATITIS; decision_pattern=structured_skill_sequence; uncertainty=low",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+distribution_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 10.0,
+      "base_retrieval_score": 10.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "uncertainty_summary": {
+    "uncertainty_level": "high",
+    "reasons": [
+      "The rash appears diffuse and not strictly localized, which is less typical for contact dermatitis.",
+      "The presence of small papules and vesicles suggests an inflammatory process, but the lack of a clear contact history makes it difficult to definitively rule out eczema."
+    ],
+    "missing_information": [
+      "A detailed contact history to determine if the rash is due to contact dermatitis.",
+      "More clinical details about the patient's medical history and symptoms.",
+      "Confirmation of the presence or absence of contact allergens."
+    ],
+    "referenced_experiences": [
+      "case0088",
+      "case0066",
+      "abs_confusion_fc1adf875cca",
+      "abs_confusion_9d22403097e4",
+      "abs_confusion_72c4b1fa17fe"
+    ]
+  },
+  "contradiction_summary": {
+    "contradictions": [
+      "{'description': 'The microscopic examination report mentions dilated capillaries, while the image summary does not mention any specific microscopic findings.', 'evidence_sources': ['initial_perception', 'morphology_analysis_skill']}"
+    ],
+    "missing_links": [
+      "{'description': \"There is a lack of information regarding the patient's contact history, which is crucial for differentiating between contact dermatitis and eczema.\", 'evidence_sources': ['initial_perception', 'uncertainty_assessment_skill']}",
+      "{'description': 'The microscopic findings are not fully described in the image summary, which could provide more clarity for differential diagnosis.', 'evidence_sources': ['initial_perception', 'morphology_analysis_skill']}"
+    ],
+    "reasoning_gaps": [
+      "{'description': 'The differential diagnosis candidates (CONTACT_DERMATITIS and ECZEMA_DERMATITIS) need further differentiation based on additional clinical and laboratory data.', 'evidence_sources': ['initial_perception', 'uncertainty_assessment_skill']}"
+    ],
+    "metadata_conflicts": [],
+    "suspicious_points": [
+      "{'description': 'The microscopic examination mentions dilated capillaries, which could suggest inflammation, but the image summary does not mention any specific microscopic findings.', 'type': 'soft'}",
+      "{'description': 'The image summary mentions a diffuse erythematous rash with small papules and vesicles, while the microscopic examination notes dilated capillaries. These details do not directly contradict each other but might indicate different aspects of the condition.', 'type': 'soft'}"
+    ]
+  },
+  "information_gap_summary": {
+    "missing_information": [
+      "Detailed contact history",
+      "Patient's medical history (including previous skin conditions)"
+    ],
+    "why_it_matters": [
+      "A detailed contact history is crucial to differentiate between contact dermatitis and eczema, especially given the diffuse nature of the rash.",
+      "Patient's medical history can provide insights into potential underlying conditions that might influence the diagnosis."
+    ],
+    "impact_on_differential": [
+      "Without a detailed contact history, it is challenging to rule out contact dermatitis definitively, as the rash could be due to an allergen or irritant.",
+      "Patient's medical history can help identify predisposing factors for eczema, such as atopic dermatitis or other chronic skin conditions."
+    ],
+    "uncertainty_if_missing": "high"
+  },
+  "escalation_summary": {
+    "whether_escalation_needed": "consider",
+    "escalation_reason": [
+      "The rash appears diffuse and not strictly localized, which is less typical for contact dermatitis. The presence of small papules and vesicles suggests an inflammatory process, but the lack of a clear contact history makes it difficult to definitively rule out eczema."
+    ],
+    "suggested_next_check_type": "Detailed contact history and patch testing",
+    "caution_flags": [
+      "Diffuse rash pattern",
+      "Inflammatory process",
+      "Lack of clear contact history"
+    ]
+  },
+  "planner_rationale": {
+    "planner_type": "rule_based",
+    "planner_version": "v1",
+    "selected_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "distribution_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "differential_compare_skill",
+      "exclusion_reasoning_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill",
+      "escalation_recommendation_skill"
+    ],
+    "selection_reasons": {
+      "morphology_analysis_skill": [
+        "Boosted by skill retrieval score=9.00.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.94.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "color_pattern_analysis_skill": [
+        "Boosted by skill retrieval score=8.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.94.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "distribution_analysis_skill": [
+        "Boosted by skill retrieval score=8.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.94.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "lesion_description_structuring_skill": [
+        "Boosted by skill retrieval score=9.00.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "metadata_consistency_skill": [
+        "Boosted by skill retrieval score=10.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.94.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "differential_compare_skill": [
+        "Boosted by skill retrieval score=8.00.",
+        "Boosted by cognition helpful_rate=0.71.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`."
+      ],
+      "exclusion_reasoning_skill": [
+        "Boosted by skill retrieval score=7.50.",
+        "Boosted by cognition helpful_rate=0.81.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "information_gap_detection_skill": [
+        "Boosted by skill retrieval score=6.00.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `information_gap`."
+      ],
+      "uncertainty_assessment_skill": [
+        "Boosted by skill retrieval score=6.00.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `information_gap`."
+      ],
+      "contradiction_check_skill": [
+        "Boosted by skill retrieval score=8.00.",
+        "Boosted by cognition helpful_rate=0.94.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`."
+      ],
+      "escalation_recommendation_skill": [
+        "Boosted by skill retrieval score=6.00.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `information_gap`.",
+        "Matched active trigger profile `escalation_needed`."
+      ]
+    }
+  },
+  "confusion_cluster_summary": {
+    "active_clusters": [],
+    "guidance": []
+  },
+  "selected_evidence": [
+    {
+      "item_id": "metadata_consistency_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "metadata_consistency_skill",
+      "skill_name": "metadata_consistency_skill",
+      "retrieval_type": "",
+      "section": "comparison",
+      "category": "differential_support",
+      "summary": "metadata_consistency_skill: consistency_score=medium | suspicious_points={'description': 'The microscopic examination mentions dilated capillaries, which could suggest inflammation, but the image summary does not mention any speci... | evidence_strength=medium | recommendation_type=descriptive_evidence",
+      "score": 7.14,
+      "rank": 10,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "exclusion_reasoning_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "exclusion_reasoning_skill",
+      "skill_name": "exclusion_reasoning_skill",
+      "retrieval_type": "",
+      "section": "comparison",
+      "category": "exclusion_opposing",
+      "summary": "exclusion_reasoning_skill: unlikely_candidates=CONTACT_DERMATITIS | exclusion_evidence=The rash appears diffuse and not strictly localized, which is less typical for contact dermatitis. | required_missing_evidence=A detailed contact history to determine if the rash is due to contact dermatitis. | exclusion_confidence=medium | evidence_strength=medium | re...",
+      "score": 11.7,
+      "rank": 1,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "lesion_description_structuring_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "lesion_description_structuring_skill",
+      "skill_name": "lesion_description_structuring_skill",
+      "retrieval_type": "",
+      "section": "observation",
+      "category": "description",
+      "summary": "lesion_description_structuring_skill: primary_lesion_morphology=Multiple small papules and vesicles | color=erythematous | border=well-defined | surface=smooth | size_count=size_range: small, count: multiple | distribution=body_location: face, symmetry: asymmetric, localized_vs_generalized: generalized, clustering_pattern: clustered",
+      "score": 9.12,
+      "rank": 2,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "information_gap_detection_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "information_gap_detection_skill",
+      "skill_name": "information_gap_detection_skill",
+      "retrieval_type": "",
+      "section": "conflict_uncertainty",
+      "category": "contradiction_gap",
+      "summary": "information_gap_detection_skill: missing_information=Detailed contact history; Patient's medical history (including previous skin conditions) | why_it_matters=A detailed contact history is crucial to differentiate between contact dermatitis and eczema, especially given the diffuse nature of the rash.; Patient's med... | impact_on_differential=Without a de...",
+      "score": 8.78,
+      "rank": 3,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "contradiction_check_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "contradiction_check_skill",
+      "skill_name": "contradiction_check_skill",
+      "retrieval_type": "",
+      "section": "conflict_uncertainty",
+      "category": "contradiction_gap",
+      "summary": "contradiction_check_skill: contradictions={'description': 'The microscopic examination report mentions dilated capillaries, while the image summary does not mention any specific microscopic findings.... | missing_links={'description': \"There is a lack of information regarding the patient's contact history, which is crucial for differentiating between cont...",
+      "score": 8.54,
+      "rank": 4,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "morphology_analysis_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "morphology_analysis_skill",
+      "skill_name": "morphology_analysis_skill",
+      "retrieval_type": "",
+      "section": "observation",
+      "category": "description",
+      "summary": "morphology_analysis_skill: lesion_type=papule | size_range=small | elevation=raised | count=multiple | evidence_strength=medium | recommendation_type=descriptive_evidence",
+      "score": 8.12,
+      "rank": 5,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "differential_compare_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "differential_compare_skill",
+      "skill_name": "differential_compare_skill",
+      "retrieval_type": "",
+      "section": "comparison",
+      "category": "differential_support",
+      "summary": "differential_compare_skill: candidate_pairs=CONTACT_DERMATITIS vs ECZEMA_DERMATITIS | supporting_evidence=The rash appears diffuse and not strictly localized, which is less typical for contact dermatitis.; The presence of small papules and vesicles suggests an in... | conflicting_evidence=The lack of a clear contact history makes it difficult to definitiv...",
+      "score": 6.44,
+      "rank": 11,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "abs_rule_728af0bf29e5",
+      "item_type": "retrieval_record",
+      "source_type": "retrieval_record",
+      "source_name": "abs_rule_728af0bf29e5",
+      "skill_name": "",
+      "retrieval_type": "abstract_experience",
+      "section": "abstract_experience",
+      "category": "experience_hint",
+      "summary": "The image shows bilateral lower extremities with multiple small, erythematous papules and some pustules scattered across the legs.; ECZEMA_DERMATITIS; CONTACT_DERMATITIS | When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Q...; structured_skill_sequence | confusion_pair=None",
+      "score": 5.8,
+      "rank": 12,
+      "keep_reason": "kept"
+    }
+  ],
+  "evidence_decision_policy": {
+    "risk_layer": {
+      "risk_flag": "malignancy_risk_unknown",
+      "caution_flags": [
+        "uncertainty_high",
+        "contradictions_present",
+        "follow_up_or_biopsy_consideration"
+      ],
+      "follow_up_suggestion": "Detailed contact history and patch testing",
+      "selected_evidence": [
+        {
+          "item_id": "metadata_consistency_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "metadata_consistency_skill",
+          "skill_name": "metadata_consistency_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "differential_support",
+          "summary": "metadata_consistency_skill: consistency_score=medium | suspicious_points={'description': 'The microscopic examination mentions dilated capillaries, which could suggest inflammation, but the image summary does not mention any speci... | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 7.14,
+          "rank": 10,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "lesion_description_structuring_skill",
+          "skill_name": "lesion_description_structuring_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "lesion_description_structuring_skill: primary_lesion_morphology=Multiple small papules and vesicles | color=erythematous | border=well-defined | surface=smooth | size_count=size_range: small, count: multiple | distribution=body_location: face, symmetry: asymmetric, localized_vs_generalized: generalized, clustering_pattern: clustered",
+          "score": 9.12,
+          "rank": 2,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "information_gap_detection_skill",
+          "skill_name": "information_gap_detection_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "information_gap_detection_skill: missing_information=Detailed contact history; Patient's medical history (including previous skin conditions) | why_it_matters=A detailed contact history is crucial to differentiate between contact dermatitis and eczema, especially given the diffuse nature of the rash.; Patient's med... | impact_on_differential=Without a de...",
+          "score": 8.78,
+          "rank": 3,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "contradiction_check_skill",
+          "skill_name": "contradiction_check_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "contradiction_check_skill: contradictions={'description': 'The microscopic examination report mentions dilated capillaries, while the image summary does not mention any specific microscopic findings.... | missing_links={'description': \"There is a lack of information regarding the patient's contact history, which is crucial for differentiating between cont...",
+          "score": 8.54,
+          "rank": 4,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "exclusion_reasoning_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "exclusion_reasoning_skill",
+          "skill_name": "exclusion_reasoning_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "exclusion_opposing",
+          "summary": "exclusion_reasoning_skill: unlikely_candidates=CONTACT_DERMATITIS | exclusion_evidence=The rash appears diffuse and not strictly localized, which is less typical for contact dermatitis. | required_missing_evidence=A detailed contact history to determine if the rash is due to contact dermatitis. | exclusion_confidence=medium | evidence_strength=medium | re...",
+          "score": 11.7,
+          "rank": 1,
+          "keep_reason": "kept"
+        }
+      ],
+      "baseline_preview": {
+        "early_ddx_candidates": [
+          "CONTACT_DERMATITIS",
+          "ECZEMA_DERMATITIS"
+        ],
+        "image_summary": "The patient presents with a diffuse erythematous rash on the face, with some areas showing small papules and vesicles. The microscopic examination reveals dilated capillaries and follicular hyperkeratosis.",
+        "baseline_final_diagnosis": "CONTACT_DERMATITIS",
+        "baseline_differential_diagnoses": [
+          "CONTACT_DERMATITIS",
+          "Contact Dermatitis"
+        ],
+        "baseline_confidence": "Moderate"
+      }
+    },
+    "diagnosis_override_layer": {
+      "workflow_context": {
+        "label_granularity": "grouped",
+        "presentation_mode": "diffuse_rash",
+        "workflow_profile": "eczematous_family_routing_workflow",
+        "available_tests": [
+          "clinical_photo_only"
+        ],
+        "workflow_preference": "metadata_first",
+        "hospital_type": "specialist_clinic",
+        "time_budget": "standard",
+        "metadata_completeness": "full",
+        "workflow_capabilities": [
+          "family_routing",
+          "grouped_label_reasoning",
+          "rash_reasoning",
+          "eczematous_family_reasoning"
+        ]
+      },
+      "override_allowed": false,
+      "malignancy_override_allowed": false,
+      "subtype_override_allowed": false,
+      "family_override_allowed": false,
+      "override_mode": "risk_only",
+      "override_reasons": [
+        "supporting_evidence_outweighs_opposition",
+        "consistent_retrieval_support",
+        "opposing_quota_satisfied"
+      ],
+      "why_not_confident_enough_to_override": [
+        "malignancy risk is not high enough for a diagnosis override",
+        "family-level evidence support is still too weak for a grouped-label override",
+        "no specialist evidence strongly supports the override direction",
+        "uncertainty remains too high for a confident diagnosis override",
+        "contradictions or reasoning gaps remain too numerous"
+      ],
+      "supporting_evidence": [
+        {
+          "item_id": "metadata_consistency_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "metadata_consistency_skill",
+          "skill_name": "metadata_consistency_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "differential_support",
+          "summary": "metadata_consistency_skill: consistency_score=medium | suspicious_points={'description': 'The microscopic examination mentions dilated capillaries, which could suggest inflammation, but the image summary does not mention any speci... | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 7.14,
+          "rank": 10,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "lesion_description_structuring_skill",
+          "skill_name": "lesion_description_structuring_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "lesion_description_structuring_skill: primary_lesion_morphology=Multiple small papules and vesicles | color=erythematous | border=well-defined | surface=smooth | size_count=size_range: small, count: multiple | distribution=body_location: face, symmetry: asymmetric, localized_vs_generalized: generalized, clustering_pattern: clustered",
+          "score": 9.12,
+          "rank": 2,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "information_gap_detection_skill",
+          "skill_name": "information_gap_detection_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "information_gap_detection_skill: missing_information=Detailed contact history; Patient's medical history (including previous skin conditions) | why_it_matters=A detailed contact history is crucial to differentiate between contact dermatitis and eczema, especially given the diffuse nature of the rash.; Patient's med... | impact_on_differential=Without a de...",
+          "score": 8.78,
+          "rank": 3,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "contradiction_check_skill",
+          "skill_name": "contradiction_check_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "contradiction_check_skill: contradictions={'description': 'The microscopic examination report mentions dilated capillaries, while the image summary does not mention any specific microscopic findings.... | missing_links={'description': \"There is a lack of information regarding the patient's contact history, which is crucial for differentiating between cont...",
+          "score": 8.54,
+          "rank": 4,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "morphology_analysis_skill",
+          "skill_name": "morphology_analysis_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "morphology_analysis_skill: lesion_type=papule | size_range=small | elevation=raised | count=multiple | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 8.12,
+          "rank": 5,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "differential_compare_skill",
+          "skill_name": "differential_compare_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "differential_support",
+          "summary": "differential_compare_skill: candidate_pairs=CONTACT_DERMATITIS vs ECZEMA_DERMATITIS | supporting_evidence=The rash appears diffuse and not strictly localized, which is less typical for contact dermatitis.; The presence of small papules and vesicles suggests an in... | conflicting_evidence=The lack of a clear contact history makes it difficult to definitiv...",
+          "score": 6.44,
+          "rank": 11,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "abs_rule_728af0bf29e5",
+          "item_type": "retrieval_record",
+          "source_type": "retrieval_record",
+          "source_name": "abs_rule_728af0bf29e5",
+          "skill_name": "",
+          "retrieval_type": "abstract_experience",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "summary": "The image shows bilateral lower extremities with multiple small, erythematous papules and some pustules scattered across the legs.; ECZEMA_DERMATITIS; CONTACT_DERMATITIS | When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Q...; structured_skill_sequence | confusion_pair=None",
+          "score": 5.8,
+          "rank": 12,
+          "keep_reason": "kept"
+        }
+      ],
+      "opposing_evidence": [
+        {
+          "item_id": "exclusion_reasoning_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "exclusion_reasoning_skill",
+          "skill_name": "exclusion_reasoning_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "exclusion_opposing",
+          "summary": "exclusion_reasoning_skill: unlikely_candidates=CONTACT_DERMATITIS | exclusion_evidence=The rash appears diffuse and not strictly localized, which is less typical for contact dermatitis. | required_missing_evidence=A detailed contact history to determine if the rash is due to contact dermatitis. | exclusion_confidence=medium | evidence_strength=medium | re...",
+          "score": 11.7,
+          "rank": 1,
+          "keep_reason": "kept"
+        }
+      ],
+      "supporting_score": 53.94,
+      "opposing_score": 11.7,
+      "support_margin": 42.24,
+      "selected_evidence_present": true,
+      "subtype_support_score": 13.58,
+      "subtype_support_margin": 1.88,
+      "specialist_support_present": false,
+      "consistent_retrieval_count": 1,
+      "contradiction_count": 6,
+      "uncertainty_level": "high",
+      "opposing_quota_satisfied": true,
+      "subtype_support_quota_satisfied": true
+    }
+  },
+  "serialized_evidence_text": "[Observation Evidence]\n- Initial image summary: The patient presents with a diffuse erythematous rash on the face, with some areas showing small papules and vesicles. The microscopic examination reveals dilated capillaries and follicular hyperkeratosis.\n- Early differential candidates: CONTACT_DERMATITIS, ECZEMA_DERMATITIS\n- structured lesion observation: lesion_description_structuring_skill: primary_lesion_morphology=Multiple small papules and vesicles | color=erythematous | border=well-defined | surface=smooth | size_count=size_range: small, count: multiple | distribution=body_location: face, symmetry: asymmetric, localized_vs_generalized: generalized, clustering_pattern: clustered || morphology_analysis_skill: lesion_type=papule | size_range=small | elevation=raised | count=multiple | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Raw case reference case0088: The image shows bilateral lower extremities with multiple small, erythematous papules and some pustules scattered across the legs.\n- Raw case reference case0066: The image shows two arms with small, red, raised lesions on the inner aspect of the upper arms. The skin appears slightly erythematous around the lesions.\n- Raw case reference case0079: The image shows a reddish-brown patch on the back of the neck, surrounded by some scaling and erythema.\n\n[Exclusion And Comparison Evidence]\n- differential and exclusion reasoning: differential_compare_skill: candidate_pairs=CONTACT_DERMATITIS vs ECZEMA_DERMATITIS | supporting_evidence=The rash appears diffuse and not strictly localized, which is less typical for contact dermatitis.; The presence of small papules and vesicles suggests an in... | conflicting_evidence=The lack of a clear contact history makes it difficult to definitively rule out eczema. | required_missing_evidence=A detailed contact history to determine if the rash is due to contact dermatitis. | evidence_strength=medium | recommendation_type=conflict_signal || exclusion_reasoning_skill: unlikely_candidates=CONTACT_DERMATITIS | exclusion_evidence=The rash appears diffuse and not strictly localized, which is less typical for contact dermatitis. | required_missing_evidence=A detailed contact history to determine if the rash is due to contact dermatitis. | exclusion_confidence=medium | evidence_strength=medium | recommendation_type=descriptive_evidence\n- metadata_consistency_skill: consistency_score=medium | suspicious_points={'description': 'The microscopic examination mentions dilated capillaries, which could suggest inflammation, but the image summary does not mention any speci... | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Tactical experience tac_case0025_ea7b54e2327b: ddx=CONTACT_DERMATITIS, ECZEMA_DERMATITIS; ; uncertainty=low; kept the differential open; made pairwise reasoning explicit; required downstream integration beyond differential_compare_skill\n- Tactical experience tac_case0025_e6055fc25fdb: ddx=CONTACT_DERMATITIS, ECZEMA_DERMATITIS; ; uncertainty=low; made pigment variation explicit; surfaced color asymmetry as auditable evidence; required downstream integration beyond color_pattern_analysis_skill\n- Tactical experience tac_case0025_e4a8c7c2c58e: ddx=CONTACT_DERMATITIS, ECZEMA_DERMATITIS; ; uncertainty=low; required downstream integration beyond lesion_description_structuring_skill; Action pattern: structured_skill_sequence\n- Tactical experience tac_case0025_8eed343a7164: ddx=CONTACT_DERMATITIS, ECZEMA_DERMATITIS; ; uncertainty=low; surfaced missing links in the reasoning chain; audited internal consistency; required downstream integration beyond contradiction_check_skill\n\n[Risk Evidence]\n- Abstract experience abs_rule_728af0bf29e5: The image shows bilateral lower extremities with multiple small, erythematous papules and some pustules scattered across the legs.; ECZEMA_DERMATITIS; CONTACT_DERMATITIS; When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Qwen integration.; structured_skill_sequence\n\n[Conflict And Uncertainty]\n- Uncertainty level: high\n- Uncertainty reasons: The rash appears diffuse and not strictly localized, which is less typical for contact dermatitis.; The presence of small papules and vesicles suggests an inflammatory process, but the lack of a clear contact history makes it difficult to definitively rule out eczema.\n- Missing information: A detailed contact history to determine if the rash is due to contact dermatitis.; More clinical details about the patient's medical history and symptoms.; Confirmation of the presence or absence of contact allergens.\n- contradictions: {'description': 'The microscopic examination report mentions dilated capillaries, while the image summary does not mention any specific microscopic findings.', 'evidence_sources': ['initial_perception', 'morphology_analysis_skill']}\n- missing links: {'description': \"There is a lack of information regarding the patient's contact history, which is crucial for differentiating between contact dermatitis and eczema.\", 'evidence_sources': ['initial_perception', 'uncertainty_assessment_skill']}; {'description': 'The microscopic findings are not fully described in the image summary, which could provide more clarity for differential diagnosis.', 'evidence_sources': ['initial_perception', 'morphology_analysis_skill']}\n- reasoning gaps: {'description': 'The differential diagnosis candidates (CONTACT_DERMATITIS and ECZEMA_DERMATITIS) need further differentiation based on additional clinical and laboratory data.', 'evidence_sources': ['initial_perception', 'uncertainty_assessment_skill']}\n- suspicious points: {'description': 'The microscopic examination mentions dilated capillaries, which could suggest inflammation, but the image summary does not mention any specific microscopic findings.', 'type': 'soft'}; {'description': 'The image summary mentions a diffuse erythematous rash with small papules and vesicles, while the microscopic examination notes dilated capillaries. These details do not directly contradict each other but might indicate different aspects of the condition.', 'type': 'soft'}\n- contradiction_check_skill: contradictions={'description': 'The microscopic examination report mentions dilated capillaries, while the image summary does not mention any specific microscopic findings.... | missing_links={'description': \"There is a lack of information regarding the patient's contact history, which is crucial for differentiating between contact dermatitis and ... | reasoning_gaps={'description': 'The differential diagnosis candidates (CONTACT_DERMATITIS and ECZEMA_DERMATITIS) need further differentiation based on additional clinical a... | evidence_strength=medium | recommendation_type=conflict_signal\n- information_gap_detection_skill: missing_information=Detailed contact history; Patient's medical history (including previous skin conditions) | why_it_matters=A detailed contact history is crucial to differentiate between contact dermatitis and eczema, especially given the diffuse nature of the rash.; Patient's med... | impact_on_differential=Without a detailed contact history, it is challenging to rule out contact dermatitis definitively, as the rash could be due to an allergen or irritant.; Pati... | uncertainty_if_missing=high | evidence_strength=medium | recommendation_type=descriptive_evidence\n- explicit information gaps: Detailed contact history; Patient's medical history (including previous skin conditions)\n- why gaps matter: A detailed contact history is crucial to differentiate between contact dermatitis and eczema, especially given the diffuse nature of the rash.; Patient's medical history can provide insights into potential underlying conditions that might influence the diagnosis.\n- impact on differential: Without a detailed contact history, it is challenging to rule out contact dermatitis definitively, as the rash could be due to an allergen or irritant.; Patient's medical history can help identify predisposing factors for eczema, such as atopic dermatitis or other chronic skin conditions.\n- residual uncertainty if still missing: high\n- escalation needed: consider\n- escalation reasons: The rash appears diffuse and not strictly localized, which is less typical for contact dermatitis. The presence of small papules and vesicles suggests an inflammatory process, but the lack of a clear contact history makes it difficult to definitively rule out eczema.\n- suggested next check type: Detailed contact history and patch testing\n- caution flags: Diffuse rash pattern; Inflammatory process; Lack of clear contact history\n\n[Planner Rationale]\n- Selected skills: morphology_analysis_skill, color_pattern_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, differential_compare_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill\n- morphology_analysis_skill: Boosted by skill retrieval score=9.00.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.94.; Matched active trigger profile `foundational_observation`.\n- color_pattern_analysis_skill: Boosted by skill retrieval score=8.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.94.; Matched active trigger profile `foundational_observation`.\n- distribution_analysis_skill: Boosted by skill retrieval score=8.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.94.; Matched active trigger profile `foundational_observation`.",
+  "evidence_calibration_debug": {
+    "calibrator_type": "heuristic",
+    "calibrator_version": "v1",
+    "section_plan": {
+      "observation": {
+        "skill_names": [
+          "lesion_description_structuring_skill",
+          "morphology_analysis_skill"
+        ],
+        "merged_groups": [
+          {
+            "label": "structured_lesion_observation",
+            "skills": [
+              "lesion_description_structuring_skill",
+              "morphology_analysis_skill"
+            ],
+            "max_members": 2
+          }
+        ],
+        "raw_case_source_ids": []
+      },
+      "comparison": {
+        "skill_names": [
+          "exclusion_reasoning_skill",
+          "metadata_consistency_skill",
+          "differential_compare_skill"
+        ],
+        "merged_groups": [
+          {
+            "label": "differential_and_exclusion_reasoning",
+            "skills": [
+              "differential_compare_skill",
+              "exclusion_reasoning_skill"
+            ],
+            "max_members": 1
+          }
+        ],
+        "tactical_source_ids": [],
+        "abstract_source_ids": []
+      },
+      "risk": {
+        "skill_names": [],
+        "abstract_source_ids": [
+          "abs_rule_728af0bf29e5"
+        ]
+      },
+      "conflict_uncertainty": {
+        "skill_names": [
+          "information_gap_detection_skill",
+          "contradiction_check_skill"
+        ]
+      },
+      "planner": {
+        "max_reason_skills": 3
+      },
+      "section_order": [
+        "observation",
+        "comparison",
+        "risk",
+        "conflict_uncertainty",
+        "planner"
+      ]
+    },
+    "item_scores": [
+      {
+        "item_id": "exclusion_reasoning_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 11.7,
+        "learned_score": 0.0,
+        "final_score": 11.7,
+        "selected": true,
+        "reason": "kept",
+        "category": "exclusion_opposing",
+        "rank": 1,
+        "dedup_key": "comparison:negative_evidence"
+      },
+      {
+        "item_id": "lesion_description_structuring_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 9.12,
+        "learned_score": 0.0,
+        "final_score": 9.12,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 2,
+        "dedup_key": "description:lesion_description_structuring_skill"
+      },
+      {
+        "item_id": "information_gap_detection_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 8.78,
+        "learned_score": 0.0,
+        "final_score": 8.78,
+        "selected": true,
+        "reason": "kept",
+        "category": "contradiction_gap",
+        "rank": 3,
+        "dedup_key": "uncertainty:information_gap_detection_skill"
+      },
+      {
+        "item_id": "contradiction_check_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 8.54,
+        "learned_score": 0.0,
+        "final_score": 8.54,
+        "selected": true,
+        "reason": "kept",
+        "category": "contradiction_gap",
+        "rank": 4,
+        "dedup_key": "uncertainty:contradiction_check_skill"
+      },
+      {
+        "item_id": "escalation_recommendation_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 8.18,
+        "learned_score": 0.0,
+        "final_score": 8.18,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "contradiction_gap",
+        "rank": 0,
+        "dedup_key": "uncertainty:escalation_recommendation_skill"
+      },
+      {
+        "item_id": "morphology_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 8.12,
+        "learned_score": 0.0,
+        "final_score": 8.12,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 5,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.98,
+        "learned_score": 0.0,
+        "final_score": 7.98,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.58,
+        "learned_score": 0.0,
+        "final_score": 7.58,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "uncertainty_assessment_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 7.38,
+        "learned_score": 0.0,
+        "final_score": 7.38,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "contradiction_gap",
+        "rank": 0,
+        "dedup_key": "uncertainty:uncertainty_assessment_skill"
+      },
+      {
+        "item_id": "metadata_consistency_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 7.14,
+        "learned_score": 0.0,
+        "final_score": 7.14,
+        "selected": true,
+        "reason": "kept",
+        "category": "differential_support",
+        "rank": 6,
+        "dedup_key": "differential_support:metadata_consistency_skill"
+      },
+      {
+        "item_id": "differential_compare_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 6.44,
+        "learned_score": 0.0,
+        "final_score": 6.44,
+        "selected": true,
+        "reason": "kept",
+        "category": "differential_support",
+        "rank": 7,
+        "dedup_key": "differential_support:differential_compare_skill"
+      },
+      {
+        "item_id": "abs_rule_728af0bf29e5",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 5.8,
+        "learned_score": 0.0,
+        "final_score": 5.8,
+        "selected": true,
+        "reason": "kept",
+        "category": "experience_hint",
+        "rank": 8,
+        "dedup_key": "abstract_experience:abs_rule_728af0bf29e5"
+      },
+      {
+        "item_id": "abs_confusion_4bcb433292a2",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 5.7,
+        "learned_score": 0.0,
+        "final_score": 5.7,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "abstract_experience:abs_confusion_4bcb433292a2"
+      },
+      {
+        "item_id": "abs_composite_8b2fb142b1d1",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 5.5,
+        "learned_score": 0.0,
+        "final_score": 5.5,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "abstract_experience:abs_composite_8b2fb142b1d1"
+      },
+      {
+        "item_id": "tac_case0025_8eed343a7164",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 4.7,
+        "learned_score": 0.0,
+        "final_score": 4.7,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_case0025_8eed343a7164"
+      },
+      {
+        "item_id": "tac_case0025_ea7b54e2327b",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 4.2,
+        "learned_score": 0.0,
+        "final_score": 4.2,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_case0025_ea7b54e2327b"
+      },
+      {
+        "item_id": "tac_case0025_e6055fc25fdb",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 4.2,
+        "learned_score": 0.0,
+        "final_score": 4.2,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_case0025_e6055fc25fdb"
+      },
+      {
+        "item_id": "tac_case0025_e4a8c7c2c58e",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 4.2,
+        "learned_score": 0.0,
+        "final_score": 4.2,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_case0025_e4a8c7c2c58e"
+      },
+      {
+        "item_id": "case0088",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 2.7,
+        "learned_score": 0.0,
+        "final_score": 2.7,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:case0088"
+      },
+      {
+        "item_id": "case0066",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 2.7,
+        "learned_score": 0.0,
+        "final_score": 2.7,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:case0066"
+      },
+      {
+        "item_id": "case0079",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 2.5,
+        "learned_score": 0.0,
+        "final_score": 2.5,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:case0079"
+      }
+    ],
+    "omitted_items": [
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 7.98
+      },
+      {
+        "item_id": "escalation_recommendation_skill",
+        "item_type": "skill_output",
+        "reason": "category_quota_exceeded",
+        "section": "conflict_uncertainty",
+        "category": "contradiction_gap",
+        "score": 8.18
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 7.58
+      },
+      {
+        "item_id": "uncertainty_assessment_skill",
+        "item_type": "skill_output",
+        "reason": "category_quota_exceeded",
+        "section": "conflict_uncertainty",
+        "category": "contradiction_gap",
+        "score": 7.38
+      },
+      {
+        "item_id": "abs_confusion_4bcb433292a2",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "abstract_experience",
+        "category": "experience_hint",
+        "score": 5.7
+      },
+      {
+        "item_id": "abs_composite_8b2fb142b1d1",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "abstract_experience",
+        "category": "experience_hint",
+        "score": 5.5
+      },
+      {
+        "item_id": "tac_case0025_8eed343a7164",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 4.7
+      },
+      {
+        "item_id": "tac_case0025_e4a8c7c2c58e",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 4.2
+      },
+      {
+        "item_id": "tac_case0025_e6055fc25fdb",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 4.2
+      },
+      {
+        "item_id": "tac_case0025_ea7b54e2327b",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 4.2
+      },
+      {
+        "item_id": "case0066",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 2.7
+      },
+      {
+        "item_id": "case0088",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 2.7
+      },
+      {
+        "item_id": "case0079",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 2.5
+      }
+    ],
+    "debug": {
+      "policy": {
+        "enable_evidence_calibrator": true,
+        "calibrator_mode": "heuristic",
+        "calibrator_checkpoint_path": "",
+        "learned_calibration_weight": 1.2,
+        "max_total_items": 8,
+        "max_observation_skills": 4,
+        "max_comparison_skills": 3,
+        "max_risk_skills": 2,
+        "max_uncertainty_skills": 3,
+        "max_exclusion_items": 2,
+        "max_experience_hints": 2,
+        "max_raw_cases": 1,
+        "max_tactical": 2,
+        "max_abstract": 2,
+        "max_planner_reasons": 3,
+        "omit_low_value_evidence": true,
+        "min_effective_score": 2.4,
+        "dedup_similar_evidence": true,
+        "cluster_aware_ordering": true,
+        "cluster_opposing_bonus": 1.8,
+        "cluster_exclusion_bonus": 1.4,
+        "risk_overweight_penalty": 1.2,
+        "uncertainty_overweight_penalty": 1.0,
+        "description_priority_bonus": 0.6,
+        "exclusion_priority_bonus": 1.2,
+        "negative_evidence_priority_bonus": 1.0,
+        "allow_family_override": false,
+        "allow_keratinocyte_subtype_override": false,
+        "debug_output": true,
+        "conservative_fusion_mode": "soft"
+      },
+      "learned_scorer_loaded": false,
+      "contradiction_count": 6,
+      "uncertainty_level": "high",
+      "risk_flag_count": 0,
+      "confusion_clusters": [],
+      "kept_items": [
+        {
+          "item_id": "exclusion_reasoning_skill",
+          "item_type": "skill_output",
+          "section": "comparison",
+          "category": "exclusion_opposing",
+          "rank": 1,
+          "score": 11.7
+        },
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "rank": 2,
+          "score": 9.12
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "rank": 3,
+          "score": 8.78
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "rank": 4,
+          "score": 8.54
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "rank": 5,
+          "score": 8.12
+        },
+        {
+          "item_id": "metadata_consistency_skill",
+          "item_type": "skill_output",
+          "section": "comparison",
+          "category": "differential_support",
+          "rank": 10,
+          "score": 7.14
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "section": "comparison",
+          "category": "differential_support",
+          "rank": 11,
+          "score": 6.44
+        },
+        {
+          "item_id": "abs_rule_728af0bf29e5",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "rank": 12,
+          "score": 5.8
+        }
+      ],
+      "pruned_items": [
+        {
+          "item_id": "color_pattern_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 7.9799999999999995,
+          "heuristic_score": 7.9799999999999995,
+          "learned_score": 0.0,
+          "payload": {
+            "primary_color": "erythematous",
+            "color_variation": "mild",
+            "pigmentation_pattern": "patchy",
+            "asymmetry_color": "present",
+            "referenced_experiences": [
+              "case0088",
+              "case0066"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 8.5,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 8.379999999999999,
+          "rank": 6,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "escalation_recommendation_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "score": 8.18,
+          "heuristic_score": 8.18,
+          "learned_score": 0.0,
+          "payload": {
+            "whether_escalation_needed": "consider",
+            "escalation_reason": [
+              "The rash appears diffuse and not strictly localized, which is less typical for contact dermatitis. The presence of small papules and vesicles suggests an inflammatory process, but the lack of a clear contact history makes it difficult to definitively rule out eczema."
+            ],
+            "suggested_next_check_type": "Detailed contact history and patch testing",
+            "caution_flags": [
+              "Diffuse rash pattern",
+              "Inflammatory process",
+              "Lack of clear contact history"
+            ],
+            "referenced_experiences": [
+              "case0088",
+              "case0066"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "risk_signal"
+          },
+          "retrieval_score": 6.0,
+          "dedup_key": "uncertainty:escalation_recommendation_skill",
+          "ordering_score": 8.18,
+          "rank": 7,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "distribution_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 7.58,
+          "heuristic_score": 7.58,
+          "learned_score": 0.0,
+          "payload": {
+            "body_location": "face",
+            "symmetry": "asymmetric",
+            "localized_vs_generalized": "generalized",
+            "clustering_pattern": "clustered",
+            "referenced_experiences": [
+              "case0088",
+              "case0066",
+              "abs_confusion_fc1adf875cca",
+              "abs_confusion_9d22403097e4",
+              "abs_confusion_72c4b1fa17fe"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 8.5,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 7.98,
+          "rank": 8,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "uncertainty_assessment_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "score": 7.380000000000001,
+          "heuristic_score": 7.380000000000001,
+          "learned_score": 0.0,
+          "payload": {
+            "uncertainty_level": "high",
+            "reasons": [
+              "The rash appears diffuse and not strictly localized, which is less typical for contact dermatitis.",
+              "The presence of small papules and vesicles suggests an inflammatory process, but the lack of a clear contact history makes it difficult to definitively rule out eczema."
+            ],
+            "missing_information": [
+              "A detailed contact history to determine if the rash is due to contact dermatitis.",
+              "More clinical details about the patient's medical history and symptoms.",
+              "Confirmation of the presence or absence of contact allergens."
+            ],
+            "referenced_experiences": [
+              "case0088",
+              "case0066",
+              "abs_confusion_fc1adf875cca",
+              "abs_confusion_9d22403097e4",
+              "abs_confusion_72c4b1fa17fe"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "conflict_signal"
+          },
+          "retrieval_score": 6.0,
+          "dedup_key": "uncertainty:uncertainty_assessment_skill",
+          "ordering_score": 7.380000000000001,
+          "rank": 9,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "abs_confusion_4bcb433292a2",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "score": 5.7,
+          "heuristic_score": 5.7,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "abs_confusion_4bcb433292a2",
+            "source_layer": "abstract_experience",
+            "experience_type": "confusion_memory",
+            "case_id": "case0088",
+            "confusion_pair": "CONTACT_DERMATITIS->ATOPIC_DERMATITIS",
+            "perception_summary": "The image shows bilateral lower extremities with multiple small, erythematous papules and some pustules scattered across the legs.; ECZEMA_DERMATITIS; CONTACT_DERMATITIS",
+            "learning_points": [
+              "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+              "structured_skill_sequence"
+            ],
+            "retrieval_score": 11.0,
+            "base_retrieval_score": 11.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "abstract_experience:abs_confusion_4bcb433292a2",
+          "ordering_score": 5.7,
+          "rank": 13,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "abs_composite_8b2fb142b1d1",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "score": 5.5,
+          "heuristic_score": 5.5,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "abs_composite_8b2fb142b1d1",
+            "source_layer": "abstract_experience",
+            "experience_type": "composite_skill_seed",
+            "case_id": "case0018",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=CONTACT_DERMATITIS, ECZEMA_DERMATITIS; decision_pattern=structured_skill_sequence; uncertainty=low",
+            "learning_points": [
+              "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+              "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+distribution_analysis_skill+lesion_description_structuring_skill",
+              "Candidate only; do not auto-materialize a composite skill in the current stage."
+            ],
+            "retrieval_score": 10.0,
+            "base_retrieval_score": 10.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "abstract_experience:abs_composite_8b2fb142b1d1",
+          "ordering_score": 5.5,
+          "rank": 14,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_case0025_8eed343a7164",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 4.7,
+          "heuristic_score": 4.7,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_case0025_8eed343a7164",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "case0025",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=CONTACT_DERMATITIS, ECZEMA_DERMATITIS; ; uncertainty=low",
+            "learning_points": [
+              "surfaced missing links in the reasoning chain",
+              "audited internal consistency",
+              "required downstream integration beyond contradiction_check_skill"
+            ],
+            "retrieval_score": 8.0,
+            "base_retrieval_score": 8.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_case0025_8eed343a7164",
+          "ordering_score": 4.7,
+          "rank": 15,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_case0025_e4a8c7c2c58e",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 4.2,
+          "heuristic_score": 4.2,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_case0025_e4a8c7c2c58e",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "case0025",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=CONTACT_DERMATITIS, ECZEMA_DERMATITIS; ; uncertainty=low",
+            "learning_points": [
+              "required downstream integration beyond lesion_description_structuring_skill",
+              "Action pattern: structured_skill_sequence"
+            ],
+            "retrieval_score": 8.0,
+            "base_retrieval_score": 8.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_case0025_e4a8c7c2c58e",
+          "ordering_score": 4.2,
+          "rank": 16,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_case0025_e6055fc25fdb",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 4.2,
+          "heuristic_score": 4.2,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_case0025_e6055fc25fdb",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "case0025",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=CONTACT_DERMATITIS, ECZEMA_DERMATITIS; ; uncertainty=low",
+            "learning_points": [
+              "made pigment variation explicit",
+              "surfaced color asymmetry as auditable evidence",
+              "required downstream integration beyond color_pattern_analysis_skill"
+            ],
+            "retrieval_score": 8.0,
+            "base_retrieval_score": 8.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_case0025_e6055fc25fdb",
+          "ordering_score": 4.2,
+          "rank": 17,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_case0025_ea7b54e2327b",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 4.2,
+          "heuristic_score": 4.2,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_case0025_ea7b54e2327b",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "case0025",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=CONTACT_DERMATITIS, ECZEMA_DERMATITIS; ; uncertainty=low",
+            "learning_points": [
+              "kept the differential open",
+              "made pairwise reasoning explicit",
+              "required downstream integration beyond differential_compare_skill"
+            ],
+            "retrieval_score": 8.0,
+            "base_retrieval_score": 8.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_case0025_ea7b54e2327b",
+          "ordering_score": 4.2,
+          "rank": 18,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "case0066",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 2.7,
+          "heuristic_score": 2.7,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "case0066",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "case0066",
+            "confusion_pair": "None",
+            "perception_summary": "The image shows two arms with small, red, raised lesions on the inner aspect of the upper arms. The skin appears slightly erythematous around the lesions.",
+            "learning_points": [
+              "Final decision: Contact Dermatitis",
+              "Correctness: False"
+            ],
+            "retrieval_score": 7.0,
+            "base_retrieval_score": 7.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:case0066",
+          "ordering_score": 3.1,
+          "rank": 19,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "case0088",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 2.7,
+          "heuristic_score": 2.7,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "case0088",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "case0088",
+            "confusion_pair": "None",
+            "perception_summary": "The image shows bilateral lower extremities with multiple small, erythematous papules and some pustules scattered across the legs.",
+            "learning_points": [
+              "Final decision: CONTACT_DERMATITIS",
+              "Correctness: False"
+            ],
+            "retrieval_score": 7.0,
+            "base_retrieval_score": 7.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:case0088",
+          "ordering_score": 3.1,
+          "rank": 20,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "case0079",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 2.5,
+          "heuristic_score": 2.5,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "case0079",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "case0079",
+            "confusion_pair": "None",
+            "perception_summary": "The image shows a reddish-brown patch on the back of the neck, surrounded by some scaling and erythema.",
+            "learning_points": [
+              "Final decision: Contact Dermatitis",
+              "Correctness: False"
+            ],
+            "retrieval_score": 6.0,
+            "base_retrieval_score": 6.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:case0079",
+          "ordering_score": 2.9,
+          "rank": 21,
+          "reason": "global_budget_exceeded"
+        }
+      ],
+      "reordered_items": [
+        {
+          "item_id": "exclusion_reasoning_skill",
+          "item_type": "skill_output",
+          "from_section": "comparison",
+          "category": "exclusion_opposing",
+          "new_rank": 1
+        },
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "from_section": "observation",
+          "category": "description",
+          "new_rank": 2
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "from_section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "new_rank": 3
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "from_section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "new_rank": 4
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "from_section": "observation",
+          "category": "description",
+          "new_rank": 5
+        },
+        {
+          "item_id": "metadata_consistency_skill",
+          "item_type": "skill_output",
+          "from_section": "comparison",
+          "category": "differential_support",
+          "new_rank": 6
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "from_section": "comparison",
+          "category": "differential_support",
+          "new_rank": 7
+        },
+        {
+          "item_id": "abs_rule_728af0bf29e5",
+          "item_type": "retrieval_record",
+          "from_section": "abstract_experience",
+          "category": "experience_hint",
+          "new_rank": 8
+        }
+      ],
+      "quota_state": {
+        "max_total_items": 8,
+        "per_category_quota": {
+          "description": 3,
+          "differential_support": 2,
+          "exclusion_opposing": 2,
+          "risk": 1,
+          "contradiction_gap": 2,
+          "experience_hint": 2
+        },
+        "category_counts": {
+          "description": 2,
+          "differential_support": 2,
+          "exclusion_opposing": 1,
+          "risk": 0,
+          "contradiction_gap": 2,
+          "experience_hint": 1
+        }
+      }
+    }
+  }
+}

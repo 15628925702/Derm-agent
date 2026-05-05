@@ -1,0 +1,937 @@
+{
+  "perception": {
+    "image_summary": "A slightly elevated, irregularly shaped, pinkish lesion with some areas of hyperpigmentation and hypopigmentation on a light background.",
+    "ddx_candidates": [
+      "Atypical Nevus",
+      "Lichen Planus",
+      "Superficial Spreading Melanoma (SSM)",
+      "Dermatofibroma"
+    ],
+    "uncertainty": {
+      "level": "high",
+      "reasons": [
+        "Lesion morphology is not clearly indicative of a single diagnosis.",
+        "The presence of both hyperpigmented and hypopigmented areas suggests variability that could be seen in multiple conditions."
+      ]
+    },
+    "notes": [
+      "The lesion has a somewhat irregular border which can be seen in various benign and malignant lesions.",
+      "The central area appears more confluent and less sharply demarcated than typical atypical nevi.",
+      "The surrounding skin shows some subtle changes but lacks the characteristic features of lichen planus."
+    ]
+  },
+  "retrieved_experience": [
+    {
+      "case_id": "ISIC_0000000",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "A well-circumscribed, irregularly shaped brownish lesion with a slightly raised border on a light background.; Malignant Melanoma; Atypical Nevus",
+      "confusion_pair": "Malignant Melanoma->NV",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_confusion_8f48b4d56c81",
+      "retrieval_score": 15
+    },
+    {
+      "case_id": "ISIC_0000024_downsampled",
+      "source_layer": "tactical_experience",
+      "source_subtype": "confusion_pair",
+      "experience_type": "tactical_experience",
+      "perception_summary": "ddx=Atypical nevus, Superficial spreading melanoma, Lichen planus; risk=malignancy_risk:high; uncertainty=high",
+      "confusion_pair": "Malignant Melanoma->NV",
+      "learning_points": [
+        "stabilized lesion structure",
+        "made morphology explicit for downstream reasoning",
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing"
+      ],
+      "source_id": "tac_ISIC_0000024_downsampled_e5b6956c8c26",
+      "retrieval_score": 12
+    },
+    {
+      "case_id": "ISIC_0000024_downsampled",
+      "source_layer": "raw_case_memory",
+      "source_subtype": "case_reference",
+      "experience_type": "raw_case_memory",
+      "perception_summary": "A slightly elevated, irregularly shaped lesion with a reddish hue is present on the posterior torso. The surrounding skin appears relatively normal.",
+      "confusion_pair": null,
+      "learning_points": [
+        "Final decision: Malignant Melanoma",
+        "Correctness: False"
+      ],
+      "source_id": "ISIC_0000024_downsampled",
+      "retrieval_score": 12
+    },
+    {
+      "case_id": "ISIC_0000004",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "A well-circumscribed, slightly elevated lesion with a central area of atrophy and telangiectasia is observed on the posterior torso.; Atypical nevus; Dermatofibroma",
+      "confusion_pair": "Seborrheic Keratosis->MEL",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_confusion_fb61033fa484",
+      "retrieval_score": 11
+    },
+    {
+      "case_id": "ISIC_0000013",
+      "source_layer": "abstract_experience",
+      "source_subtype": "composite_skill_seed",
+      "experience_type": "composite_skill_seed",
+      "perception_summary": "ddx=Malignant Melanoma, Atypical Nevus, Dermal Nevus; decision_pattern=compare_then_audit_uncertainty; uncertainty=high; risk=malignancy_risk:medium",
+      "confusion_pair": null,
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage.",
+        "Promote only after repeated successful supporting cases under a stable trigger pattern."
+      ],
+      "source_id": "abs_composite_fa50b3f9d6e5",
+      "retrieval_score": 10
+    }
+  ],
+  "skill_outputs": {
+    "morphology_analysis_skill": {
+      "lesion_type": "plaque",
+      "size_range": "large",
+      "elevation": "raised",
+      "count": "multiple",
+      "referenced_experiences": [
+        "ISIC_0000024_downsampled"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "color_pattern_analysis_skill": {
+      "primary_color": "pinkish",
+      "color_variation": "marked",
+      "pigmentation_pattern": "reticular",
+      "asymmetry_color": "present",
+      "referenced_experiences": [
+        "ISIC_0000024_downsampled"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "border_surface_analysis_skill": {
+      "border_clarity": "poor",
+      "border_irregularity": "irregular",
+      "surface_texture": "smooth",
+      "scaling_presence": "absent",
+      "referenced_experiences": [
+        "abs_confusion_8f48b4d56c81"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "lesion_description_structuring_skill": {
+      "primary_lesion_morphology": "Irregularly shaped plaque",
+      "color": [
+        "Pinkish with areas of hyperpigmentation and hypopigmentation"
+      ],
+      "border": [
+        "Irregular, poor clarity"
+      ],
+      "surface": [
+        "Smooth, no scaling"
+      ],
+      "size_count": [
+        "Large, multiple lesions"
+      ],
+      "distribution": [
+        "Posterior torso, male patient, age approx. 45"
+      ],
+      "associated_context": [
+        "Lesion morphology is not clearly indicative of a single diagnosis; presence of both hyperpigmented and hypopigmented areas suggests variability."
+      ],
+      "referenced_experiences": [
+        "ISIC_0000024_downsampled",
+        "tac_ISIC_0000024_downsampled_e5b6956c8c26",
+        "abs_confusion_8f48b4d56c81"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "metadata_consistency_skill": {
+      "consistency_score": "medium",
+      "conflicts": [],
+      "suspicious_points": [
+        "The lesion's central area appears more confluent and less sharply demarcated than typical atypical nevi.",
+        "The lesion's morphology is not clearly indicative of a single diagnosis."
+      ],
+      "referenced_experiences": [
+        "ISIC_0000024_downsampled",
+        "ISIC_0000037_downsampled",
+        "tac_ISIC_0000024_downsampled_e5b6956c8c26",
+        "tac_ISIC_0000024_downsampled_e21fa70f1cb7",
+        "tac_ISIC_0000024_downsampled_bce72efcf1a2",
+        "abs_confusion_8f48b4d56c81",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_b5184412c764"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "malignancy_risk_assessment_skill": {
+      "risk_level": "medium",
+      "risk_evidence": [
+        "Irregular border with poor clarity",
+        "Marked color variation with reticular pigmentation",
+        "Central area appears more confluent and less sharply demarcated than typical atypical nevi"
+      ],
+      "alarm_signals": [
+        "Irregular border with poor clarity",
+        "Marked color variation with reticular pigmentation",
+        "Central area appears more confluent and less sharply demarcated than typical atypical nevi"
+      ],
+      "benign_reassuring_features": [
+        "Lesion is located on the posterior torso",
+        "Patient is male, age approximately 45",
+        "No ulceration or rapid growth noted",
+        "No bleeding or oozing observed"
+      ],
+      "referenced_experiences": [
+        "tac_ISIC_0000024_downsampled_e5b6956c8c26",
+        "tac_ISIC_0000024_downsampled_e21fa70f1cb7",
+        "tac_ISIC_0000024_downsampled_bce72efcf1a2",
+        "abs_confusion_8f48b4d56c81",
+        "abs_confusion_fb61033fa484"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "risk_signal"
+    },
+    "differential_compare_skill": {
+      "candidate_pairs": [
+        "Atypical Nevus vs Superficial Spreading Melanoma (SSM)"
+      ],
+      "supporting_evidence": [
+        "Irregular border with poor clarity",
+        "Marked color variation with reticular pigmentation"
+      ],
+      "conflicting_evidence": [
+        "Lesion morphology is not clearly indicative of a single diagnosis.",
+        "The presence of both hyperpigmented and hypopigmented areas suggests variability."
+      ],
+      "required_missing_evidence": [
+        "Missing dermoscopic/pattern detail for pigment network or additional structure.",
+        "Missing clearer evolution history when growth/change is not explicit."
+      ],
+      "referenced_experiences": [
+        "abs_confusion_8f48b4d56c81",
+        "abs_confusion_fb61033fa484"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "conflict_signal"
+    },
+    "mel_nev_specialist_skill": {
+      "differentiation_features": [
+        "Asymmetry",
+        "Border irregularity",
+        "Pigment complexity",
+        "Size/evolution context"
+      ],
+      "supporting_evidence": [
+        "Irregular border with poor clarity",
+        "Marked color variation with reticular pigmentation",
+        "Central area appears more confluent and less sharply demarcated than typical atypical nevi"
+      ],
+      "opposing_evidence": [
+        "Symmetry (bilateral or radial symmetry)",
+        "Regular border (smooth, well-defined, circular or oval)",
+        "Uniform pigmentation (single color, homogeneous distribution)",
+        "Lack of structural irregularity (no chaotic patterns, no regression areas)"
+      ],
+      "required_missing_evidence": [
+        "Missing dermoscopic/pattern detail for pigment network or additional structure.",
+        "Missing clearer evolution history when growth/change is not explicit."
+      ],
+      "uncertainty_under_current_evidence": "medium",
+      "further_observation_suggestions": [
+        "Examine dermoscopic features for pigment network and additional structures.",
+        "Observe the lesion's evolution over time to assess for growth or change."
+      ],
+      "cluster_watchouts": [
+        "Do not turn pigmented concern into a final melanoma verdict.",
+        "Do not ignore nevus-like opposing evidence when uncertainty remains high.",
+        "Do not over-read image noise or shadow as true color variegation."
+      ],
+      "referenced_confusion_patterns": [],
+      "critical_supporting_evidence": [
+        "Irregular border with poor clarity",
+        "Marked color variation with reticular pigmentation",
+        "Central area appears more confluent and less sharply demarcated than typical atypical nevi"
+      ],
+      "counterexample_watchouts": [
+        "A well-circumscribed, slightly elevated lesion with a central area of atrophy and telangiectasia."
+      ],
+      "referenced_experiences": [
+        "ISIC_0000024_downsampled",
+        "tac_ISIC_0000024_downsampled_e5b6956c8c26",
+        "tac_ISIC_0000024_downsampled_e21fa70f1cb7",
+        "tac_ISIC_0000024_downsampled_bce72efcf1a2"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "comparative_support"
+    },
+    "exclusion_reasoning_skill": {
+      "unlikely_candidates": [
+        "Lichen Planus"
+      ],
+      "exclusion_evidence": [
+        "The lesion does not show the characteristic features of lichen planus, such as polygonal cells, Civatte bodies, or Wickham striae in histopathology.",
+        "The lesion morphology is not clearly indicative of a single diagnosis; the presence of both hyperpigmented and hypopigmented areas suggests variability that could be seen in multiple conditions."
+      ],
+      "required_missing_evidence": [
+        "Missing dermoscopic/pattern detail for pigment network or additional structure.",
+        "Missing clearer evolution history when growth/change is not explicit."
+      ],
+      "exclusion_confidence": "medium",
+      "referenced_experiences": [
+        "abs_confusion_8f48b4d56c81",
+        "abs_confusion_fb61033fa484"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "information_gap_detection_skill": {
+      "missing_information": [
+        "Dermoscopic features",
+        "Evolution history"
+      ],
+      "why_it_matters": [
+        "Dermoscopic features are crucial for distinguishing between benign and malignant lesions, especially in cases with irregular borders and color variations.",
+        "Evolution history helps in assessing the behavior of the lesion over time, which is important for differentiating between static and growing lesions."
+      ],
+      "impact_on_differential": [
+        "Without dermoscopic features, it's challenging to assess the presence of key structures like pigment network, dermal vessels, and irregular pigmentation patterns that are essential for differential diagnosis.",
+        "Evolution history is critical for understanding the natural progression of the lesion, which can help in ruling out certain diagnoses and supporting others."
+      ],
+      "uncertainty_if_missing": "high",
+      "referenced_experiences": [
+        "tac_ISIC_0000024_downsampled_e5b6956c8c26",
+        "tac_ISIC_0000024_downsampled_e21fa70f1cb7",
+        "abs_confusion_8f48b4d56c81"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "uncertainty_assessment_skill": {
+      "uncertainty_level": "high",
+      "reasons": [
+        "Lesion morphology is not clearly indicative of a single diagnosis.",
+        "The presence of both hyperpigmented and hypopigmented areas suggests variability that could be seen in multiple conditions."
+      ],
+      "missing_information": [
+        "Missing dermoscopic/pattern detail for pigment network or additional structure.",
+        "Missing clearer evolution history when growth/change is not explicit."
+      ],
+      "referenced_experiences": [
+        "ISIC_0000024_downsampled",
+        "ISIC_0000037_downsampled",
+        "tac_ISIC_0000024_downsampled_e5b6956c8c26",
+        "tac_ISIC_0000024_downsampled_e21fa70f1cb7",
+        "tac_ISIC_0000024_downsampled_bce72efcf1a2",
+        "abs_confusion_8f48b4d56c81",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_b5184412c764"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "conflict_signal"
+    },
+    "contradiction_check_skill": {
+      "contradictions": [
+        {
+          "type": "image_and_metadata",
+          "description": "The image shows a lesion with a reddish hue, while the metadata indicates the lesion is pinkish."
+        },
+        {
+          "type": "internal_conflicts",
+          "description": "The initial perception notes a reddish hue, but the morphology analysis skill describes the lesion as pinkish."
+        }
+      ],
+      "missing_links": [
+        {
+          "type": "dermoscopic_pigment_network",
+          "description": "Missing dermoscopic detail for the pigment network or additional structures."
+        },
+        {
+          "type": "evolution_history",
+          "description": "Missing clearer evolution history when growth/change is not explicit."
+        }
+      ],
+      "reasoning_gaps": [
+        {
+          "type": "differential_narrowing",
+          "description": "The differential diagnosis includes Atypical Nevus, Lichen Planus, Superficial Spreading Melanoma, and Dermatofibroma, but there is no clear evidence to narrow down the diagnosis further."
+        }
+      ],
+      "referenced_experiences": [
+        "ISIC_0000024_downsampled",
+        "ISIC_0000037_downsampled",
+        "tac_ISIC_0000024_downsampled_e5b6956c8c26",
+        "tac_ISIC_0000024_downsampled_e21fa70f1cb7",
+        "tac_ISIC_0000024_downsampled_bce72efcf1a2",
+        "abs_confusion_8f48b4d56c81",
+        "abs_confusion_fb61033fa484",
+        "abs_composite_b5184412c764"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "conflict_signal"
+    }
+  },
+  "risk_flags": [
+    "malignancy_risk:medium"
+  ],
+  "uncertainty": {
+    "uncertainty_level": "high",
+    "reasons": [
+      "Lesion morphology is not clearly indicative of a single diagnosis.",
+      "The presence of both hyperpigmented and hypopigmented areas suggests variability that could be seen in multiple conditions."
+    ],
+    "missing_information": [
+      "Missing dermoscopic/pattern detail for pigment network or additional structure.",
+      "Missing clearer evolution history when growth/change is not explicit."
+    ],
+    "referenced_experiences": [
+      "ISIC_0000024_downsampled",
+      "ISIC_0000037_downsampled",
+      "tac_ISIC_0000024_downsampled_e5b6956c8c26",
+      "tac_ISIC_0000024_downsampled_e21fa70f1cb7",
+      "tac_ISIC_0000024_downsampled_bce72efcf1a2",
+      "abs_confusion_8f48b4d56c81",
+      "abs_confusion_fb61033fa484",
+      "abs_composite_b5184412c764"
+    ],
+    "evidence_strength": "medium",
+    "recommendation_type": "conflict_signal"
+  },
+  "notes": [
+    "Agent generated structured evidence only.",
+    "Qwen remains the sole final diagnostic decision maker.",
+    "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, differential_compare_skill, mel_nev_specialist_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill.",
+    "Policy in use: stable_default_policy.",
+    "Skill retrieval candidates: metadata_consistency_skill, mel_nev_specialist_skill, benign_mimic_specialist_skill, color_pattern_analysis_skill, differential_compare_skill, lesion_description_structuring_skill, uncertainty_assessment_skill, malignancy_risk_assessment_skill, border_surface_analysis_skill, information_gap_detection_skill, escalation_recommendation_skill, contradiction_check_skill, exclusion_reasoning_skill, morphology_analysis_skill.",
+    "The lesion has a somewhat irregular border which can be seen in various benign and malignant lesions.",
+    "The central area appears more confluent and less sharply demarcated than typical atypical nevi.",
+    "The surrounding skin shows some subtle changes but lacks the characteristic features of lichen planus.",
+    "Retrieved prior reasoning experience for context.",
+    "High uncertainty detected in MVP skeleton."
+  ],
+  "initial_perception_summary": {
+    "image_summary": "A slightly elevated, irregularly shaped, pinkish lesion with some areas of hyperpigmentation and hypopigmentation on a light background.",
+    "ddx_candidates": [
+      "Atypical Nevus",
+      "Lichen Planus",
+      "Superficial Spreading Melanoma (SSM)",
+      "Dermatofibroma"
+    ],
+    "uncertainty_level": "high",
+    "uncertainty_reasons": [
+      "Lesion morphology is not clearly indicative of a single diagnosis.",
+      "The presence of both hyperpigmented and hypopigmented areas suggests variability that could be seen in multiple conditions."
+    ],
+    "observation_notes": [
+      "The lesion has a somewhat irregular border which can be seen in various benign and malignant lesions.",
+      "The central area appears more confluent and less sharply demarcated than typical atypical nevi.",
+      "The surrounding skin shows some subtle changes but lacks the characteristic features of lichen planus."
+    ]
+  },
+  "retrieved_raw_cases_summary": [
+    {
+      "source_id": "ISIC_0000024_downsampled",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "ISIC_0000024_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "A slightly elevated, irregularly shaped lesion with a reddish hue is present on the posterior torso. The surrounding skin appears relatively normal.",
+      "learning_points": [
+        "Final decision: Malignant Melanoma",
+        "Correctness: False"
+      ],
+      "retrieval_score": 12.0,
+      "base_retrieval_score": 12.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "ISIC_0000037_downsampled",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "ISIC_0000037_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "A large, irregularly shaped lesion with a mix of brown and black pigmentation is present on the posterior torso.",
+      "learning_points": [
+        "Final decision: Malignant Melanoma",
+        "Correctness: False"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "ISIC_0000036_downsampled",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "ISIC_0000036_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "A large, irregularly shaped lesion with areas of dark pigmentation and some lighter, mottled areas is observed on the upper extremity.",
+      "learning_points": [
+        "Final decision: Malignant Melanoma",
+        "Correctness: True"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_tactical_experiences_summary": [
+    {
+      "source_id": "tac_ISIC_0000024_downsampled_e5b6956c8c26",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000024_downsampled",
+      "confusion_pair": "Malignant Melanoma->NV",
+      "perception_summary": "ddx=Atypical nevus, Superficial spreading melanoma, Lichen planus; risk=malignancy_risk:high; uncertainty=high",
+      "learning_points": [
+        "stabilized lesion structure",
+        "made morphology explicit for downstream reasoning",
+        "did not fully resolve the active confusion pattern"
+      ],
+      "retrieval_score": 12.0,
+      "base_retrieval_score": 12.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_ISIC_0000024_downsampled_e21fa70f1cb7",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000024_downsampled",
+      "confusion_pair": "Malignant Melanoma->NV",
+      "perception_summary": "ddx=Atypical nevus, Superficial spreading melanoma, Lichen planus; risk=malignancy_risk:high; uncertainty=high",
+      "learning_points": [
+        "made evidence limits explicit",
+        "prevented overconfident downstream use",
+        "did not fully resolve the active confusion pattern"
+      ],
+      "retrieval_score": 12.0,
+      "base_retrieval_score": 12.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_ISIC_0000024_downsampled_bce72efcf1a2",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000024_downsampled",
+      "confusion_pair": "Malignant Melanoma->NV",
+      "perception_summary": "ddx=Atypical nevus, Superficial spreading melanoma, Lichen planus; risk=malignancy_risk:high; uncertainty=high",
+      "learning_points": [
+        "kept the differential open",
+        "made pairwise reasoning explicit",
+        "did not fully resolve the active confusion pattern"
+      ],
+      "retrieval_score": 12.0,
+      "base_retrieval_score": 12.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_ISIC_0000024_downsampled_8fa365c666e8",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000024_downsampled",
+      "confusion_pair": "Malignant Melanoma->NV",
+      "perception_summary": "ddx=Atypical nevus, Superficial spreading melanoma, Lichen planus; risk=malignancy_risk:high; uncertainty=high",
+      "learning_points": [
+        "did not fully resolve the active confusion pattern",
+        "did not lower case uncertainty enough for confident narrowing",
+        "did not prevent the final decision from failing"
+      ],
+      "retrieval_score": 12.0,
+      "base_retrieval_score": 12.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_abstract_experiences_summary": [
+    {
+      "source_id": "abs_confusion_8f48b4d56c81",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "ISIC_0000000",
+      "confusion_pair": "Malignant Melanoma->NV",
+      "perception_summary": "A well-circumscribed, irregularly shaped brownish lesion with a slightly raised border on a light background.; Malignant Melanoma; Atypical Nevus",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 15.0,
+      "base_retrieval_score": 15.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_confusion_fb61033fa484",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "ISIC_0000004",
+      "confusion_pair": "Seborrheic Keratosis->MEL",
+      "perception_summary": "A well-circumscribed, slightly elevated lesion with a central area of atrophy and telangiectasia is observed on the posterior torso.; Atypical nevus; Dermatofibroma",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 11.0,
+      "base_retrieval_score": 11.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_composite_fa50b3f9d6e5",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "ISIC_0000013",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Malignant Melanoma, Atypical Nevus, Dermal Nevus; decision_pattern=compare_then_audit_uncertainty; uncertainty=high; risk=malignancy_risk:medium",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 10.0,
+      "base_retrieval_score": 10.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "uncertainty_summary": {
+    "uncertainty_level": "high",
+    "reasons": [
+      "Lesion morphology is not clearly indicative of a single diagnosis.",
+      "The presence of both hyperpigmented and hypopigmented areas suggests variability that could be seen in multiple conditions."
+    ],
+    "missing_information": [
+      "Missing dermoscopic/pattern detail for pigment network or additional structure.",
+      "Missing clearer evolution history when growth/change is not explicit."
+    ],
+    "referenced_experiences": [
+      "ISIC_0000024_downsampled",
+      "ISIC_0000037_downsampled",
+      "tac_ISIC_0000024_downsampled_e5b6956c8c26",
+      "tac_ISIC_0000024_downsampled_e21fa70f1cb7",
+      "tac_ISIC_0000024_downsampled_bce72efcf1a2",
+      "abs_confusion_8f48b4d56c81"
+    ]
+  },
+  "contradiction_summary": {
+    "contradictions": [
+      "{'type': 'image_and_metadata', 'description': 'The image shows a lesion with a reddish hue, while the metadata indicates the lesion is pinkish.'}",
+      "{'type': 'internal_conflicts', 'description': 'The initial perception notes a reddish hue, but the morphology analysis skill describes the lesion as pinkish.'}"
+    ],
+    "missing_links": [
+      "{'type': 'dermoscopic_pigment_network', 'description': 'Missing dermoscopic detail for the pigment network or additional structures.'}",
+      "{'type': 'evolution_history', 'description': 'Missing clearer evolution history when growth/change is not explicit.'}"
+    ],
+    "reasoning_gaps": [
+      "{'type': 'differential_narrowing', 'description': 'The differential diagnosis includes Atypical Nevus, Lichen Planus, Superficial Spreading Melanoma, and Dermatofibroma, but there is no clear evidence to narrow down the diagnosis further.'}"
+    ],
+    "metadata_conflicts": [],
+    "suspicious_points": [
+      "The lesion's central area appears more confluent and less sharply demarcated than typical atypical nevi.",
+      "The lesion's morphology is not clearly indicative of a single diagnosis."
+    ]
+  },
+  "information_gap_summary": {
+    "missing_information": [
+      "Dermoscopic features",
+      "Evolution history"
+    ],
+    "why_it_matters": [
+      "Dermoscopic features are crucial for distinguishing between benign and malignant lesions, especially in cases with irregular borders and color variations.",
+      "Evolution history helps in assessing the behavior of the lesion over time, which is important for differentiating between static and growing lesions."
+    ],
+    "impact_on_differential": [
+      "Without dermoscopic features, it's challenging to assess the presence of key structures like pigment network, dermal vessels, and irregular pigmentation patterns that are essential for differential diagnosis.",
+      "Evolution history is critical for understanding the natural progression of the lesion, which can help in ruling out certain diagnoses and supporting others."
+    ],
+    "uncertainty_if_missing": "high"
+  },
+  "escalation_summary": {
+    "whether_escalation_needed": "unknown",
+    "escalation_reason": [],
+    "suggested_next_check_type": "",
+    "caution_flags": []
+  },
+  "planner_rationale": {
+    "planner_type": "rule_based",
+    "planner_version": "v1",
+    "selected_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "border_surface_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "malignancy_risk_assessment_skill",
+      "differential_compare_skill",
+      "mel_nev_specialist_skill",
+      "exclusion_reasoning_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill"
+    ],
+    "selection_reasons": {
+      "morphology_analysis_skill": [
+        "Boosted by skill retrieval score=10.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "color_pattern_analysis_skill": [
+        "Boosted by skill retrieval score=17.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "border_surface_analysis_skill": [
+        "Boosted by skill retrieval score=12.00.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "lesion_description_structuring_skill": [
+        "Boosted by skill retrieval score=13.80.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Boosted by active confusion cluster(s): mel_nev (bonus=0.8)."
+      ],
+      "metadata_consistency_skill": [
+        "Boosted by skill retrieval score=20.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "malignancy_risk_assessment_skill": [
+        "Boosted by skill retrieval score=12.00.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`."
+      ],
+      "differential_compare_skill": [
+        "Boosted by skill retrieval score=14.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Boosted by active confusion cluster(s): mel_nev (bonus=1.0).",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "mel_nev_specialist_skill": [
+        "Boosted by skill retrieval score=18.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Boosted by active confusion cluster(s): mel_nev (bonus=2.0).",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "exclusion_reasoning_skill": [
+        "Boosted by skill retrieval score=11.00.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Boosted by active confusion cluster(s): mel_nev (bonus=1.5).",
+        "Matched active trigger profile `high_uncertainty`."
+      ],
+      "information_gap_detection_skill": [
+        "Boosted by skill retrieval score=11.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "uncertainty_assessment_skill": [
+        "Boosted by skill retrieval score=13.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "contradiction_check_skill": [
+        "Boosted by skill retrieval score=11.50.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`."
+      ]
+    }
+  },
+  "confusion_cluster_summary": {
+    "active_clusters": [
+      "mel_nev"
+    ],
+    "guidance": [
+      {
+        "cluster_id": "mel_nev",
+        "label": "Melanoma / Nevus",
+        "supporting_clues": [
+          "Separate melanoma-like asymmetry, irregular border, and pigment complexity from nevus-like symmetry or pattern stability.",
+          "Preserve negative melanoma clues if symmetry or simpler pigment pattern is more convincing."
+        ],
+        "opposing_clues": [
+          "Absence of convincing asymmetry or pigment complexity weakens melanoma-style escalation.",
+          "Benign-leaning symmetry or simpler border pattern is active opposing evidence, not just weak support."
+        ],
+        "required_missing_evidence": [
+          "Missing dermoscopic/pattern detail for pigment network or additional structure.",
+          "Missing clearer evolution history when growth/change is not explicit."
+        ],
+        "watch_outs": [
+          "Do not turn pigmented concern into a final melanoma verdict.",
+          "Do not ignore nevus-like opposing evidence when uncertainty remains high."
+        ]
+      }
+    ]
+  },
+  "selected_evidence": [],
+  "evidence_decision_policy": {
+    "risk_layer": {
+      "risk_flag": "malignancy_risk_medium",
+      "caution_flags": [
+        "uncertainty_high",
+        "contradictions_present"
+      ],
+      "follow_up_suggestion": "closer dermatologic review or biopsy consideration",
+      "selected_evidence": [],
+      "baseline_preview": {
+        "early_ddx_candidates": [
+          "Atypical Nevus",
+          "Lichen Planus",
+          "Superficial Spreading Melanoma (SSM)"
+        ],
+        "image_summary": "A slightly elevated, irregularly shaped, pinkish lesion with some areas of hyperpigmentation and hypopigmentation on a light background.",
+        "baseline_final_diagnosis": "Nevus",
+        "baseline_differential_diagnoses": [
+          "Nevus",
+          "Actinic Keratosis"
+        ],
+        "baseline_confidence": "Moderate"
+      }
+    },
+    "diagnosis_override_layer": {
+      "workflow_context": {
+        "label_granularity": "fine",
+        "presentation_mode": "focal_lesion",
+        "workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+        "available_tests": [
+          "clinical_photo_only",
+          "lesion_photo"
+        ],
+        "workflow_preference": "morphology_first",
+        "hospital_type": "specialist_clinic",
+        "time_budget": "standard",
+        "metadata_completeness": "partial",
+        "workflow_capabilities": [
+          "image_archive_reasoning",
+          "full_taxonomy_reasoning",
+          "focal_lesion_reasoning",
+          "legacy_agent_final_reasoning"
+        ]
+      },
+      "override_allowed": false,
+      "malignancy_override_allowed": false,
+      "subtype_override_allowed": false,
+      "family_override_allowed": false,
+      "override_mode": "risk_only",
+      "override_reasons": [],
+      "why_not_confident_enough_to_override": [
+        "malignancy risk is not high enough for a diagnosis override",
+        "no curated selected evidence is available to justify overriding the baseline diagnosis",
+        "supporting evidence does not sufficiently outweigh opposing or exclusion evidence",
+        "supporting evidence is not specific enough to justify a subtype override",
+        "no specialist evidence strongly supports the override direction",
+        "uncertainty remains too high for a confident diagnosis override",
+        "contradictions or reasoning gaps remain too numerous",
+        "retrieval evidence does not provide a consistent prototype or confusion-memory anchor",
+        "opposing or exclusion evidence quota is not satisfied"
+      ],
+      "supporting_evidence": [],
+      "opposing_evidence": [],
+      "supporting_score": 0,
+      "opposing_score": 0,
+      "support_margin": 0,
+      "selected_evidence_present": false,
+      "subtype_support_score": 0,
+      "subtype_support_margin": 0,
+      "specialist_support_present": false,
+      "consistent_retrieval_count": 0,
+      "contradiction_count": 7,
+      "uncertainty_level": "high",
+      "opposing_quota_satisfied": false,
+      "subtype_support_quota_satisfied": false
+    }
+  },
+  "serialized_evidence_text": "[Observation Evidence]\n- Initial image summary: A slightly elevated, irregularly shaped, pinkish lesion with some areas of hyperpigmentation and hypopigmentation on a light background.\n- Early differential candidates: Atypical Nevus, Lichen Planus, Superficial Spreading Melanoma (SSM), Dermatofibroma\n- morphology_analysis_skill: lesion_type=plaque | size_range=large | elevation=raised | count=multiple | evidence_strength=medium | recommendation_type=descriptive_evidence\n- color_pattern_analysis_skill: primary_color=pinkish | color_variation=marked | pigmentation_pattern=reticular | asymmetry_color=present | evidence_strength=medium | recommendation_type=descriptive_evidence\n- border_surface_analysis_skill: border_clarity=poor | border_irregularity=irregular | surface_texture=smooth | scaling_presence=absent | evidence_strength=medium | recommendation_type=descriptive_evidence\n- lesion_description_structuring_skill: primary_lesion_morphology=Irregularly shaped plaque | color=Pinkish with areas of hyperpigmentation and hypopigmentation | border=Irregular, poor clarity | surface=Smooth, no scaling | size_count=Large, multiple lesions | distribution=Posterior torso, male patient, age approx. 45\n- Raw case reference ISIC_0000024_downsampled: A slightly elevated, irregularly shaped lesion with a reddish hue is present on the posterior torso. The surrounding skin appears relatively normal.\n\n[Exclusion And Comparison Evidence]\n- Active confusion clusters: mel_nev\n- Melanoma / Nevus watch-out: Do not turn pigmented concern into a final melanoma verdict.; Do not ignore nevus-like opposing evidence when uncertainty remains high.\n- metadata_consistency_skill: consistency_score=medium | suspicious_points=The lesion's central area appears more confluent and less sharply demarcated than typical atypical nevi.; The lesion's morphology is not clearly indicative o... | evidence_strength=medium | recommendation_type=descriptive_evidence\n- differential_compare_skill: candidate_pairs=Atypical Nevus vs Superficial Spreading Melanoma (SSM) | supporting_evidence=Irregular border with poor clarity; Marked color variation with reticular pigmentation | conflicting_evidence=Lesion morphology is not clearly indicative of a single diagnosis.; The presence of both hyperpigmented and hypopigmented areas suggests variability. | required_missing_evidence=Missing dermoscopic/pattern detail for pigment network or additional structure.; Missing clearer evolution history when growth/change is not explicit. | evidence_strength=medium | recommendation_type=conflict_signal\n- mel_nev_specialist_skill: differentiation_features=Asymmetry; Border irregularity; Pigment complexity | supporting_evidence=Irregular border with poor clarity; Marked color variation with reticular pigmentation; Central area appears more confluent and less sharply demarcated than ... | opposing_evidence=Symmetry (bilateral or radial symmetry); Regular border (smooth, well-defined, circular or oval); Uniform pigmentation (single color, homogeneous distribution) | required_missing_evidence=Missing dermoscopic/pattern detail for pigment network or additional structure.; Missing clearer evolution history when growth/change is not explicit. | uncertainty_under_current_evidence=medium | further_observation_suggestions=Examine dermoscopic features for pigment network and additional structures.; Observe the lesion's evolution over time to assess for growth or change.\n- exclusion_reasoning_skill: unlikely_candidates=Lichen Planus | exclusion_evidence=The lesion does not show the characteristic features of lichen planus, such as polygonal cells, Civatte bodies, or Wickham striae in histopathology.; The les... | required_missing_evidence=Missing dermoscopic/pattern detail for pigment network or additional structure.; Missing clearer evolution history when growth/change is not explicit. | exclusion_confidence=medium | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Tactical experience tac_ISIC_0000024_downsampled_e5b6956c8c26: ddx=Atypical nevus, Superficial spreading melanoma, Lichen planus; risk=malignancy_risk:high; uncertainty=high; stabilized lesion structure; made morphology explicit for downstream reasoning; did not fully resolve the active confusion pattern\n- Tactical experience tac_ISIC_0000024_downsampled_e21fa70f1cb7: ddx=Atypical nevus, Superficial spreading melanoma, Lichen planus; risk=malignancy_risk:high; uncertainty=high; made evidence limits explicit; prevented overconfident downstream use; did not fully resolve the active confusion pattern\n- Abstract comparison memory abs_confusion_8f48b4d56c81: A well-circumscribed, irregularly shaped brownish lesion with a slightly raised border on a light background.; Malignant Melanoma; Atypical Nevus; When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty\n- Abstract comparison memory abs_confusion_fb61033fa484: A well-circumscribed, slightly elevated lesion with a central area of atrophy and telangiectasia is observed on the posterior torso.; Atypical nevus; Dermatofibroma; When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty\n\n[Risk Evidence]\n- Risk flags: malignancy_risk:medium\n- malignancy_risk_assessment_skill: risk_level=medium | risk_evidence=Irregular border with poor clarity; Marked color variation with reticular pigmentation; Central area appears more confluent and less sharply demarcated than ... | alarm_signals=Irregular border with poor clarity; Marked color variation with reticular pigmentation; Central area appears more confluent and less sharply demarcated than ... | benign_reassuring_features=Lesion is located on the posterior torso; Patient is male, age approximately 45; No ulceration or rapid growth noted | evidence_strength=medium | recommendation_type=risk_signal\n- Abstract experience abs_composite_fa50b3f9d6e5: ddx=Malignant Melanoma, Atypical Nevus, Dermal Nevus; decision_pattern=compare_then_audit_uncertainty; uncertainty=high; risk=malignancy_risk:medium; Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.; compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill; Candidate only; do not auto-materialize a composite skill in the current stage.\n\n[Conflict And Uncertainty]\n- Uncertainty level: high\n- Uncertainty reasons: Lesion morphology is not clearly indicative of a single diagnosis.; The presence of both hyperpigmented and hypopigmented areas suggests variability that could be seen in multiple conditions.\n- Missing information: Missing dermoscopic/pattern detail for pigment network or additional structure.; Missing clearer evolution history when growth/change is not explicit.\n- contradictions: {'type': 'image_and_metadata', 'description': 'The image shows a lesion with a reddish hue, while the metadata indicates the lesion is pinkish.'}; {'type': 'internal_conflicts', 'description': 'The initial perception notes a reddish hue, but the morphology analysis skill describes the lesion as pinkish.'}\n- missing links: {'type': 'dermoscopic_pigment_network', 'description': 'Missing dermoscopic detail for the pigment network or additional structures.'}; {'type': 'evolution_history', 'description': 'Missing clearer evolution history when growth/change is not explicit.'}\n- reasoning gaps: {'type': 'differential_narrowing', 'description': 'The differential diagnosis includes Atypical Nevus, Lichen Planus, Superficial Spreading Melanoma, and Dermatofibroma, but there is no clear evidence to narrow down the diagnosis further.'}\n- suspicious points: The lesion's central area appears more confluent and less sharply demarcated than typical atypical nevi.; The lesion's morphology is not clearly indicative of a single diagnosis.\n- contradiction_check_skill: contradictions={'type': 'image_and_metadata', 'description': 'The image shows a lesion with a reddish hue, while the metadata indicates the lesion is pinkish.'}; {'type': '... | missing_links={'type': 'dermoscopic_pigment_network', 'description': 'Missing dermoscopic detail for the pigment network or additional structures.'}; {'type': 'evolution_h... | reasoning_gaps={'type': 'differential_narrowing', 'description': 'The differential diagnosis includes Atypical Nevus, Lichen Planus, Superficial Spreading Melanoma, and Der... | evidence_strength=medium | recommendation_type=conflict_signal\n- uncertainty_assessment_skill: uncertainty_level=high | reasons=Lesion morphology is not clearly indicative of a single diagnosis.; The presence of both hyperpigmented and hypopigmented areas suggests variability that cou... | missing_information=Missing dermoscopic/pattern detail for pigment network or additional structure.; Missing clearer evolution history when growth/change is not explicit. | evidence_strength=medium | recommendation_type=conflict_signal\n- information_gap_detection_skill: missing_information=Dermoscopic features; Evolution history | why_it_matters=Dermoscopic features are crucial for distinguishing between benign and malignant lesions, especially in cases with irregular borders and color variations.; E... | impact_on_differential=Without dermoscopic features, it's challenging to assess the presence of key structures like pigment network, dermal vessels, and irregular pigmentation patt... | uncertainty_if_missing=high | evidence_strength=medium | recommendation_type=descriptive_evidence\n- explicit information gaps: Dermoscopic features; Evolution history\n- why gaps matter: Dermoscopic features are crucial for distinguishing between benign and malignant lesions, especially in cases with irregular borders and color variations.; Evolution history helps in assessing the behavior of the lesion over time, which is important for differentiating between static and growing lesions.\n- impact on differential: Without dermoscopic features, it's challenging to assess the presence of key structures like pigment network, dermal vessels, and irregular pigmentation patterns that are essential for differential diagnosis.; Evolution history is critical for understanding the natural progression of the lesion, which can help in ruling out certain diagnoses and supporting others.\n- residual uncertainty if still missing: high\n- escalation needed: unknown\n\n[Planner Rationale]\n- Selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, differential_compare_skill, mel_nev_specialist_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill\n- morphology_analysis_skill: Boosted by skill retrieval score=10.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.\n- color_pattern_analysis_skill: Boosted by skill retrieval score=17.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.\n- border_surface_analysis_skill: Boosted by skill retrieval score=12.00.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.",
+  "evidence_calibration_debug": {
+    "calibrator_type": "off",
+    "calibrator_version": "v1",
+    "section_plan": {
+      "observation": {
+        "skill_names": [
+          "morphology_analysis_skill",
+          "color_pattern_analysis_skill",
+          "border_surface_analysis_skill",
+          "lesion_description_structuring_skill"
+        ],
+        "merged_groups": [],
+        "raw_case_source_ids": [
+          "ISIC_0000024_downsampled"
+        ]
+      },
+      "comparison": {
+        "skill_names": [
+          "metadata_consistency_skill",
+          "differential_compare_skill",
+          "mel_nev_specialist_skill",
+          "exclusion_reasoning_skill"
+        ],
+        "merged_groups": [],
+        "tactical_source_ids": [
+          "tac_ISIC_0000024_downsampled_e5b6956c8c26",
+          "tac_ISIC_0000024_downsampled_e21fa70f1cb7"
+        ],
+        "abstract_source_ids": [
+          "abs_confusion_8f48b4d56c81",
+          "abs_confusion_fb61033fa484"
+        ]
+      },
+      "risk": {
+        "skill_names": [
+          "malignancy_risk_assessment_skill"
+        ],
+        "abstract_source_ids": [
+          "abs_composite_fa50b3f9d6e5"
+        ]
+      },
+      "conflict_uncertainty": {
+        "skill_names": [
+          "information_gap_detection_skill",
+          "uncertainty_assessment_skill",
+          "contradiction_check_skill"
+        ]
+      },
+      "planner": {
+        "max_reason_skills": 3
+      },
+      "section_order": [
+        "observation",
+        "comparison",
+        "risk",
+        "conflict_uncertainty",
+        "planner"
+      ]
+    },
+    "item_scores": [],
+    "omitted_items": [],
+    "debug": {
+      "reason": "evidence calibrator disabled by policy"
+    }
+  }
+}

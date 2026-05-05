@@ -1,0 +1,2111 @@
+{
+  "perception": {
+    "image_summary": "The image shows a close-up of a scalp area with raised, bumpy lesions and fluid-filled blisters. The skin appears inflamed and there is some scarring visible.",
+    "ddx_candidates": [
+      "DERMATITIS_ECZEMA",
+      "URTRICARIA_BITE_FOLLICULITIS",
+      "INFECTION_VIRAL_FUNGAL"
+    ],
+    "uncertainty": {
+      "level": "high",
+      "reasons": [
+        "Lesions appear to be fluid-filled, which could suggest infection or urticaria, but the presence of scarring suggests a more chronic condition like eczema."
+      ]
+    },
+    "notes": [
+      "Raised, bumpy lesions on the scalp.",
+      "Inflammation and fluid-filled blisters present.",
+      "Scarring suggests a chronic condition."
+    ]
+  },
+  "retrieved_experience": [
+    {
+      "case_id": "-1010778459521153386",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "The image shows multiple raised, red patches on the back, with some areas appearing more confluent than others. The skin around the lesions appears slightly erythematous.; DERMATITIS_ECZEMA; URTICARIA_BITE_FOLLICULITIS",
+      "confusion_pair": "INFECTION_VIRAL_FUNGAL->Urticaria",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_confusion_1504ee66ad3c",
+      "retrieval_score": 11
+    },
+    {
+      "case_id": "-1010778459521153386",
+      "source_layer": "tactical_experience",
+      "source_subtype": "confusion_pair",
+      "experience_type": "tactical_experience",
+      "perception_summary": "ddx=DERMATITIS_ECZEMA, URTICARIA_BITE_FOLLICULITIS, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium",
+      "confusion_pair": "INFECTION_VIRAL_FUNGAL->Urticaria",
+      "learning_points": [
+        "stabilized lesion structure",
+        "made morphology explicit for downstream reasoning",
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "source_id": "tac_-1010778459521153386_e5b6956c8c26",
+      "retrieval_score": 9
+    },
+    {
+      "case_id": "-1013831220015814987",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "Close-up of a raised, reddish-brown patch on the back, surrounded by small red dots and hair follicles.; DERMATITIS_ECZEMA; ACNE_ROSACEA_FOLLICULAR",
+      "confusion_pair": "DERMATITIS_ECZEMA->Basal Cell Carcinoma",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_confusion_d8fbfe16656f",
+      "retrieval_score": 8
+    },
+    {
+      "case_id": "-1010778459521153386",
+      "source_layer": "raw_case_memory",
+      "source_subtype": "case_reference",
+      "experience_type": "raw_case_memory",
+      "perception_summary": "The image shows multiple raised, red patches on the back, with some areas appearing more confluent than others. The skin around the lesions appears slightly erythematous.",
+      "confusion_pair": null,
+      "learning_points": [
+        "Final decision: INFECTION_VIRAL_FUNGAL",
+        "Correctness: False"
+      ],
+      "source_id": "-1010778459521153386",
+      "retrieval_score": 8
+    },
+    {
+      "case_id": "-1087381795155772077",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "The image shows multiple small, slightly raised, brownish spots on the chest area.; DERMATITIS_ECZEMA; ACNE_ROSACEA_FOLLICULAR",
+      "confusion_pair": "Contact Dermatitis->Drug Rash",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_confusion_f3a0310233e0",
+      "retrieval_score": 7
+    },
+    {
+      "case_id": "-111683086443147412",
+      "source_layer": "raw_case_memory",
+      "source_subtype": "case_reference",
+      "experience_type": "raw_case_memory",
+      "perception_summary": "The image shows a close-up of the neck area with raised, bumpy lesions and some erythema. The skin appears dry and there is mild scaling.",
+      "confusion_pair": null,
+      "learning_points": [
+        "Final decision: Contact Dermatitis",
+        "Correctness: False"
+      ],
+      "source_id": "-111683086443147412",
+      "retrieval_score": 6
+    }
+  ],
+  "skill_outputs": {
+    "morphology_analysis_skill": {
+      "lesion_type": "plaque",
+      "size_range": "large",
+      "elevation": "raised",
+      "count": "multiple",
+      "referenced_experiences": [
+        "-1010778459521153386"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "color_pattern_analysis_skill": {
+      "primary_color": "red",
+      "color_variation": "marked",
+      "pigmentation_pattern": "reticular",
+      "asymmetry_color": "present",
+      "referenced_experiences": [
+        "-1010778459521153386"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "distribution_analysis_skill": {
+      "body_location": "head_or_neck",
+      "symmetry": "asymmetric",
+      "localized_vs_generalized": "generalized",
+      "clustering_pattern": "clustered",
+      "referenced_experiences": [
+        "-1010778459521153386",
+        "-1148910296687609402",
+        "abs_confusion_1504ee66ad3c",
+        "tac_-1010778459521153386_e5b6956c8c26",
+        "tac_-1010778459521153386_e21fa70f1cb7",
+        "abs_confusion_8d3c6e97a2da",
+        "abs_confusion_f3a0310233e0"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "lesion_description_structuring_skill": {
+      "primary_lesion_morphology": "raised, bumpy plaques",
+      "color": [
+        "red, inflamed"
+      ],
+      "border": [
+        "irregular, well-defined"
+      ],
+      "surface": [
+        "rough, scaly"
+      ],
+      "size_count": [
+        "multiple, large"
+      ],
+      "distribution": [
+        "clustered, head or neck"
+      ],
+      "associated_context": [
+        "inflammation, fluid-filled blisters, scarring, itching, burning, pain"
+      ],
+      "referenced_experiences": [
+        "-1010778459521153386",
+        "-1148910296687609402"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "metadata_consistency_skill": {
+      "consistency_score": "medium",
+      "conflicts": [],
+      "suspicious_points": [
+        {
+          "description": "The lesion description mentions 'fluid-filled blisters,' while the metadata does not specify this detail.",
+          "type": "soft"
+        },
+        {
+          "description": "The lesion description includes 'itching, burning, pain' as associated context, but these symptoms are not explicitly mentioned in the metadata.",
+          "type": "soft"
+        }
+      ],
+      "referenced_experiences": [
+        "-1010778459521153386",
+        "-1148910296687609402",
+        "abs_confusion_1504ee66ad3c",
+        "tac_-1010778459521153386_e5b6956c8c26",
+        "tac_-1010778459521153386_e21fa70f1cb7",
+        "abs_confusion_8d3c6e97a2da",
+        "abs_confusion_f3a0310233e0"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "uncertainty_signal"
+    },
+    "malignancy_risk_assessment_skill": {
+      "risk_level": "low",
+      "risk_evidence": [
+        "The lesion is described as raised, bumpy plaques with a reddish hue, which is more indicative of dermatitis or eczema rather than malignancy.",
+        "The presence of inflammation and fluid-filled blisters suggests a chronic condition, which is more consistent with dermatitis or eczema.",
+        "The lesion is described as having a regular border, which is a benign feature."
+      ],
+      "alarm_signals": [
+        "The lesion is described as raised, bumpy plaques with a reddish hue, which could be indicative of malignancy if the morphology were more specific.",
+        "The presence of scarring suggests a more chronic condition, which could be indicative of malignancy if the morphology were more specific."
+      ],
+      "benign_reassuring_features": [
+        "The lesion is described as having a regular border, which is a benign feature.",
+        "The lesion is described as having a uniform color, which is a benign feature."
+      ],
+      "referenced_experiences": [
+        "-1010778459521153386",
+        "-1148910296687609402",
+        "abs_confusion_1504ee66ad3c",
+        "tac_-1010778459521153386_e5b6956c8c26",
+        "tac_-1010778459521153386_e21fa70f1cb7",
+        "abs_confusion_8d3c6e97a2da",
+        "abs_confusion_f3a0310233e0"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "differential_compare_skill": {
+      "candidate_pairs": [
+        "DERMATITIS_ECZEMA vs URTRICARIA_BITE_FOLLICULITIS",
+        "DERMATITIS_ECZEMA vs INFECTION_VIRAL_FUNGAL"
+      ],
+      "supporting_evidence": [
+        "DERMATITIS_ECZEMA vs URTRICARIA_BITE_FOLLICULITIS: Raised, bumpy lesions on the scalp.; Inflammation and fluid-filled blisters present.",
+        "DERMATITIS_ECZEMA vs INFECTION_VIRAL_FUNGAL: Raised, bumpy lesions on the scalp.; Inflammation and fluid-filled blisters present."
+      ],
+      "conflicting_evidence": [
+        "DERMATITIS_ECZEMA vs URTRICARIA_BITE_FOLLICULITIS: Lesions appear to be fluid-filled, which could suggest infection or urticaria.",
+        "DERMATITIS_ECZEMA vs INFECTION_VIRAL_FUNGAL: Lesions appear to be fluid-filled, which could suggest infection or urticaria."
+      ],
+      "required_missing_evidence": [
+        "DERMATITIS_ECZEMA vs URTRICARIA_BITE_FOLLICULITIS: More specific information about the nature of the fluid-filled blisters (e.g., pus, serum).",
+        "DERMATITIS_ECZEMA vs INFECTION_VIRAL_FUNGAL: Confirmation of the presence of viral or fungal pathogens through laboratory tests."
+      ],
+      "referenced_experiences": [
+        "-1010778459521153386",
+        "-1148910296687609402",
+        "abs_confusion_1504ee66ad3c",
+        "tac_-1010778459521153386_e5b6956c8c26",
+        "tac_-1010778459521153386_e21fa70f1cb7",
+        "abs_confusion_8d3c6e97a2da",
+        "abs_confusion_f3a0310233e0"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "conflict_signal"
+    },
+    "information_gap_detection_skill": {
+      "missing_information": [
+        "Confirmation of the presence of viral or fungal pathogens through laboratory tests.",
+        "More specific information about the nature of the fluid-filled blisters (e.g., pus, serum)."
+      ],
+      "why_it_matters": [
+        "Laboratory tests are crucial for differentiating between viral infections and fungal infections, which can have similar clinical presentations.",
+        "The nature of the fluid in the blisters can help distinguish between infectious causes and other conditions like urticaria."
+      ],
+      "impact_on_differential": [
+        "Without confirmation of viral or fungal pathogens, it's difficult to rule out these possibilities, keeping the differential open.",
+        "The nature of the fluid in the blisters can help narrow down the differential, especially distinguishing between infectious causes and urticaria."
+      ],
+      "uncertainty_if_missing": "high",
+      "referenced_experiences": [
+        "-1010778459521153386",
+        "-1148910296687609402",
+        "abs_confusion_1504ee66ad3c",
+        "tac_-1010778459521153386_e5b6956c8c26",
+        "tac_-1010778459521153386_e21fa70f1cb7",
+        "abs_confusion_8d3c6e97a2da",
+        "abs_confusion_f3a0310233e0"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "uncertainty_assessment_skill": {
+      "uncertainty_level": "medium",
+      "reasons": [
+        "The presence of fluid-filled blisters suggests infection or urticaria, but the scarring indicates a more chronic condition like eczema.",
+        "The differential comparison between dermatitis/eczema and urticaria/bite folliculitis is inconclusive due to the lack of specific information about the nature of the fluid-filled blisters.",
+        "The differential comparison between dermatitis/eczema and infection/viral/fungal infection is also inconclusive without confirmation of the presence of viral or fungal pathogens."
+      ],
+      "missing_information": [
+        "More specific information about the nature of the fluid-filled blisters (e.g., pus, serum).",
+        "Confirmation of the presence of viral or fungal pathogens through laboratory tests."
+      ],
+      "referenced_experiences": [
+        "-1010778459521153386",
+        "-1148910296687609402",
+        "abs_confusion_1504ee66ad3c",
+        "tac_-1010778459521153386_e5b6956c8c26",
+        "tac_-1010778459521153386_e21fa70f1cb7",
+        "abs_confusion_8d3c6e97a2da",
+        "abs_confusion_f3a0310233e0"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "conflict_signal"
+    },
+    "contradiction_check_skill": {
+      "contradictions": [
+        {
+          "type": "internal_conflict",
+          "description": "The presence of scarring suggests a more chronic condition, which is inconsistent with the typical presentation of acute infections or urticaria."
+        }
+      ],
+      "missing_links": [
+        {
+          "type": "missing_key_evidence",
+          "description": "More specific information about the nature of the fluid-filled blisters (e.g., pus, serum) is needed to differentiate between infection and urticaria."
+        },
+        {
+          "type": "missing_key_evidence",
+          "description": "Confirmation of the presence of viral or fungal pathogens through laboratory tests is required to rule out infection."
+        }
+      ],
+      "reasoning_gaps": [
+        {
+          "type": "uncertainty",
+          "description": "The differential comparison between dermatitis/eczema and urticaria/bite folliculitis is inconclusive due to the lack of specific information about the nature of the fluid-filled blisters."
+        },
+        {
+          "type": "uncertainty",
+          "description": "The differential comparison between dermatitis/eczema and infection/viral/fungal infection is also inconclusive without confirmation of the presence of viral or fungal pathogens."
+        }
+      ],
+      "referenced_experiences": [
+        "-1010778459521153386",
+        "-1148910296687609402",
+        "abs_confusion_1504ee66ad3c",
+        "tac_-1010778459521153386_e5b6956c8c26",
+        "tac_-1010778459521153386_e21fa70f1cb7",
+        "abs_confusion_8d3c6e97a2da",
+        "abs_confusion_f3a0310233e0"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "conflict_signal"
+    },
+    "escalation_recommendation_skill": {
+      "whether_escalation_needed": "consider",
+      "escalation_reason": [
+        "The presence of scarring suggests a more chronic condition, which is inconsistent with the typical presentation of acute infections or urticaria. Additionally, the uncertainty level is high due to the lack of specific information about the nature of the fluid-filled blisters and the need for confirmation of viral or fungal pathogens."
+      ],
+      "suggested_next_check_type": "biopsy",
+      "caution_flags": [
+        "High uncertainty level",
+        "Need for confirmation of viral or fungal pathogens"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_1504ee66ad3c",
+        "tac_-1010778459521153386_e5b6956c8c26",
+        "tac_-1010778459521153386_e21fa70f1cb7"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "uncertainty_signal"
+    }
+  },
+  "risk_flags": [],
+  "uncertainty": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The presence of fluid-filled blisters suggests infection or urticaria, but the scarring indicates a more chronic condition like eczema.",
+      "The differential comparison between dermatitis/eczema and urticaria/bite folliculitis is inconclusive due to the lack of specific information about the nature of the fluid-filled blisters.",
+      "The differential comparison between dermatitis/eczema and infection/viral/fungal infection is also inconclusive without confirmation of the presence of viral or fungal pathogens."
+    ],
+    "missing_information": [
+      "More specific information about the nature of the fluid-filled blisters (e.g., pus, serum).",
+      "Confirmation of the presence of viral or fungal pathogens through laboratory tests."
+    ],
+    "referenced_experiences": [
+      "-1010778459521153386",
+      "-1148910296687609402",
+      "abs_confusion_1504ee66ad3c",
+      "tac_-1010778459521153386_e5b6956c8c26",
+      "tac_-1010778459521153386_e21fa70f1cb7",
+      "abs_confusion_8d3c6e97a2da",
+      "abs_confusion_f3a0310233e0"
+    ],
+    "evidence_strength": "medium",
+    "recommendation_type": "conflict_signal"
+  },
+  "notes": [
+    "Agent generated structured evidence only.",
+    "Qwen remains the sole final diagnostic decision maker.",
+    "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, differential_compare_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill.",
+    "Policy in use: heuristic_with_penalty__full_dermagent.",
+    "Skill retrieval candidates: metadata_consistency_skill, lesion_description_structuring_skill, malignancy_risk_assessment_skill, morphology_analysis_skill, distribution_analysis_skill, color_pattern_analysis_skill, uncertainty_assessment_skill, contradiction_check_skill, temporal_evolution_skill, differential_compare_skill, border_surface_analysis_skill, information_gap_detection_skill, exclusion_reasoning_skill, escalation_recommendation_skill.",
+    "Raised, bumpy lesions on the scalp.",
+    "Inflammation and fluid-filled blisters present.",
+    "Scarring suggests a chronic condition.",
+    "Retrieved prior reasoning experience for context.",
+    "High uncertainty detected in MVP skeleton."
+  ],
+  "initial_perception_summary": {
+    "image_summary": "The image shows a close-up of a scalp area with raised, bumpy lesions and fluid-filled blisters. The skin appears inflamed and there is some scarring visible.",
+    "ddx_candidates": [
+      "DERMATITIS_ECZEMA",
+      "URTRICARIA_BITE_FOLLICULITIS",
+      "INFECTION_VIRAL_FUNGAL"
+    ],
+    "uncertainty_level": "high",
+    "uncertainty_reasons": [
+      "Lesions appear to be fluid-filled, which could suggest infection or urticaria, but the presence of scarring suggests a more chronic condition like eczema."
+    ],
+    "observation_notes": [
+      "Raised, bumpy lesions on the scalp.",
+      "Inflammation and fluid-filled blisters present.",
+      "Scarring suggests a chronic condition."
+    ]
+  },
+  "retrieved_raw_cases_summary": [
+    {
+      "source_id": "-1010778459521153386",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "-1010778459521153386",
+      "confusion_pair": "None",
+      "perception_summary": "The image shows multiple raised, red patches on the back, with some areas appearing more confluent than others. The skin around the lesions appears slightly erythematous.",
+      "learning_points": [
+        "Final decision: INFECTION_VIRAL_FUNGAL",
+        "Correctness: False"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "-111683086443147412",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "-111683086443147412",
+      "confusion_pair": "None",
+      "perception_summary": "The image shows a close-up of the neck area with raised, bumpy lesions and some erythema. The skin appears dry and there is mild scaling.",
+      "learning_points": [
+        "Final decision: Contact Dermatitis",
+        "Correctness: False"
+      ],
+      "retrieval_score": 6.0,
+      "base_retrieval_score": 6.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "-1148910296687609402",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "-1148910296687609402",
+      "confusion_pair": "None",
+      "perception_summary": "The image shows multiple small, flat, pinkish-red patches scattered across the skin surface, particularly on the torso front. The skin appears slightly dry and there is some erythema (redness) present.",
+      "learning_points": [
+        "Final decision: VASCULAR_PURPURIC",
+        "Correctness: False"
+      ],
+      "retrieval_score": 5.0,
+      "base_retrieval_score": 5.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_tactical_experiences_summary": [
+    {
+      "source_id": "tac_-1010778459521153386_e5b6956c8c26",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "-1010778459521153386",
+      "confusion_pair": "INFECTION_VIRAL_FUNGAL->Urticaria",
+      "perception_summary": "ddx=DERMATITIS_ECZEMA, URTICARIA_BITE_FOLLICULITIS, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "stabilized lesion structure",
+        "made morphology explicit for downstream reasoning",
+        "did not fully resolve the active confusion pattern"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_-1010778459521153386_e21fa70f1cb7",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "-1010778459521153386",
+      "confusion_pair": "INFECTION_VIRAL_FUNGAL->Urticaria",
+      "perception_summary": "ddx=DERMATITIS_ECZEMA, URTICARIA_BITE_FOLLICULITIS, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "made evidence limits explicit",
+        "prevented overconfident downstream use",
+        "did not fully resolve the active confusion pattern"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_-1010778459521153386_bce72efcf1a2",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "-1010778459521153386",
+      "confusion_pair": "INFECTION_VIRAL_FUNGAL->Urticaria",
+      "perception_summary": "ddx=DERMATITIS_ECZEMA, URTICARIA_BITE_FOLLICULITIS, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "kept the differential open",
+        "made pairwise reasoning explicit",
+        "did not fully resolve the active confusion pattern"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_-1010778459521153386_8fa365c666e8",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "-1010778459521153386",
+      "confusion_pair": "INFECTION_VIRAL_FUNGAL->Urticaria",
+      "perception_summary": "ddx=DERMATITIS_ECZEMA, URTICARIA_BITE_FOLLICULITIS, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing",
+        "Action pattern: structured_skill_sequence"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_abstract_experiences_summary": [
+    {
+      "source_id": "abs_confusion_1504ee66ad3c",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "-1010778459521153386",
+      "confusion_pair": "INFECTION_VIRAL_FUNGAL->Urticaria",
+      "perception_summary": "The image shows multiple raised, red patches on the back, with some areas appearing more confluent than others. The skin around the lesions appears slightly erythematous.; DERMATITIS_ECZEMA; URTICARIA_BITE_FOLLICULITIS",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 11.0,
+      "base_retrieval_score": 11.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_confusion_d8fbfe16656f",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "-1013831220015814987",
+      "confusion_pair": "DERMATITIS_ECZEMA->Basal Cell Carcinoma",
+      "perception_summary": "Close-up of a raised, reddish-brown patch on the back, surrounded by small red dots and hair follicles.; DERMATITIS_ECZEMA; ACNE_ROSACEA_FOLLICULAR",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_confusion_f3a0310233e0",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "-1087381795155772077",
+      "confusion_pair": "Contact Dermatitis->Drug Rash",
+      "perception_summary": "The image shows multiple small, slightly raised, brownish spots on the chest area.; DERMATITIS_ECZEMA; ACNE_ROSACEA_FOLLICULAR",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 7.0,
+      "base_retrieval_score": 7.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "uncertainty_summary": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The presence of fluid-filled blisters suggests infection or urticaria, but the scarring indicates a more chronic condition like eczema.",
+      "The differential comparison between dermatitis/eczema and urticaria/bite folliculitis is inconclusive due to the lack of specific information about the nature of the fluid-filled blisters.",
+      "The differential comparison between dermatitis/eczema and infection/viral/fungal infection is also inconclusive without confirmation of the presence of viral or fungal pathogens."
+    ],
+    "missing_information": [
+      "More specific information about the nature of the fluid-filled blisters (e.g., pus, serum).",
+      "Confirmation of the presence of viral or fungal pathogens through laboratory tests."
+    ],
+    "referenced_experiences": [
+      "-1010778459521153386",
+      "-1148910296687609402",
+      "abs_confusion_1504ee66ad3c",
+      "tac_-1010778459521153386_e5b6956c8c26",
+      "tac_-1010778459521153386_e21fa70f1cb7",
+      "abs_confusion_8d3c6e97a2da"
+    ]
+  },
+  "contradiction_summary": {
+    "contradictions": [
+      "{'type': 'internal_conflict', 'description': 'The presence of scarring suggests a more chronic condition, which is inconsistent with the typical presentation of acute infections or urticaria.'}"
+    ],
+    "missing_links": [
+      "{'type': 'missing_key_evidence', 'description': 'More specific information about the nature of the fluid-filled blisters (e.g., pus, serum) is needed to differentiate between infection and urticaria.'}",
+      "{'type': 'missing_key_evidence', 'description': 'Confirmation of the presence of viral or fungal pathogens through laboratory tests is required to rule out infection.'}"
+    ],
+    "reasoning_gaps": [
+      "{'type': 'uncertainty', 'description': 'The differential comparison between dermatitis/eczema and urticaria/bite folliculitis is inconclusive due to the lack of specific information about the nature of the fluid-filled blisters.'}",
+      "{'type': 'uncertainty', 'description': 'The differential comparison between dermatitis/eczema and infection/viral/fungal infection is also inconclusive without confirmation of the presence of viral or fungal pathogens.'}"
+    ],
+    "metadata_conflicts": [],
+    "suspicious_points": [
+      "{'description': \"The lesion description mentions 'fluid-filled blisters,' while the metadata does not specify this detail.\", 'type': 'soft'}",
+      "{'description': \"The lesion description includes 'itching, burning, pain' as associated context, but these symptoms are not explicitly mentioned in the metadata.\", 'type': 'soft'}"
+    ]
+  },
+  "information_gap_summary": {
+    "missing_information": [
+      "Confirmation of the presence of viral or fungal pathogens through laboratory tests.",
+      "More specific information about the nature of the fluid-filled blisters (e.g., pus, serum)."
+    ],
+    "why_it_matters": [
+      "Laboratory tests are crucial for differentiating between viral infections and fungal infections, which can have similar clinical presentations.",
+      "The nature of the fluid in the blisters can help distinguish between infectious causes and other conditions like urticaria."
+    ],
+    "impact_on_differential": [
+      "Without confirmation of viral or fungal pathogens, it's difficult to rule out these possibilities, keeping the differential open.",
+      "The nature of the fluid in the blisters can help narrow down the differential, especially distinguishing between infectious causes and urticaria."
+    ],
+    "uncertainty_if_missing": "high"
+  },
+  "escalation_summary": {
+    "whether_escalation_needed": "consider",
+    "escalation_reason": [
+      "The presence of scarring suggests a more chronic condition, which is inconsistent with the typical presentation of acute infections or urticaria. Additionally, the uncertainty level is high due to the lack of specific information about the nature of the fluid-filled blisters and the need for confirmation of viral or fungal pathogens."
+    ],
+    "suggested_next_check_type": "biopsy",
+    "caution_flags": [
+      "High uncertainty level",
+      "Need for confirmation of viral or fungal pathogens"
+    ]
+  },
+  "planner_rationale": {
+    "planner_type": "rule_based",
+    "planner_version": "v1",
+    "selected_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "distribution_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "malignancy_risk_assessment_skill",
+      "differential_compare_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill",
+      "escalation_recommendation_skill"
+    ],
+    "selection_reasons": {
+      "morphology_analysis_skill": [
+        "Boosted by skill retrieval score=12.00.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "color_pattern_analysis_skill": [
+        "Boosted by skill retrieval score=11.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "distribution_analysis_skill": [
+        "Boosted by skill retrieval score=11.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "lesion_description_structuring_skill": [
+        "Boosted by skill retrieval score=13.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "metadata_consistency_skill": [
+        "Boosted by skill retrieval score=15.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "malignancy_risk_assessment_skill": [
+        "Boosted by skill retrieval score=12.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`."
+      ],
+      "differential_compare_skill": [
+        "Boosted by skill retrieval score=7.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`."
+      ],
+      "information_gap_detection_skill": [
+        "Boosted by skill retrieval score=6.00.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `information_gap`."
+      ],
+      "uncertainty_assessment_skill": [
+        "Boosted by skill retrieval score=10.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "contradiction_check_skill": [
+        "Boosted by skill retrieval score=10.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `high_uncertainty`."
+      ],
+      "escalation_recommendation_skill": [
+        "Boosted by skill retrieval score=6.00.",
+        "Matched active trigger profile `high_uncertainty`.",
+        "Matched active trigger profile `information_gap`.",
+        "Matched active trigger profile `escalation_needed`."
+      ]
+    }
+  },
+  "confusion_cluster_summary": {
+    "active_clusters": [],
+    "guidance": []
+  },
+  "selected_evidence": [
+    {
+      "item_id": "metadata_consistency_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "metadata_consistency_skill",
+      "skill_name": "metadata_consistency_skill",
+      "retrieval_type": "",
+      "section": "comparison",
+      "category": "differential_support",
+      "summary": "metadata_consistency_skill: consistency_score=medium | suspicious_points={'description': \"The lesion description mentions 'fluid-filled blisters,' while the metadata does not specify this detail.\", 'type': 'soft'}; {'description':... | evidence_strength=medium | recommendation_type=uncertainty_signal",
+      "score": 7.84,
+      "rank": 6,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "lesion_description_structuring_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "lesion_description_structuring_skill",
+      "skill_name": "lesion_description_structuring_skill",
+      "retrieval_type": "",
+      "section": "observation",
+      "category": "description",
+      "summary": "lesion_description_structuring_skill: primary_lesion_morphology=raised, bumpy plaques | color=red, inflamed | border=irregular, well-defined | surface=rough, scaly | size_count=multiple, large | distribution=clustered, head or neck",
+      "score": 9.48,
+      "rank": 1,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "morphology_analysis_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "morphology_analysis_skill",
+      "skill_name": "morphology_analysis_skill",
+      "retrieval_type": "",
+      "section": "observation",
+      "category": "description",
+      "summary": "morphology_analysis_skill: lesion_type=plaque | size_range=large | elevation=raised | count=multiple | evidence_strength=medium | recommendation_type=descriptive_evidence",
+      "score": 8.36,
+      "rank": 2,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "malignancy_risk_assessment_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "malignancy_risk_assessment_skill",
+      "skill_name": "malignancy_risk_assessment_skill",
+      "retrieval_type": "",
+      "section": "risk",
+      "category": "risk",
+      "summary": "malignancy_risk_assessment_skill: risk_level=low | risk_evidence=The lesion is described as raised, bumpy plaques with a reddish hue, which is more indicative of dermatitis or eczema rather than malignancy.; The presence o... | alarm_signals=The lesion is described as raised, bumpy plaques with a reddish hue, which could be indicative of malignancy if the...",
+      "score": 8.2,
+      "rank": 5,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "information_gap_detection_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "information_gap_detection_skill",
+      "skill_name": "information_gap_detection_skill",
+      "retrieval_type": "",
+      "section": "conflict_uncertainty",
+      "category": "contradiction_gap",
+      "summary": "information_gap_detection_skill: missing_information=Confirmation of the presence of viral or fungal pathogens through laboratory tests.; More specific information about the nature of the fluid-filled blisters ... | why_it_matters=Laboratory tests are crucial for differentiating between viral infections and fungal infections, which can have similar clinic...",
+      "score": 7.78,
+      "rank": 7,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "contradiction_check_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "contradiction_check_skill",
+      "skill_name": "contradiction_check_skill",
+      "retrieval_type": "",
+      "section": "conflict_uncertainty",
+      "category": "contradiction_gap",
+      "summary": "contradiction_check_skill: contradictions={'type': 'internal_conflict', 'description': 'The presence of scarring suggests a more chronic condition, which is inconsistent with the typical presentation... | missing_links={'type': 'missing_key_evidence', 'description': 'More specific information about the nature of the fluid-filled blisters (e.g., pus, serum...",
+      "score": 7.74,
+      "rank": 8,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "differential_compare_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "differential_compare_skill",
+      "skill_name": "differential_compare_skill",
+      "retrieval_type": "",
+      "section": "comparison",
+      "category": "differential_support",
+      "summary": "differential_compare_skill: candidate_pairs=DERMATITIS_ECZEMA vs URTRICARIA_BITE_FOLLICULITIS; DERMATITIS_ECZEMA vs INFECTION_VIRAL_FUNGAL | supporting_evidence=DERMATITIS_ECZEMA vs URTRICARIA_BITE_FOLLICULITIS: Raised, bumpy lesions on the scalp.; Inflammation and fluid-filled blisters present.; DERMATITIS_ECZEMA vs... | conflicting_evidence=DERMATITIS_E...",
+      "score": 6.4,
+      "rank": 10,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "abs_confusion_1504ee66ad3c",
+      "item_type": "retrieval_record",
+      "source_type": "retrieval_record",
+      "source_name": "abs_confusion_1504ee66ad3c",
+      "skill_name": "",
+      "retrieval_type": "abstract_experience",
+      "section": "abstract_experience",
+      "category": "experience_hint",
+      "summary": "The image shows multiple raised, red patches on the back, with some areas appearing more confluent than others. The skin around the lesions appears slightly erythematous.; DERMA... | When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty | confusion_pair=INFECTION_VIRAL_FUNGAL...",
+      "score": 6.2,
+      "rank": 12,
+      "keep_reason": "kept"
+    }
+  ],
+  "evidence_decision_policy": {
+    "risk_layer": {
+      "risk_flag": "malignancy_risk_low",
+      "caution_flags": [
+        "contradictions_present",
+        "follow_up_or_biopsy_consideration"
+      ],
+      "follow_up_suggestion": "biopsy",
+      "selected_evidence": [
+        {
+          "item_id": "metadata_consistency_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "metadata_consistency_skill",
+          "skill_name": "metadata_consistency_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "differential_support",
+          "summary": "metadata_consistency_skill: consistency_score=medium | suspicious_points={'description': \"The lesion description mentions 'fluid-filled blisters,' while the metadata does not specify this detail.\", 'type': 'soft'}; {'description':... | evidence_strength=medium | recommendation_type=uncertainty_signal",
+          "score": 7.84,
+          "rank": 6,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "lesion_description_structuring_skill",
+          "skill_name": "lesion_description_structuring_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "lesion_description_structuring_skill: primary_lesion_morphology=raised, bumpy plaques | color=red, inflamed | border=irregular, well-defined | surface=rough, scaly | size_count=multiple, large | distribution=clustered, head or neck",
+          "score": 9.48,
+          "rank": 1,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "morphology_analysis_skill",
+          "skill_name": "morphology_analysis_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "morphology_analysis_skill: lesion_type=plaque | size_range=large | elevation=raised | count=multiple | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 8.36,
+          "rank": 2,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "malignancy_risk_assessment_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "malignancy_risk_assessment_skill",
+          "skill_name": "malignancy_risk_assessment_skill",
+          "retrieval_type": "",
+          "section": "risk",
+          "category": "risk",
+          "summary": "malignancy_risk_assessment_skill: risk_level=low | risk_evidence=The lesion is described as raised, bumpy plaques with a reddish hue, which is more indicative of dermatitis or eczema rather than malignancy.; The presence o... | alarm_signals=The lesion is described as raised, bumpy plaques with a reddish hue, which could be indicative of malignancy if the...",
+          "score": 8.2,
+          "rank": 5,
+          "keep_reason": "kept"
+        }
+      ],
+      "baseline_preview": {
+        "early_ddx_candidates": [
+          "DERMATITIS_ECZEMA",
+          "URTRICARIA_BITE_FOLLICULITIS",
+          "INFECTION_VIRAL_FUNGAL"
+        ],
+        "image_summary": "The image shows a close-up of a scalp area with raised, bumpy lesions and fluid-filled blisters. The skin appears inflamed and there is some scarring visible.",
+        "baseline_final_diagnosis": "Contact Dermatitis",
+        "baseline_differential_diagnoses": [
+          "Contact Dermatitis"
+        ],
+        "baseline_confidence": "Moderate"
+      }
+    },
+    "diagnosis_override_layer": {
+      "workflow_context": {
+        "label_granularity": "grouped",
+        "presentation_mode": "diffuse_rash",
+        "workflow_profile": "family_routing_workflow",
+        "available_tests": [
+          "clinical_photo_only"
+        ],
+        "workflow_preference": "metadata_first",
+        "hospital_type": "specialist_clinic",
+        "time_budget": "standard",
+        "metadata_completeness": "full",
+        "workflow_capabilities": [
+          "family_routing",
+          "grouped_label_reasoning",
+          "rash_reasoning"
+        ]
+      },
+      "override_allowed": true,
+      "malignancy_override_allowed": true,
+      "subtype_override_allowed": false,
+      "family_override_allowed": true,
+      "override_mode": "family_override",
+      "override_reasons": [
+        "supporting_evidence_outweighs_opposition",
+        "subtype_specific_support_present",
+        "family_level_override_allowed",
+        "uncertainty_not_high",
+        "consistent_retrieval_support"
+      ],
+      "why_not_confident_enough_to_override": [
+        "malignancy risk is not high enough for a diagnosis override",
+        "no specialist evidence strongly supports the override direction",
+        "contradictions or reasoning gaps remain too numerous",
+        "opposing or exclusion evidence quota is not satisfied"
+      ],
+      "supporting_evidence": [
+        {
+          "item_id": "metadata_consistency_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "metadata_consistency_skill",
+          "skill_name": "metadata_consistency_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "differential_support",
+          "summary": "metadata_consistency_skill: consistency_score=medium | suspicious_points={'description': \"The lesion description mentions 'fluid-filled blisters,' while the metadata does not specify this detail.\", 'type': 'soft'}; {'description':... | evidence_strength=medium | recommendation_type=uncertainty_signal",
+          "score": 7.84,
+          "rank": 6,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "lesion_description_structuring_skill",
+          "skill_name": "lesion_description_structuring_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "lesion_description_structuring_skill: primary_lesion_morphology=raised, bumpy plaques | color=red, inflamed | border=irregular, well-defined | surface=rough, scaly | size_count=multiple, large | distribution=clustered, head or neck",
+          "score": 9.48,
+          "rank": 1,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "morphology_analysis_skill",
+          "skill_name": "morphology_analysis_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "morphology_analysis_skill: lesion_type=plaque | size_range=large | elevation=raised | count=multiple | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 8.36,
+          "rank": 2,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "malignancy_risk_assessment_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "malignancy_risk_assessment_skill",
+          "skill_name": "malignancy_risk_assessment_skill",
+          "retrieval_type": "",
+          "section": "risk",
+          "category": "risk",
+          "summary": "malignancy_risk_assessment_skill: risk_level=low | risk_evidence=The lesion is described as raised, bumpy plaques with a reddish hue, which is more indicative of dermatitis or eczema rather than malignancy.; The presence o... | alarm_signals=The lesion is described as raised, bumpy plaques with a reddish hue, which could be indicative of malignancy if the...",
+          "score": 8.2,
+          "rank": 5,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "information_gap_detection_skill",
+          "skill_name": "information_gap_detection_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "information_gap_detection_skill: missing_information=Confirmation of the presence of viral or fungal pathogens through laboratory tests.; More specific information about the nature of the fluid-filled blisters ... | why_it_matters=Laboratory tests are crucial for differentiating between viral infections and fungal infections, which can have similar clinic...",
+          "score": 7.78,
+          "rank": 7,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "contradiction_check_skill",
+          "skill_name": "contradiction_check_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "contradiction_check_skill: contradictions={'type': 'internal_conflict', 'description': 'The presence of scarring suggests a more chronic condition, which is inconsistent with the typical presentation... | missing_links={'type': 'missing_key_evidence', 'description': 'More specific information about the nature of the fluid-filled blisters (e.g., pus, serum...",
+          "score": 7.74,
+          "rank": 8,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "differential_compare_skill",
+          "skill_name": "differential_compare_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "differential_support",
+          "summary": "differential_compare_skill: candidate_pairs=DERMATITIS_ECZEMA vs URTRICARIA_BITE_FOLLICULITIS; DERMATITIS_ECZEMA vs INFECTION_VIRAL_FUNGAL | supporting_evidence=DERMATITIS_ECZEMA vs URTRICARIA_BITE_FOLLICULITIS: Raised, bumpy lesions on the scalp.; Inflammation and fluid-filled blisters present.; DERMATITIS_ECZEMA vs... | conflicting_evidence=DERMATITIS_E...",
+          "score": 6.4,
+          "rank": 10,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "abs_confusion_1504ee66ad3c",
+          "item_type": "retrieval_record",
+          "source_type": "retrieval_record",
+          "source_name": "abs_confusion_1504ee66ad3c",
+          "skill_name": "",
+          "retrieval_type": "abstract_experience",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "summary": "The image shows multiple raised, red patches on the back, with some areas appearing more confluent than others. The skin around the lesions appears slightly erythematous.; DERMA... | When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty | confusion_pair=INFECTION_VIRAL_FUNGAL...",
+          "score": 6.2,
+          "rank": 12,
+          "keep_reason": "kept"
+        }
+      ],
+      "opposing_evidence": [],
+      "supporting_score": 62.0,
+      "opposing_score": 0,
+      "support_margin": 62.0,
+      "selected_evidence_present": true,
+      "subtype_support_score": 14.24,
+      "subtype_support_margin": 14.24,
+      "specialist_support_present": false,
+      "consistent_retrieval_count": 1,
+      "contradiction_count": 7,
+      "uncertainty_level": "medium",
+      "opposing_quota_satisfied": false,
+      "subtype_support_quota_satisfied": true
+    }
+  },
+  "serialized_evidence_text": "[Observation Evidence]\n- Initial image summary: The image shows a close-up of a scalp area with raised, bumpy lesions and fluid-filled blisters. The skin appears inflamed and there is some scarring visible.\n- Early differential candidates: DERMATITIS_ECZEMA, URTRICARIA_BITE_FOLLICULITIS, INFECTION_VIRAL_FUNGAL\n- structured lesion observation: lesion_description_structuring_skill: primary_lesion_morphology=raised, bumpy plaques | color=red, inflamed | border=irregular, well-defined | surface=rough, scaly | size_count=multiple, large | distribution=clustered, head or neck || morphology_analysis_skill: lesion_type=plaque | size_range=large | elevation=raised | count=multiple | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Raw case reference -1010778459521153386: The image shows multiple raised, red patches on the back, with some areas appearing more confluent than others. The skin around the lesions appears slightly erythematous.\n- Raw case reference -111683086443147412: The image shows a close-up of the neck area with raised, bumpy lesions and some erythema. The skin appears dry and there is mild scaling.\n- Raw case reference -1148910296687609402: The image shows multiple small, flat, pinkish-red patches scattered across the skin surface, particularly on the torso front. The skin appears slightly dry and there is some erythema (redness) present.\n\n[Exclusion And Comparison Evidence]\n- metadata_consistency_skill: consistency_score=medium | suspicious_points={'description': \"The lesion description mentions 'fluid-filled blisters,' while the metadata does not specify this detail.\", 'type': 'soft'}; {'description':... | evidence_strength=medium | recommendation_type=uncertainty_signal\n- differential_compare_skill: candidate_pairs=DERMATITIS_ECZEMA vs URTRICARIA_BITE_FOLLICULITIS; DERMATITIS_ECZEMA vs INFECTION_VIRAL_FUNGAL | supporting_evidence=DERMATITIS_ECZEMA vs URTRICARIA_BITE_FOLLICULITIS: Raised, bumpy lesions on the scalp.; Inflammation and fluid-filled blisters present.; DERMATITIS_ECZEMA vs... | conflicting_evidence=DERMATITIS_ECZEMA vs URTRICARIA_BITE_FOLLICULITIS: Lesions appear to be fluid-filled, which could suggest infection or urticaria.; DERMATITIS_ECZEMA vs INFEC... | required_missing_evidence=DERMATITIS_ECZEMA vs URTRICARIA_BITE_FOLLICULITIS: More specific information about the nature of the fluid-filled blisters (e.g., pus, serum).; DERMATITIS_EC... | evidence_strength=medium | recommendation_type=conflict_signal\n- Tactical experience tac_-1010778459521153386_e5b6956c8c26: ddx=DERMATITIS_ECZEMA, URTICARIA_BITE_FOLLICULITIS, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium; stabilized lesion structure; made morphology explicit for downstream reasoning; did not fully resolve the active confusion pattern\n- Tactical experience tac_-1010778459521153386_e21fa70f1cb7: ddx=DERMATITIS_ECZEMA, URTICARIA_BITE_FOLLICULITIS, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium; made evidence limits explicit; prevented overconfident downstream use; did not fully resolve the active confusion pattern\n- Tactical experience tac_-1010778459521153386_bce72efcf1a2: ddx=DERMATITIS_ECZEMA, URTICARIA_BITE_FOLLICULITIS, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium; kept the differential open; made pairwise reasoning explicit; did not fully resolve the active confusion pattern\n- Tactical experience tac_-1010778459521153386_8fa365c666e8: ddx=DERMATITIS_ECZEMA, URTICARIA_BITE_FOLLICULITIS, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium; did not fully resolve the active confusion pattern; did not prevent the final decision from failing; Action pattern: structured_skill_sequence\n\n[Risk Evidence]\n- malignancy_risk_assessment_skill: risk_level=low | risk_evidence=The lesion is described as raised, bumpy plaques with a reddish hue, which is more indicative of dermatitis or eczema rather than malignancy.; The presence o... | alarm_signals=The lesion is described as raised, bumpy plaques with a reddish hue, which could be indicative of malignancy if the morphology were more specific.; The prese... | benign_reassuring_features=The lesion is described as having a regular border, which is a benign feature.; The lesion is described as having a uniform color, which is a benign feature. | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Abstract experience abs_confusion_1504ee66ad3c: The image shows multiple raised, red patches on the back, with some areas appearing more confluent than others. The skin around the lesions appears slightly erythematous.; DERMATITIS_ECZEMA; URTICARIA_BITE_FOLLICULITIS; When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty\n\n[Conflict And Uncertainty]\n- Uncertainty level: medium\n- Uncertainty reasons: The presence of fluid-filled blisters suggests infection or urticaria, but the scarring indicates a more chronic condition like eczema.; The differential comparison between dermatitis/eczema and urticaria/bite folliculitis is inconclusive due to the lack of specific information about the nature of the fluid-filled blisters.; The differential comparison between dermatitis/eczema and infection/viral/fungal infection is also inconclusive without confirmation of the presence of viral or fungal pathogens.\n- Missing information: More specific information about the nature of the fluid-filled blisters (e.g., pus, serum).; Confirmation of the presence of viral or fungal pathogens through laboratory tests.\n- contradictions: {'type': 'internal_conflict', 'description': 'The presence of scarring suggests a more chronic condition, which is inconsistent with the typical presentation of acute infections or urticaria.'}\n- missing links: {'type': 'missing_key_evidence', 'description': 'More specific information about the nature of the fluid-filled blisters (e.g., pus, serum) is needed to differentiate between infection and urticaria.'}; {'type': 'missing_key_evidence', 'description': 'Confirmation of the presence of viral or fungal pathogens through laboratory tests is required to rule out infection.'}\n- reasoning gaps: {'type': 'uncertainty', 'description': 'The differential comparison between dermatitis/eczema and urticaria/bite folliculitis is inconclusive due to the lack of specific information about the nature of the fluid-filled blisters.'}; {'type': 'uncertainty', 'description': 'The differential comparison between dermatitis/eczema and infection/viral/fungal infection is also inconclusive without confirmation of the presence of viral or fungal pathogens.'}\n- suspicious points: {'description': \"The lesion description mentions 'fluid-filled blisters,' while the metadata does not specify this detail.\", 'type': 'soft'}; {'description': \"The lesion description includes 'itching, burning, pain' as associated context, but these symptoms are not explicitly mentioned in the metadata.\", 'type': 'soft'}\n- contradiction_check_skill: contradictions={'type': 'internal_conflict', 'description': 'The presence of scarring suggests a more chronic condition, which is inconsistent with the typical presentation... | missing_links={'type': 'missing_key_evidence', 'description': 'More specific information about the nature of the fluid-filled blisters (e.g., pus, serum) is needed to diff... | reasoning_gaps={'type': 'uncertainty', 'description': 'The differential comparison between dermatitis/eczema and urticaria/bite folliculitis is inconclusive due to the lack... | evidence_strength=medium | recommendation_type=conflict_signal\n- information_gap_detection_skill: missing_information=Confirmation of the presence of viral or fungal pathogens through laboratory tests.; More specific information about the nature of the fluid-filled blisters ... | why_it_matters=Laboratory tests are crucial for differentiating between viral infections and fungal infections, which can have similar clinical presentations.; The nature o... | impact_on_differential=Without confirmation of viral or fungal pathogens, it's difficult to rule out these possibilities, keeping the differential open.; The nature of the fluid in... | uncertainty_if_missing=high | evidence_strength=medium | recommendation_type=descriptive_evidence\n- explicit information gaps: Confirmation of the presence of viral or fungal pathogens through laboratory tests.; More specific information about the nature of the fluid-filled blisters (e.g., pus, serum).\n- why gaps matter: Laboratory tests are crucial for differentiating between viral infections and fungal infections, which can have similar clinical presentations.; The nature of the fluid in the blisters can help distinguish between infectious causes and other conditions like urticaria.\n- impact on differential: Without confirmation of viral or fungal pathogens, it's difficult to rule out these possibilities, keeping the differential open.; The nature of the fluid in the blisters can help narrow down the differential, especially distinguishing between infectious causes and urticaria.\n- residual uncertainty if still missing: high\n- escalation needed: consider\n- escalation reasons: The presence of scarring suggests a more chronic condition, which is inconsistent with the typical presentation of acute infections or urticaria. Additionally, the uncertainty level is high due to the lack of specific information about the nature of the fluid-filled blisters and the need for confirmation of viral or fungal pathogens.\n- suggested next check type: biopsy\n- caution flags: High uncertainty level; Need for confirmation of viral or fungal pathogens\n\n[Planner Rationale]\n- Selected skills: morphology_analysis_skill, color_pattern_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, differential_compare_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill\n- morphology_analysis_skill: Boosted by skill retrieval score=12.00.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=1.00.; Matched active trigger profile `foundational_observation`.\n- color_pattern_analysis_skill: Boosted by skill retrieval score=11.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=1.00.; Matched active trigger profile `foundational_observation`.\n- distribution_analysis_skill: Boosted by skill retrieval score=11.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=1.00.; Matched active trigger profile `foundational_observation`.",
+  "evidence_calibration_debug": {
+    "calibrator_type": "heuristic",
+    "calibrator_version": "v1",
+    "section_plan": {
+      "observation": {
+        "skill_names": [
+          "lesion_description_structuring_skill",
+          "morphology_analysis_skill"
+        ],
+        "merged_groups": [
+          {
+            "label": "structured_lesion_observation",
+            "skills": [
+              "lesion_description_structuring_skill",
+              "morphology_analysis_skill"
+            ],
+            "max_members": 2
+          }
+        ],
+        "raw_case_source_ids": []
+      },
+      "comparison": {
+        "skill_names": [
+          "metadata_consistency_skill",
+          "differential_compare_skill"
+        ],
+        "merged_groups": [],
+        "tactical_source_ids": [],
+        "abstract_source_ids": []
+      },
+      "risk": {
+        "skill_names": [
+          "malignancy_risk_assessment_skill"
+        ],
+        "abstract_source_ids": [
+          "abs_confusion_1504ee66ad3c"
+        ]
+      },
+      "conflict_uncertainty": {
+        "skill_names": [
+          "information_gap_detection_skill",
+          "contradiction_check_skill"
+        ]
+      },
+      "planner": {
+        "max_reason_skills": 3
+      },
+      "section_order": [
+        "observation",
+        "comparison",
+        "risk",
+        "conflict_uncertainty",
+        "planner"
+      ]
+    },
+    "item_scores": [
+      {
+        "item_id": "lesion_description_structuring_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 9.48,
+        "learned_score": 0.0,
+        "final_score": 9.48,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 1,
+        "dedup_key": "description:lesion_description_structuring_skill"
+      },
+      {
+        "item_id": "morphology_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 8.36,
+        "learned_score": 0.0,
+        "final_score": 8.36,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 2,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 8.22,
+        "learned_score": 0.0,
+        "final_score": 8.22,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "malignancy_risk_assessment_skill",
+        "item_type": "skill_output",
+        "section": "risk",
+        "heuristic_score": 8.2,
+        "learned_score": 0.0,
+        "final_score": 8.2,
+        "selected": true,
+        "reason": "kept",
+        "category": "risk",
+        "rank": 3,
+        "dedup_key": "risk:malignancy"
+      },
+      {
+        "item_id": "metadata_consistency_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 7.84,
+        "learned_score": 0.0,
+        "final_score": 7.84,
+        "selected": true,
+        "reason": "kept",
+        "category": "differential_support",
+        "rank": 4,
+        "dedup_key": "differential_support:metadata_consistency_skill"
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.82,
+        "learned_score": 0.0,
+        "final_score": 7.82,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "information_gap_detection_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 7.78,
+        "learned_score": 0.0,
+        "final_score": 7.78,
+        "selected": true,
+        "reason": "kept",
+        "category": "contradiction_gap",
+        "rank": 5,
+        "dedup_key": "uncertainty:information_gap_detection_skill"
+      },
+      {
+        "item_id": "contradiction_check_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 7.74,
+        "learned_score": 0.0,
+        "final_score": 7.74,
+        "selected": true,
+        "reason": "kept",
+        "category": "contradiction_gap",
+        "rank": 6,
+        "dedup_key": "uncertainty:contradiction_check_skill"
+      },
+      {
+        "item_id": "escalation_recommendation_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 6.98,
+        "learned_score": 0.0,
+        "final_score": 6.98,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "contradiction_gap",
+        "rank": 0,
+        "dedup_key": "uncertainty:escalation_recommendation_skill"
+      },
+      {
+        "item_id": "uncertainty_assessment_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 6.74,
+        "learned_score": 0.0,
+        "final_score": 6.74,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "contradiction_gap",
+        "rank": 0,
+        "dedup_key": "uncertainty:uncertainty_assessment_skill"
+      },
+      {
+        "item_id": "differential_compare_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 6.4,
+        "learned_score": 0.0,
+        "final_score": 6.4,
+        "selected": true,
+        "reason": "kept",
+        "category": "differential_support",
+        "rank": 7,
+        "dedup_key": "differential_support:differential_compare_skill"
+      },
+      {
+        "item_id": "abs_confusion_1504ee66ad3c",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 6.2,
+        "learned_score": 0.0,
+        "final_score": 6.2,
+        "selected": true,
+        "reason": "kept",
+        "category": "experience_hint",
+        "rank": 8,
+        "dedup_key": "abstract_experience:abs_confusion_1504ee66ad3c"
+      },
+      {
+        "item_id": "abs_confusion_d8fbfe16656f",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 5.6,
+        "learned_score": 0.0,
+        "final_score": 5.6,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "abstract_experience:abs_confusion_d8fbfe16656f"
+      },
+      {
+        "item_id": "abs_confusion_f3a0310233e0",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 5.4,
+        "learned_score": 0.0,
+        "final_score": 5.4,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "abstract_experience:abs_confusion_f3a0310233e0"
+      },
+      {
+        "item_id": "tac_-1010778459521153386_e5b6956c8c26",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 4.4,
+        "learned_score": 0.0,
+        "final_score": 4.4,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_-1010778459521153386_e5b6956c8c26"
+      },
+      {
+        "item_id": "tac_-1010778459521153386_e21fa70f1cb7",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 4.4,
+        "learned_score": 0.0,
+        "final_score": 4.4,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_-1010778459521153386_e21fa70f1cb7"
+      },
+      {
+        "item_id": "tac_-1010778459521153386_bce72efcf1a2",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 4.4,
+        "learned_score": 0.0,
+        "final_score": 4.4,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_-1010778459521153386_bce72efcf1a2"
+      },
+      {
+        "item_id": "tac_-1010778459521153386_8fa365c666e8",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 4.4,
+        "learned_score": 0.0,
+        "final_score": 4.4,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_-1010778459521153386_8fa365c666e8"
+      },
+      {
+        "item_id": "-1010778459521153386",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 2.9,
+        "learned_score": 0.0,
+        "final_score": 2.9,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:-1010778459521153386"
+      },
+      {
+        "item_id": "-111683086443147412",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 2.5,
+        "learned_score": 0.0,
+        "final_score": 2.5,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:-111683086443147412"
+      },
+      {
+        "item_id": "-1148910296687609402",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 2.3,
+        "learned_score": 0.0,
+        "final_score": 2.3,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:-1148910296687609402"
+      }
+    ],
+    "omitted_items": [
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 8.22
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 7.82
+      },
+      {
+        "item_id": "escalation_recommendation_skill",
+        "item_type": "skill_output",
+        "reason": "category_quota_exceeded",
+        "section": "conflict_uncertainty",
+        "category": "contradiction_gap",
+        "score": 6.98
+      },
+      {
+        "item_id": "uncertainty_assessment_skill",
+        "item_type": "skill_output",
+        "reason": "category_quota_exceeded",
+        "section": "conflict_uncertainty",
+        "category": "contradiction_gap",
+        "score": 6.74
+      },
+      {
+        "item_id": "abs_confusion_d8fbfe16656f",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "abstract_experience",
+        "category": "experience_hint",
+        "score": 5.6
+      },
+      {
+        "item_id": "abs_confusion_f3a0310233e0",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "abstract_experience",
+        "category": "experience_hint",
+        "score": 5.4
+      },
+      {
+        "item_id": "tac_-1010778459521153386_8fa365c666e8",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 4.4
+      },
+      {
+        "item_id": "tac_-1010778459521153386_bce72efcf1a2",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 4.4
+      },
+      {
+        "item_id": "tac_-1010778459521153386_e21fa70f1cb7",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 4.4
+      },
+      {
+        "item_id": "tac_-1010778459521153386_e5b6956c8c26",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 4.4
+      },
+      {
+        "item_id": "-1010778459521153386",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 2.9
+      },
+      {
+        "item_id": "-111683086443147412",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 2.5
+      },
+      {
+        "item_id": "-1148910296687609402",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 2.3
+      }
+    ],
+    "debug": {
+      "policy": {
+        "enable_evidence_calibrator": true,
+        "calibrator_mode": "heuristic",
+        "calibrator_checkpoint_path": "",
+        "learned_calibration_weight": 1.2,
+        "max_total_items": 8,
+        "max_observation_skills": 4,
+        "max_comparison_skills": 3,
+        "max_risk_skills": 2,
+        "max_uncertainty_skills": 3,
+        "max_exclusion_items": 2,
+        "max_experience_hints": 2,
+        "max_raw_cases": 1,
+        "max_tactical": 2,
+        "max_abstract": 2,
+        "max_planner_reasons": 3,
+        "omit_low_value_evidence": true,
+        "min_effective_score": 2.4,
+        "dedup_similar_evidence": true,
+        "cluster_aware_ordering": true,
+        "cluster_opposing_bonus": 1.8,
+        "cluster_exclusion_bonus": 1.4,
+        "risk_overweight_penalty": 1.2,
+        "uncertainty_overweight_penalty": 1.0,
+        "description_priority_bonus": 0.6,
+        "exclusion_priority_bonus": 1.2,
+        "negative_evidence_priority_bonus": 1.0,
+        "allow_family_override": true,
+        "allow_keratinocyte_subtype_override": false,
+        "debug_output": true,
+        "conservative_fusion_mode": "soft"
+      },
+      "learned_scorer_loaded": false,
+      "contradiction_count": 7,
+      "uncertainty_level": "medium",
+      "risk_flag_count": 0,
+      "confusion_clusters": [],
+      "kept_items": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "rank": 1,
+          "score": 9.48
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "rank": 2,
+          "score": 8.36
+        },
+        {
+          "item_id": "malignancy_risk_assessment_skill",
+          "item_type": "skill_output",
+          "section": "risk",
+          "category": "risk",
+          "rank": 5,
+          "score": 8.2
+        },
+        {
+          "item_id": "metadata_consistency_skill",
+          "item_type": "skill_output",
+          "section": "comparison",
+          "category": "differential_support",
+          "rank": 6,
+          "score": 7.84
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "rank": 7,
+          "score": 7.78
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "rank": 8,
+          "score": 7.74
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "section": "comparison",
+          "category": "differential_support",
+          "rank": 10,
+          "score": 6.4
+        },
+        {
+          "item_id": "abs_confusion_1504ee66ad3c",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "rank": 12,
+          "score": 6.2
+        }
+      ],
+      "pruned_items": [
+        {
+          "item_id": "color_pattern_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 8.22,
+          "heuristic_score": 8.22,
+          "learned_score": 0.0,
+          "payload": {
+            "primary_color": "red",
+            "color_variation": "marked",
+            "pigmentation_pattern": "reticular",
+            "asymmetry_color": "present",
+            "referenced_experiences": [
+              "-1010778459521153386"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 11.5,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 8.620000000000001,
+          "rank": 3,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "distribution_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 7.82,
+          "heuristic_score": 7.82,
+          "learned_score": 0.0,
+          "payload": {
+            "body_location": "head_or_neck",
+            "symmetry": "asymmetric",
+            "localized_vs_generalized": "generalized",
+            "clustering_pattern": "clustered",
+            "referenced_experiences": [
+              "-1010778459521153386",
+              "-1148910296687609402",
+              "abs_confusion_1504ee66ad3c",
+              "tac_-1010778459521153386_e5b6956c8c26",
+              "tac_-1010778459521153386_e21fa70f1cb7",
+              "abs_confusion_8d3c6e97a2da",
+              "abs_confusion_f3a0310233e0"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 11.5,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 8.22,
+          "rank": 4,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "escalation_recommendation_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "score": 6.9799999999999995,
+          "heuristic_score": 6.9799999999999995,
+          "learned_score": 0.0,
+          "payload": {
+            "whether_escalation_needed": "consider",
+            "escalation_reason": [
+              "The presence of scarring suggests a more chronic condition, which is inconsistent with the typical presentation of acute infections or urticaria. Additionally, the uncertainty level is high due to the lack of specific information about the nature of the fluid-filled blisters and the need for confirmation of viral or fungal pathogens."
+            ],
+            "suggested_next_check_type": "biopsy",
+            "caution_flags": [
+              "High uncertainty level",
+              "Need for confirmation of viral or fungal pathogens"
+            ],
+            "referenced_experiences": [
+              "abs_confusion_1504ee66ad3c",
+              "tac_-1010778459521153386_e5b6956c8c26",
+              "tac_-1010778459521153386_e21fa70f1cb7"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "uncertainty_signal"
+          },
+          "retrieval_score": 6.0,
+          "dedup_key": "uncertainty:escalation_recommendation_skill",
+          "ordering_score": 6.579999999999999,
+          "rank": 9,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "uncertainty_assessment_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "score": 6.74,
+          "heuristic_score": 6.74,
+          "learned_score": 0.0,
+          "payload": {
+            "uncertainty_level": "medium",
+            "reasons": [
+              "The presence of fluid-filled blisters suggests infection or urticaria, but the scarring indicates a more chronic condition like eczema.",
+              "The differential comparison between dermatitis/eczema and urticaria/bite folliculitis is inconclusive due to the lack of specific information about the nature of the fluid-filled blisters.",
+              "The differential comparison between dermatitis/eczema and infection/viral/fungal infection is also inconclusive without confirmation of the presence of viral or fungal pathogens."
+            ],
+            "missing_information": [
+              "More specific information about the nature of the fluid-filled blisters (e.g., pus, serum).",
+              "Confirmation of the presence of viral or fungal pathogens through laboratory tests."
+            ],
+            "referenced_experiences": [
+              "-1010778459521153386",
+              "-1148910296687609402",
+              "abs_confusion_1504ee66ad3c",
+              "tac_-1010778459521153386_e5b6956c8c26",
+              "tac_-1010778459521153386_e21fa70f1cb7",
+              "abs_confusion_8d3c6e97a2da",
+              "abs_confusion_f3a0310233e0"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "conflict_signal"
+          },
+          "retrieval_score": 10.5,
+          "dedup_key": "uncertainty:uncertainty_assessment_skill",
+          "ordering_score": 6.34,
+          "rank": 11,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "abs_confusion_d8fbfe16656f",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "score": 5.6000000000000005,
+          "heuristic_score": 5.6000000000000005,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "abs_confusion_d8fbfe16656f",
+            "source_layer": "abstract_experience",
+            "experience_type": "confusion_memory",
+            "case_id": "-1013831220015814987",
+            "confusion_pair": "DERMATITIS_ECZEMA->Basal Cell Carcinoma",
+            "perception_summary": "Close-up of a raised, reddish-brown patch on the back, surrounded by small red dots and hair follicles.; DERMATITIS_ECZEMA; ACNE_ROSACEA_FOLLICULAR",
+            "learning_points": [
+              "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+              "compare_then_audit_uncertainty"
+            ],
+            "retrieval_score": 8.0,
+            "base_retrieval_score": 8.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "abstract_experience:abs_confusion_d8fbfe16656f",
+          "ordering_score": 5.6000000000000005,
+          "rank": 13,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "abs_confusion_f3a0310233e0",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "score": 5.4,
+          "heuristic_score": 5.4,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "abs_confusion_f3a0310233e0",
+            "source_layer": "abstract_experience",
+            "experience_type": "confusion_memory",
+            "case_id": "-1087381795155772077",
+            "confusion_pair": "Contact Dermatitis->Drug Rash",
+            "perception_summary": "The image shows multiple small, slightly raised, brownish spots on the chest area.; DERMATITIS_ECZEMA; ACNE_ROSACEA_FOLLICULAR",
+            "learning_points": [
+              "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+              "compare_then_audit_uncertainty"
+            ],
+            "retrieval_score": 7.0,
+            "base_retrieval_score": 7.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "abstract_experience:abs_confusion_f3a0310233e0",
+          "ordering_score": 5.4,
+          "rank": 14,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_-1010778459521153386_8fa365c666e8",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 4.3999999999999995,
+          "heuristic_score": 4.3999999999999995,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_-1010778459521153386_8fa365c666e8",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "-1010778459521153386",
+            "confusion_pair": "INFECTION_VIRAL_FUNGAL->Urticaria",
+            "perception_summary": "ddx=DERMATITIS_ECZEMA, URTICARIA_BITE_FOLLICULITIS, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium",
+            "learning_points": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing",
+              "Action pattern: structured_skill_sequence"
+            ],
+            "retrieval_score": 9.0,
+            "base_retrieval_score": 9.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_-1010778459521153386_8fa365c666e8",
+          "ordering_score": 4.3999999999999995,
+          "rank": 15,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_-1010778459521153386_bce72efcf1a2",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 4.3999999999999995,
+          "heuristic_score": 4.3999999999999995,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_-1010778459521153386_bce72efcf1a2",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "-1010778459521153386",
+            "confusion_pair": "INFECTION_VIRAL_FUNGAL->Urticaria",
+            "perception_summary": "ddx=DERMATITIS_ECZEMA, URTICARIA_BITE_FOLLICULITIS, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium",
+            "learning_points": [
+              "kept the differential open",
+              "made pairwise reasoning explicit",
+              "did not fully resolve the active confusion pattern"
+            ],
+            "retrieval_score": 9.0,
+            "base_retrieval_score": 9.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_-1010778459521153386_bce72efcf1a2",
+          "ordering_score": 4.3999999999999995,
+          "rank": 16,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_-1010778459521153386_e21fa70f1cb7",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 4.3999999999999995,
+          "heuristic_score": 4.3999999999999995,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_-1010778459521153386_e21fa70f1cb7",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "-1010778459521153386",
+            "confusion_pair": "INFECTION_VIRAL_FUNGAL->Urticaria",
+            "perception_summary": "ddx=DERMATITIS_ECZEMA, URTICARIA_BITE_FOLLICULITIS, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium",
+            "learning_points": [
+              "made evidence limits explicit",
+              "prevented overconfident downstream use",
+              "did not fully resolve the active confusion pattern"
+            ],
+            "retrieval_score": 9.0,
+            "base_retrieval_score": 9.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_-1010778459521153386_e21fa70f1cb7",
+          "ordering_score": 4.3999999999999995,
+          "rank": 17,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_-1010778459521153386_e5b6956c8c26",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 4.3999999999999995,
+          "heuristic_score": 4.3999999999999995,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_-1010778459521153386_e5b6956c8c26",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "-1010778459521153386",
+            "confusion_pair": "INFECTION_VIRAL_FUNGAL->Urticaria",
+            "perception_summary": "ddx=DERMATITIS_ECZEMA, URTICARIA_BITE_FOLLICULITIS, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium",
+            "learning_points": [
+              "stabilized lesion structure",
+              "made morphology explicit for downstream reasoning",
+              "did not fully resolve the active confusion pattern"
+            ],
+            "retrieval_score": 9.0,
+            "base_retrieval_score": 9.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_-1010778459521153386_e5b6956c8c26",
+          "ordering_score": 4.3999999999999995,
+          "rank": 18,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "-1010778459521153386",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 2.9,
+          "heuristic_score": 2.9,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "-1010778459521153386",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "-1010778459521153386",
+            "confusion_pair": "None",
+            "perception_summary": "The image shows multiple raised, red patches on the back, with some areas appearing more confluent than others. The skin around the lesions appears slightly erythematous.",
+            "learning_points": [
+              "Final decision: INFECTION_VIRAL_FUNGAL",
+              "Correctness: False"
+            ],
+            "retrieval_score": 8.0,
+            "base_retrieval_score": 8.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:-1010778459521153386",
+          "ordering_score": 3.3,
+          "rank": 19,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "-111683086443147412",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 2.5,
+          "heuristic_score": 2.5,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "-111683086443147412",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "-111683086443147412",
+            "confusion_pair": "None",
+            "perception_summary": "The image shows a close-up of the neck area with raised, bumpy lesions and some erythema. The skin appears dry and there is mild scaling.",
+            "learning_points": [
+              "Final decision: Contact Dermatitis",
+              "Correctness: False"
+            ],
+            "retrieval_score": 6.0,
+            "base_retrieval_score": 6.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:-111683086443147412",
+          "ordering_score": 2.9,
+          "rank": 20,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "-1148910296687609402",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 2.3,
+          "heuristic_score": 2.3,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "-1148910296687609402",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "-1148910296687609402",
+            "confusion_pair": "None",
+            "perception_summary": "The image shows multiple small, flat, pinkish-red patches scattered across the skin surface, particularly on the torso front. The skin appears slightly dry and there is some erythema (redness) present.",
+            "learning_points": [
+              "Final decision: VASCULAR_PURPURIC",
+              "Correctness: False"
+            ],
+            "retrieval_score": 5.0,
+            "base_retrieval_score": 5.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:-1148910296687609402",
+          "ordering_score": 2.6999999999999997,
+          "rank": 21,
+          "reason": "global_budget_exceeded"
+        }
+      ],
+      "reordered_items": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "from_section": "observation",
+          "category": "description",
+          "new_rank": 1
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "from_section": "observation",
+          "category": "description",
+          "new_rank": 2
+        },
+        {
+          "item_id": "malignancy_risk_assessment_skill",
+          "item_type": "skill_output",
+          "from_section": "risk",
+          "category": "risk",
+          "new_rank": 3
+        },
+        {
+          "item_id": "metadata_consistency_skill",
+          "item_type": "skill_output",
+          "from_section": "comparison",
+          "category": "differential_support",
+          "new_rank": 4
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "from_section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "new_rank": 5
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "from_section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "new_rank": 6
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "from_section": "comparison",
+          "category": "differential_support",
+          "new_rank": 7
+        },
+        {
+          "item_id": "abs_confusion_1504ee66ad3c",
+          "item_type": "retrieval_record",
+          "from_section": "abstract_experience",
+          "category": "experience_hint",
+          "new_rank": 8
+        }
+      ],
+      "quota_state": {
+        "max_total_items": 8,
+        "per_category_quota": {
+          "description": 3,
+          "differential_support": 2,
+          "exclusion_opposing": 2,
+          "risk": 1,
+          "contradiction_gap": 2,
+          "experience_hint": 2
+        },
+        "category_counts": {
+          "description": 2,
+          "differential_support": 2,
+          "exclusion_opposing": 0,
+          "risk": 1,
+          "contradiction_gap": 2,
+          "experience_hint": 1
+        }
+      }
+    }
+  }
+}

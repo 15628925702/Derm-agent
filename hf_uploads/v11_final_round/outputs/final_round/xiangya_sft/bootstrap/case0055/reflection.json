@@ -1,0 +1,2686 @@
+{
+  "reasoning_summary": "Perception summary: The image shows bilateral lower extremities with erythematous, scaly patches and some areas of crusting. The lesions appear to be more pronounced on the left leg. | Useful skills: morphology_analysis_skill, color_pattern_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, differential_compare_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill | Final answer: ATOPIC_DERMATITIS | Uncertainty: medium | Detected errors: final_diagnosis_mismatch_reference",
+  "useful_skills": [
+    "morphology_analysis_skill",
+    "color_pattern_analysis_skill",
+    "distribution_analysis_skill",
+    "lesion_description_structuring_skill",
+    "metadata_consistency_skill",
+    "differential_compare_skill",
+    "information_gap_detection_skill",
+    "uncertainty_assessment_skill",
+    "contradiction_check_skill"
+  ],
+  "detected_errors": [
+    "final_diagnosis_mismatch_reference"
+  ],
+  "experience_type": "confusion_experience",
+  "diagnosis_correct": false,
+  "write_experience": true,
+  "case_outcome": {
+    "status": "failure",
+    "has_ground_truth": true,
+    "is_correct": false,
+    "error_type": "final_diagnosis_mismatch_reference",
+    "predicted_label": "ATOPIC_DERMATITIS",
+    "reference_label": "ECZEMA_DERMATITIS",
+    "predicted_canonical_label": "ATOPIC_DERMATITIS",
+    "reference_canonical_label": "ECZEMA_DERMATITIS",
+    "confidence_level": "moderate",
+    "uncertainty_level": "medium",
+    "malignant_flag": {
+      "ground_truth": false,
+      "predicted": false
+    },
+    "confusion_pair": "ATOPIC_DERMATITIS->ECZEMA_DERMATITIS",
+    "risk_flags": [],
+    "label_space": {
+      "label_space_id": "xiangya_sft_grouped",
+      "canonical_labels": [
+        "CONTACT_DERMATITIS",
+        "ATOPIC_DERMATITIS",
+        "ECZEMA_DERMATITIS",
+        "PERIORAL_DERMATITIS",
+        "HERPETIC_ECZEMA",
+        "HAIR_DISORDER",
+        "OTHER_INFLAMMATORY"
+      ],
+      "malignant_labels": [],
+      "benign_labels": [
+        "CONTACT_DERMATITIS",
+        "ATOPIC_DERMATITIS",
+        "ECZEMA_DERMATITIS",
+        "PERIORAL_DERMATITIS",
+        "HERPETIC_ECZEMA",
+        "HAIR_DISORDER",
+        "OTHER_INFLAMMATORY"
+      ]
+    }
+  },
+  "skill_assessments": [
+    {
+      "skill_name": "morphology_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "ECZEMA_DERMATITIS",
+          "CONTACT_DERMATITIS"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": ""
+      },
+      "helped_aspects": [
+        "stabilized lesion structure",
+        "made morphology explicit for downstream reasoning"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "inspect dominant lesion silhouette",
+        "judge elevation and lesion count"
+      ],
+      "referenced_experiences": [
+        "case0088"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "morphology_analysis_skill",
+        "ddx:ECZEMA_DERMATITIS|CONTACT_DERMATITIS",
+        "uncertainty:medium",
+        "confusion:ATOPIC_DERMATITIS->ECZEMA_DERMATITIS"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "morphology_analysis_skill remains reusable for ATOPIC_DERMATITIS->ECZEMA_DERMATITIS style confusion"
+    },
+    {
+      "skill_name": "color_pattern_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "ECZEMA_DERMATITIS",
+          "CONTACT_DERMATITIS"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": ""
+      },
+      "helped_aspects": [
+        "made pigment variation explicit",
+        "surfaced color asymmetry as auditable evidence"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "inspect dominant color",
+        "compare internal color asymmetry"
+      ],
+      "referenced_experiences": [
+        "case0093",
+        "case0088"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "color_pattern_analysis_skill",
+        "ddx:ECZEMA_DERMATITIS|CONTACT_DERMATITIS",
+        "uncertainty:medium",
+        "confusion:ATOPIC_DERMATITIS->ECZEMA_DERMATITIS"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "color_pattern_analysis_skill remains reusable for ATOPIC_DERMATITIS->ECZEMA_DERMATITIS style confusion"
+    },
+    {
+      "skill_name": "distribution_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "ECZEMA_DERMATITIS",
+          "CONTACT_DERMATITIS"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": ""
+      },
+      "helped_aspects": [
+        "made location and extent assumptions explicit",
+        "captured distribution context for later comparison"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "identify likely anatomic site",
+        "judge extent and clustering"
+      ],
+      "referenced_experiences": [
+        "case0093",
+        "case0088",
+        "abs_confusion_4bcb433292a2",
+        "tac_case0025_ea7b54e2327b",
+        "tac_case0025_e6055fc25fdb",
+        "abs_rule_728af0bf29e5",
+        "abs_confusion_fc1adf875cca"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "distribution_analysis_skill",
+        "ddx:ECZEMA_DERMATITIS|CONTACT_DERMATITIS",
+        "uncertainty:medium",
+        "confusion:ATOPIC_DERMATITIS->ECZEMA_DERMATITIS"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "distribution_analysis_skill remains reusable for ATOPIC_DERMATITIS->ECZEMA_DERMATITIS style confusion"
+    },
+    {
+      "skill_name": "lesion_description_structuring_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "ECZEMA_DERMATITIS",
+          "CONTACT_DERMATITIS"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": ""
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "case0093",
+        "case0088"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 1.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "lesion_description_structuring_skill",
+        "ddx:ECZEMA_DERMATITIS|CONTACT_DERMATITIS",
+        "uncertainty:medium",
+        "confusion:ATOPIC_DERMATITIS->ECZEMA_DERMATITIS"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "lesion_description_structuring_skill remains reusable for ATOPIC_DERMATITIS->ECZEMA_DERMATITIS style confusion"
+    },
+    {
+      "skill_name": "metadata_consistency_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "ECZEMA_DERMATITIS",
+          "CONTACT_DERMATITIS"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": ""
+      },
+      "helped_aspects": [
+        "checked image-metadata coherence",
+        "flagged reliability issues before integration"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "compare visible cues against metadata",
+        "separate direct conflicts from soft concerns"
+      ],
+      "referenced_experiences": [
+        "case0093",
+        "case0088",
+        "abs_confusion_4bcb433292a2",
+        "tac_case0025_ea7b54e2327b",
+        "tac_case0025_e6055fc25fdb",
+        "abs_rule_728af0bf29e5",
+        "abs_confusion_fc1adf875cca"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": true,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "metadata_consistency_skill",
+        "ddx:ECZEMA_DERMATITIS|CONTACT_DERMATITIS",
+        "uncertainty:medium",
+        "confusion:ATOPIC_DERMATITIS->ECZEMA_DERMATITIS"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "metadata_consistency_skill remains reusable for ATOPIC_DERMATITIS->ECZEMA_DERMATITIS style confusion"
+    },
+    {
+      "skill_name": "differential_compare_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "ECZEMA_DERMATITIS",
+          "CONTACT_DERMATITIS"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": ""
+      },
+      "helped_aspects": [
+        "kept the differential open",
+        "made pairwise reasoning explicit"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "select the most relevant candidate pair",
+        "preserve unresolved comparative evidence"
+      ],
+      "referenced_experiences": [
+        "case0093",
+        "case0088",
+        "abs_confusion_4bcb433292a2",
+        "tac_case0025_ea7b54e2327b",
+        "tac_case0025_e6055fc25fdb",
+        "abs_rule_728af0bf29e5",
+        "abs_confusion_fc1adf875cca"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 1.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "differential_compare_skill",
+        "ddx:ECZEMA_DERMATITIS|CONTACT_DERMATITIS",
+        "uncertainty:medium",
+        "confusion:ATOPIC_DERMATITIS->ECZEMA_DERMATITIS"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "differential_compare_skill remains reusable for ATOPIC_DERMATITIS->ECZEMA_DERMATITIS style confusion"
+    },
+    {
+      "skill_name": "information_gap_detection_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "ECZEMA_DERMATITIS",
+          "CONTACT_DERMATITIS"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": ""
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_4bcb433292a2",
+        "tac_case0025_ea7b54e2327b",
+        "tac_case0025_e6055fc25fdb"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 1.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "information_gap_detection_skill",
+        "ddx:ECZEMA_DERMATITIS|CONTACT_DERMATITIS",
+        "uncertainty:medium",
+        "confusion:ATOPIC_DERMATITIS->ECZEMA_DERMATITIS"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "information_gap_detection_skill remains reusable for ATOPIC_DERMATITIS->ECZEMA_DERMATITIS style confusion"
+    },
+    {
+      "skill_name": "uncertainty_assessment_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "ECZEMA_DERMATITIS",
+          "CONTACT_DERMATITIS"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": ""
+      },
+      "helped_aspects": [
+        "made evidence limits explicit",
+        "prevented overconfident downstream use"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "scan ambiguity across evidence streams",
+        "name missing information explicitly"
+      ],
+      "referenced_experiences": [
+        "case0093",
+        "case0088",
+        "abs_confusion_4bcb433292a2",
+        "tac_case0025_ea7b54e2327b",
+        "tac_case0025_e6055fc25fdb",
+        "abs_rule_728af0bf29e5",
+        "abs_confusion_fc1adf875cca"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "uncertainty_signal",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 2.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "evidence_used_in_bundle",
+        "uncertainty_reduction_claim_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "uncertainty_assessment_skill",
+        "ddx:ECZEMA_DERMATITIS|CONTACT_DERMATITIS",
+        "uncertainty:medium",
+        "confusion:ATOPIC_DERMATITIS->ECZEMA_DERMATITIS"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "uncertainty_assessment_skill remains reusable for ATOPIC_DERMATITIS->ECZEMA_DERMATITIS style confusion"
+    },
+    {
+      "skill_name": "contradiction_check_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "ECZEMA_DERMATITIS",
+          "CONTACT_DERMATITIS"
+        ],
+        "risk_flags": [],
+        "uncertainty_level": "medium",
+        "region": ""
+      },
+      "helped_aspects": [
+        "surfaced missing links in the reasoning chain",
+        "audited internal consistency"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "scan for conflicts across evidence sources",
+        "surface missing links in the reasoning chain"
+      ],
+      "referenced_experiences": [
+        "case0093",
+        "case0088"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "conflict_signal",
+      "uncertainty_reduction": false,
+      "contradiction_detected": true,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 1.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium",
+        "contradiction_signal_supported"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "contradiction_check_skill",
+        "ddx:ECZEMA_DERMATITIS|CONTACT_DERMATITIS",
+        "uncertainty:medium",
+        "confusion:ATOPIC_DERMATITIS->ECZEMA_DERMATITIS"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "contradiction_check_skill remains reusable for ATOPIC_DERMATITIS->ECZEMA_DERMATITIS style confusion"
+    }
+  ],
+  "reflection_extract": {
+    "raw_case_memory_ready": true,
+    "tactical_experience_count": 9,
+    "abstract_experience_candidate_count": 2,
+    "reusable_tactical_count": 9,
+    "composite_skill_seed_count": 0,
+    "composite_skill_seed_ids": [],
+    "abstract_flags": {
+      "confusion_memory": true,
+      "prototype": false,
+      "rule": true,
+      "rule_candidate": false,
+      "composite_skill_seed": false
+    },
+    "case_status": "failure",
+    "composite_skill_seed_ready_for_promotion": []
+  },
+  "writeback_bundle": {
+    "raw_case_memory": {
+      "case_id": "case0055",
+      "image_paths": [
+        "/root/DermAgent/data/sft数据/skin_merge/0055/103_2249.JPG"
+      ],
+      "metadata": {
+        "label_space_id": "xiangya_sft_grouped",
+        "case_source": "xiangya_sft",
+        "image_count": 13,
+        "image_paths": [
+          "/root/DermAgent/data/sft数据/skin_merge/0055/103_2249.JPG",
+          "/root/DermAgent/data/sft数据/skin_merge/0055/103_2254.JPG",
+          "/root/DermAgent/data/sft数据/skin_merge/0055/103_2255.JPG",
+          "/root/DermAgent/data/sft数据/skin_merge/0055/103_2256.JPG",
+          "/root/DermAgent/data/sft数据/skin_merge/0055/103_2257.JPG",
+          "/root/DermAgent/data/sft数据/skin_merge/0055/103_2258.JPG",
+          "/root/DermAgent/data/sft数据/skin_merge/0055/103_2259.JPG",
+          "/root/DermAgent/data/sft数据/skin_merge/0055/103_2260.JPG",
+          "/root/DermAgent/data/sft数据/skin_merge/0055/103_2261.JPG",
+          "/root/DermAgent/data/sft数据/skin_merge/0055/103_2262.JPG",
+          "/root/DermAgent/data/sft数据/skin_merge/0055/103_2263.JPG",
+          "/root/DermAgent/data/sft数据/skin_merge/0055/103_2264.JPG",
+          "/root/DermAgent/data/sft数据/skin_merge/0055/IMG_9203.PNG"
+        ],
+        "related_category": "RASH",
+        "dominant_family": "eczematous_family",
+        "task_type": "diagnosis_and_management",
+        "language": "zh",
+        "source_case_id": "case0055",
+        "source_case_dir": "0055"
+      },
+      "dataset_name": "xiangya_sft",
+      "label_space_id": "xiangya_sft_grouped",
+      "true_label": "ECZEMA_DERMATITIS",
+      "qwen_output": {
+        "final_diagnosis": "ATOPIC_DERMATITIS",
+        "differential_diagnoses": [
+          "ATOPIC_DERMATITIS",
+          "CONTACT_DERMATITIS",
+          "Contact Dermatitis"
+        ],
+        "rationale": "The image shows bilateral lower extremities with erythematous, scaly patches and some areas of crusting. The lesions are widespread and not confined to a single area, which is consistent with the characteristics of eczema. The morphology analysis indicates a plaque morphology with raised, scaly, and crusted surfaces. While there is some suspicion of contact dermatitis due to the widespread nature of the lesions, the evidence does not strongly support a subtype override. The supporting evidence includes the widespread distribution and the presence of crusting, which are more indicative of eczema. The caution flags and follow-up suggestions indicate that further clinical assessment is necessary, but the baseline diagnosis leans towards eczema. agent conservative fusion: kept the agent diagnosis.",
+        "confidence": "Moderate",
+        "follow_up_considerations": [
+          "G",
+          "i",
+          "v",
+          "e",
+          "n",
+          " ",
+          "t",
+          "h",
+          "e",
+          " ",
+          "w",
+          "i",
+          "d",
+          "e",
+          "s",
+          "p",
+          "r",
+          "e",
+          "a",
+          "d",
+          " ",
+          "n",
+          "a",
+          "t",
+          "u",
+          "r",
+          "e",
+          " ",
+          "o",
+          "f",
+          " ",
+          "t",
+          "h",
+          "e",
+          " ",
+          "l",
+          "e",
+          "s",
+          "i",
+          "o",
+          "n",
+          "s",
+          " ",
+          "a",
+          "n",
+          "d",
+          " ",
+          "t",
+          "h",
+          "e",
+          " ",
+          "p",
+          "r",
+          "e",
+          "s",
+          "e",
+          "n",
+          "c",
+          "e",
+          " ",
+          "o",
+          "f",
+          " ",
+          "c",
+          "r",
+          "u",
+          "s",
+          "t",
+          "i",
+          "n",
+          "g",
+          ",",
+          " ",
+          "i",
+          "t",
+          " ",
+          "i",
+          "s",
+          " ",
+          "i",
+          "m",
+          "p",
+          "o",
+          "r",
+          "t",
+          "a",
+          "n",
+          "t",
+          " ",
+          "t",
+          "o",
+          " ",
+          "c",
+          "o",
+          "n",
+          "s",
+          "i",
+          "d",
+          "e",
+          "r",
+          " ",
+          "e",
+          "c",
+          "z",
+          "e",
+          "m",
+          "a",
+          " ",
+          "a",
+          "s",
+          " ",
+          "t",
+          "h",
+          "e",
+          " ",
+          "p",
+          "r",
+          "i",
+          "m",
+          "a",
+          "r",
+          "y",
+          " ",
+          "d",
+          "i",
+          "a",
+          "g",
+          "n",
+          "o",
+          "s",
+          "i",
+          "s",
+          ".",
+          " ",
+          "H",
+          "o",
+          "w",
+          "e",
+          "v",
+          "e",
+          "r",
+          ",",
+          " ",
+          "f",
+          "u",
+          "r",
+          "t",
+          "h",
+          "e",
+          "r",
+          " ",
+          "c",
+          "l",
+          "i",
+          "n",
+          "i",
+          "c",
+          "a",
+          "l",
+          " ",
+          "a",
+          "s",
+          "s",
+          "e",
+          "s",
+          "s",
+          "m",
+          "e",
+          "n",
+          "t",
+          ",",
+          " ",
+          "i",
+          "n",
+          "c",
+          "l",
+          "u",
+          "d",
+          "i",
+          "n",
+          "g",
+          " ",
+          "a",
+          " ",
+          "d",
+          "e",
+          "t",
+          "a",
+          "i",
+          "l",
+          "e",
+          "d",
+          " ",
+          "h",
+          "i",
+          "s",
+          "t",
+          "o",
+          "r",
+          "y",
+          " ",
+          "a",
+          "n",
+          "d",
+          " ",
+          "p",
+          "o",
+          "s",
+          "s",
+          "i",
+          "b",
+          "l",
+          "y",
+          " ",
+          "a",
+          " ",
+          "p",
+          "a",
+          "t",
+          "c",
+          "h",
+          " ",
+          "t",
+          "e",
+          "s",
+          "t",
+          ",",
+          " ",
+          "w",
+          "o",
+          "u",
+          "l",
+          "d",
+          " ",
+          "b",
+          "e",
+          " ",
+          "b",
+          "e",
+          "n",
+          "e",
+          "f",
+          "i",
+          "c",
+          "i",
+          "a",
+          "l",
+          " ",
+          "t",
+          "o",
+          " ",
+          "r",
+          "u",
+          "l",
+          "e",
+          " ",
+          "o",
+          "u",
+          "t",
+          " ",
+          "c",
+          "o",
+          "n",
+          "t",
+          "a",
+          "c",
+          "t",
+          " ",
+          "d",
+          "e",
+          "r",
+          "m",
+          "a",
+          "t",
+          "i",
+          "t",
+          "i",
+          "s",
+          ".",
+          " ",
+          "T",
+          "h",
+          "e",
+          " ",
+          "p",
+          "a",
+          "t",
+          "i",
+          "e",
+          "n",
+          "t",
+          " ",
+          "s",
+          "h",
+          "o",
+          "u",
+          "l",
+          "d",
+          " ",
+          "b",
+          "e",
+          " ",
+          "a",
+          "d",
+          "v",
+          "i",
+          "s",
+          "e",
+          "d",
+          " ",
+          "t",
+          "o",
+          " ",
+          "m",
+          "a",
+          "i",
+          "n",
+          "t",
+          "a",
+          "i",
+          "n",
+          " ",
+          "g",
+          "o",
+          "o",
+          "d",
+          " ",
+          "s",
+          "k",
+          "i",
+          "n",
+          " ",
+          "h",
+          "y",
+          "g",
+          "i",
+          "e",
+          "n",
+          "e",
+          " ",
+          "a",
+          "n",
+          "d",
+          " ",
+          "a",
+          "v",
+          "o",
+          "i",
+          "d",
+          " ",
+          "k",
+          "n",
+          "o",
+          "w",
+          "n",
+          " ",
+          "i",
+          "r",
+          "r",
+          "i",
+          "t",
+          "a",
+          "n",
+          "t",
+          "s",
+          ".",
+          "Fusion note: family_override_allowed; use_agent_output"
+        ],
+        "raw_final_diagnosis": "Contact Dermatitis",
+        "fusion_decision": {
+          "use_agent_output": true,
+          "fusion_mode": "soft",
+          "merge_baseline_differentials": true,
+          "consensus_override_label": "",
+          "consensus_candidates": [
+            "CONTACT_DERMATITIS"
+          ],
+          "baseline_label": "CONTACT_DERMATITIS",
+          "agent_label": "ATOPIC_DERMATITIS",
+          "baseline_confidence": "moderate",
+          "agent_confidence": "moderate",
+          "selected_evidence_present": true,
+          "override_allowed": true,
+          "malignancy_override_allowed": true,
+          "subtype_override_allowed": false,
+          "family_override_allowed": true,
+          "override_mode": "family_override",
+          "support_margin": 56.08,
+          "subtype_support_margin": 13.72,
+          "uncertainty_level": "medium",
+          "workflow_profile": "eczematous_family_routing_workflow",
+          "baseline_preview": {
+            "early_ddx_candidates": [
+              "ECZEMA_DERMATITIS",
+              "CONTACT_DERMATITIS"
+            ],
+            "image_summary": "The image shows bilateral lower extremities with erythematous, scaly patches and some areas of crusting. The lesions appear to be more pronounced on the left leg.",
+            "baseline_final_diagnosis": "CONTACT_DERMATITIS",
+            "baseline_differential_diagnoses": [
+              "CONTACT_DERMATITIS",
+              "Contact Dermatitis"
+            ],
+            "baseline_confidence": "Moderate"
+          },
+          "reasons": [
+            "family_override_allowed",
+            "use_agent_output"
+          ]
+        }
+      },
+      "agent_output": {
+        "perception": {
+          "image_summary": "The image shows bilateral lower extremities with erythematous, scaly patches and some areas of crusting. The lesions appear to be more pronounced on the left leg.",
+          "ddx_candidates": [
+            "ECZEMA_DERMATITIS",
+            "CONTACT_DERMATITIS"
+          ],
+          "uncertainty": {
+            "level": "low",
+            "reasons": [
+              "Limited image count, cannot assess full extent of lesions.",
+              "No visible linear or exposure-pattern clues."
+            ]
+          },
+          "notes": [
+            "Lesions are widespread and not confined to a single area.",
+            "No significant scaling or lichenification noted.",
+            "No evidence of contact dermatitis such as linear distribution."
+          ]
+        },
+        "skill_outputs": {
+          "morphology_analysis_skill": {
+            "lesion_type": "plaque",
+            "size_range": "large",
+            "elevation": "raised",
+            "count": "multiple",
+            "referenced_experiences": [
+              "case0088"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "color_pattern_analysis_skill": {
+            "primary_color": "erythematous",
+            "color_variation": "marked",
+            "pigmentation_pattern": "mixed",
+            "asymmetry_color": "present",
+            "referenced_experiences": [
+              "case0093",
+              "case0088"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "distribution_analysis_skill": {
+            "body_location": "lower extremities",
+            "symmetry": "asymmetric",
+            "localized_vs_generalized": "generalized",
+            "clustering_pattern": "clustered",
+            "referenced_experiences": [
+              "case0093",
+              "case0088",
+              "abs_confusion_4bcb433292a2",
+              "tac_case0025_ea7b54e2327b",
+              "tac_case0025_e6055fc25fdb",
+              "abs_rule_728af0bf29e5",
+              "abs_confusion_fc1adf875cca"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "lesion_description_structuring_skill": {
+            "primary_lesion_morphology": "Plaque",
+            "color": [
+              "Erythematous, mixed pigmentation"
+            ],
+            "border": [
+              "Well-defined, irregular"
+            ],
+            "surface": [
+              "Scaly, crusted"
+            ],
+            "size_count": [
+              "Multiple, large"
+            ],
+            "distribution": [
+              "Generalized, bilateral lower extremities"
+            ],
+            "associated_context": [
+              "body_location: Lower extremities, symmetry: Asymmetric, clinical_notes: Lesions are widespread and not confined to a single area."
+            ],
+            "referenced_experiences": [
+              "case0093",
+              "case0088"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "metadata_consistency_skill": {
+            "consistency_score": "medium",
+            "conflicts": [],
+            "suspicious_points": [
+              "The lesion description mentions 'crusting,' while the metadata does not specify this feature."
+            ],
+            "referenced_experiences": [
+              "case0093",
+              "case0088",
+              "abs_confusion_4bcb433292a2",
+              "tac_case0025_ea7b54e2327b",
+              "tac_case0025_e6055fc25fdb",
+              "abs_rule_728af0bf29e5",
+              "abs_confusion_fc1adf875cca"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "differential_compare_skill": {
+            "candidate_pairs": [
+              "ECZEMA_DERMATITIS vs CONTACT_DERMATITIS"
+            ],
+            "supporting_evidence": [
+              "Lesions are widespread and not confined to a single area.",
+              "No significant scaling or lichenification noted.",
+              "No evidence of contact dermatitis such as linear distribution."
+            ],
+            "conflicting_evidence": [
+              "Lesions appear to be more pronounced on the left leg.",
+              "The lesions have a plaque morphology with raised, scaly, and crusted surfaces."
+            ],
+            "required_missing_evidence": [
+              "More detailed information about the linear distribution or lack thereof.",
+              "Further assessment of the full extent of the lesions."
+            ],
+            "referenced_experiences": [
+              "case0093",
+              "case0088",
+              "abs_confusion_4bcb433292a2",
+              "tac_case0025_ea7b54e2327b",
+              "tac_case0025_e6055fc25fdb",
+              "abs_rule_728af0bf29e5",
+              "abs_confusion_fc1adf875cca"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "information_gap_detection_skill": {
+            "missing_information": [
+              "Detailed information about the linear distribution or lack thereof.",
+              "Further assessment of the full extent of the lesions."
+            ],
+            "why_it_matters": [
+              "Linear distribution can help differentiate between contact dermatitis and eczema, which are key differentiators in the differential diagnosis.",
+              "A full assessment of the lesion extent is crucial for understanding the nature and extent of the rash, which is important for differential diagnosis."
+            ],
+            "impact_on_differential": [
+              "Without information on linear distribution, it's difficult to rule out contact dermatitis, especially if there are linear patterns present.",
+              "Without a full assessment of the lesion extent, it's challenging to determine if the rash is generalized or localized, which affects the differential diagnosis."
+            ],
+            "uncertainty_if_missing": "medium",
+            "referenced_experiences": [
+              "abs_confusion_4bcb433292a2",
+              "tac_case0025_ea7b54e2327b",
+              "tac_case0025_e6055fc25fdb"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "uncertainty_assessment_skill": {
+            "uncertainty_level": "medium",
+            "reasons": [
+              "Limited image count, cannot assess full extent of lesions.",
+              "No visible linear or exposure-pattern clues.",
+              "Insufficient metadata regarding lesion distribution and severity."
+            ],
+            "missing_information": [
+              "More detailed information about the linear distribution or lack thereof.",
+              "Further assessment of the full extent of the lesions.",
+              "Clinical history and patient symptoms"
+            ],
+            "referenced_experiences": [
+              "case0093",
+              "case0088",
+              "abs_confusion_4bcb433292a2",
+              "tac_case0025_ea7b54e2327b",
+              "tac_case0025_e6055fc25fdb",
+              "abs_rule_728af0bf29e5",
+              "abs_confusion_fc1adf875cca"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "uncertainty_signal"
+          },
+          "contradiction_check_skill": {
+            "contradictions": [
+              {
+                "description": "The image shows erythematous, scaly patches with some crusting, which aligns with the primary color and morphology described in the perception summary. However, the lesion type described as 'plaque' in the morphology analysis skill contradicts the presence of small papules mentioned in the metadata and some abstract experiences.",
+                "evidence_sources": [
+                  "morphology_analysis_skill",
+                  "metadata"
+                ]
+              }
+            ],
+            "missing_links": [
+              {
+                "description": "There is a lack of detailed information about the linear distribution or lack thereof, which could help in differentiating between contact dermatitis and eczema.",
+                "evidence_needed": [
+                  "more detailed information about the linear distribution or lack thereof"
+                ]
+              }
+            ],
+            "reasoning_gaps": [
+              {
+                "description": "The reasoning chain is underdetermined due to insufficient metadata regarding lesion distribution and severity, and the absence of clinical history and patient symptoms.",
+                "evidence_needed": [
+                  "further assessment of the full extent of the lesions",
+                  "clinical history and patient symptoms"
+                ]
+              }
+            ],
+            "referenced_experiences": [
+              "case0093",
+              "case0088"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "conflict_signal"
+          }
+        },
+        "risk_flags": [],
+        "uncertainty": {
+          "uncertainty_level": "medium",
+          "reasons": [
+            "Limited image count, cannot assess full extent of lesions.",
+            "No visible linear or exposure-pattern clues.",
+            "Insufficient metadata regarding lesion distribution and severity."
+          ],
+          "missing_information": [
+            "More detailed information about the linear distribution or lack thereof.",
+            "Further assessment of the full extent of the lesions.",
+            "Clinical history and patient symptoms"
+          ],
+          "referenced_experiences": [
+            "case0093",
+            "case0088",
+            "abs_confusion_4bcb433292a2",
+            "tac_case0025_ea7b54e2327b",
+            "tac_case0025_e6055fc25fdb",
+            "abs_rule_728af0bf29e5",
+            "abs_confusion_fc1adf875cca"
+          ],
+          "evidence_strength": "medium",
+          "recommendation_type": "uncertainty_signal"
+        },
+        "retrieved_experience_refs": [
+          "abs_confusion_fc1adf875cca",
+          "abs_confusion_9d22403097e4",
+          "abs_confusion_72c4b1fa17fe",
+          "tac_case0025_ea7b54e2327b",
+          "tac_case0025_e6055fc25fdb"
+        ],
+        "notes": [
+          "Agent generated structured evidence only.",
+          "Qwen remains the sole final diagnostic decision maker.",
+          "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, differential_compare_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill.",
+          "Policy in use: heuristic_with_penalty.",
+          "Skill retrieval candidates: morphology_analysis_skill, metadata_consistency_skill, distribution_analysis_skill, color_pattern_analysis_skill, lesion_description_structuring_skill, differential_compare_skill, border_surface_analysis_skill, uncertainty_assessment_skill, information_gap_detection_skill, exclusion_reasoning_skill, contradiction_check_skill.",
+          "Lesions are widespread and not confined to a single area.",
+          "No significant scaling or lichenification noted.",
+          "No evidence of contact dermatitis such as linear distribution.",
+          "Retrieved prior reasoning experience for context."
+        ],
+        "skill_assessments": [
+          {
+            "skill_name": "morphology_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "ECZEMA_DERMATITIS",
+                "CONTACT_DERMATITIS"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": ""
+            },
+            "helped_aspects": [
+              "stabilized lesion structure",
+              "made morphology explicit for downstream reasoning"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "inspect dominant lesion silhouette",
+              "judge elevation and lesion count"
+            ],
+            "referenced_experiences": [
+              "case0088"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "morphology_analysis_skill",
+              "ddx:ECZEMA_DERMATITIS|CONTACT_DERMATITIS",
+              "uncertainty:medium",
+              "confusion:ATOPIC_DERMATITIS->ECZEMA_DERMATITIS"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "morphology_analysis_skill remains reusable for ATOPIC_DERMATITIS->ECZEMA_DERMATITIS style confusion"
+          },
+          {
+            "skill_name": "color_pattern_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "ECZEMA_DERMATITIS",
+                "CONTACT_DERMATITIS"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": ""
+            },
+            "helped_aspects": [
+              "made pigment variation explicit",
+              "surfaced color asymmetry as auditable evidence"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "inspect dominant color",
+              "compare internal color asymmetry"
+            ],
+            "referenced_experiences": [
+              "case0093",
+              "case0088"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "color_pattern_analysis_skill",
+              "ddx:ECZEMA_DERMATITIS|CONTACT_DERMATITIS",
+              "uncertainty:medium",
+              "confusion:ATOPIC_DERMATITIS->ECZEMA_DERMATITIS"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "color_pattern_analysis_skill remains reusable for ATOPIC_DERMATITIS->ECZEMA_DERMATITIS style confusion"
+          },
+          {
+            "skill_name": "distribution_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "ECZEMA_DERMATITIS",
+                "CONTACT_DERMATITIS"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": ""
+            },
+            "helped_aspects": [
+              "made location and extent assumptions explicit",
+              "captured distribution context for later comparison"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "identify likely anatomic site",
+              "judge extent and clustering"
+            ],
+            "referenced_experiences": [
+              "case0093",
+              "case0088",
+              "abs_confusion_4bcb433292a2",
+              "tac_case0025_ea7b54e2327b",
+              "tac_case0025_e6055fc25fdb",
+              "abs_rule_728af0bf29e5",
+              "abs_confusion_fc1adf875cca"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "distribution_analysis_skill",
+              "ddx:ECZEMA_DERMATITIS|CONTACT_DERMATITIS",
+              "uncertainty:medium",
+              "confusion:ATOPIC_DERMATITIS->ECZEMA_DERMATITIS"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "distribution_analysis_skill remains reusable for ATOPIC_DERMATITIS->ECZEMA_DERMATITIS style confusion"
+          },
+          {
+            "skill_name": "lesion_description_structuring_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "ECZEMA_DERMATITIS",
+                "CONTACT_DERMATITIS"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": ""
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "case0093",
+              "case0088"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 1.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "lesion_description_structuring_skill",
+              "ddx:ECZEMA_DERMATITIS|CONTACT_DERMATITIS",
+              "uncertainty:medium",
+              "confusion:ATOPIC_DERMATITIS->ECZEMA_DERMATITIS"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "lesion_description_structuring_skill remains reusable for ATOPIC_DERMATITIS->ECZEMA_DERMATITIS style confusion"
+          },
+          {
+            "skill_name": "metadata_consistency_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "ECZEMA_DERMATITIS",
+                "CONTACT_DERMATITIS"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": ""
+            },
+            "helped_aspects": [
+              "checked image-metadata coherence",
+              "flagged reliability issues before integration"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "compare visible cues against metadata",
+              "separate direct conflicts from soft concerns"
+            ],
+            "referenced_experiences": [
+              "case0093",
+              "case0088",
+              "abs_confusion_4bcb433292a2",
+              "tac_case0025_ea7b54e2327b",
+              "tac_case0025_e6055fc25fdb",
+              "abs_rule_728af0bf29e5",
+              "abs_confusion_fc1adf875cca"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": true,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "metadata_consistency_skill",
+              "ddx:ECZEMA_DERMATITIS|CONTACT_DERMATITIS",
+              "uncertainty:medium",
+              "confusion:ATOPIC_DERMATITIS->ECZEMA_DERMATITIS"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "metadata_consistency_skill remains reusable for ATOPIC_DERMATITIS->ECZEMA_DERMATITIS style confusion"
+          },
+          {
+            "skill_name": "differential_compare_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "ECZEMA_DERMATITIS",
+                "CONTACT_DERMATITIS"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": ""
+            },
+            "helped_aspects": [
+              "kept the differential open",
+              "made pairwise reasoning explicit"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "select the most relevant candidate pair",
+              "preserve unresolved comparative evidence"
+            ],
+            "referenced_experiences": [
+              "case0093",
+              "case0088",
+              "abs_confusion_4bcb433292a2",
+              "tac_case0025_ea7b54e2327b",
+              "tac_case0025_e6055fc25fdb",
+              "abs_rule_728af0bf29e5",
+              "abs_confusion_fc1adf875cca"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 1.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "differential_compare_skill",
+              "ddx:ECZEMA_DERMATITIS|CONTACT_DERMATITIS",
+              "uncertainty:medium",
+              "confusion:ATOPIC_DERMATITIS->ECZEMA_DERMATITIS"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "differential_compare_skill remains reusable for ATOPIC_DERMATITIS->ECZEMA_DERMATITIS style confusion"
+          },
+          {
+            "skill_name": "information_gap_detection_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "ECZEMA_DERMATITIS",
+                "CONTACT_DERMATITIS"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": ""
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "abs_confusion_4bcb433292a2",
+              "tac_case0025_ea7b54e2327b",
+              "tac_case0025_e6055fc25fdb"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 1.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "information_gap_detection_skill",
+              "ddx:ECZEMA_DERMATITIS|CONTACT_DERMATITIS",
+              "uncertainty:medium",
+              "confusion:ATOPIC_DERMATITIS->ECZEMA_DERMATITIS"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "information_gap_detection_skill remains reusable for ATOPIC_DERMATITIS->ECZEMA_DERMATITIS style confusion"
+          },
+          {
+            "skill_name": "uncertainty_assessment_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "ECZEMA_DERMATITIS",
+                "CONTACT_DERMATITIS"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": ""
+            },
+            "helped_aspects": [
+              "made evidence limits explicit",
+              "prevented overconfident downstream use"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "scan ambiguity across evidence streams",
+              "name missing information explicitly"
+            ],
+            "referenced_experiences": [
+              "case0093",
+              "case0088",
+              "abs_confusion_4bcb433292a2",
+              "tac_case0025_ea7b54e2327b",
+              "tac_case0025_e6055fc25fdb",
+              "abs_rule_728af0bf29e5",
+              "abs_confusion_fc1adf875cca"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "uncertainty_signal",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 2.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "evidence_used_in_bundle",
+              "uncertainty_reduction_claim_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "uncertainty_assessment_skill",
+              "ddx:ECZEMA_DERMATITIS|CONTACT_DERMATITIS",
+              "uncertainty:medium",
+              "confusion:ATOPIC_DERMATITIS->ECZEMA_DERMATITIS"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "uncertainty_assessment_skill remains reusable for ATOPIC_DERMATITIS->ECZEMA_DERMATITIS style confusion"
+          },
+          {
+            "skill_name": "contradiction_check_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "ECZEMA_DERMATITIS",
+                "CONTACT_DERMATITIS"
+              ],
+              "risk_flags": [],
+              "uncertainty_level": "medium",
+              "region": ""
+            },
+            "helped_aspects": [
+              "surfaced missing links in the reasoning chain",
+              "audited internal consistency"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "scan for conflicts across evidence sources",
+              "surface missing links in the reasoning chain"
+            ],
+            "referenced_experiences": [
+              "case0093",
+              "case0088"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "conflict_signal",
+            "uncertainty_reduction": false,
+            "contradiction_detected": true,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 1.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium",
+              "contradiction_signal_supported"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "contradiction_check_skill",
+              "ddx:ECZEMA_DERMATITIS|CONTACT_DERMATITIS",
+              "uncertainty:medium",
+              "confusion:ATOPIC_DERMATITIS->ECZEMA_DERMATITIS"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "contradiction_check_skill remains reusable for ATOPIC_DERMATITIS->ECZEMA_DERMATITIS style confusion"
+          }
+        ]
+      },
+      "final_decision": {
+        "label": "ATOPIC_DERMATITIS",
+        "source": "qwen_final_diagnosis",
+        "canonical_label": "ATOPIC_DERMATITIS"
+      },
+      "correctness": {
+        "has_ground_truth": true,
+        "is_correct": false,
+        "error_type": "final_diagnosis_mismatch_reference"
+      },
+      "malignant_flag": {
+        "ground_truth": false,
+        "predicted": false
+      }
+    },
+    "tactical_experiences": [
+      {
+        "exp_id": "tac_case0055_e5b6956c8c26",
+        "case_id": "case0055",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "ATOPIC_DERMATITIS->ECZEMA_DERMATITIS",
+          "observed_state": {
+            "ddx_candidates": [
+              "ECZEMA_DERMATITIS",
+              "CONTACT_DERMATITIS"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:More detailed information about the linear distribution or lack thereof.",
+            "missing:Further assessment of the full extent of the lesions.",
+            "missing:Clinical history and patient symptoms"
+          ]
+        },
+        "action": {
+          "skill_name": "morphology_analysis_skill",
+          "skills_used": [
+            "morphology_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "stabilized lesion structure",
+          "made morphology explicit for downstream reasoning",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "inspect dominant lesion silhouette",
+          "judge elevation and lesion count"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "morphology_analysis_skill",
+            "ATOPIC_DERMATITIS->ECZEMA_DERMATITIS",
+            "ECZEMA_DERMATITIS",
+            "CONTACT_DERMATITIS"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_case0055_5d8de46f6089",
+        "case_id": "case0055",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "ATOPIC_DERMATITIS->ECZEMA_DERMATITIS",
+          "observed_state": {
+            "ddx_candidates": [
+              "ECZEMA_DERMATITIS",
+              "CONTACT_DERMATITIS"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:More detailed information about the linear distribution or lack thereof.",
+            "missing:Further assessment of the full extent of the lesions.",
+            "missing:Clinical history and patient symptoms"
+          ]
+        },
+        "action": {
+          "skill_name": "color_pattern_analysis_skill",
+          "skills_used": [
+            "color_pattern_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made pigment variation explicit",
+          "surfaced color asymmetry as auditable evidence",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "inspect dominant color",
+          "compare internal color asymmetry"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "color_pattern_analysis_skill",
+            "ATOPIC_DERMATITIS->ECZEMA_DERMATITIS",
+            "ECZEMA_DERMATITIS",
+            "CONTACT_DERMATITIS"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_case0055_586325b3723c",
+        "case_id": "case0055",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "ATOPIC_DERMATITIS->ECZEMA_DERMATITIS",
+          "observed_state": {
+            "ddx_candidates": [
+              "ECZEMA_DERMATITIS",
+              "CONTACT_DERMATITIS"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:More detailed information about the linear distribution or lack thereof.",
+            "missing:Further assessment of the full extent of the lesions.",
+            "missing:Clinical history and patient symptoms"
+          ]
+        },
+        "action": {
+          "skill_name": "distribution_analysis_skill",
+          "skills_used": [
+            "distribution_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made location and extent assumptions explicit",
+          "captured distribution context for later comparison",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "identify likely anatomic site",
+          "judge extent and clustering"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "distribution_analysis_skill",
+            "ATOPIC_DERMATITIS->ECZEMA_DERMATITIS",
+            "ECZEMA_DERMATITIS",
+            "CONTACT_DERMATITIS"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_case0055_8fa365c666e8",
+        "case_id": "case0055",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "ATOPIC_DERMATITIS->ECZEMA_DERMATITIS",
+          "observed_state": {
+            "ddx_candidates": [
+              "ECZEMA_DERMATITIS",
+              "CONTACT_DERMATITIS"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:More detailed information about the linear distribution or lack thereof.",
+            "missing:Further assessment of the full extent of the lesions.",
+            "missing:Clinical history and patient symptoms"
+          ]
+        },
+        "action": {
+          "skill_name": "lesion_description_structuring_skill",
+          "skills_used": [
+            "lesion_description_structuring_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "lesion_description_structuring_skill",
+            "ATOPIC_DERMATITIS->ECZEMA_DERMATITIS",
+            "ECZEMA_DERMATITIS",
+            "CONTACT_DERMATITIS"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_case0055_2f79c85a7fb8",
+        "case_id": "case0055",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "ATOPIC_DERMATITIS->ECZEMA_DERMATITIS",
+          "observed_state": {
+            "ddx_candidates": [
+              "ECZEMA_DERMATITIS",
+              "CONTACT_DERMATITIS"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:More detailed information about the linear distribution or lack thereof.",
+            "missing:Further assessment of the full extent of the lesions.",
+            "missing:Clinical history and patient symptoms"
+          ]
+        },
+        "action": {
+          "skill_name": "metadata_consistency_skill",
+          "skills_used": [
+            "metadata_consistency_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "checked image-metadata coherence",
+          "flagged reliability issues before integration",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "compare visible cues against metadata",
+          "separate direct conflicts from soft concerns"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "metadata_consistency_skill",
+            "ATOPIC_DERMATITIS->ECZEMA_DERMATITIS",
+            "ECZEMA_DERMATITIS",
+            "CONTACT_DERMATITIS"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_case0055_bce72efcf1a2",
+        "case_id": "case0055",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "ATOPIC_DERMATITIS->ECZEMA_DERMATITIS",
+          "observed_state": {
+            "ddx_candidates": [
+              "ECZEMA_DERMATITIS",
+              "CONTACT_DERMATITIS"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:More detailed information about the linear distribution or lack thereof.",
+            "missing:Further assessment of the full extent of the lesions.",
+            "missing:Clinical history and patient symptoms"
+          ]
+        },
+        "action": {
+          "skill_name": "differential_compare_skill",
+          "skills_used": [
+            "differential_compare_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "kept the differential open",
+          "made pairwise reasoning explicit",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "select the most relevant candidate pair",
+          "preserve unresolved comparative evidence"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "differential_compare_skill",
+            "ATOPIC_DERMATITIS->ECZEMA_DERMATITIS",
+            "ECZEMA_DERMATITIS",
+            "CONTACT_DERMATITIS"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_case0055_3195d993f5b8",
+        "case_id": "case0055",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "ATOPIC_DERMATITIS->ECZEMA_DERMATITIS",
+          "observed_state": {
+            "ddx_candidates": [
+              "ECZEMA_DERMATITIS",
+              "CONTACT_DERMATITIS"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:More detailed information about the linear distribution or lack thereof.",
+            "missing:Further assessment of the full extent of the lesions.",
+            "missing:Clinical history and patient symptoms"
+          ]
+        },
+        "action": {
+          "skill_name": "information_gap_detection_skill",
+          "skills_used": [
+            "information_gap_detection_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "information_gap_detection_skill",
+            "ATOPIC_DERMATITIS->ECZEMA_DERMATITIS",
+            "ECZEMA_DERMATITIS",
+            "CONTACT_DERMATITIS"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_case0055_e21fa70f1cb7",
+        "case_id": "case0055",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "ATOPIC_DERMATITIS->ECZEMA_DERMATITIS",
+          "observed_state": {
+            "ddx_candidates": [
+              "ECZEMA_DERMATITIS",
+              "CONTACT_DERMATITIS"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:More detailed information about the linear distribution or lack thereof.",
+            "missing:Further assessment of the full extent of the lesions.",
+            "missing:Clinical history and patient symptoms"
+          ]
+        },
+        "action": {
+          "skill_name": "uncertainty_assessment_skill",
+          "skills_used": [
+            "uncertainty_assessment_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made evidence limits explicit",
+          "prevented overconfident downstream use",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "scan ambiguity across evidence streams",
+          "name missing information explicitly"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "uncertainty_assessment_skill",
+            "ATOPIC_DERMATITIS->ECZEMA_DERMATITIS",
+            "ECZEMA_DERMATITIS",
+            "CONTACT_DERMATITIS"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_case0055_8eed343a7164",
+        "case_id": "case0055",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "ATOPIC_DERMATITIS->ECZEMA_DERMATITIS",
+          "observed_state": {
+            "ddx_candidates": [
+              "ECZEMA_DERMATITIS",
+              "CONTACT_DERMATITIS"
+            ],
+            "risk_flags": [],
+            "uncertainty_level": "medium",
+            "region": ""
+          },
+          "constraints": [
+            "single_image",
+            "missing_region_metadata",
+            "missing:More detailed information about the linear distribution or lack thereof.",
+            "missing:Further assessment of the full extent of the lesions.",
+            "missing:Clinical history and patient symptoms"
+          ]
+        },
+        "action": {
+          "skill_name": "contradiction_check_skill",
+          "skills_used": [
+            "contradiction_check_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "surfaced missing links in the reasoning chain",
+          "audited internal consistency",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "scan for conflicts across evidence sources",
+          "surface missing links in the reasoning chain"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "contradiction_check_skill",
+            "ATOPIC_DERMATITIS->ECZEMA_DERMATITIS",
+            "ECZEMA_DERMATITIS",
+            "CONTACT_DERMATITIS"
+          ],
+          "priority": "high"
+        }
+      }
+    ],
+    "abstract_experiences": [
+      {
+        "abs_id": "abs_confusion_f1451c317195",
+        "type": "confusion_memory",
+        "concept": "atopic_dermatitis->eczema_dermatitis",
+        "pattern_summary": {
+          "confusion_pair": "ATOPIC_DERMATITIS->ECZEMA_DERMATITIS",
+          "supporting_pattern": [
+            "The image shows bilateral lower extremities with erythematous, scaly patches and some areas of crusting. The lesions appear to be more pronounced on the left leg.",
+            "ECZEMA_DERMATITIS",
+            "CONTACT_DERMATITIS"
+          ],
+          "failure_pattern": [
+            "final_diagnosis_mismatch_reference"
+          ]
+        },
+        "supporting_cases": [
+          "case0055"
+        ],
+        "counter_cases": [],
+        "derived_rule": {
+          "rule_text": "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+          "action_hint": "compare_then_audit_uncertainty"
+        },
+        "version": "v1",
+        "seed_id": null,
+        "composite_skill_seed": {},
+        "provenance": {}
+      },
+      {
+        "abs_id": "abs_rule_97a155a28150",
+        "type": "rule",
+        "concept": "compare_then_audit_uncertainty",
+        "pattern_summary": {
+          "supporting_pattern": [
+            "The image shows bilateral lower extremities with erythematous, scaly patches and some areas of crusting. The lesions appear to be more pronounced on the left leg.",
+            "ECZEMA_DERMATITIS",
+            "CONTACT_DERMATITIS"
+          ],
+          "failure_pattern": [
+            "final_diagnosis_mismatch_reference"
+          ]
+        },
+        "supporting_cases": [
+          "case0018",
+          "case0055"
+        ],
+        "counter_cases": [],
+        "derived_rule": {
+          "rule_text": "When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Qwen integration.",
+          "action_hint": "compare_then_audit_uncertainty"
+        },
+        "version": "v1",
+        "seed_id": null,
+        "composite_skill_seed": {},
+        "provenance": {}
+      }
+    ],
+    "cognition_update": {
+      "total_cases_increment": 1,
+      "failed_cases_increment": 1,
+      "confusion_cases_increment": 1,
+      "hard_cases_increment": 0,
+      "confusion_pair": "ATOPIC_DERMATITIS->ECZEMA_DERMATITIS",
+      "preferred_skills": [
+        "morphology_analysis_skill",
+        "color_pattern_analysis_skill",
+        "distribution_analysis_skill",
+        "lesion_description_structuring_skill",
+        "metadata_consistency_skill",
+        "differential_compare_skill",
+        "information_gap_detection_skill",
+        "uncertainty_assessment_skill",
+        "contradiction_check_skill"
+      ]
+    },
+    "skill_stats_update": [
+      {
+        "skill_name": "morphology_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "color_pattern_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "distribution_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "lesion_description_structuring_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "metadata_consistency_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 1,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "differential_compare_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "information_gap_detection_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "uncertainty_assessment_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "contradiction_check_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 1,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      }
+    ],
+    "reflection_extract": {
+      "raw_case_memory_ready": true,
+      "tactical_experience_count": 9,
+      "abstract_experience_candidate_count": 2,
+      "reusable_tactical_count": 9,
+      "composite_skill_seed_count": 0,
+      "composite_skill_seed_ids": [],
+      "abstract_flags": {
+        "confusion_memory": true,
+        "prototype": false,
+        "rule": true,
+        "rule_candidate": false,
+        "composite_skill_seed": false
+      },
+      "case_status": "failure",
+      "composite_skill_seed_ready_for_promotion": []
+    }
+  },
+  "cognition_update": {
+    "total_cases_increment": 1,
+    "failed_cases_increment": 1,
+    "confusion_cases_increment": 1,
+    "hard_cases_increment": 0,
+    "confusion_pair": "ATOPIC_DERMATITIS->ECZEMA_DERMATITIS",
+    "preferred_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "distribution_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "differential_compare_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill"
+    ]
+  }
+}

@@ -106,6 +106,34 @@ def test_sd198_case_loader_registration_and_label_space(tmp_path: Path) -> None:
     assert label_space_snapshot(dataset_name="sd198")["label_space_id"] == "sd198_full"
 
 
+def test_builtin_sd198_loader_routes_parent_root(tmp_path: Path) -> None:
+    parent_root = tmp_path / "sd198"
+    data_root = parent_root / "sd-198"
+    _write_lines(data_root / "classes.txt", ["1 Basal_Cell_Carcinoma"])
+    _write_lines(data_root / "images.txt", ["1 Basal_Cell_Carcinoma/case_001.jpg"])
+    _write_lines(data_root / "image_class_labels.txt", ["1 1"])
+    (data_root / "images" / "Basal_Cell_Carcinoma").mkdir(parents=True, exist_ok=True)
+    (data_root / "images" / "Basal_Cell_Carcinoma" / "case_001.jpg").write_bytes(b"img1")
+
+    from dataio.case_loader import register_dataset_loader
+
+    register_dataset_loader(
+        "sd198_parent_test",
+        load_by_index=load_sd198_case_input_by_index,
+        load_all=load_sd198_case_inputs,
+        discover_source=discover_sd198_case_source,
+        data_roots=[parent_root, data_root],
+    )
+
+    source = discover_case_source(parent_root)
+    case = load_case_by_index(0, parent_root)
+
+    assert source.metadata_path == data_root / "images.txt"
+    assert source.metadata_format == "indexed_text"
+    assert case.case_id == "sd198_000001"
+    assert case.source_metadata_path == str(data_root / "images.txt")
+
+
 def test_sd198_loader_can_switch_to_grouped_label_space_via_env(tmp_path: Path) -> None:
     data_root = tmp_path / "sd-198"
     _write_lines(

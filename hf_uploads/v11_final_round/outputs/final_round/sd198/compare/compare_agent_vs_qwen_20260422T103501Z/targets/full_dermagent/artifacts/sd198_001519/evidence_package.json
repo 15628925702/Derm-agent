@@ -1,0 +1,1934 @@
+{
+  "perception": {
+    "image_summary": "The image shows a skin lesion with multiple small, raised, and crusted papules on an erythematous base.",
+    "ddx_candidates": [
+      "Darier-White Disease",
+      "Papulonodular Keratosis",
+      "Seborrheic Keratosis"
+    ],
+    "uncertainty": {
+      "level": "low",
+      "reasons": [
+        "The clinical presentation is consistent with Darier-White Disease but further histopathological confirmation is needed."
+      ]
+    },
+    "notes": [
+      "The lesions have a characteristic appearance of Darier-White Disease, including the presence of multiple small, raised, and crusted papules on an erythematous base."
+    ]
+  },
+  "retrieved_experience": [
+    {
+      "case_id": "sd198_000107",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "The image shows a close-up of a skin lesion with multiple small, raised, and slightly scaly papules on a erythematous base. The surface appears rough and there is some hyperkeratosis present.; Acrokeratosis Verruciformis; Papulonodular Keratosis",
+      "confusion_pair": "Basal Cell Carcinoma->PAPULOSQUAMOUS_KERATOTIC",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_confusion_16c973daea22",
+      "retrieval_score": 9
+    },
+    {
+      "case_id": "sd198_000010",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "The image shows a close-up of a neck area with multiple small, red papules and pustules. The skin appears inflamed and there is some hair present.; ACNE_FOLLICULITIS_ROSACEA; DERMATITIS_ECZEMA",
+      "confusion_pair": "Seborrheic Keratosis->ACNE_FOLLICULITIS_ROSACEA",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_confusion_d55efae3028a",
+      "retrieval_score": 8
+    },
+    {
+      "case_id": "sd198_000617",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "A small, dark lesion is present on the skin, surrounded by erythema.; angioma; seborrheic keratosis",
+      "confusion_pair": "Basal Cell Carcinoma->Angioma",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_confusion_6dea866ac4fd",
+      "retrieval_score": 8
+    },
+    {
+      "case_id": "sd198_001533",
+      "source_layer": "tactical_experience",
+      "source_subtype": "confusion_pair",
+      "experience_type": "tactical_experience",
+      "perception_summary": "ddx=Dermatofibroma, Papulonodular Keratosis, Seborrheic Keratosis; ; uncertainty=medium",
+      "confusion_pair": "Nevus->BENIGN_TUMOR_CYST",
+      "learning_points": [
+        "stabilized lesion structure",
+        "made morphology explicit for downstream reasoning",
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "source_id": "tac_sd198_001533_e5b6956c8c26",
+      "retrieval_score": 8
+    },
+    {
+      "case_id": "sd198_001533",
+      "source_layer": "tactical_experience",
+      "source_subtype": "confusion_pair",
+      "experience_type": "tactical_experience",
+      "perception_summary": "ddx=Dermatofibroma, Papulonodular Keratosis, Seborrheic Keratosis; ; uncertainty=medium",
+      "confusion_pair": "Nevus->BENIGN_TUMOR_CYST",
+      "learning_points": [
+        "made evidence limits explicit",
+        "prevented overconfident downstream use",
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "source_id": "tac_sd198_001533_e21fa70f1cb7",
+      "retrieval_score": 8
+    },
+    {
+      "case_id": "sd198_001533",
+      "source_layer": "raw_case_memory",
+      "source_subtype": "case_reference",
+      "experience_type": "raw_case_memory",
+      "perception_summary": "A raised, erythematous lesion with a central crusty area and surrounding erythema is present on the skin.",
+      "confusion_pair": null,
+      "learning_points": [
+        "Final decision: Nevus",
+        "Correctness: False"
+      ],
+      "source_id": "sd198_001533",
+      "retrieval_score": 6
+    },
+    {
+      "case_id": "sd198_001648",
+      "source_layer": "raw_case_memory",
+      "source_subtype": "case_reference",
+      "experience_type": "raw_case_memory",
+      "perception_summary": "A small, raised, flesh-colored lesion is present on the distal aspect of a finger.",
+      "confusion_pair": null,
+      "learning_points": [
+        "Final decision: Seborrheic Keratosis",
+        "Correctness: False"
+      ],
+      "source_id": "sd198_001648",
+      "retrieval_score": 5
+    }
+  ],
+  "skill_outputs": {
+    "morphology_analysis_skill": {
+      "lesion_type": "papule",
+      "size_range": "small",
+      "elevation": "raised",
+      "count": "multiple",
+      "referenced_experiences": [
+        "tac_sd198_001533_e5b6956c8c26",
+        "tac_sd198_001533_e21fa70f1cb7"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "color_pattern_analysis_skill": {
+      "primary_color": "Erythematous",
+      "color_variation": "Marked",
+      "pigmentation_pattern": "Reticular",
+      "asymmetry_color": "Present",
+      "referenced_experiences": [
+        "abs_confusion_db6f2ea06e3f"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "border_surface_analysis_skill": {
+      "border_clarity": "poorly defined",
+      "border_irregularity": "irregular",
+      "surface_texture": "keratotic",
+      "scaling_presence": "present",
+      "referenced_experiences": [
+        "abs_confusion_db6f2ea06e3f"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "distribution_analysis_skill": {
+      "body_location": "scalp",
+      "symmetry": "asymmetric",
+      "localized_vs_generalized": "generalized",
+      "clustering_pattern": "clustered",
+      "referenced_experiences": [
+        "sd198_001533",
+        "sd198_001520",
+        "tac_sd198_001533_e5b6956c8c26",
+        "tac_sd198_001533_e21fa70f1cb7",
+        "tac_sd198_001533_bce72efcf1a2",
+        "abs_confusion_db6f2ea06e3f",
+        "abs_confusion_d55efae3028a",
+        "abs_confusion_90772755bdef"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "lesion_description_structuring_skill": {
+      "primary_lesion_morphology": "Multiple small, raised, and crusted papules",
+      "color": [
+        "Erythematous with marked pigmentation"
+      ],
+      "border": [
+        "Poorly defined, irregular"
+      ],
+      "surface": [
+        "Keratotic, scaling"
+      ],
+      "size_count": [
+        "Multiple, small"
+      ],
+      "distribution": [
+        "Generalized, clustered"
+      ],
+      "associated_context": [
+        "Darier-White Disease, scalp location"
+      ],
+      "referenced_experiences": [
+        "sd198_001533",
+        "sd198_001520"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "differential_compare_skill": {
+      "candidate_pairs": [
+        "Darier-White Disease vs Papulonodular Keratosis"
+      ],
+      "supporting_evidence": [
+        "The lesions have a characteristic appearance of Darier-White Disease, including the presence of multiple small, raised, and crusted papules on an erythematous base."
+      ],
+      "conflicting_evidence": [
+        "The lesions also resemble Papulonodular Keratosis, which can present with similar features."
+      ],
+      "required_missing_evidence": [
+        "Histopathological confirmation is needed to differentiate between Darier-White Disease and Papulonodular Keratosis."
+      ],
+      "referenced_experiences": [
+        "sd198_001533",
+        "sd198_001520",
+        "tac_sd198_001533_e5b6956c8c26",
+        "tac_sd198_001533_e21fa70f1cb7",
+        "tac_sd198_001533_bce72efcf1a2",
+        "abs_confusion_db6f2ea06e3f",
+        "abs_confusion_d55efae3028a",
+        "abs_confusion_90772755bdef"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "conflict_signal"
+    },
+    "information_gap_detection_skill": {
+      "missing_information": [
+        "Histopathological confirmation",
+        "Family history",
+        "Patient's age"
+      ],
+      "why_it_matters": [
+        "Histopathological confirmation is necessary to differentiate between Darier-White Disease and Papulonodular Keratosis.",
+        "Family history can provide insights into the genetic predisposition to certain skin conditions.",
+        "Patient's age influences the differential diagnosis and the likelihood of certain diseases."
+      ],
+      "impact_on_differential": [
+        "Without histopathological confirmation, the differential remains open between Darier-White Disease and Papulonodular Keratosis.",
+        "Family history could help rule out hereditary conditions and support a diagnosis.",
+        "Patient's age can influence the differential, as certain conditions are more common in specific age groups."
+      ],
+      "uncertainty_if_missing": "high",
+      "referenced_experiences": [
+        "sd198_001533",
+        "sd198_001520",
+        "tac_sd198_001533_e5b6956c8c26",
+        "tac_sd198_001533_e21fa70f1cb7",
+        "tac_sd198_001533_bce72efcf1a2",
+        "abs_confusion_db6f2ea06e3f",
+        "abs_confusion_d55efae3028a",
+        "abs_confusion_90772755bdef"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "uncertainty_signal"
+    },
+    "uncertainty_assessment_skill": {
+      "uncertainty_level": "medium",
+      "reasons": [
+        "The clinical presentation is consistent with Darier-White Disease, but further histopathological confirmation is needed.",
+        "The differential diagnosis includes Papulonodular Keratosis, which can present with similar features."
+      ],
+      "missing_information": [
+        "Histopathological confirmation to differentiate between Darier-White Disease and Papulonodular Keratosis.",
+        "More detailed patient history, including duration of symptoms and any associated systemic symptoms."
+      ],
+      "referenced_experiences": [
+        "sd198_001533",
+        "sd198_001520",
+        "tac_sd198_001533_e5b6956c8c26",
+        "tac_sd198_001533_e21fa70f1cb7",
+        "tac_sd198_001533_bce72efcf1a2",
+        "abs_confusion_db6f2ea06e3f",
+        "abs_confusion_d55efae3028a",
+        "abs_confusion_90772755bdef"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "conflict_signal"
+    },
+    "contradiction_check_skill": {
+      "contradictions": [
+        {
+          "description": "The image shows multiple small, raised, and crusted papules on an erythematous base, which is consistent with Darier-White Disease. However, the metadata indicates the raw label is 'Darier-White Disease', suggesting a potential mismatch between the image summary and the metadata.",
+          "evidence_sources": [
+            "initial_perception",
+            "metadata"
+          ]
+        }
+      ],
+      "missing_links": [
+        {
+          "description": "There is no evidence regarding the presence of histopathological confirmation, which is crucial for differentiating between Darier-White Disease and Papulonodular Keratosis.",
+          "evidence_needed": [
+            "histopathological confirmation"
+          ]
+        }
+      ],
+      "reasoning_gaps": [
+        {
+          "description": "The differential diagnosis includes Papulonodular Keratosis, which can present with similar features. Further investigation is needed to rule out this possibility.",
+          "evidence_needed": [
+            "more detailed patient history, including duration of symptoms and any associated systemic symptoms"
+          ]
+        }
+      ],
+      "referenced_experiences": [
+        "sd198_001533",
+        "sd198_001520",
+        "tac_sd198_001533_e5b6956c8c26",
+        "tac_sd198_001533_e21fa70f1cb7",
+        "tac_sd198_001533_bce72efcf1a2",
+        "abs_confusion_db6f2ea06e3f",
+        "abs_confusion_d55efae3028a",
+        "abs_confusion_90772755bdef"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "conflict_signal"
+    }
+  },
+  "risk_flags": [],
+  "uncertainty": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The clinical presentation is consistent with Darier-White Disease, but further histopathological confirmation is needed.",
+      "The differential diagnosis includes Papulonodular Keratosis, which can present with similar features."
+    ],
+    "missing_information": [
+      "Histopathological confirmation to differentiate between Darier-White Disease and Papulonodular Keratosis.",
+      "More detailed patient history, including duration of symptoms and any associated systemic symptoms."
+    ],
+    "referenced_experiences": [
+      "sd198_001533",
+      "sd198_001520",
+      "tac_sd198_001533_e5b6956c8c26",
+      "tac_sd198_001533_e21fa70f1cb7",
+      "tac_sd198_001533_bce72efcf1a2",
+      "abs_confusion_db6f2ea06e3f",
+      "abs_confusion_d55efae3028a",
+      "abs_confusion_90772755bdef"
+    ],
+    "evidence_strength": "medium",
+    "recommendation_type": "conflict_signal"
+  },
+  "notes": [
+    "Agent generated structured evidence only.",
+    "Qwen remains the sole final diagnostic decision maker.",
+    "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, differential_compare_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill.",
+    "Policy in use: stable_default_policy__full_dermagent.",
+    "Skill retrieval candidates: morphology_analysis_skill, distribution_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, differential_compare_skill, contradiction_check_skill, uncertainty_assessment_skill, information_gap_detection_skill, exclusion_reasoning_skill.",
+    "The lesions have a characteristic appearance of Darier-White Disease, including the presence of multiple small, raised, and crusted papules on an erythematous base.",
+    "Retrieved prior reasoning experience for context."
+  ],
+  "initial_perception_summary": {
+    "image_summary": "The image shows a skin lesion with multiple small, raised, and crusted papules on an erythematous base.",
+    "ddx_candidates": [
+      "Darier-White Disease",
+      "Papulonodular Keratosis",
+      "Seborrheic Keratosis"
+    ],
+    "uncertainty_level": "low",
+    "uncertainty_reasons": [
+      "The clinical presentation is consistent with Darier-White Disease but further histopathological confirmation is needed."
+    ],
+    "observation_notes": [
+      "The lesions have a characteristic appearance of Darier-White Disease, including the presence of multiple small, raised, and crusted papules on an erythematous base."
+    ]
+  },
+  "retrieved_raw_cases_summary": [
+    {
+      "source_id": "sd198_001533",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "sd198_001533",
+      "confusion_pair": "None",
+      "perception_summary": "A raised, erythematous lesion with a central crusty area and surrounding erythema is present on the skin.",
+      "learning_points": [
+        "Final decision: Nevus",
+        "Correctness: False"
+      ],
+      "retrieval_score": 6.0,
+      "base_retrieval_score": 6.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "sd198_001648",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "sd198_001648",
+      "confusion_pair": "None",
+      "perception_summary": "A small, raised, flesh-colored lesion is present on the distal aspect of a finger.",
+      "learning_points": [
+        "Final decision: Seborrheic Keratosis",
+        "Correctness: False"
+      ],
+      "retrieval_score": 5.0,
+      "base_retrieval_score": 5.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "sd198_001520",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "sd198_001520",
+      "confusion_pair": "None",
+      "perception_summary": "The image shows a large area of erythematous skin with crusting and scaling lesions on the back.",
+      "learning_points": [
+        "Final decision: Seborrheic Keratosis",
+        "Correctness: False"
+      ],
+      "retrieval_score": 5.0,
+      "base_retrieval_score": 5.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_tactical_experiences_summary": [
+    {
+      "source_id": "tac_sd198_001533_e5b6956c8c26",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "sd198_001533",
+      "confusion_pair": "Nevus->BENIGN_TUMOR_CYST",
+      "perception_summary": "ddx=Dermatofibroma, Papulonodular Keratosis, Seborrheic Keratosis; ; uncertainty=medium",
+      "learning_points": [
+        "stabilized lesion structure",
+        "made morphology explicit for downstream reasoning",
+        "did not fully resolve the active confusion pattern"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_sd198_001533_e21fa70f1cb7",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "sd198_001533",
+      "confusion_pair": "Nevus->BENIGN_TUMOR_CYST",
+      "perception_summary": "ddx=Dermatofibroma, Papulonodular Keratosis, Seborrheic Keratosis; ; uncertainty=medium",
+      "learning_points": [
+        "made evidence limits explicit",
+        "prevented overconfident downstream use",
+        "did not fully resolve the active confusion pattern"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_sd198_001533_bce72efcf1a2",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "sd198_001533",
+      "confusion_pair": "Nevus->BENIGN_TUMOR_CYST",
+      "perception_summary": "ddx=Dermatofibroma, Papulonodular Keratosis, Seborrheic Keratosis; ; uncertainty=medium",
+      "learning_points": [
+        "kept the differential open",
+        "made pairwise reasoning explicit",
+        "did not fully resolve the active confusion pattern"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_sd198_001533_8fa365c666e8",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "sd198_001533",
+      "confusion_pair": "Nevus->BENIGN_TUMOR_CYST",
+      "perception_summary": "ddx=Dermatofibroma, Papulonodular Keratosis, Seborrheic Keratosis; ; uncertainty=medium",
+      "learning_points": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing",
+        "Action pattern: structured_skill_sequence"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_abstract_experiences_summary": [
+    {
+      "source_id": "abs_confusion_16c973daea22",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "sd198_000107",
+      "confusion_pair": "Basal Cell Carcinoma->PAPULOSQUAMOUS_KERATOTIC",
+      "perception_summary": "The image shows a close-up of a skin lesion with multiple small, raised, and slightly scaly papules on a erythematous base. The surface appears rough and there is some hyperkeratosis present.; Acrokeratosis Verruciformis; Papulonodular Keratosis",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_confusion_d55efae3028a",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "sd198_000010",
+      "confusion_pair": "Seborrheic Keratosis->ACNE_FOLLICULITIS_ROSACEA",
+      "perception_summary": "The image shows a close-up of a neck area with multiple small, red papules and pustules. The skin appears inflamed and there is some hair present.; ACNE_FOLLICULITIS_ROSACEA; DERMATITIS_ECZEMA",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_confusion_6dea866ac4fd",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "sd198_000617",
+      "confusion_pair": "Basal Cell Carcinoma->Angioma",
+      "perception_summary": "A small, dark lesion is present on the skin, surrounded by erythema.; angioma; seborrheic keratosis",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "uncertainty_summary": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The clinical presentation is consistent with Darier-White Disease, but further histopathological confirmation is needed.",
+      "The differential diagnosis includes Papulonodular Keratosis, which can present with similar features."
+    ],
+    "missing_information": [
+      "Histopathological confirmation to differentiate between Darier-White Disease and Papulonodular Keratosis.",
+      "More detailed patient history, including duration of symptoms and any associated systemic symptoms."
+    ],
+    "referenced_experiences": [
+      "sd198_001533",
+      "sd198_001520",
+      "tac_sd198_001533_e5b6956c8c26",
+      "tac_sd198_001533_e21fa70f1cb7",
+      "tac_sd198_001533_bce72efcf1a2",
+      "abs_confusion_db6f2ea06e3f"
+    ]
+  },
+  "contradiction_summary": {
+    "contradictions": [
+      "{'description': \"The image shows multiple small, raised, and crusted papules on an erythematous base, which is consistent with Darier-White Disease. However, the metadata indicates the raw label is 'Darier-White Disease', suggesting a potential mismatch between the image summary and the metadata.\", 'evidence_sources': ['initial_perception', 'metadata']}"
+    ],
+    "missing_links": [
+      "{'description': 'There is no evidence regarding the presence of histopathological confirmation, which is crucial for differentiating between Darier-White Disease and Papulonodular Keratosis.', 'evidence_needed': ['histopathological confirmation']}"
+    ],
+    "reasoning_gaps": [
+      "{'description': 'The differential diagnosis includes Papulonodular Keratosis, which can present with similar features. Further investigation is needed to rule out this possibility.', 'evidence_needed': ['more detailed patient history, including duration of symptoms and any associated systemic symptoms']}"
+    ],
+    "metadata_conflicts": [],
+    "suspicious_points": []
+  },
+  "information_gap_summary": {
+    "missing_information": [
+      "Histopathological confirmation",
+      "Family history",
+      "Patient's age"
+    ],
+    "why_it_matters": [
+      "Histopathological confirmation is necessary to differentiate between Darier-White Disease and Papulonodular Keratosis.",
+      "Family history can provide insights into the genetic predisposition to certain skin conditions.",
+      "Patient's age influences the differential diagnosis and the likelihood of certain diseases."
+    ],
+    "impact_on_differential": [
+      "Without histopathological confirmation, the differential remains open between Darier-White Disease and Papulonodular Keratosis.",
+      "Family history could help rule out hereditary conditions and support a diagnosis.",
+      "Patient's age can influence the differential, as certain conditions are more common in specific age groups."
+    ],
+    "uncertainty_if_missing": "high"
+  },
+  "escalation_summary": {
+    "whether_escalation_needed": "unknown",
+    "escalation_reason": [],
+    "suggested_next_check_type": "",
+    "caution_flags": []
+  },
+  "planner_rationale": {
+    "planner_type": "rule_based",
+    "planner_version": "v1",
+    "selected_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "border_surface_analysis_skill",
+      "distribution_analysis_skill",
+      "lesion_description_structuring_skill",
+      "differential_compare_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill"
+    ],
+    "selection_reasons": {
+      "morphology_analysis_skill": [
+        "Boosted by skill retrieval score=9.00.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "color_pattern_analysis_skill": [
+        "Boosted by skill retrieval score=8.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "border_surface_analysis_skill": [
+        "Boosted by skill retrieval score=8.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "distribution_analysis_skill": [
+        "Boosted by skill retrieval score=8.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "lesion_description_structuring_skill": [
+        "Boosted by skill retrieval score=6.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "differential_compare_skill": [
+        "Boosted by skill retrieval score=5.50.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "information_gap_detection_skill": [
+        "Boosted by skill retrieval score=3.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Boosted by cognition.preferred_skills from prior cases."
+      ],
+      "uncertainty_assessment_skill": [
+        "Boosted by skill retrieval score=3.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Boosted by cognition.preferred_skills from prior cases."
+      ],
+      "contradiction_check_skill": [
+        "Boosted by skill retrieval score=4.00.",
+        "Boosted by cognition helpful_rate=0.98.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched 1 morphology clues from the current perception."
+      ]
+    }
+  },
+  "confusion_cluster_summary": {
+    "active_clusters": [],
+    "guidance": []
+  },
+  "selected_evidence": [
+    {
+      "item_id": "lesion_description_structuring_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "lesion_description_structuring_skill",
+      "skill_name": "lesion_description_structuring_skill",
+      "retrieval_type": "",
+      "section": "observation",
+      "category": "description",
+      "summary": "lesion_description_structuring_skill: primary_lesion_morphology=Multiple small, raised, and crusted papules | color=Erythematous with marked pigmentation | border=Poorly defined, irregular | surface=Keratotic, scaling | size_count=Multiple, small | distribution=Generalized, clustered",
+      "score": 8.92,
+      "rank": 1,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "morphology_analysis_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "morphology_analysis_skill",
+      "skill_name": "morphology_analysis_skill",
+      "retrieval_type": "",
+      "section": "observation",
+      "category": "description",
+      "summary": "morphology_analysis_skill: lesion_type=papule | size_range=small | elevation=raised | count=multiple | evidence_strength=medium | recommendation_type=descriptive_evidence",
+      "score": 8.12,
+      "rank": 2,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "information_gap_detection_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "information_gap_detection_skill",
+      "skill_name": "information_gap_detection_skill",
+      "retrieval_type": "",
+      "section": "conflict_uncertainty",
+      "category": "contradiction_gap",
+      "summary": "information_gap_detection_skill: missing_information=Histopathological confirmation; Family history; Patient's age | why_it_matters=Histopathological confirmation is necessary to differentiate between Darier-White Disease and Papulonodular Keratosis.; Family history can provide insights i... | impact_on_differential=Without histopathological confirmation,...",
+      "score": 7.88,
+      "rank": 6,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "contradiction_check_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "contradiction_check_skill",
+      "skill_name": "contradiction_check_skill",
+      "retrieval_type": "",
+      "section": "conflict_uncertainty",
+      "category": "contradiction_gap",
+      "summary": "contradiction_check_skill: contradictions={'description': \"The image shows multiple small, raised, and crusted papules on an erythematous base, which is consistent with Darier-White Disease. However,... | missing_links={'description': 'There is no evidence regarding the presence of histopathological confirmation, which is crucial for differentiating betwe...",
+      "score": 7.22,
+      "rank": 7,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "differential_compare_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "differential_compare_skill",
+      "skill_name": "differential_compare_skill",
+      "retrieval_type": "",
+      "section": "comparison",
+      "category": "differential_support",
+      "summary": "differential_compare_skill: candidate_pairs=Darier-White Disease vs Papulonodular Keratosis | supporting_evidence=The lesions have a characteristic appearance of Darier-White Disease, including the presence of multiple small, raised, and crusted papules on an erythematou... | conflicting_evidence=The lesions also resemble Papulonodular Keratosis, which ca...",
+      "score": 6.24,
+      "rank": 8,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "abs_confusion_16c973daea22",
+      "item_type": "retrieval_record",
+      "source_type": "retrieval_record",
+      "source_name": "abs_confusion_16c973daea22",
+      "skill_name": "",
+      "retrieval_type": "abstract_experience",
+      "section": "abstract_experience",
+      "category": "experience_hint",
+      "summary": "The image shows a close-up of a skin lesion with multiple small, raised, and slightly scaly papules on a erythematous base. The surface appears rough and there is some hyperkera... | When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty | confusion_pair=Basal Cell Carcinoma->...",
+      "score": 5.8,
+      "rank": 9,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "abs_confusion_6dea866ac4fd",
+      "item_type": "retrieval_record",
+      "source_type": "retrieval_record",
+      "source_name": "abs_confusion_6dea866ac4fd",
+      "skill_name": "",
+      "retrieval_type": "abstract_experience",
+      "section": "abstract_experience",
+      "category": "experience_hint",
+      "summary": "A small, dark lesion is present on the skin, surrounded by erythema.; angioma; seborrheic keratosis | When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty | confusion_pair=Basal Cell Carcinoma->Angioma",
+      "score": 5.6,
+      "rank": 11,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "sd198_001533",
+      "item_type": "retrieval_record",
+      "source_type": "retrieval_record",
+      "source_name": "sd198_001533",
+      "skill_name": "",
+      "retrieval_type": "raw_case_memory",
+      "section": "raw_case_memory",
+      "category": "description",
+      "summary": "A raised, erythematous lesion with a central crusty area and surrounding erythema is present on the skin. | Final decision: Nevus; Correctness: False | confusion_pair=None",
+      "score": 2.5,
+      "rank": 17,
+      "keep_reason": "kept"
+    }
+  ],
+  "evidence_decision_policy": {
+    "risk_layer": {
+      "risk_flag": "malignancy_risk_unknown",
+      "caution_flags": [
+        "contradictions_present"
+      ],
+      "follow_up_suggestion": "clinical follow-up and closer inspection if concern persists",
+      "selected_evidence": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "lesion_description_structuring_skill",
+          "skill_name": "lesion_description_structuring_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "lesion_description_structuring_skill: primary_lesion_morphology=Multiple small, raised, and crusted papules | color=Erythematous with marked pigmentation | border=Poorly defined, irregular | surface=Keratotic, scaling | size_count=Multiple, small | distribution=Generalized, clustered",
+          "score": 8.92,
+          "rank": 1,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "morphology_analysis_skill",
+          "skill_name": "morphology_analysis_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "morphology_analysis_skill: lesion_type=papule | size_range=small | elevation=raised | count=multiple | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 8.12,
+          "rank": 2,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "information_gap_detection_skill",
+          "skill_name": "information_gap_detection_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "information_gap_detection_skill: missing_information=Histopathological confirmation; Family history; Patient's age | why_it_matters=Histopathological confirmation is necessary to differentiate between Darier-White Disease and Papulonodular Keratosis.; Family history can provide insights i... | impact_on_differential=Without histopathological confirmation,...",
+          "score": 7.88,
+          "rank": 6,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "contradiction_check_skill",
+          "skill_name": "contradiction_check_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "contradiction_check_skill: contradictions={'description': \"The image shows multiple small, raised, and crusted papules on an erythematous base, which is consistent with Darier-White Disease. However,... | missing_links={'description': 'There is no evidence regarding the presence of histopathological confirmation, which is crucial for differentiating betwe...",
+          "score": 7.22,
+          "rank": 7,
+          "keep_reason": "kept"
+        }
+      ],
+      "baseline_preview": {
+        "early_ddx_candidates": [
+          "Darier-White Disease",
+          "Papulonodular Keratosis",
+          "Seborrheic Keratosis"
+        ],
+        "image_summary": "The image shows a skin lesion with multiple small, raised, and crusted papules on an erythematous base.",
+        "baseline_final_diagnosis": "Seborrheic Keratosis",
+        "baseline_differential_diagnoses": [
+          "Seborrheic Keratosis"
+        ],
+        "baseline_confidence": "High"
+      }
+    },
+    "diagnosis_override_layer": {
+      "workflow_context": {
+        "label_granularity": "grouped",
+        "presentation_mode": "focal_lesion",
+        "workflow_profile": "coarse_taxonomy_workflow",
+        "available_tests": [
+          "clinical_photo_only",
+          "lesion_photo"
+        ],
+        "workflow_preference": "morphology_first",
+        "hospital_type": "specialist_clinic",
+        "time_budget": "standard",
+        "metadata_completeness": "full",
+        "workflow_capabilities": [
+          "coarse_taxonomy_reasoning",
+          "grouped_label_reasoning",
+          "focal_lesion_reasoning"
+        ]
+      },
+      "override_allowed": false,
+      "malignancy_override_allowed": false,
+      "subtype_override_allowed": false,
+      "family_override_allowed": false,
+      "override_mode": "risk_only",
+      "override_reasons": [
+        "supporting_evidence_outweighs_opposition",
+        "subtype_specific_support_present",
+        "uncertainty_not_high",
+        "consistent_retrieval_support"
+      ],
+      "why_not_confident_enough_to_override": [
+        "malignancy risk is not high enough for a diagnosis override",
+        "no specialist evidence strongly supports the override direction",
+        "contradictions or reasoning gaps remain too numerous",
+        "opposing or exclusion evidence quota is not satisfied"
+      ],
+      "supporting_evidence": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "lesion_description_structuring_skill",
+          "skill_name": "lesion_description_structuring_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "lesion_description_structuring_skill: primary_lesion_morphology=Multiple small, raised, and crusted papules | color=Erythematous with marked pigmentation | border=Poorly defined, irregular | surface=Keratotic, scaling | size_count=Multiple, small | distribution=Generalized, clustered",
+          "score": 8.92,
+          "rank": 1,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "morphology_analysis_skill",
+          "skill_name": "morphology_analysis_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "morphology_analysis_skill: lesion_type=papule | size_range=small | elevation=raised | count=multiple | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 8.12,
+          "rank": 2,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "information_gap_detection_skill",
+          "skill_name": "information_gap_detection_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "information_gap_detection_skill: missing_information=Histopathological confirmation; Family history; Patient's age | why_it_matters=Histopathological confirmation is necessary to differentiate between Darier-White Disease and Papulonodular Keratosis.; Family history can provide insights i... | impact_on_differential=Without histopathological confirmation,...",
+          "score": 7.88,
+          "rank": 6,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "contradiction_check_skill",
+          "skill_name": "contradiction_check_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "contradiction_check_skill: contradictions={'description': \"The image shows multiple small, raised, and crusted papules on an erythematous base, which is consistent with Darier-White Disease. However,... | missing_links={'description': 'There is no evidence regarding the presence of histopathological confirmation, which is crucial for differentiating betwe...",
+          "score": 7.22,
+          "rank": 7,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "differential_compare_skill",
+          "skill_name": "differential_compare_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "differential_support",
+          "summary": "differential_compare_skill: candidate_pairs=Darier-White Disease vs Papulonodular Keratosis | supporting_evidence=The lesions have a characteristic appearance of Darier-White Disease, including the presence of multiple small, raised, and crusted papules on an erythematou... | conflicting_evidence=The lesions also resemble Papulonodular Keratosis, which ca...",
+          "score": 6.24,
+          "rank": 8,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "abs_confusion_16c973daea22",
+          "item_type": "retrieval_record",
+          "source_type": "retrieval_record",
+          "source_name": "abs_confusion_16c973daea22",
+          "skill_name": "",
+          "retrieval_type": "abstract_experience",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "summary": "The image shows a close-up of a skin lesion with multiple small, raised, and slightly scaly papules on a erythematous base. The surface appears rough and there is some hyperkera... | When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty | confusion_pair=Basal Cell Carcinoma->...",
+          "score": 5.8,
+          "rank": 9,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "abs_confusion_6dea866ac4fd",
+          "item_type": "retrieval_record",
+          "source_type": "retrieval_record",
+          "source_name": "abs_confusion_6dea866ac4fd",
+          "skill_name": "",
+          "retrieval_type": "abstract_experience",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "summary": "A small, dark lesion is present on the skin, surrounded by erythema.; angioma; seborrheic keratosis | When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty | confusion_pair=Basal Cell Carcinoma->Angioma",
+          "score": 5.6,
+          "rank": 11,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "sd198_001533",
+          "item_type": "retrieval_record",
+          "source_type": "retrieval_record",
+          "source_name": "sd198_001533",
+          "skill_name": "",
+          "retrieval_type": "raw_case_memory",
+          "section": "raw_case_memory",
+          "category": "description",
+          "summary": "A raised, erythematous lesion with a central crusty area and surrounding erythema is present on the skin. | Final decision: Nevus; Correctness: False | confusion_pair=None",
+          "score": 2.5,
+          "rank": 17,
+          "keep_reason": "kept"
+        }
+      ],
+      "opposing_evidence": [],
+      "supporting_score": 52.28,
+      "opposing_score": 0,
+      "support_margin": 52.28,
+      "selected_evidence_present": true,
+      "subtype_support_score": 17.64,
+      "subtype_support_margin": 17.64,
+      "specialist_support_present": false,
+      "consistent_retrieval_count": 2,
+      "contradiction_count": 3,
+      "uncertainty_level": "medium",
+      "opposing_quota_satisfied": false,
+      "subtype_support_quota_satisfied": true
+    }
+  },
+  "serialized_evidence_text": "[Observation Evidence]\n- Initial image summary: The image shows a skin lesion with multiple small, raised, and crusted papules on an erythematous base.\n- Early differential candidates: Darier-White Disease, Papulonodular Keratosis, Seborrheic Keratosis\n- structured lesion observation: lesion_description_structuring_skill: primary_lesion_morphology=Multiple small, raised, and crusted papules | color=Erythematous with marked pigmentation | border=Poorly defined, irregular | surface=Keratotic, scaling | size_count=Multiple, small | distribution=Generalized, clustered || morphology_analysis_skill: lesion_type=papule | size_range=small | elevation=raised | count=multiple | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Raw case reference sd198_001533: A raised, erythematous lesion with a central crusty area and surrounding erythema is present on the skin.\n\n[Exclusion And Comparison Evidence]\n- differential_compare_skill: candidate_pairs=Darier-White Disease vs Papulonodular Keratosis | supporting_evidence=The lesions have a characteristic appearance of Darier-White Disease, including the presence of multiple small, raised, and crusted papules on an erythematou... | conflicting_evidence=The lesions also resemble Papulonodular Keratosis, which can present with similar features. | required_missing_evidence=Histopathological confirmation is needed to differentiate between Darier-White Disease and Papulonodular Keratosis. | evidence_strength=medium | recommendation_type=conflict_signal\n- Tactical experience tac_sd198_001533_e5b6956c8c26: ddx=Dermatofibroma, Papulonodular Keratosis, Seborrheic Keratosis; ; uncertainty=medium; stabilized lesion structure; made morphology explicit for downstream reasoning; did not fully resolve the active confusion pattern\n- Tactical experience tac_sd198_001533_e21fa70f1cb7: ddx=Dermatofibroma, Papulonodular Keratosis, Seborrheic Keratosis; ; uncertainty=medium; made evidence limits explicit; prevented overconfident downstream use; did not fully resolve the active confusion pattern\n- Tactical experience tac_sd198_001533_bce72efcf1a2: ddx=Dermatofibroma, Papulonodular Keratosis, Seborrheic Keratosis; ; uncertainty=medium; kept the differential open; made pairwise reasoning explicit; did not fully resolve the active confusion pattern\n- Tactical experience tac_sd198_001533_8fa365c666e8: ddx=Dermatofibroma, Papulonodular Keratosis, Seborrheic Keratosis; ; uncertainty=medium; did not fully resolve the active confusion pattern; did not prevent the final decision from failing; Action pattern: structured_skill_sequence\n\n[Risk Evidence]\n- Abstract experience abs_confusion_16c973daea22: The image shows a close-up of a skin lesion with multiple small, raised, and slightly scaly papules on a erythematous base. The surface appears rough and there is some hyperkeratosis present.; Acrokeratosis Verruciformis; Papulonodular Keratosis; When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty\n\n[Conflict And Uncertainty]\n- Uncertainty level: medium\n- Uncertainty reasons: The clinical presentation is consistent with Darier-White Disease, but further histopathological confirmation is needed.; The differential diagnosis includes Papulonodular Keratosis, which can present with similar features.\n- Missing information: Histopathological confirmation to differentiate between Darier-White Disease and Papulonodular Keratosis.; More detailed patient history, including duration of symptoms and any associated systemic symptoms.\n- contradictions: {'description': \"The image shows multiple small, raised, and crusted papules on an erythematous base, which is consistent with Darier-White Disease. However, the metadata indicates the raw label is 'Darier-White Disease', suggesting a potential mismatch between the image summary and the metadata.\", 'evidence_sources': ['initial_perception', 'metadata']}\n- missing links: {'description': 'There is no evidence regarding the presence of histopathological confirmation, which is crucial for differentiating between Darier-White Disease and Papulonodular Keratosis.', 'evidence_needed': ['histopathological confirmation']}\n- reasoning gaps: {'description': 'The differential diagnosis includes Papulonodular Keratosis, which can present with similar features. Further investigation is needed to rule out this possibility.', 'evidence_needed': ['more detailed patient history, including duration of symptoms and any associated systemic symptoms']}\n- contradiction_check_skill: contradictions={'description': \"The image shows multiple small, raised, and crusted papules on an erythematous base, which is consistent with Darier-White Disease. However,... | missing_links={'description': 'There is no evidence regarding the presence of histopathological confirmation, which is crucial for differentiating between Darier-White Dis... | reasoning_gaps={'description': 'The differential diagnosis includes Papulonodular Keratosis, which can present with similar features. Further investigation is needed to rul... | evidence_strength=medium | recommendation_type=conflict_signal\n- information_gap_detection_skill: missing_information=Histopathological confirmation; Family history; Patient's age | why_it_matters=Histopathological confirmation is necessary to differentiate between Darier-White Disease and Papulonodular Keratosis.; Family history can provide insights i... | impact_on_differential=Without histopathological confirmation, the differential remains open between Darier-White Disease and Papulonodular Keratosis.; Family history could help ru... | uncertainty_if_missing=high | evidence_strength=medium | recommendation_type=uncertainty_signal\n- explicit information gaps: Histopathological confirmation; Family history; Patient's age\n- why gaps matter: Histopathological confirmation is necessary to differentiate between Darier-White Disease and Papulonodular Keratosis.; Family history can provide insights into the genetic predisposition to certain skin conditions.; Patient's age influences the differential diagnosis and the likelihood of certain diseases.\n- impact on differential: Without histopathological confirmation, the differential remains open between Darier-White Disease and Papulonodular Keratosis.; Family history could help rule out hereditary conditions and support a diagnosis.; Patient's age can influence the differential, as certain conditions are more common in specific age groups.\n- residual uncertainty if still missing: high\n- escalation needed: unknown\n\n[Planner Rationale]\n- Selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, differential_compare_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill\n- morphology_analysis_skill: Boosted by skill retrieval score=9.00.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.\n- color_pattern_analysis_skill: Boosted by skill retrieval score=8.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.\n- border_surface_analysis_skill: Boosted by skill retrieval score=8.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.",
+  "evidence_calibration_debug": {
+    "calibrator_type": "heuristic",
+    "calibrator_version": "v1",
+    "section_plan": {
+      "observation": {
+        "skill_names": [
+          "lesion_description_structuring_skill",
+          "morphology_analysis_skill"
+        ],
+        "merged_groups": [
+          {
+            "label": "structured_lesion_observation",
+            "skills": [
+              "lesion_description_structuring_skill",
+              "morphology_analysis_skill"
+            ],
+            "max_members": 2
+          }
+        ],
+        "raw_case_source_ids": [
+          "sd198_001533"
+        ]
+      },
+      "comparison": {
+        "skill_names": [
+          "differential_compare_skill"
+        ],
+        "merged_groups": [],
+        "tactical_source_ids": [],
+        "abstract_source_ids": []
+      },
+      "risk": {
+        "skill_names": [],
+        "abstract_source_ids": [
+          "abs_confusion_16c973daea22"
+        ]
+      },
+      "conflict_uncertainty": {
+        "skill_names": [
+          "information_gap_detection_skill",
+          "contradiction_check_skill"
+        ]
+      },
+      "planner": {
+        "max_reason_skills": 3
+      },
+      "section_order": [
+        "observation",
+        "comparison",
+        "risk",
+        "conflict_uncertainty",
+        "planner"
+      ]
+    },
+    "item_scores": [
+      {
+        "item_id": "lesion_description_structuring_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 8.92,
+        "learned_score": 0.0,
+        "final_score": 8.92,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 1,
+        "dedup_key": "description:lesion_description_structuring_skill"
+      },
+      {
+        "item_id": "morphology_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 8.12,
+        "learned_score": 0.0,
+        "final_score": 8.12,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 2,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.98,
+        "learned_score": 0.0,
+        "final_score": 7.98,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "border_surface_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.88,
+        "learned_score": 0.0,
+        "final_score": 7.88,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "information_gap_detection_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 7.88,
+        "learned_score": 0.0,
+        "final_score": 7.88,
+        "selected": true,
+        "reason": "kept",
+        "category": "contradiction_gap",
+        "rank": 3,
+        "dedup_key": "uncertainty:information_gap_detection_skill"
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.58,
+        "learned_score": 0.0,
+        "final_score": 7.58,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "contradiction_check_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 7.22,
+        "learned_score": 0.0,
+        "final_score": 7.22,
+        "selected": true,
+        "reason": "kept",
+        "category": "contradiction_gap",
+        "rank": 4,
+        "dedup_key": "uncertainty:contradiction_check_skill"
+      },
+      {
+        "item_id": "differential_compare_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 6.24,
+        "learned_score": 0.0,
+        "final_score": 6.24,
+        "selected": true,
+        "reason": "kept",
+        "category": "differential_support",
+        "rank": 5,
+        "dedup_key": "differential_support:differential_compare_skill"
+      },
+      {
+        "item_id": "uncertainty_assessment_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 6.18,
+        "learned_score": 0.0,
+        "final_score": 6.18,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "contradiction_gap",
+        "rank": 0,
+        "dedup_key": "uncertainty:uncertainty_assessment_skill"
+      },
+      {
+        "item_id": "abs_confusion_16c973daea22",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 5.8,
+        "learned_score": 0.0,
+        "final_score": 5.8,
+        "selected": true,
+        "reason": "kept",
+        "category": "experience_hint",
+        "rank": 6,
+        "dedup_key": "abstract_experience:abs_confusion_16c973daea22"
+      },
+      {
+        "item_id": "abs_confusion_d55efae3028a",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 5.6,
+        "learned_score": 0.0,
+        "final_score": 5.6,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "abstract_experience:abs_confusion_d55efae3028a"
+      },
+      {
+        "item_id": "abs_confusion_6dea866ac4fd",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 5.6,
+        "learned_score": 0.0,
+        "final_score": 5.6,
+        "selected": true,
+        "reason": "kept",
+        "category": "experience_hint",
+        "rank": 7,
+        "dedup_key": "abstract_experience:abs_confusion_6dea866ac4fd"
+      },
+      {
+        "item_id": "tac_sd198_001533_e5b6956c8c26",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 4.2,
+        "learned_score": 0.0,
+        "final_score": 4.2,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_sd198_001533_e5b6956c8c26"
+      },
+      {
+        "item_id": "tac_sd198_001533_e21fa70f1cb7",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 4.2,
+        "learned_score": 0.0,
+        "final_score": 4.2,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_sd198_001533_e21fa70f1cb7"
+      },
+      {
+        "item_id": "tac_sd198_001533_bce72efcf1a2",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 4.2,
+        "learned_score": 0.0,
+        "final_score": 4.2,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_sd198_001533_bce72efcf1a2"
+      },
+      {
+        "item_id": "tac_sd198_001533_8fa365c666e8",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 4.2,
+        "learned_score": 0.0,
+        "final_score": 4.2,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_sd198_001533_8fa365c666e8"
+      },
+      {
+        "item_id": "sd198_001533",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 2.5,
+        "learned_score": 0.0,
+        "final_score": 2.5,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 8,
+        "dedup_key": "raw_case_memory:sd198_001533"
+      },
+      {
+        "item_id": "sd198_001648",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 2.3,
+        "learned_score": 0.0,
+        "final_score": 2.3,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:sd198_001648"
+      },
+      {
+        "item_id": "sd198_001520",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 2.3,
+        "learned_score": 0.0,
+        "final_score": 2.3,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:sd198_001520"
+      }
+    ],
+    "omitted_items": [
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 7.98
+      },
+      {
+        "item_id": "border_surface_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 7.88
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 7.58
+      },
+      {
+        "item_id": "uncertainty_assessment_skill",
+        "item_type": "skill_output",
+        "reason": "category_quota_exceeded",
+        "section": "conflict_uncertainty",
+        "category": "contradiction_gap",
+        "score": 6.18
+      },
+      {
+        "item_id": "abs_confusion_d55efae3028a",
+        "item_type": "retrieval_record",
+        "reason": "category_quota_exceeded",
+        "section": "abstract_experience",
+        "category": "experience_hint",
+        "score": 5.6
+      },
+      {
+        "item_id": "tac_sd198_001533_8fa365c666e8",
+        "item_type": "retrieval_record",
+        "reason": "category_quota_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 4.2
+      },
+      {
+        "item_id": "tac_sd198_001533_bce72efcf1a2",
+        "item_type": "retrieval_record",
+        "reason": "category_quota_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 4.2
+      },
+      {
+        "item_id": "tac_sd198_001533_e21fa70f1cb7",
+        "item_type": "retrieval_record",
+        "reason": "category_quota_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 4.2
+      },
+      {
+        "item_id": "tac_sd198_001533_e5b6956c8c26",
+        "item_type": "retrieval_record",
+        "reason": "category_quota_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 4.2
+      },
+      {
+        "item_id": "sd198_001520",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 2.3
+      },
+      {
+        "item_id": "sd198_001648",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 2.3
+      }
+    ],
+    "debug": {
+      "policy": {
+        "enable_evidence_calibrator": true,
+        "calibrator_mode": "heuristic",
+        "calibrator_checkpoint_path": "",
+        "learned_calibration_weight": 1.2,
+        "max_total_items": 8,
+        "max_observation_skills": 4,
+        "max_comparison_skills": 3,
+        "max_risk_skills": 2,
+        "max_uncertainty_skills": 3,
+        "max_exclusion_items": 2,
+        "max_experience_hints": 2,
+        "max_raw_cases": 1,
+        "max_tactical": 2,
+        "max_abstract": 2,
+        "max_planner_reasons": 3,
+        "omit_low_value_evidence": true,
+        "min_effective_score": 2.4,
+        "dedup_similar_evidence": true,
+        "cluster_aware_ordering": true,
+        "cluster_opposing_bonus": 1.8,
+        "cluster_exclusion_bonus": 1.4,
+        "risk_overweight_penalty": 1.2,
+        "uncertainty_overweight_penalty": 1.0,
+        "description_priority_bonus": 0.6,
+        "exclusion_priority_bonus": 1.2,
+        "negative_evidence_priority_bonus": 1.0,
+        "allow_family_override": false,
+        "allow_keratinocyte_subtype_override": false,
+        "debug_output": true,
+        "conservative_fusion_mode": "soft"
+      },
+      "learned_scorer_loaded": false,
+      "contradiction_count": 3,
+      "uncertainty_level": "medium",
+      "risk_flag_count": 0,
+      "confusion_clusters": [],
+      "kept_items": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "rank": 1,
+          "score": 8.92
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "rank": 2,
+          "score": 8.12
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "rank": 6,
+          "score": 7.88
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "rank": 7,
+          "score": 7.22
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "section": "comparison",
+          "category": "differential_support",
+          "rank": 8,
+          "score": 6.24
+        },
+        {
+          "item_id": "abs_confusion_16c973daea22",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "rank": 9,
+          "score": 5.8
+        },
+        {
+          "item_id": "abs_confusion_6dea866ac4fd",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "rank": 11,
+          "score": 5.6
+        },
+        {
+          "item_id": "sd198_001533",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "rank": 17,
+          "score": 2.5
+        }
+      ],
+      "pruned_items": [
+        {
+          "item_id": "color_pattern_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 7.9799999999999995,
+          "heuristic_score": 7.9799999999999995,
+          "learned_score": 0.0,
+          "payload": {
+            "primary_color": "Erythematous",
+            "color_variation": "Marked",
+            "pigmentation_pattern": "Reticular",
+            "asymmetry_color": "Present",
+            "referenced_experiences": [
+              "abs_confusion_db6f2ea06e3f"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 8.5,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 8.379999999999999,
+          "rank": 3,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "border_surface_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 7.88,
+          "heuristic_score": 7.88,
+          "learned_score": 0.0,
+          "payload": {
+            "border_clarity": "poorly defined",
+            "border_irregularity": "irregular",
+            "surface_texture": "keratotic",
+            "scaling_presence": "present",
+            "referenced_experiences": [
+              "abs_confusion_db6f2ea06e3f"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 8.5,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 8.28,
+          "rank": 4,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "distribution_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 7.58,
+          "heuristic_score": 7.58,
+          "learned_score": 0.0,
+          "payload": {
+            "body_location": "scalp",
+            "symmetry": "asymmetric",
+            "localized_vs_generalized": "generalized",
+            "clustering_pattern": "clustered",
+            "referenced_experiences": [
+              "sd198_001533",
+              "sd198_001520",
+              "tac_sd198_001533_e5b6956c8c26",
+              "tac_sd198_001533_e21fa70f1cb7",
+              "tac_sd198_001533_bce72efcf1a2",
+              "abs_confusion_db6f2ea06e3f",
+              "abs_confusion_d55efae3028a",
+              "abs_confusion_90772755bdef"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 8.5,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 7.98,
+          "rank": 5,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "uncertainty_assessment_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "score": 6.180000000000001,
+          "heuristic_score": 6.180000000000001,
+          "learned_score": 0.0,
+          "payload": {
+            "uncertainty_level": "medium",
+            "reasons": [
+              "The clinical presentation is consistent with Darier-White Disease, but further histopathological confirmation is needed.",
+              "The differential diagnosis includes Papulonodular Keratosis, which can present with similar features."
+            ],
+            "missing_information": [
+              "Histopathological confirmation to differentiate between Darier-White Disease and Papulonodular Keratosis.",
+              "More detailed patient history, including duration of symptoms and any associated systemic symptoms."
+            ],
+            "referenced_experiences": [
+              "sd198_001533",
+              "sd198_001520",
+              "tac_sd198_001533_e5b6956c8c26",
+              "tac_sd198_001533_e21fa70f1cb7",
+              "tac_sd198_001533_bce72efcf1a2",
+              "abs_confusion_db6f2ea06e3f",
+              "abs_confusion_d55efae3028a",
+              "abs_confusion_90772755bdef"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "conflict_signal"
+          },
+          "retrieval_score": 3.5,
+          "dedup_key": "uncertainty:uncertainty_assessment_skill",
+          "ordering_score": 5.78,
+          "rank": 10,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "abs_confusion_d55efae3028a",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "score": 5.6000000000000005,
+          "heuristic_score": 5.6000000000000005,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "abs_confusion_d55efae3028a",
+            "source_layer": "abstract_experience",
+            "experience_type": "confusion_memory",
+            "case_id": "sd198_000010",
+            "confusion_pair": "Seborrheic Keratosis->ACNE_FOLLICULITIS_ROSACEA",
+            "perception_summary": "The image shows a close-up of a neck area with multiple small, red papules and pustules. The skin appears inflamed and there is some hair present.; ACNE_FOLLICULITIS_ROSACEA; DERMATITIS_ECZEMA",
+            "learning_points": [
+              "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+              "compare_then_audit_uncertainty"
+            ],
+            "retrieval_score": 8.0,
+            "base_retrieval_score": 8.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "abstract_experience:abs_confusion_d55efae3028a",
+          "ordering_score": 5.6000000000000005,
+          "rank": 12,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "tac_sd198_001533_8fa365c666e8",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 4.2,
+          "heuristic_score": 4.2,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_sd198_001533_8fa365c666e8",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "sd198_001533",
+            "confusion_pair": "Nevus->BENIGN_TUMOR_CYST",
+            "perception_summary": "ddx=Dermatofibroma, Papulonodular Keratosis, Seborrheic Keratosis; ; uncertainty=medium",
+            "learning_points": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing",
+              "Action pattern: structured_skill_sequence"
+            ],
+            "retrieval_score": 8.0,
+            "base_retrieval_score": 8.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_sd198_001533_8fa365c666e8",
+          "ordering_score": 4.2,
+          "rank": 13,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "tac_sd198_001533_bce72efcf1a2",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 4.2,
+          "heuristic_score": 4.2,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_sd198_001533_bce72efcf1a2",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "sd198_001533",
+            "confusion_pair": "Nevus->BENIGN_TUMOR_CYST",
+            "perception_summary": "ddx=Dermatofibroma, Papulonodular Keratosis, Seborrheic Keratosis; ; uncertainty=medium",
+            "learning_points": [
+              "kept the differential open",
+              "made pairwise reasoning explicit",
+              "did not fully resolve the active confusion pattern"
+            ],
+            "retrieval_score": 8.0,
+            "base_retrieval_score": 8.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_sd198_001533_bce72efcf1a2",
+          "ordering_score": 4.2,
+          "rank": 14,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "tac_sd198_001533_e21fa70f1cb7",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 4.2,
+          "heuristic_score": 4.2,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_sd198_001533_e21fa70f1cb7",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "sd198_001533",
+            "confusion_pair": "Nevus->BENIGN_TUMOR_CYST",
+            "perception_summary": "ddx=Dermatofibroma, Papulonodular Keratosis, Seborrheic Keratosis; ; uncertainty=medium",
+            "learning_points": [
+              "made evidence limits explicit",
+              "prevented overconfident downstream use",
+              "did not fully resolve the active confusion pattern"
+            ],
+            "retrieval_score": 8.0,
+            "base_retrieval_score": 8.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_sd198_001533_e21fa70f1cb7",
+          "ordering_score": 4.2,
+          "rank": 15,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "tac_sd198_001533_e5b6956c8c26",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 4.2,
+          "heuristic_score": 4.2,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_sd198_001533_e5b6956c8c26",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "sd198_001533",
+            "confusion_pair": "Nevus->BENIGN_TUMOR_CYST",
+            "perception_summary": "ddx=Dermatofibroma, Papulonodular Keratosis, Seborrheic Keratosis; ; uncertainty=medium",
+            "learning_points": [
+              "stabilized lesion structure",
+              "made morphology explicit for downstream reasoning",
+              "did not fully resolve the active confusion pattern"
+            ],
+            "retrieval_score": 8.0,
+            "base_retrieval_score": 8.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_sd198_001533_e5b6956c8c26",
+          "ordering_score": 4.2,
+          "rank": 16,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "sd198_001520",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 2.3,
+          "heuristic_score": 2.3,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "sd198_001520",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "sd198_001520",
+            "confusion_pair": "None",
+            "perception_summary": "The image shows a large area of erythematous skin with crusting and scaling lesions on the back.",
+            "learning_points": [
+              "Final decision: Seborrheic Keratosis",
+              "Correctness: False"
+            ],
+            "retrieval_score": 5.0,
+            "base_retrieval_score": 5.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:sd198_001520",
+          "ordering_score": 2.6999999999999997,
+          "rank": 18,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "sd198_001648",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 2.3,
+          "heuristic_score": 2.3,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "sd198_001648",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "sd198_001648",
+            "confusion_pair": "None",
+            "perception_summary": "A small, raised, flesh-colored lesion is present on the distal aspect of a finger.",
+            "learning_points": [
+              "Final decision: Seborrheic Keratosis",
+              "Correctness: False"
+            ],
+            "retrieval_score": 5.0,
+            "base_retrieval_score": 5.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:sd198_001648",
+          "ordering_score": 2.6999999999999997,
+          "rank": 19,
+          "reason": "global_budget_exceeded"
+        }
+      ],
+      "reordered_items": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "from_section": "observation",
+          "category": "description",
+          "new_rank": 1
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "from_section": "observation",
+          "category": "description",
+          "new_rank": 2
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "from_section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "new_rank": 3
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "from_section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "new_rank": 4
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "from_section": "comparison",
+          "category": "differential_support",
+          "new_rank": 5
+        },
+        {
+          "item_id": "abs_confusion_16c973daea22",
+          "item_type": "retrieval_record",
+          "from_section": "abstract_experience",
+          "category": "experience_hint",
+          "new_rank": 6
+        },
+        {
+          "item_id": "abs_confusion_6dea866ac4fd",
+          "item_type": "retrieval_record",
+          "from_section": "abstract_experience",
+          "category": "experience_hint",
+          "new_rank": 7
+        },
+        {
+          "item_id": "sd198_001533",
+          "item_type": "retrieval_record",
+          "from_section": "raw_case_memory",
+          "category": "description",
+          "new_rank": 8
+        }
+      ],
+      "quota_state": {
+        "max_total_items": 8,
+        "per_category_quota": {
+          "description": 3,
+          "differential_support": 2,
+          "exclusion_opposing": 2,
+          "risk": 1,
+          "contradiction_gap": 2,
+          "experience_hint": 2
+        },
+        "category_counts": {
+          "description": 3,
+          "differential_support": 1,
+          "exclusion_opposing": 0,
+          "risk": 0,
+          "contradiction_gap": 2,
+          "experience_hint": 2
+        }
+      }
+    }
+  }
+}

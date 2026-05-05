@@ -1,0 +1,1876 @@
+{
+  "perception": {
+    "image_summary": "The image shows a close-up of a person's face with multiple small, red papules and pustules scattered across the skin, particularly on the cheeks and forehead. The skin appears inflamed and there is some erythema around the lesions.",
+    "ddx_candidates": [
+      "ACNE_FOLLICULITIS_ROSACEA",
+      "ACNE_VULGARIS",
+      "DERMATITIS_ECZEMA"
+    ],
+    "uncertainty": {
+      "level": "low",
+      "reasons": [
+        "The image does not show scarring or hyperpigmentation which would be more indicative of acne vulgaris.",
+        "The distribution and morphology of the lesions suggest a possible inflammatory process."
+      ]
+    },
+    "notes": [
+      "Lesions are non-confluent and do not form comedones, which is typical for acne vulgaris.",
+      "There is no evidence of chronicity or scarring, which might suggest rosacea."
+    ]
+  },
+  "retrieved_experience": [
+    {
+      "case_id": "sd198_000010",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "The image shows a close-up of a neck area with multiple small, red papules and pustules. The skin appears inflamed and there is some hair present.; ACNE_FOLLICULITIS_ROSACEA; DERMATITIS_ECZEMA",
+      "confusion_pair": "Seborrheic Keratosis->ACNE_FOLLICULITIS_ROSACEA",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_confusion_d55efae3028a",
+      "retrieval_score": 11
+    },
+    {
+      "case_id": "sd198_000002",
+      "source_layer": "abstract_experience",
+      "source_subtype": "rule",
+      "experience_type": "rule",
+      "perception_summary": "The image shows a close-up of a neck area with multiple small, red papules and pustules. The skin appears inflamed and there is some hair present.; ACNE_FOLLICULITIS_ROSACEA; DERMATITIS_ECZEMA",
+      "confusion_pair": null,
+      "learning_points": [
+        "When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Qwen integration.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_rule_97a155a28150",
+      "retrieval_score": 10
+    },
+    {
+      "case_id": "sd198_000089",
+      "source_layer": "raw_case_memory",
+      "source_subtype": "case_reference",
+      "experience_type": "raw_case_memory",
+      "perception_summary": "The image shows a close-up of a person's face with multiple small, red papules and pustules scattered across the skin, particularly on the cheeks and forehead.",
+      "confusion_pair": null,
+      "learning_points": [
+        "Final decision: Contact Dermatitis",
+        "Correctness: False"
+      ],
+      "source_id": "sd198_000089",
+      "retrieval_score": 9
+    },
+    {
+      "case_id": "sd198_000089",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "The image shows a close-up of a person's face with multiple small, red papules and pustules scattered across the skin, particularly on the cheeks and forehead.; Acne Vulgaris; Rosacea",
+      "confusion_pair": "Contact Dermatitis->ACNE_FOLLICULITIS_ROSACEA",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_confusion_426ca1a90093",
+      "retrieval_score": 8
+    },
+    {
+      "case_id": "sd198_000010",
+      "source_layer": "tactical_experience",
+      "source_subtype": "confusion_pair",
+      "experience_type": "tactical_experience",
+      "perception_summary": "ddx=ACNE_FOLLICULITIS_ROSACEA, DERMATITIS_ECZEMA, PIGMENTARY_NEVUS_KERATOSIS; ; uncertainty=medium",
+      "confusion_pair": "Seborrheic Keratosis->ACNE_FOLLICULITIS_ROSACEA",
+      "learning_points": [
+        "stabilized lesion structure",
+        "made morphology explicit for downstream reasoning",
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "source_id": "tac_sd198_000010_e5b6956c8c26",
+      "retrieval_score": 8
+    }
+  ],
+  "skill_outputs": {
+    "morphology_analysis_skill": {
+      "lesion_type": "papule",
+      "size_range": "small",
+      "elevation": "raised",
+      "count": "multiple",
+      "referenced_experiences": [
+        "abs_confusion_d55efae3028a",
+        "abs_rule_97a155a28150"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "color_pattern_analysis_skill": {
+      "primary_color": "red",
+      "color_variation": "marked",
+      "pigmentation_pattern": "mixed",
+      "asymmetry_color": "present",
+      "referenced_experiences": [
+        "abs_confusion_d55efae3028a",
+        "abs_rule_97a155a28150"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "border_surface_analysis_skill": {
+      "border_clarity": "poorly defined",
+      "border_irregularity": "irregular",
+      "surface_texture": "rough",
+      "scaling_presence": "absent",
+      "referenced_experiences": [
+        "abs_confusion_d55efae3028a",
+        "abs_rule_97a155a28150"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "distribution_analysis_skill": {
+      "body_location": "face",
+      "symmetry": "asymmetric",
+      "localized_vs_generalized": "generalized",
+      "clustering_pattern": "scattered",
+      "referenced_experiences": [
+        "sd198_000089",
+        "sd198_000010",
+        "abs_confusion_d55efae3028a",
+        "abs_rule_97a155a28150",
+        "tac_sd198_000010_e5b6956c8c26",
+        "abs_confusion_b30f9241bcd9"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "lesion_description_structuring_skill": {
+      "primary_lesion_morphology": "small, raised papules and pustules",
+      "color": [
+        "red, mixed pigmentation"
+      ],
+      "border": [
+        "poorly defined, irregular"
+      ],
+      "surface": [
+        "rough"
+      ],
+      "size_count": [
+        "multiple, small"
+      ],
+      "distribution": [
+        "generalized, scattered"
+      ],
+      "associated_context": [
+        "face, non-confluent, no comedones, no chronicity or scarring"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_d55efae3028a",
+        "abs_rule_97a155a28150"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "differential_compare_skill": {
+      "candidate_pairs": [
+        "ACNE_FOLLICULITIS_ROSACEA vs ACNE_VULGARIS",
+        "ACNE_FOLLICULITIS_ROSACEA vs DERMATITIS_ECZEMA"
+      ],
+      "supporting_evidence": [
+        "ACNE_FOLLICULITIS_ROSACEA vs ACNE_VULGARIS: The lesions are non-confluent and do not form comedones, which is typical for acne vulgaris.",
+        "ACNE_FOLLICULITIS_ROSACEA vs DERMATITIS_ECZEMA: The distribution and morphology of the lesions suggest a possible inflammatory process."
+      ],
+      "conflicting_evidence": [],
+      "required_missing_evidence": [
+        "ACNE_FOLLICULITIS_ROSACEA vs ACNE_VULGARIS: Evidence of comedones or chronicity or scarring to confirm or rule out acne vulgaris.",
+        "ACNE_FOLLICULITIS_ROSACEA vs DERMATITIS_ECZEMA: Evidence of chronicity or scarring to confirm or rule out dermatitis eczema."
+      ],
+      "referenced_experiences": [
+        "abs_confusion_d55efae3028a",
+        "abs_rule_97a155a28150",
+        "tac_sd198_000010_e5b6956c8c26"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "exclusion_reasoning_skill": {
+      "unlikely_candidates": [
+        "ACNE_VULGARIS"
+      ],
+      "exclusion_evidence": [
+        "The lesions are non-confluent and do not form comedones, which is typical for acne vulgaris."
+      ],
+      "required_missing_evidence": [
+        "Evidence of comedones or chronicity or scarring to confirm or rule out acne vulgaris."
+      ],
+      "exclusion_confidence": "medium",
+      "referenced_experiences": [
+        "abs_confusion_d55efae3028a",
+        "abs_rule_97a155a28150"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "information_gap_detection_skill": {
+      "missing_information": [
+        "Evidence of comedones",
+        "Evidence of chronicity or scarring"
+      ],
+      "why_it_matters": [
+        "Comedones are characteristic of acne vulgaris and their absence helps rule it out.",
+        "Chronicity or scarring can help differentiate between acne vulgaris and rosacea."
+      ],
+      "impact_on_differential": [
+        "The absence of comedones makes it less likely that the condition is acne vulgaris.",
+        "The presence of chronicity or scarring would make it more likely that the condition is rosacea."
+      ],
+      "uncertainty_if_missing": "high",
+      "referenced_experiences": [
+        "abs_confusion_d55efae3028a",
+        "abs_rule_97a155a28150"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "uncertainty_assessment_skill": {
+      "uncertainty_level": "medium",
+      "reasons": [
+        "The image shows multiple small, red papules and pustules, which can be seen in acne vulgaris, acne folliculitis, and dermatitis eczema.",
+        "The lesions are non-confluent and do not form comedones, which is typical for acne vulgaris, but the absence of chronicity or scarring is not definitive for ruling out rosacea."
+      ],
+      "missing_information": [
+        "Evidence of comedones to confirm or rule out acne vulgaris.",
+        "Evidence of chronicity or scarring to confirm or rule out dermatitis eczema."
+      ],
+      "referenced_experiences": [
+        "sd198_000089",
+        "sd198_000010",
+        "abs_confusion_d55efae3028a",
+        "abs_rule_97a155a28150",
+        "tac_sd198_000010_e5b6956c8c26",
+        "abs_confusion_b30f9241bcd9"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    }
+  },
+  "risk_flags": [],
+  "uncertainty": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The image shows multiple small, red papules and pustules, which can be seen in acne vulgaris, acne folliculitis, and dermatitis eczema.",
+      "The lesions are non-confluent and do not form comedones, which is typical for acne vulgaris, but the absence of chronicity or scarring is not definitive for ruling out rosacea."
+    ],
+    "missing_information": [
+      "Evidence of comedones to confirm or rule out acne vulgaris.",
+      "Evidence of chronicity or scarring to confirm or rule out dermatitis eczema."
+    ],
+    "referenced_experiences": [
+      "sd198_000089",
+      "sd198_000010",
+      "abs_confusion_d55efae3028a",
+      "abs_rule_97a155a28150",
+      "tac_sd198_000010_e5b6956c8c26",
+      "abs_confusion_b30f9241bcd9"
+    ],
+    "evidence_strength": "medium",
+    "recommendation_type": "descriptive_evidence"
+  },
+  "notes": [
+    "Agent generated structured evidence only.",
+    "Qwen remains the sole final diagnostic decision maker.",
+    "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, differential_compare_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill.",
+    "Policy in use: stable_default_policy.",
+    "Skill retrieval candidates: border_surface_analysis_skill, morphology_analysis_skill, distribution_analysis_skill, color_pattern_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, differential_compare_skill, malignancy_risk_assessment_skill, uncertainty_assessment_skill, exclusion_reasoning_skill, information_gap_detection_skill, contradiction_check_skill.",
+    "Lesions are non-confluent and do not form comedones, which is typical for acne vulgaris.",
+    "There is no evidence of chronicity or scarring, which might suggest rosacea.",
+    "Retrieved prior reasoning experience for context."
+  ],
+  "initial_perception_summary": {
+    "image_summary": "The image shows a close-up of a person's face with multiple small, red papules and pustules scattered across the skin, particularly on the cheeks and forehead. The skin appears inflamed and there is some erythema arou...",
+    "ddx_candidates": [
+      "ACNE_FOLLICULITIS_ROSACEA",
+      "ACNE_VULGARIS",
+      "DERMATITIS_ECZEMA"
+    ],
+    "uncertainty_level": "low",
+    "uncertainty_reasons": [
+      "The image does not show scarring or hyperpigmentation which would be more indicative of acne vulgaris.",
+      "The distribution and morphology of the lesions suggest a possible inflammatory process."
+    ],
+    "observation_notes": [
+      "Lesions are non-confluent and do not form comedones, which is typical for acne vulgaris.",
+      "There is no evidence of chronicity or scarring, which might suggest rosacea."
+    ]
+  },
+  "retrieved_raw_cases_summary": [
+    {
+      "source_id": "sd198_000089",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "sd198_000089",
+      "confusion_pair": "None",
+      "perception_summary": "The image shows a close-up of a person's face with multiple small, red papules and pustules scattered across the skin, particularly on the cheeks and forehead.",
+      "learning_points": [
+        "Final decision: Contact Dermatitis",
+        "Correctness: False"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "sd198_000010",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "sd198_000010",
+      "confusion_pair": "None",
+      "perception_summary": "The image shows a close-up of a neck area with multiple small, red papules and pustules. The skin appears inflamed and there is some hair present.",
+      "learning_points": [
+        "Final decision: Seborrheic Keratosis",
+        "Correctness: False"
+      ],
+      "retrieval_score": 7.0,
+      "base_retrieval_score": 7.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "sd198_000427",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "sd198_000427",
+      "confusion_pair": "None",
+      "perception_summary": "A close-up view of a child's face showing red, inflamed skin with small papules and possibly some vesicles on the cheeks and around the eyes.",
+      "learning_points": [
+        "Final decision: Contact Dermatitis",
+        "Correctness: True"
+      ],
+      "retrieval_score": 5.0,
+      "base_retrieval_score": 5.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_tactical_experiences_summary": [
+    {
+      "source_id": "tac_sd198_000010_e5b6956c8c26",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "sd198_000010",
+      "confusion_pair": "Seborrheic Keratosis->ACNE_FOLLICULITIS_ROSACEA",
+      "perception_summary": "ddx=ACNE_FOLLICULITIS_ROSACEA, DERMATITIS_ECZEMA, PIGMENTARY_NEVUS_KERATOSIS; ; uncertainty=medium",
+      "learning_points": [
+        "stabilized lesion structure",
+        "made morphology explicit for downstream reasoning",
+        "did not fully resolve the active confusion pattern"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_sd198_000010_e21fa70f1cb7",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "sd198_000010",
+      "confusion_pair": "Seborrheic Keratosis->ACNE_FOLLICULITIS_ROSACEA",
+      "perception_summary": "ddx=ACNE_FOLLICULITIS_ROSACEA, DERMATITIS_ECZEMA, PIGMENTARY_NEVUS_KERATOSIS; ; uncertainty=medium",
+      "learning_points": [
+        "made evidence limits explicit",
+        "prevented overconfident downstream use",
+        "did not fully resolve the active confusion pattern"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_sd198_000010_bce72efcf1a2",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "sd198_000010",
+      "confusion_pair": "Seborrheic Keratosis->ACNE_FOLLICULITIS_ROSACEA",
+      "perception_summary": "ddx=ACNE_FOLLICULITIS_ROSACEA, DERMATITIS_ECZEMA, PIGMENTARY_NEVUS_KERATOSIS; ; uncertainty=medium",
+      "learning_points": [
+        "kept the differential open",
+        "made pairwise reasoning explicit",
+        "did not fully resolve the active confusion pattern"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_sd198_000010_8fa365c666e8",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "sd198_000010",
+      "confusion_pair": "Seborrheic Keratosis->ACNE_FOLLICULITIS_ROSACEA",
+      "perception_summary": "ddx=ACNE_FOLLICULITIS_ROSACEA, DERMATITIS_ECZEMA, PIGMENTARY_NEVUS_KERATOSIS; ; uncertainty=medium",
+      "learning_points": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing",
+        "Action pattern: structured_skill_sequence"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_abstract_experiences_summary": [
+    {
+      "source_id": "abs_confusion_d55efae3028a",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "sd198_000010",
+      "confusion_pair": "Seborrheic Keratosis->ACNE_FOLLICULITIS_ROSACEA",
+      "perception_summary": "The image shows a close-up of a neck area with multiple small, red papules and pustules. The skin appears inflamed and there is some hair present.; ACNE_FOLLICULITIS_ROSACEA; DERMATITIS_ECZEMA",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 11.0,
+      "base_retrieval_score": 11.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_rule_97a155a28150",
+      "source_layer": "abstract_experience",
+      "experience_type": "rule",
+      "case_id": "sd198_000002",
+      "confusion_pair": "None",
+      "perception_summary": "The image shows a close-up of a neck area with multiple small, red papules and pustules. The skin appears inflamed and there is some hair present.; ACNE_FOLLICULITIS_ROSACEA; DERMATITIS_ECZEMA",
+      "learning_points": [
+        "When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Qwen integration.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 10.0,
+      "base_retrieval_score": 10.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_confusion_426ca1a90093",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "sd198_000089",
+      "confusion_pair": "Contact Dermatitis->ACNE_FOLLICULITIS_ROSACEA",
+      "perception_summary": "The image shows a close-up of a person's face with multiple small, red papules and pustules scattered across the skin, particularly on the cheeks and forehead.; Acne Vulgaris; Rosacea",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "uncertainty_summary": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The image shows multiple small, red papules and pustules, which can be seen in acne vulgaris, acne folliculitis, and dermatitis eczema.",
+      "The lesions are non-confluent and do not form comedones, which is typical for acne vulgaris, but the absence of chronicity or scarring is not definitive for ruling out rosacea."
+    ],
+    "missing_information": [
+      "Evidence of comedones to confirm or rule out acne vulgaris.",
+      "Evidence of chronicity or scarring to confirm or rule out dermatitis eczema."
+    ],
+    "referenced_experiences": [
+      "sd198_000089",
+      "sd198_000010",
+      "abs_confusion_d55efae3028a",
+      "abs_rule_97a155a28150",
+      "tac_sd198_000010_e5b6956c8c26",
+      "abs_confusion_b30f9241bcd9"
+    ]
+  },
+  "contradiction_summary": {
+    "contradictions": [],
+    "missing_links": [],
+    "reasoning_gaps": [],
+    "metadata_conflicts": [],
+    "suspicious_points": []
+  },
+  "information_gap_summary": {
+    "missing_information": [
+      "Evidence of comedones",
+      "Evidence of chronicity or scarring"
+    ],
+    "why_it_matters": [
+      "Comedones are characteristic of acne vulgaris and their absence helps rule it out.",
+      "Chronicity or scarring can help differentiate between acne vulgaris and rosacea."
+    ],
+    "impact_on_differential": [
+      "The absence of comedones makes it less likely that the condition is acne vulgaris.",
+      "The presence of chronicity or scarring would make it more likely that the condition is rosacea."
+    ],
+    "uncertainty_if_missing": "high"
+  },
+  "escalation_summary": {
+    "whether_escalation_needed": "unknown",
+    "escalation_reason": [],
+    "suggested_next_check_type": "",
+    "caution_flags": []
+  },
+  "planner_rationale": {
+    "planner_type": "rule_based",
+    "planner_version": "v1",
+    "selected_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "border_surface_analysis_skill",
+      "distribution_analysis_skill",
+      "lesion_description_structuring_skill",
+      "differential_compare_skill",
+      "exclusion_reasoning_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill"
+    ],
+    "selection_reasons": {
+      "morphology_analysis_skill": [
+        "Boosted by skill retrieval score=9.00.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.98.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "color_pattern_analysis_skill": [
+        "Boosted by skill retrieval score=8.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.98.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "border_surface_analysis_skill": [
+        "Boosted by skill retrieval score=9.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.98.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "distribution_analysis_skill": [
+        "Boosted by skill retrieval score=9.00.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.98.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "lesion_description_structuring_skill": [
+        "Boosted by skill retrieval score=7.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "differential_compare_skill": [
+        "Boosted by skill retrieval score=6.00.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "exclusion_reasoning_skill": [
+        "Boosted by skill retrieval score=4.00.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched 1 morphology clues from the current perception."
+      ],
+      "information_gap_detection_skill": [
+        "Boosted by skill retrieval score=3.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Boosted by cognition.preferred_skills from prior cases."
+      ],
+      "uncertainty_assessment_skill": [
+        "Boosted by skill retrieval score=4.00.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched 1 morphology clues from the current perception."
+      ]
+    }
+  },
+  "confusion_cluster_summary": {
+    "active_clusters": [],
+    "guidance": []
+  },
+  "selected_evidence": [
+    {
+      "item_id": "exclusion_reasoning_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "exclusion_reasoning_skill",
+      "skill_name": "exclusion_reasoning_skill",
+      "retrieval_type": "",
+      "section": "comparison",
+      "category": "exclusion_opposing",
+      "summary": "exclusion_reasoning_skill: unlikely_candidates=ACNE_VULGARIS | exclusion_evidence=The lesions are non-confluent and do not form comedones, which is typical for acne vulgaris. | required_missing_evidence=Evidence of comedones or chronicity or scarring to confirm or rule out acne vulgaris. | exclusion_confidence=medium | evidence_strength=medium | recommend...",
+      "score": 10.22,
+      "rank": 1,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "lesion_description_structuring_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "lesion_description_structuring_skill",
+      "skill_name": "lesion_description_structuring_skill",
+      "retrieval_type": "",
+      "section": "observation",
+      "category": "description",
+      "summary": "lesion_description_structuring_skill: primary_lesion_morphology=small, raised papules and pustules | color=red, mixed pigmentation | border=poorly defined, irregular | surface=rough | size_count=multiple, small | distribution=generalized, scattered",
+      "score": 9.0,
+      "rank": 2,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "morphology_analysis_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "morphology_analysis_skill",
+      "skill_name": "morphology_analysis_skill",
+      "retrieval_type": "",
+      "section": "observation",
+      "category": "description",
+      "summary": "morphology_analysis_skill: lesion_type=papule | size_range=small | elevation=raised | count=multiple | evidence_strength=medium | recommendation_type=descriptive_evidence",
+      "score": 8.12,
+      "rank": 3,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "differential_compare_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "differential_compare_skill",
+      "skill_name": "differential_compare_skill",
+      "retrieval_type": "",
+      "section": "comparison",
+      "category": "differential_support",
+      "summary": "differential_compare_skill: candidate_pairs=ACNE_FOLLICULITIS_ROSACEA vs ACNE_VULGARIS; ACNE_FOLLICULITIS_ROSACEA vs DERMATITIS_ECZEMA | supporting_evidence=ACNE_FOLLICULITIS_ROSACEA vs ACNE_VULGARIS: The lesions are non-confluent and do not form comedones, which is typical for acne vulgaris.; ACNE_FOLLICULITIS_R... | required_missing_evidence=ACNE_FOLLIC...",
+      "score": 6.68,
+      "rank": 7,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "abs_rule_97a155a28150",
+      "item_type": "retrieval_record",
+      "source_type": "retrieval_record",
+      "source_name": "abs_rule_97a155a28150",
+      "skill_name": "",
+      "retrieval_type": "abstract_experience",
+      "section": "abstract_experience",
+      "category": "experience_hint",
+      "summary": "The image shows a close-up of a neck area with multiple small, red papules and pustules. The skin appears inflamed and there is some hair present.; ACNE_FOLLICULITIS_ROSACEA; DE... | When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Q...; compare_then_audit_uncertainty | confusion_pair=None",
+      "score": 6.6,
+      "rank": 8,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "information_gap_detection_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "information_gap_detection_skill",
+      "skill_name": "information_gap_detection_skill",
+      "retrieval_type": "",
+      "section": "conflict_uncertainty",
+      "category": "contradiction_gap",
+      "summary": "information_gap_detection_skill: missing_information=Evidence of comedones; Evidence of chronicity or scarring | why_it_matters=Comedones are characteristic of acne vulgaris and their absence helps rule it out.; Chronicity or scarring can help differentiate between acne vulgaris and r... | impact_on_differential=The absence of comedones makes it less like...",
+      "score": 6.78,
+      "rank": 9,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "uncertainty_assessment_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "uncertainty_assessment_skill",
+      "skill_name": "uncertainty_assessment_skill",
+      "retrieval_type": "",
+      "section": "conflict_uncertainty",
+      "category": "contradiction_gap",
+      "summary": "uncertainty_assessment_skill: uncertainty_level=medium | reasons=The image shows multiple small, red papules and pustules, which can be seen in acne vulgaris, acne folliculitis, and dermatitis eczema.; The lesions are non-... | missing_information=Evidence of comedones to confirm or rule out acne vulgaris.; Evidence of chronicity or scarring to confirm or...",
+      "score": 6.72,
+      "rank": 10,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "abs_confusion_d55efae3028a",
+      "item_type": "retrieval_record",
+      "source_type": "retrieval_record",
+      "source_name": "abs_confusion_d55efae3028a",
+      "skill_name": "",
+      "retrieval_type": "abstract_experience",
+      "section": "abstract_experience",
+      "category": "experience_hint",
+      "summary": "The image shows a close-up of a neck area with multiple small, red papules and pustules. The skin appears inflamed and there is some hair present.; ACNE_FOLLICULITIS_ROSACEA; DE... | When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty | confusion_pair=Seborrheic Keratosis->...",
+      "score": 6.2,
+      "rank": 11,
+      "keep_reason": "kept"
+    }
+  ],
+  "evidence_decision_policy": {
+    "risk_layer": {
+      "risk_flag": "malignancy_risk_unknown",
+      "caution_flags": [],
+      "follow_up_suggestion": "clinical follow-up and closer inspection if concern persists",
+      "selected_evidence": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "lesion_description_structuring_skill",
+          "skill_name": "lesion_description_structuring_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "lesion_description_structuring_skill: primary_lesion_morphology=small, raised papules and pustules | color=red, mixed pigmentation | border=poorly defined, irregular | surface=rough | size_count=multiple, small | distribution=generalized, scattered",
+          "score": 9.0,
+          "rank": 2,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "morphology_analysis_skill",
+          "skill_name": "morphology_analysis_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "morphology_analysis_skill: lesion_type=papule | size_range=small | elevation=raised | count=multiple | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 8.12,
+          "rank": 3,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "differential_compare_skill",
+          "skill_name": "differential_compare_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "differential_support",
+          "summary": "differential_compare_skill: candidate_pairs=ACNE_FOLLICULITIS_ROSACEA vs ACNE_VULGARIS; ACNE_FOLLICULITIS_ROSACEA vs DERMATITIS_ECZEMA | supporting_evidence=ACNE_FOLLICULITIS_ROSACEA vs ACNE_VULGARIS: The lesions are non-confluent and do not form comedones, which is typical for acne vulgaris.; ACNE_FOLLICULITIS_R... | required_missing_evidence=ACNE_FOLLIC...",
+          "score": 6.68,
+          "rank": 7,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "abs_rule_97a155a28150",
+          "item_type": "retrieval_record",
+          "source_type": "retrieval_record",
+          "source_name": "abs_rule_97a155a28150",
+          "skill_name": "",
+          "retrieval_type": "abstract_experience",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "summary": "The image shows a close-up of a neck area with multiple small, red papules and pustules. The skin appears inflamed and there is some hair present.; ACNE_FOLLICULITIS_ROSACEA; DE... | When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Q...; compare_then_audit_uncertainty | confusion_pair=None",
+          "score": 6.6,
+          "rank": 8,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "exclusion_reasoning_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "exclusion_reasoning_skill",
+          "skill_name": "exclusion_reasoning_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "exclusion_opposing",
+          "summary": "exclusion_reasoning_skill: unlikely_candidates=ACNE_VULGARIS | exclusion_evidence=The lesions are non-confluent and do not form comedones, which is typical for acne vulgaris. | required_missing_evidence=Evidence of comedones or chronicity or scarring to confirm or rule out acne vulgaris. | exclusion_confidence=medium | evidence_strength=medium | recommend...",
+          "score": 10.22,
+          "rank": 1,
+          "keep_reason": "kept"
+        }
+      ],
+      "baseline_preview": {
+        "early_ddx_candidates": [
+          "ACNE_FOLLICULITIS_ROSACEA",
+          "ACNE_VULGARIS",
+          "DERMATITIS_ECZEMA"
+        ],
+        "image_summary": "The image shows a close-up of a person's face with multiple small, red papules and pustules scattered across the skin, particularly on the cheeks and forehead. The skin appears inflamed and there is some erythema arou...",
+        "baseline_final_diagnosis": "Contact Dermatitis",
+        "baseline_differential_diagnoses": [
+          "Contact Dermatitis"
+        ],
+        "baseline_confidence": "High"
+      }
+    },
+    "diagnosis_override_layer": {
+      "workflow_context": {
+        "label_granularity": "grouped",
+        "presentation_mode": "focal_lesion",
+        "workflow_profile": "coarse_taxonomy_workflow",
+        "available_tests": [
+          "clinical_photo_only",
+          "lesion_photo"
+        ],
+        "workflow_preference": "morphology_first",
+        "hospital_type": "specialist_clinic",
+        "time_budget": "standard",
+        "metadata_completeness": "full",
+        "workflow_capabilities": [
+          "coarse_taxonomy_reasoning",
+          "grouped_label_reasoning",
+          "focal_lesion_reasoning"
+        ]
+      },
+      "override_allowed": false,
+      "malignancy_override_allowed": false,
+      "subtype_override_allowed": false,
+      "family_override_allowed": false,
+      "override_mode": "risk_only",
+      "override_reasons": [
+        "supporting_evidence_outweighs_opposition",
+        "uncertainty_not_high",
+        "contradictions_not_excessive",
+        "consistent_retrieval_support",
+        "opposing_quota_satisfied"
+      ],
+      "why_not_confident_enough_to_override": [
+        "malignancy risk is not high enough for a diagnosis override",
+        "no specialist evidence strongly supports the override direction"
+      ],
+      "supporting_evidence": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "lesion_description_structuring_skill",
+          "skill_name": "lesion_description_structuring_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "lesion_description_structuring_skill: primary_lesion_morphology=small, raised papules and pustules | color=red, mixed pigmentation | border=poorly defined, irregular | surface=rough | size_count=multiple, small | distribution=generalized, scattered",
+          "score": 9.0,
+          "rank": 2,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "morphology_analysis_skill",
+          "skill_name": "morphology_analysis_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "morphology_analysis_skill: lesion_type=papule | size_range=small | elevation=raised | count=multiple | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 8.12,
+          "rank": 3,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "differential_compare_skill",
+          "skill_name": "differential_compare_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "differential_support",
+          "summary": "differential_compare_skill: candidate_pairs=ACNE_FOLLICULITIS_ROSACEA vs ACNE_VULGARIS; ACNE_FOLLICULITIS_ROSACEA vs DERMATITIS_ECZEMA | supporting_evidence=ACNE_FOLLICULITIS_ROSACEA vs ACNE_VULGARIS: The lesions are non-confluent and do not form comedones, which is typical for acne vulgaris.; ACNE_FOLLICULITIS_R... | required_missing_evidence=ACNE_FOLLIC...",
+          "score": 6.68,
+          "rank": 7,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "abs_rule_97a155a28150",
+          "item_type": "retrieval_record",
+          "source_type": "retrieval_record",
+          "source_name": "abs_rule_97a155a28150",
+          "skill_name": "",
+          "retrieval_type": "abstract_experience",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "summary": "The image shows a close-up of a neck area with multiple small, red papules and pustules. The skin appears inflamed and there is some hair present.; ACNE_FOLLICULITIS_ROSACEA; DE... | When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Q...; compare_then_audit_uncertainty | confusion_pair=None",
+          "score": 6.6,
+          "rank": 8,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "information_gap_detection_skill",
+          "skill_name": "information_gap_detection_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "information_gap_detection_skill: missing_information=Evidence of comedones; Evidence of chronicity or scarring | why_it_matters=Comedones are characteristic of acne vulgaris and their absence helps rule it out.; Chronicity or scarring can help differentiate between acne vulgaris and r... | impact_on_differential=The absence of comedones makes it less like...",
+          "score": 6.78,
+          "rank": 9,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "uncertainty_assessment_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "uncertainty_assessment_skill",
+          "skill_name": "uncertainty_assessment_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "uncertainty_assessment_skill: uncertainty_level=medium | reasons=The image shows multiple small, red papules and pustules, which can be seen in acne vulgaris, acne folliculitis, and dermatitis eczema.; The lesions are non-... | missing_information=Evidence of comedones to confirm or rule out acne vulgaris.; Evidence of chronicity or scarring to confirm or...",
+          "score": 6.72,
+          "rank": 10,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "abs_confusion_d55efae3028a",
+          "item_type": "retrieval_record",
+          "source_type": "retrieval_record",
+          "source_name": "abs_confusion_d55efae3028a",
+          "skill_name": "",
+          "retrieval_type": "abstract_experience",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "summary": "The image shows a close-up of a neck area with multiple small, red papules and pustules. The skin appears inflamed and there is some hair present.; ACNE_FOLLICULITIS_ROSACEA; DE... | When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty | confusion_pair=Seborrheic Keratosis->...",
+          "score": 6.2,
+          "rank": 11,
+          "keep_reason": "kept"
+        }
+      ],
+      "opposing_evidence": [
+        {
+          "item_id": "exclusion_reasoning_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "exclusion_reasoning_skill",
+          "skill_name": "exclusion_reasoning_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "exclusion_opposing",
+          "summary": "exclusion_reasoning_skill: unlikely_candidates=ACNE_VULGARIS | exclusion_evidence=The lesions are non-confluent and do not form comedones, which is typical for acne vulgaris. | required_missing_evidence=Evidence of comedones or chronicity or scarring to confirm or rule out acne vulgaris. | exclusion_confidence=medium | evidence_strength=medium | recommend...",
+          "score": 10.22,
+          "rank": 1,
+          "keep_reason": "kept"
+        }
+      ],
+      "supporting_score": 50.1,
+      "opposing_score": 10.22,
+      "support_margin": 39.88,
+      "selected_evidence_present": true,
+      "subtype_support_score": 6.68,
+      "subtype_support_margin": -3.54,
+      "specialist_support_present": false,
+      "consistent_retrieval_count": 2,
+      "contradiction_count": 0,
+      "uncertainty_level": "medium",
+      "opposing_quota_satisfied": true,
+      "subtype_support_quota_satisfied": true
+    }
+  },
+  "serialized_evidence_text": "[Observation Evidence]\n- Initial image summary: The image shows a close-up of a person's face with multiple small, red papules and pustules scattered across the skin, particularly on the cheeks and forehead. The skin appears inflamed and there is some erythema arou...\n- Early differential candidates: ACNE_FOLLICULITIS_ROSACEA, ACNE_VULGARIS, DERMATITIS_ECZEMA\n- structured lesion observation: lesion_description_structuring_skill: primary_lesion_morphology=small, raised papules and pustules | color=red, mixed pigmentation | border=poorly defined, irregular | surface=rough | size_count=multiple, small | distribution=generalized, scattered || morphology_analysis_skill: lesion_type=papule | size_range=small | elevation=raised | count=multiple | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Raw case reference sd198_000089: The image shows a close-up of a person's face with multiple small, red papules and pustules scattered across the skin, particularly on the cheeks and forehead.\n- Raw case reference sd198_000010: The image shows a close-up of a neck area with multiple small, red papules and pustules. The skin appears inflamed and there is some hair present.\n- Raw case reference sd198_000427: A close-up view of a child's face showing red, inflamed skin with small papules and possibly some vesicles on the cheeks and around the eyes.\n\n[Exclusion And Comparison Evidence]\n- differential and exclusion reasoning: differential_compare_skill: candidate_pairs=ACNE_FOLLICULITIS_ROSACEA vs ACNE_VULGARIS; ACNE_FOLLICULITIS_ROSACEA vs DERMATITIS_ECZEMA | supporting_evidence=ACNE_FOLLICULITIS_ROSACEA vs ACNE_VULGARIS: The lesions are non-confluent and do not form comedones, which is typical for acne vulgaris.; ACNE_FOLLICULITIS_R... | required_missing_evidence=ACNE_FOLLICULITIS_ROSACEA vs ACNE_VULGARIS: Evidence of comedones or chronicity or scarring to confirm or rule out acne vulgaris.; ACNE_FOLLICULITIS_ROSACEA ... | evidence_strength=medium | recommendation_type=descriptive_evidence || exclusion_reasoning_skill: unlikely_candidates=ACNE_VULGARIS | exclusion_evidence=The lesions are non-confluent and do not form comedones, which is typical for acne vulgaris. | required_missing_evidence=Evidence of comedones or chronicity or scarring to confirm or rule out acne vulgaris. | exclusion_confidence=medium | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Tactical experience tac_sd198_000010_e5b6956c8c26: ddx=ACNE_FOLLICULITIS_ROSACEA, DERMATITIS_ECZEMA, PIGMENTARY_NEVUS_KERATOSIS; ; uncertainty=medium; stabilized lesion structure; made morphology explicit for downstream reasoning; did not fully resolve the active confusion pattern\n- Tactical experience tac_sd198_000010_e21fa70f1cb7: ddx=ACNE_FOLLICULITIS_ROSACEA, DERMATITIS_ECZEMA, PIGMENTARY_NEVUS_KERATOSIS; ; uncertainty=medium; made evidence limits explicit; prevented overconfident downstream use; did not fully resolve the active confusion pattern\n- Tactical experience tac_sd198_000010_bce72efcf1a2: ddx=ACNE_FOLLICULITIS_ROSACEA, DERMATITIS_ECZEMA, PIGMENTARY_NEVUS_KERATOSIS; ; uncertainty=medium; kept the differential open; made pairwise reasoning explicit; did not fully resolve the active confusion pattern\n- Tactical experience tac_sd198_000010_8fa365c666e8: ddx=ACNE_FOLLICULITIS_ROSACEA, DERMATITIS_ECZEMA, PIGMENTARY_NEVUS_KERATOSIS; ; uncertainty=medium; did not fully resolve the active confusion pattern; did not prevent the final decision from failing; Action pattern: structured_skill_sequence\n- Abstract comparison memory abs_rule_97a155a28150: The image shows a close-up of a neck area with multiple small, red papules and pustules. The skin appears inflamed and there is some hair present.; ACNE_FOLLICULITIS_ROSACEA; DERMATITIS_ECZEMA; When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Qwen integration.; compare_then_audit_uncertainty\n\n[Risk Evidence]\n- Abstract experience abs_confusion_d55efae3028a: The image shows a close-up of a neck area with multiple small, red papules and pustules. The skin appears inflamed and there is some hair present.; ACNE_FOLLICULITIS_ROSACEA; DERMATITIS_ECZEMA; When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty\n\n[Conflict And Uncertainty]\n- Uncertainty level: medium\n- Uncertainty reasons: The image shows multiple small, red papules and pustules, which can be seen in acne vulgaris, acne folliculitis, and dermatitis eczema.; The lesions are non-confluent and do not form comedones, which is typical for acne vulgaris, but the absence of chronicity or scarring is not definitive for ruling out rosacea.\n- Missing information: Evidence of comedones to confirm or rule out acne vulgaris.; Evidence of chronicity or scarring to confirm or rule out dermatitis eczema.\n- uncertainty_assessment_skill: uncertainty_level=medium | reasons=The image shows multiple small, red papules and pustules, which can be seen in acne vulgaris, acne folliculitis, and dermatitis eczema.; The lesions are non-... | missing_information=Evidence of comedones to confirm or rule out acne vulgaris.; Evidence of chronicity or scarring to confirm or rule out dermatitis eczema. | evidence_strength=medium | recommendation_type=descriptive_evidence\n- information_gap_detection_skill: missing_information=Evidence of comedones; Evidence of chronicity or scarring | why_it_matters=Comedones are characteristic of acne vulgaris and their absence helps rule it out.; Chronicity or scarring can help differentiate between acne vulgaris and r... | impact_on_differential=The absence of comedones makes it less likely that the condition is acne vulgaris.; The presence of chronicity or scarring would make it more likely that the... | uncertainty_if_missing=high | evidence_strength=medium | recommendation_type=descriptive_evidence\n- explicit information gaps: Evidence of comedones; Evidence of chronicity or scarring\n- why gaps matter: Comedones are characteristic of acne vulgaris and their absence helps rule it out.; Chronicity or scarring can help differentiate between acne vulgaris and rosacea.\n- impact on differential: The absence of comedones makes it less likely that the condition is acne vulgaris.; The presence of chronicity or scarring would make it more likely that the condition is rosacea.\n- residual uncertainty if still missing: high\n- escalation needed: unknown\n\n[Planner Rationale]\n- Selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, differential_compare_skill, exclusion_reasoning_skill, information_gap_detection_skill, uncertainty_assessment_skill\n- morphology_analysis_skill: Boosted by skill retrieval score=9.00.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.98.; Matched active trigger profile `foundational_observation`.\n- color_pattern_analysis_skill: Boosted by skill retrieval score=8.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.98.; Matched active trigger profile `foundational_observation`.\n- border_surface_analysis_skill: Boosted by skill retrieval score=9.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.98.; Matched active trigger profile `foundational_observation`.",
+  "evidence_calibration_debug": {
+    "calibrator_type": "heuristic",
+    "calibrator_version": "v1",
+    "section_plan": {
+      "observation": {
+        "skill_names": [
+          "lesion_description_structuring_skill",
+          "morphology_analysis_skill"
+        ],
+        "merged_groups": [
+          {
+            "label": "structured_lesion_observation",
+            "skills": [
+              "lesion_description_structuring_skill",
+              "morphology_analysis_skill"
+            ],
+            "max_members": 2
+          }
+        ],
+        "raw_case_source_ids": []
+      },
+      "comparison": {
+        "skill_names": [
+          "exclusion_reasoning_skill",
+          "differential_compare_skill"
+        ],
+        "merged_groups": [
+          {
+            "label": "differential_and_exclusion_reasoning",
+            "skills": [
+              "differential_compare_skill",
+              "exclusion_reasoning_skill"
+            ],
+            "max_members": 1
+          }
+        ],
+        "tactical_source_ids": [],
+        "abstract_source_ids": [
+          "abs_rule_97a155a28150"
+        ]
+      },
+      "risk": {
+        "skill_names": [],
+        "abstract_source_ids": [
+          "abs_confusion_d55efae3028a"
+        ]
+      },
+      "conflict_uncertainty": {
+        "skill_names": [
+          "information_gap_detection_skill",
+          "uncertainty_assessment_skill"
+        ]
+      },
+      "planner": {
+        "max_reason_skills": 3
+      },
+      "section_order": [
+        "observation",
+        "comparison",
+        "risk",
+        "conflict_uncertainty",
+        "planner"
+      ]
+    },
+    "item_scores": [
+      {
+        "item_id": "exclusion_reasoning_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 10.22,
+        "learned_score": 0.0,
+        "final_score": 10.22,
+        "selected": true,
+        "reason": "kept",
+        "category": "exclusion_opposing",
+        "rank": 1,
+        "dedup_key": "comparison:negative_evidence"
+      },
+      {
+        "item_id": "lesion_description_structuring_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 9.0,
+        "learned_score": 0.0,
+        "final_score": 9.0,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 2,
+        "dedup_key": "description:lesion_description_structuring_skill"
+      },
+      {
+        "item_id": "morphology_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 8.12,
+        "learned_score": 0.0,
+        "final_score": 8.12,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 3,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.98,
+        "learned_score": 0.0,
+        "final_score": 7.98,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "border_surface_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.96,
+        "learned_score": 0.0,
+        "final_score": 7.96,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.62,
+        "learned_score": 0.0,
+        "final_score": 7.62,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "information_gap_detection_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 6.78,
+        "learned_score": 0.0,
+        "final_score": 6.78,
+        "selected": true,
+        "reason": "kept",
+        "category": "contradiction_gap",
+        "rank": 6,
+        "dedup_key": "uncertainty:information_gap_detection_skill"
+      },
+      {
+        "item_id": "uncertainty_assessment_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 6.72,
+        "learned_score": 0.0,
+        "final_score": 6.72,
+        "selected": true,
+        "reason": "kept",
+        "category": "contradiction_gap",
+        "rank": 7,
+        "dedup_key": "uncertainty:uncertainty_assessment_skill"
+      },
+      {
+        "item_id": "differential_compare_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 6.68,
+        "learned_score": 0.0,
+        "final_score": 6.68,
+        "selected": true,
+        "reason": "kept",
+        "category": "differential_support",
+        "rank": 4,
+        "dedup_key": "differential_support:differential_compare_skill"
+      },
+      {
+        "item_id": "abs_rule_97a155a28150",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 6.6,
+        "learned_score": 0.0,
+        "final_score": 6.6,
+        "selected": true,
+        "reason": "kept",
+        "category": "experience_hint",
+        "rank": 5,
+        "dedup_key": "abstract_experience:abs_rule_97a155a28150"
+      },
+      {
+        "item_id": "abs_confusion_d55efae3028a",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 6.2,
+        "learned_score": 0.0,
+        "final_score": 6.2,
+        "selected": true,
+        "reason": "kept",
+        "category": "experience_hint",
+        "rank": 8,
+        "dedup_key": "abstract_experience:abs_confusion_d55efae3028a"
+      },
+      {
+        "item_id": "abs_confusion_426ca1a90093",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 5.6,
+        "learned_score": 0.0,
+        "final_score": 5.6,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "abstract_experience:abs_confusion_426ca1a90093"
+      },
+      {
+        "item_id": "tac_sd198_000010_e5b6956c8c26",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 4.2,
+        "learned_score": 0.0,
+        "final_score": 4.2,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_sd198_000010_e5b6956c8c26"
+      },
+      {
+        "item_id": "tac_sd198_000010_e21fa70f1cb7",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 4.2,
+        "learned_score": 0.0,
+        "final_score": 4.2,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_sd198_000010_e21fa70f1cb7"
+      },
+      {
+        "item_id": "tac_sd198_000010_bce72efcf1a2",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 4.2,
+        "learned_score": 0.0,
+        "final_score": 4.2,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_sd198_000010_bce72efcf1a2"
+      },
+      {
+        "item_id": "tac_sd198_000010_8fa365c666e8",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 4.2,
+        "learned_score": 0.0,
+        "final_score": 4.2,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_sd198_000010_8fa365c666e8"
+      },
+      {
+        "item_id": "sd198_000089",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 3.1,
+        "learned_score": 0.0,
+        "final_score": 3.1,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:sd198_000089"
+      },
+      {
+        "item_id": "sd198_000010",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 2.7,
+        "learned_score": 0.0,
+        "final_score": 2.7,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:sd198_000010"
+      },
+      {
+        "item_id": "sd198_000427",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 2.3,
+        "learned_score": 0.0,
+        "final_score": 2.3,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:sd198_000427"
+      }
+    ],
+    "omitted_items": [
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 7.98
+      },
+      {
+        "item_id": "border_surface_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 7.96
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 7.62
+      },
+      {
+        "item_id": "abs_confusion_426ca1a90093",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "abstract_experience",
+        "category": "experience_hint",
+        "score": 5.6
+      },
+      {
+        "item_id": "tac_sd198_000010_8fa365c666e8",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 4.2
+      },
+      {
+        "item_id": "tac_sd198_000010_bce72efcf1a2",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 4.2
+      },
+      {
+        "item_id": "tac_sd198_000010_e21fa70f1cb7",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 4.2
+      },
+      {
+        "item_id": "tac_sd198_000010_e5b6956c8c26",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 4.2
+      },
+      {
+        "item_id": "sd198_000089",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 3.1
+      },
+      {
+        "item_id": "sd198_000010",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 2.7
+      },
+      {
+        "item_id": "sd198_000427",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 2.3
+      }
+    ],
+    "debug": {
+      "policy": {
+        "enable_evidence_calibrator": true,
+        "calibrator_mode": "heuristic",
+        "calibrator_checkpoint_path": "",
+        "learned_calibration_weight": 1.2,
+        "max_total_items": 8,
+        "max_observation_skills": 4,
+        "max_comparison_skills": 3,
+        "max_risk_skills": 2,
+        "max_uncertainty_skills": 3,
+        "max_exclusion_items": 2,
+        "max_experience_hints": 2,
+        "max_raw_cases": 1,
+        "max_tactical": 2,
+        "max_abstract": 2,
+        "max_planner_reasons": 3,
+        "omit_low_value_evidence": true,
+        "min_effective_score": 2.4,
+        "dedup_similar_evidence": true,
+        "cluster_aware_ordering": true,
+        "cluster_opposing_bonus": 1.8,
+        "cluster_exclusion_bonus": 1.4,
+        "risk_overweight_penalty": 1.2,
+        "uncertainty_overweight_penalty": 1.0,
+        "description_priority_bonus": 0.6,
+        "exclusion_priority_bonus": 1.2,
+        "negative_evidence_priority_bonus": 1.0,
+        "allow_family_override": false,
+        "allow_keratinocyte_subtype_override": false,
+        "debug_output": true,
+        "conservative_fusion_mode": "soft"
+      },
+      "learned_scorer_loaded": false,
+      "contradiction_count": 0,
+      "uncertainty_level": "medium",
+      "risk_flag_count": 0,
+      "confusion_clusters": [],
+      "kept_items": [
+        {
+          "item_id": "exclusion_reasoning_skill",
+          "item_type": "skill_output",
+          "section": "comparison",
+          "category": "exclusion_opposing",
+          "rank": 1,
+          "score": 10.22
+        },
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "rank": 2,
+          "score": 9.0
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "rank": 3,
+          "score": 8.12
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "section": "comparison",
+          "category": "differential_support",
+          "rank": 7,
+          "score": 6.68
+        },
+        {
+          "item_id": "abs_rule_97a155a28150",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "rank": 8,
+          "score": 6.6
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "rank": 9,
+          "score": 6.78
+        },
+        {
+          "item_id": "uncertainty_assessment_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "rank": 10,
+          "score": 6.72
+        },
+        {
+          "item_id": "abs_confusion_d55efae3028a",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "rank": 11,
+          "score": 6.2
+        }
+      ],
+      "pruned_items": [
+        {
+          "item_id": "color_pattern_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 7.9799999999999995,
+          "heuristic_score": 7.9799999999999995,
+          "learned_score": 0.0,
+          "payload": {
+            "primary_color": "red",
+            "color_variation": "marked",
+            "pigmentation_pattern": "mixed",
+            "asymmetry_color": "present",
+            "referenced_experiences": [
+              "abs_confusion_d55efae3028a",
+              "abs_rule_97a155a28150"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 8.5,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 8.379999999999999,
+          "rank": 4,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "border_surface_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 7.96,
+          "heuristic_score": 7.96,
+          "learned_score": 0.0,
+          "payload": {
+            "border_clarity": "poorly defined",
+            "border_irregularity": "irregular",
+            "surface_texture": "rough",
+            "scaling_presence": "absent",
+            "referenced_experiences": [
+              "abs_confusion_d55efae3028a",
+              "abs_rule_97a155a28150"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 9.5,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 8.36,
+          "rank": 5,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "distribution_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 7.62,
+          "heuristic_score": 7.62,
+          "learned_score": 0.0,
+          "payload": {
+            "body_location": "face",
+            "symmetry": "asymmetric",
+            "localized_vs_generalized": "generalized",
+            "clustering_pattern": "scattered",
+            "referenced_experiences": [
+              "sd198_000089",
+              "sd198_000010",
+              "abs_confusion_d55efae3028a",
+              "abs_rule_97a155a28150",
+              "tac_sd198_000010_e5b6956c8c26",
+              "abs_confusion_b30f9241bcd9"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 9.0,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 8.02,
+          "rank": 6,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "abs_confusion_426ca1a90093",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "score": 5.6000000000000005,
+          "heuristic_score": 5.6000000000000005,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "abs_confusion_426ca1a90093",
+            "source_layer": "abstract_experience",
+            "experience_type": "confusion_memory",
+            "case_id": "sd198_000089",
+            "confusion_pair": "Contact Dermatitis->ACNE_FOLLICULITIS_ROSACEA",
+            "perception_summary": "The image shows a close-up of a person's face with multiple small, red papules and pustules scattered across the skin, particularly on the cheeks and forehead.; Acne Vulgaris; Rosacea",
+            "learning_points": [
+              "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+              "compare_then_audit_uncertainty"
+            ],
+            "retrieval_score": 8.0,
+            "base_retrieval_score": 8.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "abstract_experience:abs_confusion_426ca1a90093",
+          "ordering_score": 5.6000000000000005,
+          "rank": 12,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_sd198_000010_8fa365c666e8",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 4.2,
+          "heuristic_score": 4.2,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_sd198_000010_8fa365c666e8",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "sd198_000010",
+            "confusion_pair": "Seborrheic Keratosis->ACNE_FOLLICULITIS_ROSACEA",
+            "perception_summary": "ddx=ACNE_FOLLICULITIS_ROSACEA, DERMATITIS_ECZEMA, PIGMENTARY_NEVUS_KERATOSIS; ; uncertainty=medium",
+            "learning_points": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing",
+              "Action pattern: structured_skill_sequence"
+            ],
+            "retrieval_score": 8.0,
+            "base_retrieval_score": 8.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_sd198_000010_8fa365c666e8",
+          "ordering_score": 4.2,
+          "rank": 13,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_sd198_000010_bce72efcf1a2",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 4.2,
+          "heuristic_score": 4.2,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_sd198_000010_bce72efcf1a2",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "sd198_000010",
+            "confusion_pair": "Seborrheic Keratosis->ACNE_FOLLICULITIS_ROSACEA",
+            "perception_summary": "ddx=ACNE_FOLLICULITIS_ROSACEA, DERMATITIS_ECZEMA, PIGMENTARY_NEVUS_KERATOSIS; ; uncertainty=medium",
+            "learning_points": [
+              "kept the differential open",
+              "made pairwise reasoning explicit",
+              "did not fully resolve the active confusion pattern"
+            ],
+            "retrieval_score": 8.0,
+            "base_retrieval_score": 8.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_sd198_000010_bce72efcf1a2",
+          "ordering_score": 4.2,
+          "rank": 14,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_sd198_000010_e21fa70f1cb7",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 4.2,
+          "heuristic_score": 4.2,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_sd198_000010_e21fa70f1cb7",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "sd198_000010",
+            "confusion_pair": "Seborrheic Keratosis->ACNE_FOLLICULITIS_ROSACEA",
+            "perception_summary": "ddx=ACNE_FOLLICULITIS_ROSACEA, DERMATITIS_ECZEMA, PIGMENTARY_NEVUS_KERATOSIS; ; uncertainty=medium",
+            "learning_points": [
+              "made evidence limits explicit",
+              "prevented overconfident downstream use",
+              "did not fully resolve the active confusion pattern"
+            ],
+            "retrieval_score": 8.0,
+            "base_retrieval_score": 8.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_sd198_000010_e21fa70f1cb7",
+          "ordering_score": 4.2,
+          "rank": 15,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_sd198_000010_e5b6956c8c26",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 4.2,
+          "heuristic_score": 4.2,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_sd198_000010_e5b6956c8c26",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "sd198_000010",
+            "confusion_pair": "Seborrheic Keratosis->ACNE_FOLLICULITIS_ROSACEA",
+            "perception_summary": "ddx=ACNE_FOLLICULITIS_ROSACEA, DERMATITIS_ECZEMA, PIGMENTARY_NEVUS_KERATOSIS; ; uncertainty=medium",
+            "learning_points": [
+              "stabilized lesion structure",
+              "made morphology explicit for downstream reasoning",
+              "did not fully resolve the active confusion pattern"
+            ],
+            "retrieval_score": 8.0,
+            "base_retrieval_score": 8.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_sd198_000010_e5b6956c8c26",
+          "ordering_score": 4.2,
+          "rank": 16,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "sd198_000089",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 3.0999999999999996,
+          "heuristic_score": 3.0999999999999996,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "sd198_000089",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "sd198_000089",
+            "confusion_pair": "None",
+            "perception_summary": "The image shows a close-up of a person's face with multiple small, red papules and pustules scattered across the skin, particularly on the cheeks and forehead.",
+            "learning_points": [
+              "Final decision: Contact Dermatitis",
+              "Correctness: False"
+            ],
+            "retrieval_score": 9.0,
+            "base_retrieval_score": 9.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:sd198_000089",
+          "ordering_score": 3.4999999999999996,
+          "rank": 17,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "sd198_000010",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 2.7,
+          "heuristic_score": 2.7,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "sd198_000010",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "sd198_000010",
+            "confusion_pair": "None",
+            "perception_summary": "The image shows a close-up of a neck area with multiple small, red papules and pustules. The skin appears inflamed and there is some hair present.",
+            "learning_points": [
+              "Final decision: Seborrheic Keratosis",
+              "Correctness: False"
+            ],
+            "retrieval_score": 7.0,
+            "base_retrieval_score": 7.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:sd198_000010",
+          "ordering_score": 3.1,
+          "rank": 18,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "sd198_000427",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 2.3,
+          "heuristic_score": 2.3,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "sd198_000427",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "sd198_000427",
+            "confusion_pair": "None",
+            "perception_summary": "A close-up view of a child's face showing red, inflamed skin with small papules and possibly some vesicles on the cheeks and around the eyes.",
+            "learning_points": [
+              "Final decision: Contact Dermatitis",
+              "Correctness: True"
+            ],
+            "retrieval_score": 5.0,
+            "base_retrieval_score": 5.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:sd198_000427",
+          "ordering_score": 2.6999999999999997,
+          "rank": 19,
+          "reason": "global_budget_exceeded"
+        }
+      ],
+      "reordered_items": [
+        {
+          "item_id": "exclusion_reasoning_skill",
+          "item_type": "skill_output",
+          "from_section": "comparison",
+          "category": "exclusion_opposing",
+          "new_rank": 1
+        },
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "from_section": "observation",
+          "category": "description",
+          "new_rank": 2
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "from_section": "observation",
+          "category": "description",
+          "new_rank": 3
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "from_section": "comparison",
+          "category": "differential_support",
+          "new_rank": 4
+        },
+        {
+          "item_id": "abs_rule_97a155a28150",
+          "item_type": "retrieval_record",
+          "from_section": "abstract_experience",
+          "category": "experience_hint",
+          "new_rank": 5
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "from_section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "new_rank": 6
+        },
+        {
+          "item_id": "uncertainty_assessment_skill",
+          "item_type": "skill_output",
+          "from_section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "new_rank": 7
+        },
+        {
+          "item_id": "abs_confusion_d55efae3028a",
+          "item_type": "retrieval_record",
+          "from_section": "abstract_experience",
+          "category": "experience_hint",
+          "new_rank": 8
+        }
+      ],
+      "quota_state": {
+        "max_total_items": 8,
+        "per_category_quota": {
+          "description": 3,
+          "differential_support": 2,
+          "exclusion_opposing": 2,
+          "risk": 1,
+          "contradiction_gap": 2,
+          "experience_hint": 2
+        },
+        "category_counts": {
+          "description": 2,
+          "differential_support": 1,
+          "exclusion_opposing": 1,
+          "risk": 0,
+          "contradiction_gap": 2,
+          "experience_hint": 2
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,783 @@
+{
+  "perception": {
+    "image_summary": "A hyperpigmented, irregularly shaped lesion with a central area of lighter coloration surrounded by darker pigmentation. The lesion is located on the lower extremity.",
+    "ddx_candidates": [
+      "Dermal Nevus",
+      "Bowen's Disease",
+      "Atypical Mole"
+    ],
+    "uncertainty": {
+      "level": "low",
+      "reasons": [
+        "The lesion has a relatively uniform color and lacks significant asymmetry or irregular borders.",
+        "The presence of hair follicles does not suggest a highly suspicious pattern."
+      ]
+    },
+    "notes": [
+      "The lesion appears to be well-circumscribed but with some variation in pigmentation."
+    ]
+  },
+  "retrieved_experience": [
+    {
+      "case_id": "ISIC_0000004",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "A slightly irregular, hyperpigmented lesion with a central area of darker pigmentation on a lighter background.; Dermal Nevus; Atypical Mole",
+      "confusion_pair": "Nevus->MEL",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_confusion_5c6199e857fc",
+      "retrieval_score": 11
+    },
+    {
+      "case_id": "ISIC_0000025_downsampled",
+      "source_layer": "abstract_experience",
+      "source_subtype": "composite_skill_seed",
+      "experience_type": "composite_skill_seed",
+      "perception_summary": "ddx=Atypical Nevus, Dermal Nevus, Bowen's Disease; decision_pattern=risk_then_uncertainty_audit; uncertainty=medium; risk=malignancy_risk:medium",
+      "confusion_pair": null,
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage.",
+        "Promote only after repeated successful supporting cases under a stable trigger pattern."
+      ],
+      "source_id": "abs_composite_25d8d487b740",
+      "retrieval_score": 9
+    },
+    {
+      "case_id": "ISIC_0000040_downsampled",
+      "source_layer": "tactical_experience",
+      "source_subtype": "confusion_pair",
+      "experience_type": "tactical_experience",
+      "perception_summary": "ddx=Dermal Nevus, Atypical Mole, Superficial Spreading Melanoma; risk=malignancy_risk:medium; uncertainty=medium",
+      "confusion_pair": "Nevus->MEL",
+      "learning_points": [
+        "focused a high-value confusion pair",
+        "sharpened specialist comparison clues",
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "source_id": "tac_ISIC_0000040_downsampled_4ae354055cbc",
+      "retrieval_score": 9
+    },
+    {
+      "case_id": "ISIC_0000025_downsampled",
+      "source_layer": "tactical_experience",
+      "source_subtype": "risk_review",
+      "experience_type": "tactical_experience",
+      "perception_summary": "ddx=Atypical Nevus, Dermal Nevus, Bowen's Disease; risk=malignancy_risk:medium; uncertainty=medium",
+      "confusion_pair": null,
+      "learning_points": [
+        "separated edge evidence from surface evidence",
+        "highlighted margin quality explicitly",
+        "required downstream integration beyond border_surface_analysis_skill",
+        "Action pattern: structured_skill_sequence"
+      ],
+      "source_id": "tac_ISIC_0000025_downsampled_f0152010c15d",
+      "retrieval_score": 9
+    }
+  ],
+  "skill_outputs": {
+    "morphology_analysis_skill": {
+      "lesion_type": "plaque",
+      "size_range": "small to medium",
+      "elevation": "flat",
+      "count": "solitary",
+      "referenced_experiences": [
+        "ISIC_0000041_downsampled"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "color_pattern_analysis_skill": {
+      "primary_color": "Brown",
+      "color_variation": "Marked",
+      "pigmentation_pattern": "Reticular",
+      "asymmetry_color": "Present",
+      "referenced_experiences": [
+        "abs_confusion_5c6199e857fc"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "border_surface_analysis_skill": {
+      "border_clarity": "poor",
+      "border_irregularity": "irregular",
+      "surface_texture": "keratotic",
+      "scaling_presence": "absent",
+      "referenced_experiences": [
+        "ISIC_0000025_downsampled",
+        "ISIC_0000041_downsampled"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "lesion_description_structuring_skill": {
+      "primary_lesion_morphology": "Plaque",
+      "color": [
+        "Hyperpigmented, with areas of lighter and darker pigmentation"
+      ],
+      "border": [
+        "Irregular, poorly defined"
+      ],
+      "surface": [
+        "Keratotic"
+      ],
+      "size_count": [
+        "size: Small to medium, count: Solitary"
+      ],
+      "distribution": [
+        "site: Lower extremity, pattern: Well-circumscribed"
+      ],
+      "associated_context": [
+        "age_approx: 35, sex: Male, anatom_site_general: Lower extremity"
+      ],
+      "referenced_experiences": [
+        "ISIC_0000025_downsampled",
+        "ISIC_0000041_downsampled",
+        "abs_confusion_5c6199e857fc",
+        "abs_composite_25d8d487b740",
+        "tac_ISIC_0000040_downsampled_4ae354055cbc"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "metadata_consistency_skill": {
+      "consistency_score": "medium",
+      "conflicts": [],
+      "suspicious_points": [
+        "The lesion appears hyperpigmented with areas of lighter and darker pigmentation, which could be indicative of a dermal nevus or atypical mole. However, the presence of hair follicles does not strongly suggest a highly suspicious pattern.",
+        "The lesion is described as well-circumscribed but with some variation in pigmentation, which aligns with the description of a dermal nevus."
+      ],
+      "referenced_experiences": [
+        "ISIC_0000025_downsampled",
+        "ISIC_0000041_downsampled",
+        "abs_confusion_5c6199e857fc",
+        "abs_composite_25d8d487b740",
+        "tac_ISIC_0000040_downsampled_4ae354055cbc",
+        "abs_composite_da12991b4041"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "information_gap_detection_skill": {
+      "missing_information": [
+        "Presence or absence of hair follicles within the lesion",
+        "Lesion's response to pressure (blanching test)",
+        "Patient's medical history, including previous skin conditions and surgeries"
+      ],
+      "why_it_matters": [
+        "Hair follicles can be a key feature in differentiating between benign and potentially malignant lesions.",
+        "The blanching test helps assess vascularity and can provide insights into the nature of the lesion.",
+        "Patient's medical history can influence the differential diagnosis and guide further investigations."
+      ],
+      "impact_on_differential": [
+        "The presence of hair follicles might suggest a dermal nevus, while their absence could be more concerning for other diagnoses.",
+        "A positive blanching test might indicate a superficial lesion, whereas a negative test could suggest deeper involvement.",
+        "A patient's medical history can provide context for the lesion's behavior and help rule out certain conditions."
+      ],
+      "uncertainty_if_missing": "medium",
+      "referenced_experiences": [
+        "ISIC_0000025_downsampled",
+        "ISIC_0000041_downsampled",
+        "abs_confusion_5c6199e857fc",
+        "abs_composite_25d8d487b740",
+        "tac_ISIC_0000040_downsampled_4ae354055cbc",
+        "abs_composite_da12991b4041"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "uncertainty_assessment_skill": {
+      "uncertainty_level": "medium",
+      "reasons": [
+        "The lesion exhibits marked color variation and a reticular pigmentation pattern, which are features commonly associated with benign lesions like dermal nevi.",
+        "The presence of hair follicles does not suggest a highly suspicious pattern, but it also does not definitively rule out malignancy.",
+        "The lesion's border is irregular, which is a concerning feature for malignancies but can also be seen in benign lesions."
+      ],
+      "missing_information": [
+        "Histopathological confirmation is crucial to differentiate between benign and malignant lesions.",
+        "Additional clinical history, including patient age, family history of skin cancer, and any changes in the lesion over time, would be beneficial.",
+        "Further imaging techniques, such as dermoscopy or ultrasound, might provide more detailed information about the lesion's structure and depth."
+      ],
+      "referenced_experiences": [
+        "ISIC_0000025_downsampled",
+        "ISIC_0000041_downsampled",
+        "abs_confusion_5c6199e857fc",
+        "abs_composite_25d8d487b740",
+        "tac_ISIC_0000040_downsampled_4ae354055cbc",
+        "abs_composite_da12991b4041"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "contradiction_check_skill": {
+      "contradictions": [
+        {
+          "description": "The lesion in the image shows a reticular pigmentation pattern, which is noted in the metadata and initial perception. However, the morphology analysis suggests a plaque-like lesion, which could imply a different pattern.",
+          "evidence_sources": [
+            "initial_perception",
+            "morphology_analysis_skill"
+          ]
+        }
+      ],
+      "missing_links": [
+        {
+          "description": "There is no direct evidence regarding the presence or absence of hair follicles in the lesion, which could impact the differential diagnosis.",
+          "evidence_sources": [
+            "initial_perception",
+            "morphology_analysis_skill"
+          ]
+        }
+      ],
+      "reasoning_gaps": [
+        {
+          "description": "The lesion's exact size cannot be determined from the image alone, which is crucial for differential diagnosis.",
+          "evidence_sources": [
+            "initial_perception",
+            "morphology_analysis_skill"
+          ]
+        },
+        {
+          "description": "The lesion's surface texture is described as keratotic, but there is no direct evidence of scaling presence or absence, which could affect the differential diagnosis.",
+          "evidence_sources": [
+            "initial_perception",
+            "border_surface_analysis_skill"
+          ]
+        }
+      ],
+      "referenced_experiences": [
+        "ISIC_0000025_downsampled",
+        "ISIC_0000041_downsampled",
+        "abs_confusion_5c6199e857fc",
+        "abs_composite_25d8d487b740",
+        "tac_ISIC_0000040_downsampled_4ae354055cbc",
+        "abs_composite_da12991b4041"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "escalation_recommendation_skill": {
+      "whether_escalation_needed": "consider",
+      "escalation_reason": [
+        "The lesion exhibits marked color variation and a reticular pigmentation pattern, which are features commonly associated with benign lesions like dermal nevi. However, the presence of hair follicles does not definitively rule out malignancy, and the lesion's border is irregular, which is a concerning feature for malignancies. Additional clinical history, including patient age, family history of skin cancer, and any changes in the lesion over time, would be beneficial."
+      ],
+      "suggested_next_check_type": "histopathological confirmation",
+      "caution_flags": [
+        "The lesion's exact size cannot be determined from the image alone, which is crucial for differential diagnosis.",
+        "The lesion's surface texture is described as keratotic, but there is no direct evidence of scaling presence or absence, which could affect the differential diagnosis."
+      ],
+      "referenced_experiences": [
+        "ISIC_0000025_downsampled",
+        "ISIC_0000041_downsampled"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "risk_signal"
+    }
+  },
+  "risk_flags": [],
+  "uncertainty": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The lesion exhibits marked color variation and a reticular pigmentation pattern, which are features commonly associated with benign lesions like dermal nevi.",
+      "The presence of hair follicles does not suggest a highly suspicious pattern, but it also does not definitively rule out malignancy.",
+      "The lesion's border is irregular, which is a concerning feature for malignancies but can also be seen in benign lesions."
+    ],
+    "missing_information": [
+      "Histopathological confirmation is crucial to differentiate between benign and malignant lesions.",
+      "Additional clinical history, including patient age, family history of skin cancer, and any changes in the lesion over time, would be beneficial.",
+      "Further imaging techniques, such as dermoscopy or ultrasound, might provide more detailed information about the lesion's structure and depth."
+    ],
+    "referenced_experiences": [
+      "ISIC_0000025_downsampled",
+      "ISIC_0000041_downsampled",
+      "abs_confusion_5c6199e857fc",
+      "abs_composite_25d8d487b740",
+      "tac_ISIC_0000040_downsampled_4ae354055cbc",
+      "abs_composite_da12991b4041"
+    ],
+    "evidence_strength": "medium",
+    "recommendation_type": "descriptive_evidence"
+  },
+  "notes": [
+    "Agent generated structured evidence only.",
+    "Qwen remains the sole final diagnostic decision maker.",
+    "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill.",
+    "Policy in use: stable_default_policy.",
+    "Skill retrieval candidates: metadata_consistency_skill, color_pattern_analysis_skill, morphology_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, uncertainty_assessment_skill, malignancy_risk_assessment_skill, distribution_analysis_skill, differential_compare_skill, contradiction_check_skill, information_gap_detection_skill, temporal_evolution_skill, exclusion_reasoning_skill, escalation_recommendation_skill.",
+    "The lesion appears to be well-circumscribed but with some variation in pigmentation.",
+    "Retrieved prior reasoning experience for context."
+  ],
+  "initial_perception_summary": {
+    "image_summary": "A hyperpigmented, irregularly shaped lesion with a central area of lighter coloration surrounded by darker pigmentation. The lesion is located on the lower extremity.",
+    "ddx_candidates": [
+      "Dermal Nevus",
+      "Bowen's Disease",
+      "Atypical Mole"
+    ],
+    "uncertainty_level": "low",
+    "uncertainty_reasons": [
+      "The lesion has a relatively uniform color and lacks significant asymmetry or irregular borders.",
+      "The presence of hair follicles does not suggest a highly suspicious pattern."
+    ],
+    "observation_notes": [
+      "The lesion appears to be well-circumscribed but with some variation in pigmentation."
+    ]
+  },
+  "retrieved_raw_cases_summary": [
+    {
+      "source_id": "ISIC_0000025_downsampled",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "ISIC_0000025_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "A pinkish lesion with irregular borders and some areas of hyperpigmentation and hypopigmentation.",
+      "learning_points": [
+        "Final decision: Nevus",
+        "Correctness: True"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "ISIC_0000041_downsampled",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "ISIC_0000041_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "A well-circumscribed, irregularly shaped brown lesion on the lower extremity.",
+      "learning_points": [
+        "Final decision: Nevus",
+        "Correctness: True"
+      ],
+      "retrieval_score": 6.0,
+      "base_retrieval_score": 6.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "ISIC_0000040_downsampled",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "ISIC_0000040_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "A slightly irregular, hyperpigmented lesion with a central area of darker pigmentation on a lighter background.",
+      "learning_points": [
+        "Final decision: Nevus",
+        "Correctness: False"
+      ],
+      "retrieval_score": 6.0,
+      "base_retrieval_score": 6.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_tactical_experiences_summary": [
+    {
+      "source_id": "tac_ISIC_0000040_downsampled_4ae354055cbc",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000040_downsampled",
+      "confusion_pair": "Nevus->MEL",
+      "perception_summary": "ddx=Dermal Nevus, Atypical Mole, Superficial Spreading Melanoma; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "focused a high-value confusion pair",
+        "sharpened specialist comparison clues",
+        "did not fully resolve the active confusion pattern"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_ISIC_0000025_downsampled_f0152010c15d",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000025_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Atypical Nevus, Dermal Nevus, Bowen's Disease; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "separated edge evidence from surface evidence",
+        "highlighted margin quality explicitly",
+        "required downstream integration beyond border_surface_analysis_skill"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_ISIC_0000025_downsampled_e6055fc25fdb",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000025_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Atypical Nevus, Dermal Nevus, Bowen's Disease; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "made pigment variation explicit",
+        "surfaced color asymmetry as auditable evidence",
+        "required downstream integration beyond color_pattern_analysis_skill"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_ISIC_0000025_downsampled_e4a8c7c2c58e",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "ISIC_0000025_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Atypical Nevus, Dermal Nevus, Bowen's Disease; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "required downstream integration beyond lesion_description_structuring_skill",
+        "Action pattern: structured_skill_sequence"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_abstract_experiences_summary": [
+    {
+      "source_id": "abs_confusion_5c6199e857fc",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "ISIC_0000004",
+      "confusion_pair": "Nevus->MEL",
+      "perception_summary": "A slightly irregular, hyperpigmented lesion with a central area of darker pigmentation on a lighter background.; Dermal Nevus; Atypical Mole",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 11.0,
+      "base_retrieval_score": 11.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_composite_25d8d487b740",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "ISIC_0000025_downsampled",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Atypical Nevus, Dermal Nevus, Bowen's Disease; decision_pattern=risk_then_uncertainty_audit; uncertainty=medium; risk=malignancy_risk:medium",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_composite_bdd4bde1356f",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "ISIC_0000008",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Compound Nevus; decision_pattern=risk_then_uncertainty_audit; uncertainty=medium; risk=malignancy_risk:medium",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 7.0,
+      "base_retrieval_score": 7.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "uncertainty_summary": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The lesion exhibits marked color variation and a reticular pigmentation pattern, which are features commonly associated with benign lesions like dermal nevi.",
+      "The presence of hair follicles does not suggest a highly suspicious pattern, but it also does not definitively rule out malignancy.",
+      "The lesion's border is irregular, which is a concerning feature for malignancies but can also be seen in benign lesions."
+    ],
+    "missing_information": [
+      "Histopathological confirmation is crucial to differentiate between benign and malignant lesions.",
+      "Additional clinical history, including patient age, family history of skin cancer, and any changes in the lesion over time, would be beneficial.",
+      "Further imaging techniques, such as dermoscopy or ultrasound, might provide more detailed information about the lesion's structure and depth."
+    ],
+    "referenced_experiences": [
+      "ISIC_0000025_downsampled",
+      "ISIC_0000041_downsampled",
+      "abs_confusion_5c6199e857fc",
+      "abs_composite_25d8d487b740",
+      "tac_ISIC_0000040_downsampled_4ae354055cbc",
+      "abs_composite_da12991b4041"
+    ]
+  },
+  "contradiction_summary": {
+    "contradictions": [
+      "{'description': 'The lesion in the image shows a reticular pigmentation pattern, which is noted in the metadata and initial perception. However, the morphology analysis suggests a plaque-like lesion, which could imply a different pattern.', 'evidence_sources': ['initial_perception', 'morphology_analysis_skill']}"
+    ],
+    "missing_links": [
+      "{'description': 'There is no direct evidence regarding the presence or absence of hair follicles in the lesion, which could impact the differential diagnosis.', 'evidence_sources': ['initial_perception', 'morphology_analysis_skill']}"
+    ],
+    "reasoning_gaps": [
+      "{'description': \"The lesion's exact size cannot be determined from the image alone, which is crucial for differential diagnosis.\", 'evidence_sources': ['initial_perception', 'morphology_analysis_skill']}",
+      "{'description': \"The lesion's surface texture is described as keratotic, but there is no direct evidence of scaling presence or absence, which could affect the differential diagnosis.\", 'evidence_sources': ['initial_perception', 'border_surface_analysis_skill']}"
+    ],
+    "metadata_conflicts": [],
+    "suspicious_points": [
+      "The lesion appears hyperpigmented with areas of lighter and darker pigmentation, which could be indicative of a dermal nevus or atypical mole. However, the presence of hair follicles does not strongly suggest a highly suspicious pattern.",
+      "The lesion is described as well-circumscribed but with some variation in pigmentation, which aligns with the description of a dermal nevus."
+    ]
+  },
+  "information_gap_summary": {
+    "missing_information": [
+      "Presence or absence of hair follicles within the lesion",
+      "Lesion's response to pressure (blanching test)",
+      "Patient's medical history, including previous skin conditions and surgeries"
+    ],
+    "why_it_matters": [
+      "Hair follicles can be a key feature in differentiating between benign and potentially malignant lesions.",
+      "The blanching test helps assess vascularity and can provide insights into the nature of the lesion.",
+      "Patient's medical history can influence the differential diagnosis and guide further investigations."
+    ],
+    "impact_on_differential": [
+      "The presence of hair follicles might suggest a dermal nevus, while their absence could be more concerning for other diagnoses.",
+      "A positive blanching test might indicate a superficial lesion, whereas a negative test could suggest deeper involvement.",
+      "A patient's medical history can provide context for the lesion's behavior and help rule out certain conditions."
+    ],
+    "uncertainty_if_missing": "medium"
+  },
+  "escalation_summary": {
+    "whether_escalation_needed": "consider",
+    "escalation_reason": [
+      "The lesion exhibits marked color variation and a reticular pigmentation pattern, which are features commonly associated with benign lesions like dermal nevi. However, the presence of hair follicles does not definitively rule out malignancy, and the lesion's border is irregular, which is a concerning feature for malignancies. Additional clinical history, including patient age, family history of skin cancer, and any changes in the lesion over time, would be beneficial."
+    ],
+    "suggested_next_check_type": "histopathological confirmation",
+    "caution_flags": [
+      "The lesion's exact size cannot be determined from the image alone, which is crucial for differential diagnosis.",
+      "The lesion's surface texture is described as keratotic, but there is no direct evidence of scaling presence or absence, which could affect the differential diagnosis."
+    ]
+  },
+  "planner_rationale": {
+    "planner_type": "rule_based",
+    "planner_version": "v1",
+    "selected_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "border_surface_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill",
+      "escalation_recommendation_skill"
+    ],
+    "selection_reasons": {
+      "morphology_analysis_skill": [
+        "Boosted by skill retrieval score=10.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "color_pattern_analysis_skill": [
+        "Boosted by skill retrieval score=11.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "border_surface_analysis_skill": [
+        "Boosted by skill retrieval score=9.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "lesion_description_structuring_skill": [
+        "Boosted by skill retrieval score=8.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "metadata_consistency_skill": [
+        "Boosted by skill retrieval score=12.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "information_gap_detection_skill": [
+        "Boosted by skill retrieval score=5.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `contradiction_rich`."
+      ],
+      "uncertainty_assessment_skill": [
+        "Boosted by skill retrieval score=7.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ],
+      "contradiction_check_skill": [
+        "Boosted by skill retrieval score=7.50.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ],
+      "escalation_recommendation_skill": [
+        "Boosted by skill retrieval score=3.50.",
+        "Boosted by cognition helpful_rate=0.91.",
+        "Matched active trigger profile `contradiction_rich`.",
+        "Boosted by cognition.preferred_skills from prior cases."
+      ]
+    }
+  },
+  "confusion_cluster_summary": {
+    "active_clusters": [],
+    "guidance": []
+  },
+  "selected_evidence": [],
+  "evidence_decision_policy": {
+    "risk_layer": {
+      "risk_flag": "malignancy_risk_unknown",
+      "caution_flags": [
+        "contradictions_present",
+        "follow_up_or_biopsy_consideration"
+      ],
+      "follow_up_suggestion": "histopathological confirmation",
+      "selected_evidence": [],
+      "baseline_preview": {
+        "early_ddx_candidates": [
+          "Dermal Nevus",
+          "Bowen's Disease",
+          "Atypical Mole"
+        ],
+        "image_summary": "A hyperpigmented, irregularly shaped lesion with a central area of lighter coloration surrounded by darker pigmentation. The lesion is located on the lower extremity.",
+        "baseline_final_diagnosis": "Nevus",
+        "baseline_differential_diagnoses": [
+          "Nevus"
+        ],
+        "baseline_confidence": "Moderate"
+      }
+    },
+    "diagnosis_override_layer": {
+      "workflow_context": {
+        "label_granularity": "fine",
+        "presentation_mode": "focal_lesion",
+        "workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+        "available_tests": [
+          "clinical_photo_only",
+          "lesion_photo"
+        ],
+        "workflow_preference": "morphology_first",
+        "hospital_type": "specialist_clinic",
+        "time_budget": "standard",
+        "metadata_completeness": "partial",
+        "workflow_capabilities": [
+          "image_archive_reasoning",
+          "full_taxonomy_reasoning",
+          "focal_lesion_reasoning",
+          "legacy_agent_final_reasoning"
+        ]
+      },
+      "override_allowed": false,
+      "malignancy_override_allowed": false,
+      "subtype_override_allowed": false,
+      "family_override_allowed": false,
+      "override_mode": "risk_only",
+      "override_reasons": [
+        "uncertainty_not_high"
+      ],
+      "why_not_confident_enough_to_override": [
+        "malignancy risk is not high enough for a diagnosis override",
+        "no curated selected evidence is available to justify overriding the baseline diagnosis",
+        "supporting evidence does not sufficiently outweigh opposing or exclusion evidence",
+        "supporting evidence is not specific enough to justify a subtype override",
+        "no specialist evidence strongly supports the override direction",
+        "contradictions or reasoning gaps remain too numerous",
+        "retrieval evidence does not provide a consistent prototype or confusion-memory anchor",
+        "opposing or exclusion evidence quota is not satisfied"
+      ],
+      "supporting_evidence": [],
+      "opposing_evidence": [],
+      "supporting_score": 0,
+      "opposing_score": 0,
+      "support_margin": 0,
+      "selected_evidence_present": false,
+      "subtype_support_score": 0,
+      "subtype_support_margin": 0,
+      "specialist_support_present": false,
+      "consistent_retrieval_count": 0,
+      "contradiction_count": 6,
+      "uncertainty_level": "medium",
+      "opposing_quota_satisfied": false,
+      "subtype_support_quota_satisfied": false
+    }
+  },
+  "serialized_evidence_text": "[Observation Evidence]\n- Initial image summary: A hyperpigmented, irregularly shaped lesion with a central area of lighter coloration surrounded by darker pigmentation. The lesion is located on the lower extremity.\n- Early differential candidates: Dermal Nevus, Bowen's Disease, Atypical Mole\n- morphology_analysis_skill: lesion_type=plaque | size_range=small to medium | elevation=flat | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence\n- color_pattern_analysis_skill: primary_color=Brown | color_variation=Marked | pigmentation_pattern=Reticular | asymmetry_color=Present | evidence_strength=medium | recommendation_type=descriptive_evidence\n- border_surface_analysis_skill: border_clarity=poor | border_irregularity=irregular | surface_texture=keratotic | scaling_presence=absent | evidence_strength=medium | recommendation_type=descriptive_evidence\n- lesion_description_structuring_skill: primary_lesion_morphology=Plaque | color=Hyperpigmented, with areas of lighter and darker pigmentation | border=Irregular, poorly defined | surface=Keratotic | size_count=size: Small to medium, count: Solitary | distribution=site: Lower extremity, pattern: Well-circumscribed\n- Raw case reference ISIC_0000025_downsampled: A pinkish lesion with irregular borders and some areas of hyperpigmentation and hypopigmentation.\n\n[Exclusion And Comparison Evidence]\n- metadata_consistency_skill: consistency_score=medium | suspicious_points=The lesion appears hyperpigmented with areas of lighter and darker pigmentation, which could be indicative of a dermal nevus or atypical mole. However, the p... | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Tactical experience tac_ISIC_0000040_downsampled_4ae354055cbc: ddx=Dermal Nevus, Atypical Mole, Superficial Spreading Melanoma; risk=malignancy_risk:medium; uncertainty=medium; focused a high-value confusion pair; sharpened specialist comparison clues; did not fully resolve the active confusion pattern\n- Tactical experience tac_ISIC_0000025_downsampled_f0152010c15d: ddx=Atypical Nevus, Dermal Nevus, Bowen's Disease; risk=malignancy_risk:medium; uncertainty=medium; separated edge evidence from surface evidence; highlighted margin quality explicitly; required downstream integration beyond border_surface_analysis_skill\n\n[Risk Evidence]\n- Abstract experience abs_confusion_5c6199e857fc: A slightly irregular, hyperpigmented lesion with a central area of darker pigmentation on a lighter background.; Dermal Nevus; Atypical Mole; When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty\n- Abstract experience abs_composite_25d8d487b740: ddx=Atypical Nevus, Dermal Nevus, Bowen's Disease; decision_pattern=risk_then_uncertainty_audit; uncertainty=medium; risk=malignancy_risk:medium; Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.; compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill; Candidate only; do not auto-materialize a composite skill in the current stage.\n- Abstract experience abs_composite_bdd4bde1356f: ddx=Dysplastic Nevus (Dysplastic Nevus), Atypical Mole, Compound Nevus; decision_pattern=risk_then_uncertainty_audit; uncertainty=medium; risk=malignancy_risk:medium; Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.; compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+lesion_description_structuring_skill; Candidate only; do not auto-materialize a composite skill in the current stage.\n\n[Conflict And Uncertainty]\n- Uncertainty level: medium\n- Uncertainty reasons: The lesion exhibits marked color variation and a reticular pigmentation pattern, which are features commonly associated with benign lesions like dermal nevi.; The presence of hair follicles does not suggest a highly suspicious pattern, but it also does not definitively rule out malignancy.; The lesion's border is irregular, which is a concerning feature for malignancies but can also be seen in benign lesions.\n- Missing information: Histopathological confirmation is crucial to differentiate between benign and malignant lesions.; Additional clinical history, including patient age, family history of skin cancer, and any changes in the lesion over time, would be beneficial.; Further imaging techniques, such as dermoscopy or ultrasound, might provide more detailed information about the lesion's structure and depth.\n- contradictions: {'description': 'The lesion in the image shows a reticular pigmentation pattern, which is noted in the metadata and initial perception. However, the morphology analysis suggests a plaque-like lesion, which could imply a different pattern.', 'evidence_sources': ['initial_perception', 'morphology_analysis_skill']}\n- missing links: {'description': 'There is no direct evidence regarding the presence or absence of hair follicles in the lesion, which could impact the differential diagnosis.', 'evidence_sources': ['initial_perception', 'morphology_analysis_skill']}\n- reasoning gaps: {'description': \"The lesion's exact size cannot be determined from the image alone, which is crucial for differential diagnosis.\", 'evidence_sources': ['initial_perception', 'morphology_analysis_skill']}; {'description': \"The lesion's surface texture is described as keratotic, but there is no direct evidence of scaling presence or absence, which could affect the differential diagnosis.\", 'evidence_sources': ['initial_perception', 'border_surface_analysis_skill']}\n- suspicious points: The lesion appears hyperpigmented with areas of lighter and darker pigmentation, which could be indicative of a dermal nevus or atypical mole. However, the presence of hair follicles does not strongly suggest a highly suspicious pattern.; The lesion is described as well-circumscribed but with some variation in pigmentation, which aligns with the description of a dermal nevus.\n- contradiction_check_skill: contradictions={'description': 'The lesion in the image shows a reticular pigmentation pattern, which is noted in the metadata and initial perception. However, the morpholo... | missing_links={'description': 'There is no direct evidence regarding the presence or absence of hair follicles in the lesion, which could impact the differential diagnosis... | reasoning_gaps={'description': \"The lesion's exact size cannot be determined from the image alone, which is crucial for differential diagnosis.\", 'evidence_sources': ['init... | evidence_strength=medium | recommendation_type=descriptive_evidence\n- uncertainty_assessment_skill: uncertainty_level=medium | reasons=The lesion exhibits marked color variation and a reticular pigmentation pattern, which are features commonly associated with benign lesions like dermal nevi.... | missing_information=Histopathological confirmation is crucial to differentiate between benign and malignant lesions.; Additional clinical history, including patient age, family ... | evidence_strength=medium | recommendation_type=descriptive_evidence\n- information_gap_detection_skill: missing_information=Presence or absence of hair follicles within the lesion; Lesion's response to pressure (blanching test); Patient's medical history, including previous skin c... | why_it_matters=Hair follicles can be a key feature in differentiating between benign and potentially malignant lesions.; The blanching test helps assess vascularity and can... | impact_on_differential=The presence of hair follicles might suggest a dermal nevus, while their absence could be more concerning for other diagnoses.; A positive blanching test mig... | uncertainty_if_missing=medium | evidence_strength=medium | recommendation_type=descriptive_evidence\n- explicit information gaps: Presence or absence of hair follicles within the lesion; Lesion's response to pressure (blanching test); Patient's medical history, including previous skin conditions and surgeries\n- why gaps matter: Hair follicles can be a key feature in differentiating between benign and potentially malignant lesions.; The blanching test helps assess vascularity and can provide insights into the nature of the lesion.; Patient's medical history can influence the differential diagnosis and guide further investigations.\n- impact on differential: The presence of hair follicles might suggest a dermal nevus, while their absence could be more concerning for other diagnoses.; A positive blanching test might indicate a superficial lesion, whereas a negative test could suggest deeper involvement.; A patient's medical history can provide context for the lesion's behavior and help rule out certain conditions.\n- residual uncertainty if still missing: medium\n- escalation_recommendation_skill: whether_escalation_needed=consider | escalation_reason=The lesion exhibits marked color variation and a reticular pigmentation pattern, which are features commonly associated with benign lesions like dermal nevi.... | suggested_next_check_type=histopathological confirmation | caution_flags=The lesion's exact size cannot be determined from the image alone, which is crucial for differential diagnosis.; The lesion's surface texture is described as... | evidence_strength=medium | recommendation_type=risk_signal\n- escalation needed: consider\n- escalation reasons: The lesion exhibits marked color variation and a reticular pigmentation pattern, which are features commonly associated with benign lesions like dermal nevi. However, the presence of hair follicles does not definitively rule out malignancy, and the lesion's border is irregular, which is a concerning feature for malignancies. Additional clinical history, including patient age, family history of skin cancer, and any changes in the lesion over time, would be beneficial.\n- suggested next check type: histopathological confirmation\n- caution flags: The lesion's exact size cannot be determined from the image alone, which is crucial for differential diagnosis.; The lesion's surface texture is described as keratotic, but there is no direct evidence of scaling presence or absence, which could affect the differential diagnosis.\n\n[Planner Rationale]\n- Selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill\n- morphology_analysis_skill: Boosted by skill retrieval score=10.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.\n- color_pattern_analysis_skill: Boosted by skill retrieval score=11.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.\n- border_surface_analysis_skill: Boosted by skill retrieval score=9.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.",
+  "evidence_calibration_debug": {
+    "calibrator_type": "off",
+    "calibrator_version": "v1",
+    "section_plan": {
+      "observation": {
+        "skill_names": [
+          "morphology_analysis_skill",
+          "color_pattern_analysis_skill",
+          "border_surface_analysis_skill",
+          "lesion_description_structuring_skill"
+        ],
+        "merged_groups": [],
+        "raw_case_source_ids": [
+          "ISIC_0000025_downsampled"
+        ]
+      },
+      "comparison": {
+        "skill_names": [
+          "metadata_consistency_skill"
+        ],
+        "merged_groups": [],
+        "tactical_source_ids": [
+          "tac_ISIC_0000040_downsampled_4ae354055cbc",
+          "tac_ISIC_0000025_downsampled_f0152010c15d"
+        ],
+        "abstract_source_ids": []
+      },
+      "risk": {
+        "skill_names": [],
+        "abstract_source_ids": [
+          "abs_confusion_5c6199e857fc",
+          "abs_composite_25d8d487b740",
+          "abs_composite_bdd4bde1356f"
+        ]
+      },
+      "conflict_uncertainty": {
+        "skill_names": [
+          "information_gap_detection_skill",
+          "uncertainty_assessment_skill",
+          "contradiction_check_skill",
+          "escalation_recommendation_skill"
+        ]
+      },
+      "planner": {
+        "max_reason_skills": 3
+      },
+      "section_order": [
+        "observation",
+        "comparison",
+        "risk",
+        "conflict_uncertainty",
+        "planner"
+      ]
+    },
+    "item_scores": [],
+    "omitted_items": [],
+    "debug": {
+      "reason": "evidence calibrator disabled by policy"
+    }
+  }
+}

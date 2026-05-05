@@ -1,0 +1,1879 @@
+{
+  "perception": {
+    "image_summary": "The image shows a foot with significant desquamation, characterized by peeling and scaling of the skin, particularly on the lateral aspect.",
+    "ddx_candidates": [
+      "SUN_DAMAGE_ACTINIC",
+      "PIGMENTARY_NEVUS_KERATOSIS",
+      "DERMATITIS_ECZEMA"
+    ],
+    "uncertainty": {
+      "level": "low",
+      "reasons": [
+        "The image does not show any signs of malignancy or infection.",
+        "The pattern of desquamation is more consistent with chronic conditions like actinic keratosis or eczema."
+      ]
+    },
+    "notes": [
+      "The affected area appears to be on the lateral side of the foot, which could be due to chronic sun exposure."
+    ]
+  },
+  "retrieved_experience": [
+    {
+      "case_id": "sd198_001084",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "A light brown macule is present on the inner forearm.; PIGMENTARY_NEVUS_KERATOSIS; SUN_DAMAGE_ACTINIC",
+      "confusion_pair": "Malignant Melanoma->PIGMENTARY_NEVUS_KERATOSIS",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_confusion_0c98691c4bd0",
+      "retrieval_score": 10
+    },
+    {
+      "case_id": "sd198_000386",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "Close-up of a face showing actinic damage with telangiectasia on the cheeks.; SUN_DAMAGE_ACTINIC; PIGMENTARY_NEVUS_KERATOSIS",
+      "confusion_pair": "Basal Cell Carcinoma->SUN_DAMAGE_ACTINIC",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_confusion_85e96a87f1c3",
+      "retrieval_score": 9
+    },
+    {
+      "case_id": "sd198_000958",
+      "source_layer": "abstract_experience",
+      "source_subtype": "composite_skill_seed",
+      "experience_type": "composite_skill_seed",
+      "perception_summary": "ddx=PIGMENTARY_NEVUS_KERATOSIS, BENIGN_TUMOR_CYST, DERMATITIS_ECZEMA; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium",
+      "confusion_pair": null,
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+distribution_analysis_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage.",
+        "Promote only after repeated successful supporting cases under a stable trigger pattern."
+      ],
+      "source_id": "abs_composite_51d591ca65b1",
+      "retrieval_score": 9
+    },
+    {
+      "case_id": "sd198_000958",
+      "source_layer": "tactical_experience",
+      "source_subtype": "routine_reasoning",
+      "experience_type": "tactical_experience",
+      "perception_summary": "ddx=PIGMENTARY_NEVUS_KERATOSIS, BENIGN_TUMOR_CYST, DERMATITIS_ECZEMA; ; uncertainty=medium",
+      "confusion_pair": null,
+      "learning_points": [
+        "separated edge evidence from surface evidence",
+        "highlighted margin quality explicitly",
+        "required downstream integration beyond border_surface_analysis_skill",
+        "Action pattern: structured_skill_sequence"
+      ],
+      "source_id": "tac_sd198_000958_f0152010c15d",
+      "retrieval_score": 9
+    }
+  ],
+  "skill_outputs": {
+    "morphology_analysis_skill": {
+      "lesion_type": "macule",
+      "size_range": "small to medium",
+      "elevation": "flat",
+      "count": "solitary",
+      "referenced_experiences": [
+        "sd198_001427",
+        "sd198_001084"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "color_pattern_analysis_skill": {
+      "primary_color": "Brown",
+      "color_variation": "Marked",
+      "pigmentation_pattern": "Reticular",
+      "asymmetry_color": "Present",
+      "referenced_experiences": [
+        "abs_confusion_85e96a87f1c3",
+        "abs_confusion_0c98691c4bd0"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "border_surface_analysis_skill": {
+      "border_clarity": "poorly defined",
+      "border_irregularity": "irregular",
+      "surface_texture": "keratotic",
+      "scaling_presence": "present",
+      "referenced_experiences": [
+        "abs_confusion_85e96a87f1c3",
+        "abs_confusion_0c98691c4bd0"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "distribution_analysis_skill": {
+      "body_location": "lateral aspect of the foot",
+      "symmetry": "asymmetric",
+      "localized_vs_generalized": "generalized",
+      "clustering_pattern": "solitary",
+      "referenced_experiences": [
+        "sd198_001427",
+        "sd198_001084",
+        "abs_confusion_85e96a87f1c3",
+        "abs_confusion_0c98691c4bd0",
+        "abs_composite_51d591ca65b1"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "lesion_description_structuring_skill": {
+      "primary_lesion_morphology": "Macule",
+      "color": [
+        "Brown, marked pigmentation"
+      ],
+      "border": [
+        "Poorly defined, irregular"
+      ],
+      "surface": [
+        "Keratotic, scaling presence"
+      ],
+      "size_count": [
+        "Small to medium, solitary"
+      ],
+      "distribution": [
+        "Lateral aspect of the foot, generalized, asymmetric"
+      ],
+      "associated_context": [
+        "Chronic sun exposure, desquamation, peeling and scaling of the skin"
+      ],
+      "referenced_experiences": [
+        "sd198_001427",
+        "sd198_001084"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "differential_compare_skill": {
+      "candidate_pairs": [
+        "SUN_DAMAGE_ACTINIC vs PIGMENTARY_NEVUS_KERATOSIS",
+        "SUN_DAMAGE_ACTINIC vs DERMATITIS_ECZEMA"
+      ],
+      "supporting_evidence": [
+        "SUN_DAMAGE_ACTINIC vs PIGMENTARY_NEVUS_KERATOSIS: The lesion has a reticular pigmentation pattern, which is more characteristic of actinic keratosis.; The presence of scaling and desquamation is consistent with chronic sun damage.",
+        "SUN_DAMAGE_ACTINIC vs DERMATITIS_ECZEMA: The lateral location of the lesion suggests chronic sun exposure, which is a common etiology for actinic keratosis."
+      ],
+      "conflicting_evidence": [
+        "SUN_DAMAGE_ACTINIC vs PIGMENTARY_NEVUS_KERATOSIS: The lesion is solitary, which is less typical for actinic keratosis compared to multiple lesions seen in solar keratoses.",
+        "SUN_DAMAGE_ACTINIC vs DERMATITIS_ECZEMA: The presence of scaling and desquamation is also seen in dermatitis, making it a competing feature."
+      ],
+      "required_missing_evidence": [
+        "SUN_DAMAGE_ACTINIC vs PIGMENTARY_NEVUS_KERATOSIS: A biopsy to confirm the histopathological findings.",
+        "SUN_DAMAGE_ACTINIC vs DERMATITIS_ECZEMA: Confirmation of the clinical course and response to treatment if available."
+      ],
+      "referenced_experiences": [
+        "sd198_001427",
+        "sd198_001084",
+        "abs_confusion_85e96a87f1c3",
+        "abs_confusion_0c98691c4bd0",
+        "abs_composite_51d591ca65b1"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "information_gap_detection_skill": {
+      "missing_information": [
+        "Clinical history (duration, progression, associated symptoms, medical history, etc.)",
+        "Patient demographics (age, gender, race, occupation, etc.)",
+        "Associated systemic symptoms or conditions"
+      ],
+      "why_it_matters": [
+        "Clinical history helps in understanding the natural history and potential causes of the lesion.",
+        "Patient demographics can influence the differential diagnosis and treatment options.",
+        "Associated systemic symptoms or conditions can provide additional clues about the underlying cause."
+      ],
+      "impact_on_differential": [
+        "Clinical history can help narrow down the differential diagnosis by ruling out certain conditions based on the patient's presentation.",
+        "Demographics can influence the likelihood of certain diagnoses, such as actinic keratosis being more common in older individuals exposed to sunlight.",
+        "Systemic symptoms or conditions can suggest other underlying diseases that might be causing the lesion."
+      ],
+      "uncertainty_if_missing": "high",
+      "referenced_experiences": [
+        "sd198_001427",
+        "sd198_001084",
+        "abs_confusion_85e96a87f1c3",
+        "abs_confusion_0c98691c4bd0",
+        "abs_composite_51d591ca65b1"
+      ],
+      "evidence_strength": "low",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "uncertainty_assessment_skill": {
+      "uncertainty_level": "medium",
+      "reasons": [
+        "The image shows significant desquamation, but the underlying cause is not definitively clear.",
+        "The differential diagnosis includes actinic keratosis, pigmented nevus keratosis, and dermatitis, each presenting with similar symptoms."
+      ],
+      "missing_information": [
+        "Confirmation of the histopathological findings through a biopsy.",
+        "Clinical course and response to treatment if available."
+      ],
+      "referenced_experiences": [
+        "sd198_001427",
+        "sd198_001084",
+        "abs_confusion_85e96a87f1c3",
+        "abs_confusion_0c98691c4bd0",
+        "abs_composite_51d591ca65b1"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "contradiction_check_skill": {
+      "contradictions": [
+        {
+          "description": "The image shows significant desquamation, while the metadata indicates the class name is 'Desquamation'. However, the differential diagnosis candidates include 'SUN_DAMAGE_ACTINIC', 'PIGMENTARY_NEVUS_KERATOSIS', and 'DERMATITIS_ECZEMA', which do not directly align with 'Desquamation' as a primary diagnosis.",
+          "evidence_sources": [
+            "image_summary",
+            "metadata"
+          ]
+        }
+      ],
+      "missing_links": [
+        {
+          "description": "There is no evidence regarding the histopathological findings, which would be crucial for confirming the diagnosis.",
+          "evidence_needed": [
+            "confirmation of histopathological findings through a biopsy"
+          ]
+        }
+      ],
+      "reasoning_gaps": [
+        {
+          "description": "The uncertainty level is medium, indicating that the differential diagnosis is not yet fully narrowed down. More information, such as clinical course and response to treatment, would help in making a more definitive diagnosis.",
+          "evidence_needed": [
+            "clinical course and response to treatment"
+          ]
+        }
+      ],
+      "referenced_experiences": [
+        "sd198_001427",
+        "sd198_001084",
+        "abs_confusion_85e96a87f1c3",
+        "abs_confusion_0c98691c4bd0",
+        "abs_composite_51d591ca65b1"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    }
+  },
+  "risk_flags": [],
+  "uncertainty": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The image shows significant desquamation, but the underlying cause is not definitively clear.",
+      "The differential diagnosis includes actinic keratosis, pigmented nevus keratosis, and dermatitis, each presenting with similar symptoms."
+    ],
+    "missing_information": [
+      "Confirmation of the histopathological findings through a biopsy.",
+      "Clinical course and response to treatment if available."
+    ],
+    "referenced_experiences": [
+      "sd198_001427",
+      "sd198_001084",
+      "abs_confusion_85e96a87f1c3",
+      "abs_confusion_0c98691c4bd0",
+      "abs_composite_51d591ca65b1"
+    ],
+    "evidence_strength": "medium",
+    "recommendation_type": "descriptive_evidence"
+  },
+  "notes": [
+    "Agent generated structured evidence only.",
+    "Qwen remains the sole final diagnostic decision maker.",
+    "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, differential_compare_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill.",
+    "Policy in use: stable_default_policy.",
+    "Skill retrieval candidates: morphology_analysis_skill, distribution_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, differential_compare_skill, uncertainty_assessment_skill, information_gap_detection_skill, exclusion_reasoning_skill, contradiction_check_skill.",
+    "The affected area appears to be on the lateral side of the foot, which could be due to chronic sun exposure.",
+    "Retrieved prior reasoning experience for context."
+  ],
+  "initial_perception_summary": {
+    "image_summary": "The image shows a foot with significant desquamation, characterized by peeling and scaling of the skin, particularly on the lateral aspect.",
+    "ddx_candidates": [
+      "SUN_DAMAGE_ACTINIC",
+      "PIGMENTARY_NEVUS_KERATOSIS",
+      "DERMATITIS_ECZEMA"
+    ],
+    "uncertainty_level": "low",
+    "uncertainty_reasons": [
+      "The image does not show any signs of malignancy or infection.",
+      "The pattern of desquamation is more consistent with chronic conditions like actinic keratosis or eczema."
+    ],
+    "observation_notes": [
+      "The affected area appears to be on the lateral side of the foot, which could be due to chronic sun exposure."
+    ]
+  },
+  "retrieved_raw_cases_summary": [
+    {
+      "source_id": "sd198_001084",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "sd198_001084",
+      "confusion_pair": "None",
+      "perception_summary": "A light brown macule is present on the inner forearm.",
+      "learning_points": [
+        "Final decision: Malignant Melanoma",
+        "Correctness: False"
+      ],
+      "retrieval_score": 6.0,
+      "base_retrieval_score": 6.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "sd198_000386",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "sd198_000386",
+      "confusion_pair": "None",
+      "perception_summary": "Close-up of a face showing actinic damage with telangiectasia on the cheeks.",
+      "learning_points": [
+        "Final decision: Basal Cell Carcinoma",
+        "Correctness: False"
+      ],
+      "retrieval_score": 6.0,
+      "base_retrieval_score": 6.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "sd198_000345",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "sd198_000345",
+      "confusion_pair": "None",
+      "perception_summary": "Close-up of a skin lesion showing a central black eschar surrounded by erythema and some surrounding pigmentation.",
+      "learning_points": [
+        "Final decision: Nevus",
+        "Correctness: False"
+      ],
+      "retrieval_score": 6.0,
+      "base_retrieval_score": 6.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_tactical_experiences_summary": [
+    {
+      "source_id": "tac_sd198_000958_f0152010c15d",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "sd198_000958",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=PIGMENTARY_NEVUS_KERATOSIS, BENIGN_TUMOR_CYST, DERMATITIS_ECZEMA; ; uncertainty=medium",
+      "learning_points": [
+        "separated edge evidence from surface evidence",
+        "highlighted margin quality explicitly",
+        "required downstream integration beyond border_surface_analysis_skill"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_sd198_000958_ea7b54e2327b",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "sd198_000958",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=PIGMENTARY_NEVUS_KERATOSIS, BENIGN_TUMOR_CYST, DERMATITIS_ECZEMA; ; uncertainty=medium",
+      "learning_points": [
+        "kept the differential open",
+        "made pairwise reasoning explicit",
+        "required downstream integration beyond differential_compare_skill"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_sd198_000958_e6055fc25fdb",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "sd198_000958",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=PIGMENTARY_NEVUS_KERATOSIS, BENIGN_TUMOR_CYST, DERMATITIS_ECZEMA; ; uncertainty=medium",
+      "learning_points": [
+        "made pigment variation explicit",
+        "surfaced color asymmetry as auditable evidence",
+        "required downstream integration beyond color_pattern_analysis_skill"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_sd198_000958_e4a8c7c2c58e",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "sd198_000958",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=PIGMENTARY_NEVUS_KERATOSIS, BENIGN_TUMOR_CYST, DERMATITIS_ECZEMA; ; uncertainty=medium",
+      "learning_points": [
+        "required downstream integration beyond lesion_description_structuring_skill",
+        "Action pattern: structured_skill_sequence"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_abstract_experiences_summary": [
+    {
+      "source_id": "abs_confusion_0c98691c4bd0",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "sd198_001084",
+      "confusion_pair": "Malignant Melanoma->PIGMENTARY_NEVUS_KERATOSIS",
+      "perception_summary": "A light brown macule is present on the inner forearm.; PIGMENTARY_NEVUS_KERATOSIS; SUN_DAMAGE_ACTINIC",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 10.0,
+      "base_retrieval_score": 10.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_confusion_85e96a87f1c3",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "sd198_000386",
+      "confusion_pair": "Basal Cell Carcinoma->SUN_DAMAGE_ACTINIC",
+      "perception_summary": "Close-up of a face showing actinic damage with telangiectasia on the cheeks.; SUN_DAMAGE_ACTINIC; PIGMENTARY_NEVUS_KERATOSIS",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_composite_51d591ca65b1",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "sd198_000958",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=PIGMENTARY_NEVUS_KERATOSIS, BENIGN_TUMOR_CYST, DERMATITIS_ECZEMA; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+distribution_analysis_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "uncertainty_summary": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The image shows significant desquamation, but the underlying cause is not definitively clear.",
+      "The differential diagnosis includes actinic keratosis, pigmented nevus keratosis, and dermatitis, each presenting with similar symptoms."
+    ],
+    "missing_information": [
+      "Confirmation of the histopathological findings through a biopsy.",
+      "Clinical course and response to treatment if available."
+    ],
+    "referenced_experiences": [
+      "sd198_001427",
+      "sd198_001084",
+      "abs_confusion_85e96a87f1c3",
+      "abs_confusion_0c98691c4bd0",
+      "abs_composite_51d591ca65b1"
+    ]
+  },
+  "contradiction_summary": {
+    "contradictions": [
+      "{'description': \"The image shows significant desquamation, while the metadata indicates the class name is 'Desquamation'. However, the differential diagnosis candidates include 'SUN_DAMAGE_ACTINIC', 'PIGMENTARY_NEVUS_KERATOSIS', and 'DERMATITIS_ECZEMA', which do not directly align with 'Desquamation' as a primary diagnosis.\", 'evidence_sources': ['image_summary', 'metadata']}"
+    ],
+    "missing_links": [
+      "{'description': 'There is no evidence regarding the histopathological findings, which would be crucial for confirming the diagnosis.', 'evidence_needed': ['confirmation of histopathological findings through a biopsy']}"
+    ],
+    "reasoning_gaps": [
+      "{'description': 'The uncertainty level is medium, indicating that the differential diagnosis is not yet fully narrowed down. More information, such as clinical course and response to treatment, would help in making a more definitive diagnosis.', 'evidence_needed': ['clinical course and response to treatment']}"
+    ],
+    "metadata_conflicts": [],
+    "suspicious_points": []
+  },
+  "information_gap_summary": {
+    "missing_information": [
+      "Clinical history (duration, progression, associated symptoms, medical history, etc.)",
+      "Patient demographics (age, gender, race, occupation, etc.)",
+      "Associated systemic symptoms or conditions"
+    ],
+    "why_it_matters": [
+      "Clinical history helps in understanding the natural history and potential causes of the lesion.",
+      "Patient demographics can influence the differential diagnosis and treatment options.",
+      "Associated systemic symptoms or conditions can provide additional clues about the underlying cause."
+    ],
+    "impact_on_differential": [
+      "Clinical history can help narrow down the differential diagnosis by ruling out certain conditions based on the patient's presentation.",
+      "Demographics can influence the likelihood of certain diagnoses, such as actinic keratosis being more common in older individuals exposed to sunlight.",
+      "Systemic symptoms or conditions can suggest other underlying diseases that might be causing the lesion."
+    ],
+    "uncertainty_if_missing": "high"
+  },
+  "escalation_summary": {
+    "whether_escalation_needed": "unknown",
+    "escalation_reason": [],
+    "suggested_next_check_type": "",
+    "caution_flags": []
+  },
+  "planner_rationale": {
+    "planner_type": "rule_based",
+    "planner_version": "v1",
+    "selected_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "border_surface_analysis_skill",
+      "distribution_analysis_skill",
+      "lesion_description_structuring_skill",
+      "differential_compare_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill"
+    ],
+    "selection_reasons": {
+      "morphology_analysis_skill": [
+        "Boosted by skill retrieval score=8.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "color_pattern_analysis_skill": [
+        "Boosted by skill retrieval score=8.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "border_surface_analysis_skill": [
+        "Boosted by skill retrieval score=8.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "distribution_analysis_skill": [
+        "Boosted by skill retrieval score=8.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "lesion_description_structuring_skill": [
+        "Boosted by skill retrieval score=6.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "differential_compare_skill": [
+        "Boosted by skill retrieval score=5.50.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "information_gap_detection_skill": [
+        "Boosted by skill retrieval score=3.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Boosted by cognition.preferred_skills from prior cases."
+      ],
+      "uncertainty_assessment_skill": [
+        "Boosted by skill retrieval score=3.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Boosted by cognition.preferred_skills from prior cases."
+      ],
+      "contradiction_check_skill": [
+        "Boosted by skill retrieval score=3.50.",
+        "Boosted by cognition helpful_rate=0.97.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Boosted by cognition.preferred_skills from prior cases."
+      ]
+    }
+  },
+  "confusion_cluster_summary": {
+    "active_clusters": [],
+    "guidance": []
+  },
+  "selected_evidence": [
+    {
+      "item_id": "lesion_description_structuring_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "lesion_description_structuring_skill",
+      "skill_name": "lesion_description_structuring_skill",
+      "retrieval_type": "",
+      "section": "observation",
+      "category": "description",
+      "summary": "lesion_description_structuring_skill: primary_lesion_morphology=Macule | color=Brown, marked pigmentation | border=Poorly defined, irregular | surface=Keratotic, scaling presence | size_count=Small to medium, solitary | distribution=Lateral aspect of the foot, generalized, asymmetric",
+      "score": 8.92,
+      "rank": 1,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "morphology_analysis_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "morphology_analysis_skill",
+      "skill_name": "morphology_analysis_skill",
+      "retrieval_type": "",
+      "section": "observation",
+      "category": "description",
+      "summary": "morphology_analysis_skill: lesion_type=macule | size_range=small to medium | elevation=flat | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence",
+      "score": 8.08,
+      "rank": 2,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "contradiction_check_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "contradiction_check_skill",
+      "skill_name": "contradiction_check_skill",
+      "retrieval_type": "",
+      "section": "conflict_uncertainty",
+      "category": "contradiction_gap",
+      "summary": "contradiction_check_skill: contradictions={'description': \"The image shows significant desquamation, while the metadata indicates the class name is 'Desquamation'. However, the differential diagnosis... | missing_links={'description': 'There is no evidence regarding the histopathological findings, which would be crucial for confirming the diagnosis.', 'ev...",
+      "score": 7.68,
+      "rank": 6,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "differential_compare_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "differential_compare_skill",
+      "skill_name": "differential_compare_skill",
+      "retrieval_type": "",
+      "section": "comparison",
+      "category": "differential_support",
+      "summary": "differential_compare_skill: candidate_pairs=SUN_DAMAGE_ACTINIC vs PIGMENTARY_NEVUS_KERATOSIS; SUN_DAMAGE_ACTINIC vs DERMATITIS_ECZEMA | supporting_evidence=SUN_DAMAGE_ACTINIC vs PIGMENTARY_NEVUS_KERATOSIS: The lesion has a reticular pigmentation pattern, which is more characteristic of actinic keratosis.; The pr... | conflicting_evidence=SUN_DAMAGE_ACTINI...",
+      "score": 6.74,
+      "rank": 7,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "information_gap_detection_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "information_gap_detection_skill",
+      "skill_name": "information_gap_detection_skill",
+      "retrieval_type": "",
+      "section": "conflict_uncertainty",
+      "category": "contradiction_gap",
+      "summary": "information_gap_detection_skill: missing_information=Clinical history (duration, progression, associated symptoms, medical history, etc.); Patient demographics (age, gender, race, occupation, etc.); Associated ... | why_it_matters=Clinical history helps in understanding the natural history and potential causes of the lesion.; Patient demographics can infl...",
+      "score": 6.68,
+      "rank": 8,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "abs_confusion_0c98691c4bd0",
+      "item_type": "retrieval_record",
+      "source_type": "retrieval_record",
+      "source_name": "abs_confusion_0c98691c4bd0",
+      "skill_name": "",
+      "retrieval_type": "abstract_experience",
+      "section": "abstract_experience",
+      "category": "experience_hint",
+      "summary": "A light brown macule is present on the inner forearm.; PIGMENTARY_NEVUS_KERATOSIS; SUN_DAMAGE_ACTINIC | When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty | confusion_pair=Malignant Melanoma->PIGMENTARY_NEVUS_KERATOSIS",
+      "score": 6.0,
+      "rank": 10,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "abs_confusion_85e96a87f1c3",
+      "item_type": "retrieval_record",
+      "source_type": "retrieval_record",
+      "source_name": "abs_confusion_85e96a87f1c3",
+      "skill_name": "",
+      "retrieval_type": "abstract_experience",
+      "section": "abstract_experience",
+      "category": "experience_hint",
+      "summary": "Close-up of a face showing actinic damage with telangiectasia on the cheeks.; SUN_DAMAGE_ACTINIC; PIGMENTARY_NEVUS_KERATOSIS | When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty | confusion_pair=Basal Cell Carcinoma->SUN_DAMAGE_ACTINIC",
+      "score": 5.8,
+      "rank": 11,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "sd198_000345",
+      "item_type": "retrieval_record",
+      "source_type": "retrieval_record",
+      "source_name": "sd198_000345",
+      "skill_name": "",
+      "retrieval_type": "raw_case_memory",
+      "section": "raw_case_memory",
+      "category": "description",
+      "summary": "Close-up of a skin lesion showing a central black eschar surrounded by erythema and some surrounding pigmentation. | Final decision: Nevus; Correctness: False | confusion_pair=None",
+      "score": 2.5,
+      "rank": 17,
+      "keep_reason": "kept"
+    }
+  ],
+  "evidence_decision_policy": {
+    "risk_layer": {
+      "risk_flag": "malignancy_risk_unknown",
+      "caution_flags": [
+        "contradictions_present"
+      ],
+      "follow_up_suggestion": "clinical follow-up and closer inspection if concern persists",
+      "selected_evidence": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "lesion_description_structuring_skill",
+          "skill_name": "lesion_description_structuring_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "lesion_description_structuring_skill: primary_lesion_morphology=Macule | color=Brown, marked pigmentation | border=Poorly defined, irregular | surface=Keratotic, scaling presence | size_count=Small to medium, solitary | distribution=Lateral aspect of the foot, generalized, asymmetric",
+          "score": 8.92,
+          "rank": 1,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "morphology_analysis_skill",
+          "skill_name": "morphology_analysis_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "morphology_analysis_skill: lesion_type=macule | size_range=small to medium | elevation=flat | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 8.08,
+          "rank": 2,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "contradiction_check_skill",
+          "skill_name": "contradiction_check_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "contradiction_check_skill: contradictions={'description': \"The image shows significant desquamation, while the metadata indicates the class name is 'Desquamation'. However, the differential diagnosis... | missing_links={'description': 'There is no evidence regarding the histopathological findings, which would be crucial for confirming the diagnosis.', 'ev...",
+          "score": 7.68,
+          "rank": 6,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "differential_compare_skill",
+          "skill_name": "differential_compare_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "differential_support",
+          "summary": "differential_compare_skill: candidate_pairs=SUN_DAMAGE_ACTINIC vs PIGMENTARY_NEVUS_KERATOSIS; SUN_DAMAGE_ACTINIC vs DERMATITIS_ECZEMA | supporting_evidence=SUN_DAMAGE_ACTINIC vs PIGMENTARY_NEVUS_KERATOSIS: The lesion has a reticular pigmentation pattern, which is more characteristic of actinic keratosis.; The pr... | conflicting_evidence=SUN_DAMAGE_ACTINI...",
+          "score": 6.74,
+          "rank": 7,
+          "keep_reason": "kept"
+        }
+      ],
+      "baseline_preview": {
+        "early_ddx_candidates": [
+          "SUN_DAMAGE_ACTINIC",
+          "PIGMENTARY_NEVUS_KERATOSIS",
+          "DERMATITIS_ECZEMA"
+        ],
+        "image_summary": "The image shows a foot with significant desquamation, characterized by peeling and scaling of the skin, particularly on the lateral aspect.",
+        "baseline_final_diagnosis": "Nevus",
+        "baseline_differential_diagnoses": [
+          "Nevus",
+          "Contact Dermatitis"
+        ],
+        "baseline_confidence": "Moderate"
+      }
+    },
+    "diagnosis_override_layer": {
+      "workflow_context": {
+        "label_granularity": "grouped",
+        "presentation_mode": "focal_lesion",
+        "workflow_profile": "coarse_taxonomy_workflow",
+        "available_tests": [
+          "clinical_photo_only",
+          "lesion_photo"
+        ],
+        "workflow_preference": "morphology_first",
+        "hospital_type": "specialist_clinic",
+        "time_budget": "standard",
+        "metadata_completeness": "full",
+        "workflow_capabilities": [
+          "coarse_taxonomy_reasoning",
+          "grouped_label_reasoning",
+          "focal_lesion_reasoning"
+        ]
+      },
+      "override_allowed": false,
+      "malignancy_override_allowed": false,
+      "subtype_override_allowed": false,
+      "family_override_allowed": false,
+      "override_mode": "risk_only",
+      "override_reasons": [
+        "supporting_evidence_outweighs_opposition",
+        "subtype_specific_support_present",
+        "uncertainty_not_high",
+        "consistent_retrieval_support"
+      ],
+      "why_not_confident_enough_to_override": [
+        "malignancy risk is not high enough for a diagnosis override",
+        "no specialist evidence strongly supports the override direction",
+        "contradictions or reasoning gaps remain too numerous",
+        "opposing or exclusion evidence quota is not satisfied"
+      ],
+      "supporting_evidence": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "lesion_description_structuring_skill",
+          "skill_name": "lesion_description_structuring_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "lesion_description_structuring_skill: primary_lesion_morphology=Macule | color=Brown, marked pigmentation | border=Poorly defined, irregular | surface=Keratotic, scaling presence | size_count=Small to medium, solitary | distribution=Lateral aspect of the foot, generalized, asymmetric",
+          "score": 8.92,
+          "rank": 1,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "morphology_analysis_skill",
+          "skill_name": "morphology_analysis_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "morphology_analysis_skill: lesion_type=macule | size_range=small to medium | elevation=flat | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 8.08,
+          "rank": 2,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "contradiction_check_skill",
+          "skill_name": "contradiction_check_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "contradiction_check_skill: contradictions={'description': \"The image shows significant desquamation, while the metadata indicates the class name is 'Desquamation'. However, the differential diagnosis... | missing_links={'description': 'There is no evidence regarding the histopathological findings, which would be crucial for confirming the diagnosis.', 'ev...",
+          "score": 7.68,
+          "rank": 6,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "differential_compare_skill",
+          "skill_name": "differential_compare_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "differential_support",
+          "summary": "differential_compare_skill: candidate_pairs=SUN_DAMAGE_ACTINIC vs PIGMENTARY_NEVUS_KERATOSIS; SUN_DAMAGE_ACTINIC vs DERMATITIS_ECZEMA | supporting_evidence=SUN_DAMAGE_ACTINIC vs PIGMENTARY_NEVUS_KERATOSIS: The lesion has a reticular pigmentation pattern, which is more characteristic of actinic keratosis.; The pr... | conflicting_evidence=SUN_DAMAGE_ACTINI...",
+          "score": 6.74,
+          "rank": 7,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "information_gap_detection_skill",
+          "skill_name": "information_gap_detection_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "information_gap_detection_skill: missing_information=Clinical history (duration, progression, associated symptoms, medical history, etc.); Patient demographics (age, gender, race, occupation, etc.); Associated ... | why_it_matters=Clinical history helps in understanding the natural history and potential causes of the lesion.; Patient demographics can infl...",
+          "score": 6.68,
+          "rank": 8,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "abs_confusion_0c98691c4bd0",
+          "item_type": "retrieval_record",
+          "source_type": "retrieval_record",
+          "source_name": "abs_confusion_0c98691c4bd0",
+          "skill_name": "",
+          "retrieval_type": "abstract_experience",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "summary": "A light brown macule is present on the inner forearm.; PIGMENTARY_NEVUS_KERATOSIS; SUN_DAMAGE_ACTINIC | When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty | confusion_pair=Malignant Melanoma->PIGMENTARY_NEVUS_KERATOSIS",
+          "score": 6.0,
+          "rank": 10,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "abs_confusion_85e96a87f1c3",
+          "item_type": "retrieval_record",
+          "source_type": "retrieval_record",
+          "source_name": "abs_confusion_85e96a87f1c3",
+          "skill_name": "",
+          "retrieval_type": "abstract_experience",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "summary": "Close-up of a face showing actinic damage with telangiectasia on the cheeks.; SUN_DAMAGE_ACTINIC; PIGMENTARY_NEVUS_KERATOSIS | When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty | confusion_pair=Basal Cell Carcinoma->SUN_DAMAGE_ACTINIC",
+          "score": 5.8,
+          "rank": 11,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "sd198_000345",
+          "item_type": "retrieval_record",
+          "source_type": "retrieval_record",
+          "source_name": "sd198_000345",
+          "skill_name": "",
+          "retrieval_type": "raw_case_memory",
+          "section": "raw_case_memory",
+          "category": "description",
+          "summary": "Close-up of a skin lesion showing a central black eschar surrounded by erythema and some surrounding pigmentation. | Final decision: Nevus; Correctness: False | confusion_pair=None",
+          "score": 2.5,
+          "rank": 17,
+          "keep_reason": "kept"
+        }
+      ],
+      "opposing_evidence": [],
+      "supporting_score": 52.4,
+      "opposing_score": 0,
+      "support_margin": 52.4,
+      "selected_evidence_present": true,
+      "subtype_support_score": 18.54,
+      "subtype_support_margin": 18.54,
+      "specialist_support_present": false,
+      "consistent_retrieval_count": 2,
+      "contradiction_count": 3,
+      "uncertainty_level": "medium",
+      "opposing_quota_satisfied": false,
+      "subtype_support_quota_satisfied": true
+    }
+  },
+  "serialized_evidence_text": "[Observation Evidence]\n- Initial image summary: The image shows a foot with significant desquamation, characterized by peeling and scaling of the skin, particularly on the lateral aspect.\n- Early differential candidates: SUN_DAMAGE_ACTINIC, PIGMENTARY_NEVUS_KERATOSIS, DERMATITIS_ECZEMA\n- structured lesion observation: lesion_description_structuring_skill: primary_lesion_morphology=Macule | color=Brown, marked pigmentation | border=Poorly defined, irregular | surface=Keratotic, scaling presence | size_count=Small to medium, solitary | distribution=Lateral aspect of the foot, generalized, asymmetric || morphology_analysis_skill: lesion_type=macule | size_range=small to medium | elevation=flat | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Raw case reference sd198_000345: Close-up of a skin lesion showing a central black eschar surrounded by erythema and some surrounding pigmentation.\n\n[Exclusion And Comparison Evidence]\n- differential_compare_skill: candidate_pairs=SUN_DAMAGE_ACTINIC vs PIGMENTARY_NEVUS_KERATOSIS; SUN_DAMAGE_ACTINIC vs DERMATITIS_ECZEMA | supporting_evidence=SUN_DAMAGE_ACTINIC vs PIGMENTARY_NEVUS_KERATOSIS: The lesion has a reticular pigmentation pattern, which is more characteristic of actinic keratosis.; The pr... | conflicting_evidence=SUN_DAMAGE_ACTINIC vs PIGMENTARY_NEVUS_KERATOSIS: The lesion is solitary, which is less typical for actinic keratosis compared to multiple lesions seen in so... | required_missing_evidence=SUN_DAMAGE_ACTINIC vs PIGMENTARY_NEVUS_KERATOSIS: A biopsy to confirm the histopathological findings.; SUN_DAMAGE_ACTINIC vs DERMATITIS_ECZEMA: Confirmation ... | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Tactical experience tac_sd198_000958_f0152010c15d: ddx=PIGMENTARY_NEVUS_KERATOSIS, BENIGN_TUMOR_CYST, DERMATITIS_ECZEMA; ; uncertainty=medium; separated edge evidence from surface evidence; highlighted margin quality explicitly; required downstream integration beyond border_surface_analysis_skill\n- Tactical experience tac_sd198_000958_ea7b54e2327b: ddx=PIGMENTARY_NEVUS_KERATOSIS, BENIGN_TUMOR_CYST, DERMATITIS_ECZEMA; ; uncertainty=medium; kept the differential open; made pairwise reasoning explicit; required downstream integration beyond differential_compare_skill\n- Tactical experience tac_sd198_000958_e6055fc25fdb: ddx=PIGMENTARY_NEVUS_KERATOSIS, BENIGN_TUMOR_CYST, DERMATITIS_ECZEMA; ; uncertainty=medium; made pigment variation explicit; surfaced color asymmetry as auditable evidence; required downstream integration beyond color_pattern_analysis_skill\n- Tactical experience tac_sd198_000958_e4a8c7c2c58e: ddx=PIGMENTARY_NEVUS_KERATOSIS, BENIGN_TUMOR_CYST, DERMATITIS_ECZEMA; ; uncertainty=medium; required downstream integration beyond lesion_description_structuring_skill; Action pattern: structured_skill_sequence\n\n[Risk Evidence]\n- Abstract experience abs_confusion_0c98691c4bd0: A light brown macule is present on the inner forearm.; PIGMENTARY_NEVUS_KERATOSIS; SUN_DAMAGE_ACTINIC; When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty\n- Abstract experience abs_confusion_85e96a87f1c3: Close-up of a face showing actinic damage with telangiectasia on the cheeks.; SUN_DAMAGE_ACTINIC; PIGMENTARY_NEVUS_KERATOSIS; When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty\n\n[Conflict And Uncertainty]\n- Uncertainty level: medium\n- Uncertainty reasons: The image shows significant desquamation, but the underlying cause is not definitively clear.; The differential diagnosis includes actinic keratosis, pigmented nevus keratosis, and dermatitis, each presenting with similar symptoms.\n- Missing information: Confirmation of the histopathological findings through a biopsy.; Clinical course and response to treatment if available.\n- contradictions: {'description': \"The image shows significant desquamation, while the metadata indicates the class name is 'Desquamation'. However, the differential diagnosis candidates include 'SUN_DAMAGE_ACTINIC', 'PIGMENTARY_NEVUS_KERATOSIS', and 'DERMATITIS_ECZEMA', which do not directly align with 'Desquamation' as a primary diagnosis.\", 'evidence_sources': ['image_summary', 'metadata']}\n- missing links: {'description': 'There is no evidence regarding the histopathological findings, which would be crucial for confirming the diagnosis.', 'evidence_needed': ['confirmation of histopathological findings through a biopsy']}\n- reasoning gaps: {'description': 'The uncertainty level is medium, indicating that the differential diagnosis is not yet fully narrowed down. More information, such as clinical course and response to treatment, would help in making a more definitive diagnosis.', 'evidence_needed': ['clinical course and response to treatment']}\n- contradiction_check_skill: contradictions={'description': \"The image shows significant desquamation, while the metadata indicates the class name is 'Desquamation'. However, the differential diagnosis... | missing_links={'description': 'There is no evidence regarding the histopathological findings, which would be crucial for confirming the diagnosis.', 'evidence_needed': ['c... | reasoning_gaps={'description': 'The uncertainty level is medium, indicating that the differential diagnosis is not yet fully narrowed down. More information, such as clinic... | evidence_strength=medium | recommendation_type=descriptive_evidence\n- information_gap_detection_skill: missing_information=Clinical history (duration, progression, associated symptoms, medical history, etc.); Patient demographics (age, gender, race, occupation, etc.); Associated ... | why_it_matters=Clinical history helps in understanding the natural history and potential causes of the lesion.; Patient demographics can influence the differential diagnosi... | impact_on_differential=Clinical history can help narrow down the differential diagnosis by ruling out certain conditions based on the patient's presentation.; Demographics can infl... | uncertainty_if_missing=high | evidence_strength=low | recommendation_type=descriptive_evidence\n- explicit information gaps: Clinical history (duration, progression, associated symptoms, medical history, etc.); Patient demographics (age, gender, race, occupation, etc.); Associated systemic symptoms or conditions\n- why gaps matter: Clinical history helps in understanding the natural history and potential causes of the lesion.; Patient demographics can influence the differential diagnosis and treatment options.; Associated systemic symptoms or conditions can provide additional clues about the underlying cause.\n- impact on differential: Clinical history can help narrow down the differential diagnosis by ruling out certain conditions based on the patient's presentation.; Demographics can influence the likelihood of certain diagnoses, such as actinic keratosis being more common in older individuals exposed to sunlight.; Systemic symptoms or conditions can suggest other underlying diseases that might be causing the lesion.\n- residual uncertainty if still missing: high\n- escalation needed: unknown\n\n[Planner Rationale]\n- Selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, differential_compare_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill\n- morphology_analysis_skill: Boosted by skill retrieval score=8.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.\n- color_pattern_analysis_skill: Boosted by skill retrieval score=8.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.\n- border_surface_analysis_skill: Boosted by skill retrieval score=8.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.",
+  "evidence_calibration_debug": {
+    "calibrator_type": "heuristic",
+    "calibrator_version": "v1",
+    "section_plan": {
+      "observation": {
+        "skill_names": [
+          "lesion_description_structuring_skill",
+          "morphology_analysis_skill"
+        ],
+        "merged_groups": [
+          {
+            "label": "structured_lesion_observation",
+            "skills": [
+              "lesion_description_structuring_skill",
+              "morphology_analysis_skill"
+            ],
+            "max_members": 2
+          }
+        ],
+        "raw_case_source_ids": [
+          "sd198_000345"
+        ]
+      },
+      "comparison": {
+        "skill_names": [
+          "differential_compare_skill"
+        ],
+        "merged_groups": [],
+        "tactical_source_ids": [],
+        "abstract_source_ids": []
+      },
+      "risk": {
+        "skill_names": [],
+        "abstract_source_ids": [
+          "abs_confusion_0c98691c4bd0",
+          "abs_confusion_85e96a87f1c3"
+        ]
+      },
+      "conflict_uncertainty": {
+        "skill_names": [
+          "contradiction_check_skill",
+          "information_gap_detection_skill"
+        ]
+      },
+      "planner": {
+        "max_reason_skills": 3
+      },
+      "section_order": [
+        "observation",
+        "comparison",
+        "risk",
+        "conflict_uncertainty",
+        "planner"
+      ]
+    },
+    "item_scores": [
+      {
+        "item_id": "lesion_description_structuring_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 8.92,
+        "learned_score": 0.0,
+        "final_score": 8.92,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 1,
+        "dedup_key": "description:lesion_description_structuring_skill"
+      },
+      {
+        "item_id": "morphology_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 8.08,
+        "learned_score": 0.0,
+        "final_score": 8.08,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 2,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.98,
+        "learned_score": 0.0,
+        "final_score": 7.98,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "border_surface_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.88,
+        "learned_score": 0.0,
+        "final_score": 7.88,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "contradiction_check_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 7.68,
+        "learned_score": 0.0,
+        "final_score": 7.68,
+        "selected": true,
+        "reason": "kept",
+        "category": "contradiction_gap",
+        "rank": 3,
+        "dedup_key": "uncertainty:contradiction_check_skill"
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.58,
+        "learned_score": 0.0,
+        "final_score": 7.58,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "differential_compare_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 6.74,
+        "learned_score": 0.0,
+        "final_score": 6.74,
+        "selected": true,
+        "reason": "kept",
+        "category": "differential_support",
+        "rank": 4,
+        "dedup_key": "differential_support:differential_compare_skill"
+      },
+      {
+        "item_id": "information_gap_detection_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 6.68,
+        "learned_score": 0.0,
+        "final_score": 6.68,
+        "selected": true,
+        "reason": "kept",
+        "category": "contradiction_gap",
+        "rank": 5,
+        "dedup_key": "uncertainty:information_gap_detection_skill"
+      },
+      {
+        "item_id": "uncertainty_assessment_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 6.68,
+        "learned_score": 0.0,
+        "final_score": 6.68,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "contradiction_gap",
+        "rank": 0,
+        "dedup_key": "uncertainty:uncertainty_assessment_skill"
+      },
+      {
+        "item_id": "abs_confusion_0c98691c4bd0",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 6.0,
+        "learned_score": 0.0,
+        "final_score": 6.0,
+        "selected": true,
+        "reason": "kept",
+        "category": "experience_hint",
+        "rank": 6,
+        "dedup_key": "abstract_experience:abs_confusion_0c98691c4bd0"
+      },
+      {
+        "item_id": "abs_confusion_85e96a87f1c3",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 5.8,
+        "learned_score": 0.0,
+        "final_score": 5.8,
+        "selected": true,
+        "reason": "kept",
+        "category": "experience_hint",
+        "rank": 7,
+        "dedup_key": "abstract_experience:abs_confusion_85e96a87f1c3"
+      },
+      {
+        "item_id": "abs_composite_51d591ca65b1",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 5.3,
+        "learned_score": 0.0,
+        "final_score": 5.3,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "abstract_experience:abs_composite_51d591ca65b1"
+      },
+      {
+        "item_id": "tac_sd198_000958_f0152010c15d",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 4.4,
+        "learned_score": 0.0,
+        "final_score": 4.4,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_sd198_000958_f0152010c15d"
+      },
+      {
+        "item_id": "tac_sd198_000958_ea7b54e2327b",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 4.4,
+        "learned_score": 0.0,
+        "final_score": 4.4,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_sd198_000958_ea7b54e2327b"
+      },
+      {
+        "item_id": "tac_sd198_000958_e6055fc25fdb",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 4.4,
+        "learned_score": 0.0,
+        "final_score": 4.4,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_sd198_000958_e6055fc25fdb"
+      },
+      {
+        "item_id": "tac_sd198_000958_e4a8c7c2c58e",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 4.4,
+        "learned_score": 0.0,
+        "final_score": 4.4,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_sd198_000958_e4a8c7c2c58e"
+      },
+      {
+        "item_id": "sd198_001084",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 2.5,
+        "learned_score": 0.0,
+        "final_score": 2.5,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:sd198_001084"
+      },
+      {
+        "item_id": "sd198_000386",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 2.5,
+        "learned_score": 0.0,
+        "final_score": 2.5,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:sd198_000386"
+      },
+      {
+        "item_id": "sd198_000345",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 2.5,
+        "learned_score": 0.0,
+        "final_score": 2.5,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 8,
+        "dedup_key": "raw_case_memory:sd198_000345"
+      }
+    ],
+    "omitted_items": [
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 7.98
+      },
+      {
+        "item_id": "border_surface_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 7.88
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 7.58
+      },
+      {
+        "item_id": "uncertainty_assessment_skill",
+        "item_type": "skill_output",
+        "reason": "category_quota_exceeded",
+        "section": "conflict_uncertainty",
+        "category": "contradiction_gap",
+        "score": 6.68
+      },
+      {
+        "item_id": "abs_composite_51d591ca65b1",
+        "item_type": "retrieval_record",
+        "reason": "category_quota_exceeded",
+        "section": "abstract_experience",
+        "category": "experience_hint",
+        "score": 5.3
+      },
+      {
+        "item_id": "tac_sd198_000958_e4a8c7c2c58e",
+        "item_type": "retrieval_record",
+        "reason": "category_quota_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 4.4
+      },
+      {
+        "item_id": "tac_sd198_000958_e6055fc25fdb",
+        "item_type": "retrieval_record",
+        "reason": "category_quota_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 4.4
+      },
+      {
+        "item_id": "tac_sd198_000958_ea7b54e2327b",
+        "item_type": "retrieval_record",
+        "reason": "category_quota_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 4.4
+      },
+      {
+        "item_id": "tac_sd198_000958_f0152010c15d",
+        "item_type": "retrieval_record",
+        "reason": "category_quota_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 4.4
+      },
+      {
+        "item_id": "sd198_000386",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 2.5
+      },
+      {
+        "item_id": "sd198_001084",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 2.5
+      }
+    ],
+    "debug": {
+      "policy": {
+        "enable_evidence_calibrator": true,
+        "calibrator_mode": "heuristic",
+        "calibrator_checkpoint_path": "",
+        "learned_calibration_weight": 1.2,
+        "max_total_items": 8,
+        "max_observation_skills": 4,
+        "max_comparison_skills": 3,
+        "max_risk_skills": 2,
+        "max_uncertainty_skills": 3,
+        "max_exclusion_items": 2,
+        "max_experience_hints": 2,
+        "max_raw_cases": 1,
+        "max_tactical": 2,
+        "max_abstract": 2,
+        "max_planner_reasons": 3,
+        "omit_low_value_evidence": true,
+        "min_effective_score": 2.4,
+        "dedup_similar_evidence": true,
+        "cluster_aware_ordering": true,
+        "cluster_opposing_bonus": 1.8,
+        "cluster_exclusion_bonus": 1.4,
+        "risk_overweight_penalty": 1.2,
+        "uncertainty_overweight_penalty": 1.0,
+        "description_priority_bonus": 0.6,
+        "exclusion_priority_bonus": 1.2,
+        "negative_evidence_priority_bonus": 1.0,
+        "allow_family_override": false,
+        "allow_keratinocyte_subtype_override": false,
+        "debug_output": true,
+        "conservative_fusion_mode": "soft"
+      },
+      "learned_scorer_loaded": false,
+      "contradiction_count": 3,
+      "uncertainty_level": "medium",
+      "risk_flag_count": 0,
+      "confusion_clusters": [],
+      "kept_items": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "rank": 1,
+          "score": 8.92
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "rank": 2,
+          "score": 8.08
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "rank": 6,
+          "score": 7.68
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "section": "comparison",
+          "category": "differential_support",
+          "rank": 7,
+          "score": 6.74
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "rank": 8,
+          "score": 6.68
+        },
+        {
+          "item_id": "abs_confusion_0c98691c4bd0",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "rank": 10,
+          "score": 6.0
+        },
+        {
+          "item_id": "abs_confusion_85e96a87f1c3",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "rank": 11,
+          "score": 5.8
+        },
+        {
+          "item_id": "sd198_000345",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "rank": 17,
+          "score": 2.5
+        }
+      ],
+      "pruned_items": [
+        {
+          "item_id": "color_pattern_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 7.9799999999999995,
+          "heuristic_score": 7.9799999999999995,
+          "learned_score": 0.0,
+          "payload": {
+            "primary_color": "Brown",
+            "color_variation": "Marked",
+            "pigmentation_pattern": "Reticular",
+            "asymmetry_color": "Present",
+            "referenced_experiences": [
+              "abs_confusion_85e96a87f1c3",
+              "abs_confusion_0c98691c4bd0"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 8.5,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 8.379999999999999,
+          "rank": 3,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "border_surface_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 7.88,
+          "heuristic_score": 7.88,
+          "learned_score": 0.0,
+          "payload": {
+            "border_clarity": "poorly defined",
+            "border_irregularity": "irregular",
+            "surface_texture": "keratotic",
+            "scaling_presence": "present",
+            "referenced_experiences": [
+              "abs_confusion_85e96a87f1c3",
+              "abs_confusion_0c98691c4bd0"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 8.5,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 8.28,
+          "rank": 4,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "distribution_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 7.58,
+          "heuristic_score": 7.58,
+          "learned_score": 0.0,
+          "payload": {
+            "body_location": "lateral aspect of the foot",
+            "symmetry": "asymmetric",
+            "localized_vs_generalized": "generalized",
+            "clustering_pattern": "solitary",
+            "referenced_experiences": [
+              "sd198_001427",
+              "sd198_001084",
+              "abs_confusion_85e96a87f1c3",
+              "abs_confusion_0c98691c4bd0",
+              "abs_composite_51d591ca65b1"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 8.5,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 7.98,
+          "rank": 5,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "uncertainty_assessment_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "score": 6.680000000000001,
+          "heuristic_score": 6.680000000000001,
+          "learned_score": 0.0,
+          "payload": {
+            "uncertainty_level": "medium",
+            "reasons": [
+              "The image shows significant desquamation, but the underlying cause is not definitively clear.",
+              "The differential diagnosis includes actinic keratosis, pigmented nevus keratosis, and dermatitis, each presenting with similar symptoms."
+            ],
+            "missing_information": [
+              "Confirmation of the histopathological findings through a biopsy.",
+              "Clinical course and response to treatment if available."
+            ],
+            "referenced_experiences": [
+              "sd198_001427",
+              "sd198_001084",
+              "abs_confusion_85e96a87f1c3",
+              "abs_confusion_0c98691c4bd0",
+              "abs_composite_51d591ca65b1"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 3.5,
+          "dedup_key": "uncertainty:uncertainty_assessment_skill",
+          "ordering_score": 6.28,
+          "rank": 9,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "abs_composite_51d591ca65b1",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "score": 5.3,
+          "heuristic_score": 5.3,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "abs_composite_51d591ca65b1",
+            "source_layer": "abstract_experience",
+            "experience_type": "composite_skill_seed",
+            "case_id": "sd198_000958",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=PIGMENTARY_NEVUS_KERATOSIS, BENIGN_TUMOR_CYST, DERMATITIS_ECZEMA; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium",
+            "learning_points": [
+              "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+              "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+distribution_analysis_skill",
+              "Candidate only; do not auto-materialize a composite skill in the current stage."
+            ],
+            "retrieval_score": 9.0,
+            "base_retrieval_score": 9.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "abstract_experience:abs_composite_51d591ca65b1",
+          "ordering_score": 5.3,
+          "rank": 12,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "tac_sd198_000958_e4a8c7c2c58e",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 4.3999999999999995,
+          "heuristic_score": 4.3999999999999995,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_sd198_000958_e4a8c7c2c58e",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "sd198_000958",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=PIGMENTARY_NEVUS_KERATOSIS, BENIGN_TUMOR_CYST, DERMATITIS_ECZEMA; ; uncertainty=medium",
+            "learning_points": [
+              "required downstream integration beyond lesion_description_structuring_skill",
+              "Action pattern: structured_skill_sequence"
+            ],
+            "retrieval_score": 9.0,
+            "base_retrieval_score": 9.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_sd198_000958_e4a8c7c2c58e",
+          "ordering_score": 4.3999999999999995,
+          "rank": 13,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "tac_sd198_000958_e6055fc25fdb",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 4.3999999999999995,
+          "heuristic_score": 4.3999999999999995,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_sd198_000958_e6055fc25fdb",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "sd198_000958",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=PIGMENTARY_NEVUS_KERATOSIS, BENIGN_TUMOR_CYST, DERMATITIS_ECZEMA; ; uncertainty=medium",
+            "learning_points": [
+              "made pigment variation explicit",
+              "surfaced color asymmetry as auditable evidence",
+              "required downstream integration beyond color_pattern_analysis_skill"
+            ],
+            "retrieval_score": 9.0,
+            "base_retrieval_score": 9.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_sd198_000958_e6055fc25fdb",
+          "ordering_score": 4.3999999999999995,
+          "rank": 14,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "tac_sd198_000958_ea7b54e2327b",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 4.3999999999999995,
+          "heuristic_score": 4.3999999999999995,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_sd198_000958_ea7b54e2327b",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "sd198_000958",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=PIGMENTARY_NEVUS_KERATOSIS, BENIGN_TUMOR_CYST, DERMATITIS_ECZEMA; ; uncertainty=medium",
+            "learning_points": [
+              "kept the differential open",
+              "made pairwise reasoning explicit",
+              "required downstream integration beyond differential_compare_skill"
+            ],
+            "retrieval_score": 9.0,
+            "base_retrieval_score": 9.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_sd198_000958_ea7b54e2327b",
+          "ordering_score": 4.3999999999999995,
+          "rank": 15,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "tac_sd198_000958_f0152010c15d",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 4.3999999999999995,
+          "heuristic_score": 4.3999999999999995,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_sd198_000958_f0152010c15d",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "sd198_000958",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=PIGMENTARY_NEVUS_KERATOSIS, BENIGN_TUMOR_CYST, DERMATITIS_ECZEMA; ; uncertainty=medium",
+            "learning_points": [
+              "separated edge evidence from surface evidence",
+              "highlighted margin quality explicitly",
+              "required downstream integration beyond border_surface_analysis_skill"
+            ],
+            "retrieval_score": 9.0,
+            "base_retrieval_score": 9.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_sd198_000958_f0152010c15d",
+          "ordering_score": 4.3999999999999995,
+          "rank": 16,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "sd198_000386",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 2.5,
+          "heuristic_score": 2.5,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "sd198_000386",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "sd198_000386",
+            "confusion_pair": "None",
+            "perception_summary": "Close-up of a face showing actinic damage with telangiectasia on the cheeks.",
+            "learning_points": [
+              "Final decision: Basal Cell Carcinoma",
+              "Correctness: False"
+            ],
+            "retrieval_score": 6.0,
+            "base_retrieval_score": 6.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:sd198_000386",
+          "ordering_score": 2.9,
+          "rank": 18,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "sd198_001084",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 2.5,
+          "heuristic_score": 2.5,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "sd198_001084",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "sd198_001084",
+            "confusion_pair": "None",
+            "perception_summary": "A light brown macule is present on the inner forearm.",
+            "learning_points": [
+              "Final decision: Malignant Melanoma",
+              "Correctness: False"
+            ],
+            "retrieval_score": 6.0,
+            "base_retrieval_score": 6.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:sd198_001084",
+          "ordering_score": 2.9,
+          "rank": 19,
+          "reason": "global_budget_exceeded"
+        }
+      ],
+      "reordered_items": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "from_section": "observation",
+          "category": "description",
+          "new_rank": 1
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "from_section": "observation",
+          "category": "description",
+          "new_rank": 2
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "from_section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "new_rank": 3
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "from_section": "comparison",
+          "category": "differential_support",
+          "new_rank": 4
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "from_section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "new_rank": 5
+        },
+        {
+          "item_id": "abs_confusion_0c98691c4bd0",
+          "item_type": "retrieval_record",
+          "from_section": "abstract_experience",
+          "category": "experience_hint",
+          "new_rank": 6
+        },
+        {
+          "item_id": "abs_confusion_85e96a87f1c3",
+          "item_type": "retrieval_record",
+          "from_section": "abstract_experience",
+          "category": "experience_hint",
+          "new_rank": 7
+        },
+        {
+          "item_id": "sd198_000345",
+          "item_type": "retrieval_record",
+          "from_section": "raw_case_memory",
+          "category": "description",
+          "new_rank": 8
+        }
+      ],
+      "quota_state": {
+        "max_total_items": 8,
+        "per_category_quota": {
+          "description": 3,
+          "differential_support": 2,
+          "exclusion_opposing": 2,
+          "risk": 1,
+          "contradiction_gap": 2,
+          "experience_hint": 2
+        },
+        "category_counts": {
+          "description": 3,
+          "differential_support": 1,
+          "exclusion_opposing": 0,
+          "risk": 0,
+          "contradiction_gap": 2,
+          "experience_hint": 2
+        }
+      }
+    }
+  }
+}

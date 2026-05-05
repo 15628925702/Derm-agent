@@ -1,0 +1,1870 @@
+{
+  "perception": {
+    "image_summary": "A small, horn-like projection on the skin surface, surrounded by hair follicles.",
+    "ddx_candidates": [
+      "Cutaneous Horn",
+      "Ingrown Hair",
+      "Sebaceous Cyst"
+    ],
+    "uncertainty": {
+      "level": "low",
+      "reasons": [
+        "The structure appears to be keratinous and horn-like, which is characteristic of a cutaneous horn.",
+        "The surrounding area shows no signs of inflammation or infection."
+      ]
+    },
+    "notes": [
+      "The lesion is well-circumscribed and has a smooth, horn-like appearance.",
+      "No significant erythema or scaling is observed around the lesion."
+    ]
+  },
+  "retrieved_experience": [
+    {
+      "case_id": "sd198_000001",
+      "source_layer": "abstract_experience",
+      "source_subtype": "rule",
+      "experience_type": "rule",
+      "perception_summary": "A close-up view of a red, inflamed area on the nape of the neck with a small, raised lesion that appears to be a pustule or comedo.; Acne Keloidalis Nuchae; Sebaceous Cyst",
+      "confusion_pair": null,
+      "learning_points": [
+        "When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Qwen integration.",
+        "structured_skill_sequence"
+      ],
+      "source_id": "abs_rule_728af0bf29e5",
+      "retrieval_score": 7
+    },
+    {
+      "case_id": "sd198_000689",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "A small, translucent, dome-shaped lesion is present on the skin near the eyelid margin.; Apocrine Hydrocystoma; Sebaceous Cyst",
+      "confusion_pair": "Nevus->BENIGN_TUMOR_CYST",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_confusion_d04271ff0848",
+      "retrieval_score": 7
+    },
+    {
+      "case_id": "sd198_000689",
+      "source_layer": "abstract_experience",
+      "source_subtype": "composite_skill_seed",
+      "experience_type": "composite_skill_seed",
+      "perception_summary": "ddx=Apocrine Hydrocystoma, Sebaceous Cyst, Molluscum Contagiosum; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium",
+      "confusion_pair": null,
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+distribution_analysis_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage.",
+        "Promote only after repeated successful supporting cases under a stable trigger pattern."
+      ],
+      "source_id": "abs_composite_a4288d56e42e",
+      "retrieval_score": 7
+    }
+  ],
+  "skill_outputs": {
+    "morphology_analysis_skill": {
+      "lesion_type": "nodule",
+      "size_range": "small",
+      "elevation": "raised",
+      "count": "solitary",
+      "referenced_experiences": [
+        "sd198_000689"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "color_pattern_analysis_skill": {
+      "primary_color": "white",
+      "color_variation": "unknown",
+      "pigmentation_pattern": "mixed",
+      "asymmetry_color": "present",
+      "referenced_experiences": [
+        "sd198_000689",
+        "sd198_000001"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "border_surface_analysis_skill": {
+      "border_clarity": "crisp",
+      "border_irregularity": "irregular",
+      "surface_texture": "keratotic",
+      "scaling_presence": "absent",
+      "referenced_experiences": [
+        "sd198_000689",
+        "sd198_000001"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "distribution_analysis_skill": {
+      "body_location": "scalp",
+      "symmetry": "asymmetric",
+      "localized_vs_generalized": "localized",
+      "clustering_pattern": "solitary",
+      "referenced_experiences": [
+        "sd198_000689",
+        "sd198_000001",
+        "abs_confusion_d04271ff0848",
+        "abs_composite_d43804e3c129",
+        "abs_composite_a4288d56e42e"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "lesion_description_structuring_skill": {
+      "primary_lesion_morphology": "horn-like projection",
+      "color": [
+        "translucent"
+      ],
+      "border": [
+        "crisp"
+      ],
+      "surface": [
+        "keratotic"
+      ],
+      "size_count": [
+        "size: small, count: solitary"
+      ],
+      "distribution": [
+        "site: scalp, symmetry: asymmetric, localization: localized"
+      ],
+      "associated_context": [
+        "clinical_notes: well-circumscribed, smooth, no erythema or scaling, dx_candidates: [Cutaneous Horn, Ingrown Hair, Sebaceous Cyst], uncertainty_level: low"
+      ],
+      "referenced_experiences": [
+        "sd198_000689",
+        "sd198_000001"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "malignancy_risk_assessment_skill": {
+      "risk_level": "low",
+      "risk_evidence": [
+        "{'border_clarity': 'crisp', 'border_irregularity': 'irregular', 'surface_texture': 'keratotic'}"
+      ],
+      "alarm_signals": [
+        "horn-like projection",
+        "surrounded by hair follicles"
+      ],
+      "benign_reassuring_features": [
+        "well-circumscribed",
+        "smooth, horn-like appearance",
+        "no erythema or scaling",
+        "asymmetric",
+        "localized"
+      ],
+      "referenced_experiences": [
+        "sd198_000689",
+        "sd198_000001"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "information_gap_detection_skill": {
+      "missing_information": [
+        "Patient's medical history",
+        "Family history of similar conditions",
+        "Previous treatments and their outcomes",
+        "Associated symptoms (e.g., pain, itching, bleeding)"
+      ],
+      "why_it_matters": [
+        "Medical history helps rule out systemic diseases that could present with similar lesions.",
+        "Family history can provide clues about genetic predispositions.",
+        "Previous treatments inform the likelihood of recurrence or response to therapy.",
+        "Associated symptoms help differentiate between various dermatological conditions."
+      ],
+      "impact_on_differential": [
+        "Patient's medical history can influence the differential diagnosis, especially if there are known risk factors for certain conditions.",
+        "Family history can suggest hereditary conditions that need to be considered.",
+        "Previous treatments can indicate whether the lesion is benign or potentially malignant.",
+        "Symptoms can narrow down the differential based on typical presentations of different conditions."
+      ],
+      "uncertainty_if_missing": "high",
+      "referenced_experiences": [
+        "sd198_000689",
+        "sd198_000001",
+        "abs_confusion_d04271ff0848",
+        "abs_composite_d43804e3c129",
+        "abs_composite_a4288d56e42e"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "uncertainty_assessment_skill": {
+      "uncertainty_level": "medium",
+      "reasons": [
+        "The lesion's exact nature is unclear due to the limited visual information.",
+        "The absence of clinical history and patient symptoms limits differential diagnosis."
+      ],
+      "missing_information": [
+        "Clinical history and patient symptoms",
+        "Additional imaging modalities (e.g., ultrasound, MRI)"
+      ],
+      "referenced_experiences": [
+        "sd198_000689",
+        "sd198_000001",
+        "abs_confusion_d04271ff0848",
+        "abs_composite_d43804e3c129",
+        "abs_composite_a4288d56e42e"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "contradiction_check_skill": {
+      "contradictions": [
+        {
+          "description": "The image shows a small, horn-like projection surrounded by hair follicles, but the metadata indicates the raw label is 'Cutaneous Horn'. There is a discrepancy between the visual description and the metadata.",
+          "evidence_sources": [
+            "image_summary",
+            "metadata"
+          ]
+        }
+      ],
+      "missing_links": [
+        {
+          "description": "There is a lack of clinical history and patient symptoms, which are crucial for differential diagnosis and narrowing down the possibilities.",
+          "required_evidence": [
+            "clinical_history",
+            "patient_symptoms"
+          ]
+        }
+      ],
+      "reasoning_gaps": [
+        {
+          "description": "The lesion's exact nature is unclear due to the limited visual information, and additional imaging modalities could provide more insights.",
+          "required_evidence": [
+            "additional_imaging_modalities"
+          ]
+        }
+      ],
+      "referenced_experiences": [
+        "sd198_000689",
+        "sd198_000001",
+        "abs_confusion_d04271ff0848",
+        "abs_composite_d43804e3c129",
+        "abs_composite_a4288d56e42e"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "conflict_signal"
+    }
+  },
+  "risk_flags": [],
+  "uncertainty": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The lesion's exact nature is unclear due to the limited visual information.",
+      "The absence of clinical history and patient symptoms limits differential diagnosis."
+    ],
+    "missing_information": [
+      "Clinical history and patient symptoms",
+      "Additional imaging modalities (e.g., ultrasound, MRI)"
+    ],
+    "referenced_experiences": [
+      "sd198_000689",
+      "sd198_000001",
+      "abs_confusion_d04271ff0848",
+      "abs_composite_d43804e3c129",
+      "abs_composite_a4288d56e42e"
+    ],
+    "evidence_strength": "medium",
+    "recommendation_type": "descriptive_evidence"
+  },
+  "notes": [
+    "Agent generated structured evidence only.",
+    "Qwen remains the sole final diagnostic decision maker.",
+    "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, malignancy_risk_assessment_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill.",
+    "Policy in use: stable_default_policy.",
+    "Skill retrieval candidates: morphology_analysis_skill, border_surface_analysis_skill, distribution_analysis_skill, color_pattern_analysis_skill, lesion_description_structuring_skill, differential_compare_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, contradiction_check_skill, uncertainty_assessment_skill, information_gap_detection_skill, exclusion_reasoning_skill.",
+    "The lesion is well-circumscribed and has a smooth, horn-like appearance.",
+    "No significant erythema or scaling is observed around the lesion.",
+    "Retrieved prior reasoning experience for context."
+  ],
+  "initial_perception_summary": {
+    "image_summary": "A small, horn-like projection on the skin surface, surrounded by hair follicles.",
+    "ddx_candidates": [
+      "Cutaneous Horn",
+      "Ingrown Hair",
+      "Sebaceous Cyst"
+    ],
+    "uncertainty_level": "low",
+    "uncertainty_reasons": [
+      "The structure appears to be keratinous and horn-like, which is characteristic of a cutaneous horn.",
+      "The surrounding area shows no signs of inflammation or infection."
+    ],
+    "observation_notes": [
+      "The lesion is well-circumscribed and has a smooth, horn-like appearance.",
+      "No significant erythema or scaling is observed around the lesion."
+    ]
+  },
+  "retrieved_raw_cases_summary": [
+    {
+      "source_id": "sd198_000689",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "sd198_000689",
+      "confusion_pair": "None",
+      "perception_summary": "A close-up view of an eyelid showing a small, translucent, dome-shaped lesion near the lash line.",
+      "learning_points": [
+        "Final decision: Apocrine Hydrocystoma",
+        "Correctness: True"
+      ],
+      "retrieval_score": 5.0,
+      "base_retrieval_score": 5.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "sd198_000001",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "sd198_000001",
+      "confusion_pair": "None",
+      "perception_summary": "A close-up view of a red, inflamed area on the nape of the neck with a small, raised lesion that appears to be a pustule or comedo.",
+      "learning_points": [
+        "Final decision: Actinic Keratosis",
+        "Correctness: False"
+      ],
+      "retrieval_score": 5.0,
+      "base_retrieval_score": 5.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "sd198_000925",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "sd198_000925",
+      "confusion_pair": "None",
+      "perception_summary": "A small, raised, keratotic lesion is present on the skin near the eyelid margin.",
+      "learning_points": [
+        "Final decision: Actinic Keratosis",
+        "Correctness: False"
+      ],
+      "retrieval_score": 3.0,
+      "base_retrieval_score": 3.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_tactical_experiences_summary": [
+    {
+      "source_id": "tac_sd198_000689_f9bf40782239",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "sd198_000689",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Apocrine Hydrocystoma, Sebaceous Cyst, Molluscum Contagiosum; ; uncertainty=medium",
+      "learning_points": [
+        "focused a high-value confusion pair",
+        "sharpened specialist keratinization clues",
+        "required downstream integration beyond ack_scc_specialist_skill"
+      ],
+      "retrieval_score": 6.0,
+      "base_retrieval_score": 6.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_sd198_000689_f0152010c15d",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "sd198_000689",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Apocrine Hydrocystoma, Sebaceous Cyst, Molluscum Contagiosum; ; uncertainty=medium",
+      "learning_points": [
+        "separated edge evidence from surface evidence",
+        "highlighted margin quality explicitly",
+        "required downstream integration beyond border_surface_analysis_skill"
+      ],
+      "retrieval_score": 6.0,
+      "base_retrieval_score": 6.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_sd198_000689_ea7b54e2327b",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "sd198_000689",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Apocrine Hydrocystoma, Sebaceous Cyst, Molluscum Contagiosum; ; uncertainty=medium",
+      "learning_points": [
+        "kept the differential open",
+        "made pairwise reasoning explicit",
+        "required downstream integration beyond differential_compare_skill"
+      ],
+      "retrieval_score": 6.0,
+      "base_retrieval_score": 6.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_sd198_000689_e6055fc25fdb",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "sd198_000689",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Apocrine Hydrocystoma, Sebaceous Cyst, Molluscum Contagiosum; ; uncertainty=medium",
+      "learning_points": [
+        "made pigment variation explicit",
+        "surfaced color asymmetry as auditable evidence",
+        "required downstream integration beyond color_pattern_analysis_skill"
+      ],
+      "retrieval_score": 6.0,
+      "base_retrieval_score": 6.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_abstract_experiences_summary": [
+    {
+      "source_id": "abs_rule_728af0bf29e5",
+      "source_layer": "abstract_experience",
+      "experience_type": "rule",
+      "case_id": "sd198_000001",
+      "confusion_pair": "None",
+      "perception_summary": "A close-up view of a red, inflamed area on the nape of the neck with a small, raised lesion that appears to be a pustule or comedo.; Acne Keloidalis Nuchae; Sebaceous Cyst",
+      "learning_points": [
+        "When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Qwen integration.",
+        "structured_skill_sequence"
+      ],
+      "retrieval_score": 7.0,
+      "base_retrieval_score": 7.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_confusion_d04271ff0848",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "sd198_000689",
+      "confusion_pair": "Nevus->BENIGN_TUMOR_CYST",
+      "perception_summary": "A small, translucent, dome-shaped lesion is present on the skin near the eyelid margin.; Apocrine Hydrocystoma; Sebaceous Cyst",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 7.0,
+      "base_retrieval_score": 7.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_composite_a4288d56e42e",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "sd198_000689",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=Apocrine Hydrocystoma, Sebaceous Cyst, Molluscum Contagiosum; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+distribution_analysis_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 7.0,
+      "base_retrieval_score": 7.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "uncertainty_summary": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The lesion's exact nature is unclear due to the limited visual information.",
+      "The absence of clinical history and patient symptoms limits differential diagnosis."
+    ],
+    "missing_information": [
+      "Clinical history and patient symptoms",
+      "Additional imaging modalities (e.g., ultrasound, MRI)"
+    ],
+    "referenced_experiences": [
+      "sd198_000689",
+      "sd198_000001",
+      "abs_confusion_d04271ff0848",
+      "abs_composite_d43804e3c129",
+      "abs_composite_a4288d56e42e"
+    ]
+  },
+  "contradiction_summary": {
+    "contradictions": [
+      "{'description': \"The image shows a small, horn-like projection surrounded by hair follicles, but the metadata indicates the raw label is 'Cutaneous Horn'. There is a discrepancy between the visual description and the metadata.\", 'evidence_sources': ['image_summary', 'metadata']}"
+    ],
+    "missing_links": [
+      "{'description': 'There is a lack of clinical history and patient symptoms, which are crucial for differential diagnosis and narrowing down the possibilities.', 'required_evidence': ['clinical_history', 'patient_symptoms']}"
+    ],
+    "reasoning_gaps": [
+      "{'description': \"The lesion's exact nature is unclear due to the limited visual information, and additional imaging modalities could provide more insights.\", 'required_evidence': ['additional_imaging_modalities']}"
+    ],
+    "metadata_conflicts": [],
+    "suspicious_points": []
+  },
+  "information_gap_summary": {
+    "missing_information": [
+      "Patient's medical history",
+      "Family history of similar conditions",
+      "Previous treatments and their outcomes",
+      "Associated symptoms (e.g., pain, itching, bleeding)"
+    ],
+    "why_it_matters": [
+      "Medical history helps rule out systemic diseases that could present with similar lesions.",
+      "Family history can provide clues about genetic predispositions.",
+      "Previous treatments inform the likelihood of recurrence or response to therapy.",
+      "Associated symptoms help differentiate between various dermatological conditions."
+    ],
+    "impact_on_differential": [
+      "Patient's medical history can influence the differential diagnosis, especially if there are known risk factors for certain conditions.",
+      "Family history can suggest hereditary conditions that need to be considered.",
+      "Previous treatments can indicate whether the lesion is benign or potentially malignant.",
+      "Symptoms can narrow down the differential based on typical presentations of different conditions."
+    ],
+    "uncertainty_if_missing": "high"
+  },
+  "escalation_summary": {
+    "whether_escalation_needed": "unknown",
+    "escalation_reason": [],
+    "suggested_next_check_type": "",
+    "caution_flags": []
+  },
+  "planner_rationale": {
+    "planner_type": "rule_based",
+    "planner_version": "v1",
+    "selected_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "border_surface_analysis_skill",
+      "distribution_analysis_skill",
+      "lesion_description_structuring_skill",
+      "malignancy_risk_assessment_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill"
+    ],
+    "selection_reasons": {
+      "morphology_analysis_skill": [
+        "Boosted by skill retrieval score=9.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "color_pattern_analysis_skill": [
+        "Boosted by skill retrieval score=8.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "border_surface_analysis_skill": [
+        "Boosted by skill retrieval score=9.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "distribution_analysis_skill": [
+        "Boosted by skill retrieval score=8.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=0.99.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "lesion_description_structuring_skill": [
+        "Boosted by skill retrieval score=7.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "malignancy_risk_assessment_skill": [
+        "Boosted by skill retrieval score=5.50.",
+        "Boosted by cognition helpful_rate=0.98.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "information_gap_detection_skill": [
+        "Boosted by skill retrieval score=3.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Boosted by cognition.preferred_skills from prior cases."
+      ],
+      "uncertainty_assessment_skill": [
+        "Boosted by skill retrieval score=3.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Boosted by cognition.preferred_skills from prior cases."
+      ],
+      "contradiction_check_skill": [
+        "Boosted by skill retrieval score=4.50.",
+        "Boosted by cognition helpful_rate=0.97.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched 2 morphology clues from the current perception."
+      ]
+    }
+  },
+  "confusion_cluster_summary": {
+    "active_clusters": [],
+    "guidance": []
+  },
+  "selected_evidence": [
+    {
+      "item_id": "lesion_description_structuring_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "lesion_description_structuring_skill",
+      "skill_name": "lesion_description_structuring_skill",
+      "retrieval_type": "",
+      "section": "observation",
+      "category": "description",
+      "summary": "lesion_description_structuring_skill: primary_lesion_morphology=horn-like projection | color=translucent | border=crisp | surface=keratotic | size_count=size: small, count: solitary | distribution=site: scalp, symmetry: asymmetric, localization: localized",
+      "score": 9.0,
+      "rank": 1,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "morphology_analysis_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "morphology_analysis_skill",
+      "skill_name": "morphology_analysis_skill",
+      "retrieval_type": "",
+      "section": "observation",
+      "category": "description",
+      "summary": "morphology_analysis_skill: lesion_type=nodule | size_range=small | elevation=raised | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence",
+      "score": 8.16,
+      "rank": 2,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "malignancy_risk_assessment_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "malignancy_risk_assessment_skill",
+      "skill_name": "malignancy_risk_assessment_skill",
+      "retrieval_type": "",
+      "section": "risk",
+      "category": "risk",
+      "summary": "malignancy_risk_assessment_skill: risk_level=low | risk_evidence={'border_clarity': 'crisp', 'border_irregularity': 'irregular', 'surface_texture': 'keratotic'} | alarm_signals=horn-like projection; surrounded by hair follicles | benign_reassuring_features=well-circumscribed; smooth, horn-like appearance; no erythema or scaling | evidence_strength=medium ...",
+      "score": 7.64,
+      "rank": 6,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "information_gap_detection_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "information_gap_detection_skill",
+      "skill_name": "information_gap_detection_skill",
+      "retrieval_type": "",
+      "section": "conflict_uncertainty",
+      "category": "contradiction_gap",
+      "summary": "information_gap_detection_skill: missing_information=Patient's medical history; Family history of similar conditions; Previous treatments and their outcomes | why_it_matters=Medical history helps rule out systemic diseases that could present with similar lesions.; Family history can provide clues about genetic predispositions.; P... | impact_on_differenti...",
+      "score": 7.58,
+      "rank": 7,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "contradiction_check_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "contradiction_check_skill",
+      "skill_name": "contradiction_check_skill",
+      "retrieval_type": "",
+      "section": "conflict_uncertainty",
+      "category": "contradiction_gap",
+      "summary": "contradiction_check_skill: contradictions={'description': \"The image shows a small, horn-like projection surrounded by hair follicles, but the metadata indicates the raw label is 'Cutaneous Horn'. Th... | missing_links={'description': 'There is a lack of clinical history and patient symptoms, which are crucial for differential diagnosis and narrowing down...",
+      "score": 7.26,
+      "rank": 8,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "abs_confusion_d04271ff0848",
+      "item_type": "retrieval_record",
+      "source_type": "retrieval_record",
+      "source_name": "abs_confusion_d04271ff0848",
+      "skill_name": "",
+      "retrieval_type": "abstract_experience",
+      "section": "abstract_experience",
+      "category": "experience_hint",
+      "summary": "A small, translucent, dome-shaped lesion is present on the skin near the eyelid margin.; Apocrine Hydrocystoma; Sebaceous Cyst | When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty | confusion_pair=Nevus->BENIGN_TUMOR_CYST",
+      "score": 5.4,
+      "rank": 10,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "abs_rule_728af0bf29e5",
+      "item_type": "retrieval_record",
+      "source_type": "retrieval_record",
+      "source_name": "abs_rule_728af0bf29e5",
+      "skill_name": "",
+      "retrieval_type": "abstract_experience",
+      "section": "abstract_experience",
+      "category": "experience_hint",
+      "summary": "A close-up view of a red, inflamed area on the nape of the neck with a small, raised lesion that appears to be a pustule or comedo.; Acne Keloidalis Nuchae; Sebaceous Cyst | When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Q...; structured_skill_sequence | confusion_pair=None",
+      "score": 5.2,
+      "rank": 11,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "sd198_000001",
+      "item_type": "retrieval_record",
+      "source_type": "retrieval_record",
+      "source_name": "sd198_000001",
+      "skill_name": "",
+      "retrieval_type": "raw_case_memory",
+      "section": "raw_case_memory",
+      "category": "description",
+      "summary": "A close-up view of a red, inflamed area on the nape of the neck with a small, raised lesion that appears to be a pustule or comedo. | Final decision: Actinic Keratosis; Correctness: False | confusion_pair=None",
+      "score": 2.3,
+      "rank": 17,
+      "keep_reason": "kept"
+    }
+  ],
+  "evidence_decision_policy": {
+    "risk_layer": {
+      "risk_flag": "malignancy_risk_low",
+      "caution_flags": [
+        "contradictions_present"
+      ],
+      "follow_up_suggestion": "clinical follow-up and closer inspection if concern persists",
+      "selected_evidence": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "lesion_description_structuring_skill",
+          "skill_name": "lesion_description_structuring_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "lesion_description_structuring_skill: primary_lesion_morphology=horn-like projection | color=translucent | border=crisp | surface=keratotic | size_count=size: small, count: solitary | distribution=site: scalp, symmetry: asymmetric, localization: localized",
+          "score": 9.0,
+          "rank": 1,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "morphology_analysis_skill",
+          "skill_name": "morphology_analysis_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "morphology_analysis_skill: lesion_type=nodule | size_range=small | elevation=raised | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 8.16,
+          "rank": 2,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "malignancy_risk_assessment_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "malignancy_risk_assessment_skill",
+          "skill_name": "malignancy_risk_assessment_skill",
+          "retrieval_type": "",
+          "section": "risk",
+          "category": "risk",
+          "summary": "malignancy_risk_assessment_skill: risk_level=low | risk_evidence={'border_clarity': 'crisp', 'border_irregularity': 'irregular', 'surface_texture': 'keratotic'} | alarm_signals=horn-like projection; surrounded by hair follicles | benign_reassuring_features=well-circumscribed; smooth, horn-like appearance; no erythema or scaling | evidence_strength=medium ...",
+          "score": 7.64,
+          "rank": 6,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "information_gap_detection_skill",
+          "skill_name": "information_gap_detection_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "information_gap_detection_skill: missing_information=Patient's medical history; Family history of similar conditions; Previous treatments and their outcomes | why_it_matters=Medical history helps rule out systemic diseases that could present with similar lesions.; Family history can provide clues about genetic predispositions.; P... | impact_on_differenti...",
+          "score": 7.58,
+          "rank": 7,
+          "keep_reason": "kept"
+        }
+      ],
+      "baseline_preview": {
+        "early_ddx_candidates": [
+          "Cutaneous Horn",
+          "Ingrown Hair",
+          "Sebaceous Cyst"
+        ],
+        "image_summary": "A small, horn-like projection on the skin surface, surrounded by hair follicles.",
+        "baseline_final_diagnosis": "Seborrheic Keratosis",
+        "baseline_differential_diagnoses": [
+          "Seborrheic Keratosis",
+          "Actinic Keratosis",
+          "Squamous Cell Carcinoma"
+        ],
+        "baseline_confidence": "Moderate"
+      }
+    },
+    "diagnosis_override_layer": {
+      "workflow_context": {
+        "label_granularity": "grouped",
+        "presentation_mode": "focal_lesion",
+        "workflow_profile": "coarse_taxonomy_workflow",
+        "available_tests": [
+          "clinical_photo_only",
+          "lesion_photo"
+        ],
+        "workflow_preference": "morphology_first",
+        "hospital_type": "specialist_clinic",
+        "time_budget": "standard",
+        "metadata_completeness": "full",
+        "workflow_capabilities": [
+          "coarse_taxonomy_reasoning",
+          "grouped_label_reasoning",
+          "focal_lesion_reasoning"
+        ]
+      },
+      "override_allowed": false,
+      "malignancy_override_allowed": false,
+      "subtype_override_allowed": false,
+      "family_override_allowed": false,
+      "override_mode": "risk_only",
+      "override_reasons": [
+        "supporting_evidence_outweighs_opposition",
+        "uncertainty_not_high",
+        "consistent_retrieval_support"
+      ],
+      "why_not_confident_enough_to_override": [
+        "malignancy risk is not high enough for a diagnosis override",
+        "no specialist evidence strongly supports the override direction",
+        "contradictions or reasoning gaps remain too numerous",
+        "opposing or exclusion evidence quota is not satisfied"
+      ],
+      "supporting_evidence": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "lesion_description_structuring_skill",
+          "skill_name": "lesion_description_structuring_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "lesion_description_structuring_skill: primary_lesion_morphology=horn-like projection | color=translucent | border=crisp | surface=keratotic | size_count=size: small, count: solitary | distribution=site: scalp, symmetry: asymmetric, localization: localized",
+          "score": 9.0,
+          "rank": 1,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "morphology_analysis_skill",
+          "skill_name": "morphology_analysis_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "morphology_analysis_skill: lesion_type=nodule | size_range=small | elevation=raised | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 8.16,
+          "rank": 2,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "malignancy_risk_assessment_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "malignancy_risk_assessment_skill",
+          "skill_name": "malignancy_risk_assessment_skill",
+          "retrieval_type": "",
+          "section": "risk",
+          "category": "risk",
+          "summary": "malignancy_risk_assessment_skill: risk_level=low | risk_evidence={'border_clarity': 'crisp', 'border_irregularity': 'irregular', 'surface_texture': 'keratotic'} | alarm_signals=horn-like projection; surrounded by hair follicles | benign_reassuring_features=well-circumscribed; smooth, horn-like appearance; no erythema or scaling | evidence_strength=medium ...",
+          "score": 7.64,
+          "rank": 6,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "information_gap_detection_skill",
+          "skill_name": "information_gap_detection_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "information_gap_detection_skill: missing_information=Patient's medical history; Family history of similar conditions; Previous treatments and their outcomes | why_it_matters=Medical history helps rule out systemic diseases that could present with similar lesions.; Family history can provide clues about genetic predispositions.; P... | impact_on_differenti...",
+          "score": 7.58,
+          "rank": 7,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "contradiction_check_skill",
+          "skill_name": "contradiction_check_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "contradiction_check_skill: contradictions={'description': \"The image shows a small, horn-like projection surrounded by hair follicles, but the metadata indicates the raw label is 'Cutaneous Horn'. Th... | missing_links={'description': 'There is a lack of clinical history and patient symptoms, which are crucial for differential diagnosis and narrowing down...",
+          "score": 7.26,
+          "rank": 8,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "abs_confusion_d04271ff0848",
+          "item_type": "retrieval_record",
+          "source_type": "retrieval_record",
+          "source_name": "abs_confusion_d04271ff0848",
+          "skill_name": "",
+          "retrieval_type": "abstract_experience",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "summary": "A small, translucent, dome-shaped lesion is present on the skin near the eyelid margin.; Apocrine Hydrocystoma; Sebaceous Cyst | When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty | confusion_pair=Nevus->BENIGN_TUMOR_CYST",
+          "score": 5.4,
+          "rank": 10,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "abs_rule_728af0bf29e5",
+          "item_type": "retrieval_record",
+          "source_type": "retrieval_record",
+          "source_name": "abs_rule_728af0bf29e5",
+          "skill_name": "",
+          "retrieval_type": "abstract_experience",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "summary": "A close-up view of a red, inflamed area on the nape of the neck with a small, raised lesion that appears to be a pustule or comedo.; Acne Keloidalis Nuchae; Sebaceous Cyst | When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Q...; structured_skill_sequence | confusion_pair=None",
+          "score": 5.2,
+          "rank": 11,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "sd198_000001",
+          "item_type": "retrieval_record",
+          "source_type": "retrieval_record",
+          "source_name": "sd198_000001",
+          "skill_name": "",
+          "retrieval_type": "raw_case_memory",
+          "section": "raw_case_memory",
+          "category": "description",
+          "summary": "A close-up view of a red, inflamed area on the nape of the neck with a small, raised lesion that appears to be a pustule or comedo. | Final decision: Actinic Keratosis; Correctness: False | confusion_pair=None",
+          "score": 2.3,
+          "rank": 17,
+          "keep_reason": "kept"
+        }
+      ],
+      "opposing_evidence": [],
+      "supporting_score": 52.54,
+      "opposing_score": 0,
+      "support_margin": 52.54,
+      "selected_evidence_present": true,
+      "subtype_support_score": 2.3,
+      "subtype_support_margin": 2.3,
+      "specialist_support_present": false,
+      "consistent_retrieval_count": 2,
+      "contradiction_count": 3,
+      "uncertainty_level": "medium",
+      "opposing_quota_satisfied": false,
+      "subtype_support_quota_satisfied": true
+    }
+  },
+  "serialized_evidence_text": "[Observation Evidence]\n- Initial image summary: A small, horn-like projection on the skin surface, surrounded by hair follicles.\n- Early differential candidates: Cutaneous Horn, Ingrown Hair, Sebaceous Cyst\n- structured lesion observation: lesion_description_structuring_skill: primary_lesion_morphology=horn-like projection | color=translucent | border=crisp | surface=keratotic | size_count=size: small, count: solitary | distribution=site: scalp, symmetry: asymmetric, localization: localized || morphology_analysis_skill: lesion_type=nodule | size_range=small | elevation=raised | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Raw case reference sd198_000001: A close-up view of a red, inflamed area on the nape of the neck with a small, raised lesion that appears to be a pustule or comedo.\n\n[Exclusion And Comparison Evidence]\n- Tactical experience tac_sd198_000689_f9bf40782239: ddx=Apocrine Hydrocystoma, Sebaceous Cyst, Molluscum Contagiosum; ; uncertainty=medium; focused a high-value confusion pair; sharpened specialist keratinization clues; required downstream integration beyond ack_scc_specialist_skill\n- Tactical experience tac_sd198_000689_f0152010c15d: ddx=Apocrine Hydrocystoma, Sebaceous Cyst, Molluscum Contagiosum; ; uncertainty=medium; separated edge evidence from surface evidence; highlighted margin quality explicitly; required downstream integration beyond border_surface_analysis_skill\n- Tactical experience tac_sd198_000689_ea7b54e2327b: ddx=Apocrine Hydrocystoma, Sebaceous Cyst, Molluscum Contagiosum; ; uncertainty=medium; kept the differential open; made pairwise reasoning explicit; required downstream integration beyond differential_compare_skill\n- Tactical experience tac_sd198_000689_e6055fc25fdb: ddx=Apocrine Hydrocystoma, Sebaceous Cyst, Molluscum Contagiosum; ; uncertainty=medium; made pigment variation explicit; surfaced color asymmetry as auditable evidence; required downstream integration beyond color_pattern_analysis_skill\n\n[Risk Evidence]\n- malignancy_risk_assessment_skill: risk_level=low | risk_evidence={'border_clarity': 'crisp', 'border_irregularity': 'irregular', 'surface_texture': 'keratotic'} | alarm_signals=horn-like projection; surrounded by hair follicles | benign_reassuring_features=well-circumscribed; smooth, horn-like appearance; no erythema or scaling | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Abstract experience abs_rule_728af0bf29e5: A close-up view of a red, inflamed area on the nape of the neck with a small, raised lesion that appears to be a pustule or comedo.; Acne Keloidalis Nuchae; Sebaceous Cyst; When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Qwen integration.; structured_skill_sequence\n- Abstract experience abs_confusion_d04271ff0848: A small, translucent, dome-shaped lesion is present on the skin near the eyelid margin.; Apocrine Hydrocystoma; Sebaceous Cyst; When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; compare_then_audit_uncertainty\n\n[Conflict And Uncertainty]\n- Uncertainty level: medium\n- Uncertainty reasons: The lesion's exact nature is unclear due to the limited visual information.; The absence of clinical history and patient symptoms limits differential diagnosis.\n- Missing information: Clinical history and patient symptoms; Additional imaging modalities (e.g., ultrasound, MRI)\n- contradictions: {'description': \"The image shows a small, horn-like projection surrounded by hair follicles, but the metadata indicates the raw label is 'Cutaneous Horn'. There is a discrepancy between the visual description and the metadata.\", 'evidence_sources': ['image_summary', 'metadata']}\n- missing links: {'description': 'There is a lack of clinical history and patient symptoms, which are crucial for differential diagnosis and narrowing down the possibilities.', 'required_evidence': ['clinical_history', 'patient_symptoms']}\n- reasoning gaps: {'description': \"The lesion's exact nature is unclear due to the limited visual information, and additional imaging modalities could provide more insights.\", 'required_evidence': ['additional_imaging_modalities']}\n- contradiction_check_skill: contradictions={'description': \"The image shows a small, horn-like projection surrounded by hair follicles, but the metadata indicates the raw label is 'Cutaneous Horn'. Th... | missing_links={'description': 'There is a lack of clinical history and patient symptoms, which are crucial for differential diagnosis and narrowing down the possibilities.... | reasoning_gaps={'description': \"The lesion's exact nature is unclear due to the limited visual information, and additional imaging modalities could provide more insights.\",... | evidence_strength=medium | recommendation_type=conflict_signal\n- information_gap_detection_skill: missing_information=Patient's medical history; Family history of similar conditions; Previous treatments and their outcomes | why_it_matters=Medical history helps rule out systemic diseases that could present with similar lesions.; Family history can provide clues about genetic predispositions.; P... | impact_on_differential=Patient's medical history can influence the differential diagnosis, especially if there are known risk factors for certain conditions.; Family history can su... | uncertainty_if_missing=high | evidence_strength=medium | recommendation_type=descriptive_evidence\n- explicit information gaps: Patient's medical history; Family history of similar conditions; Previous treatments and their outcomes; Associated symptoms (e.g., pain, itching, bleeding)\n- why gaps matter: Medical history helps rule out systemic diseases that could present with similar lesions.; Family history can provide clues about genetic predispositions.; Previous treatments inform the likelihood of recurrence or response to therapy.; Associated symptoms help differentiate between various dermatological conditions.\n- impact on differential: Patient's medical history can influence the differential diagnosis, especially if there are known risk factors for certain conditions.; Family history can suggest hereditary conditions that need to be considered.; Previous treatments can indicate whether the lesion is benign or potentially malignant.; Symptoms can narrow down the differential based on typical presentations of different conditions.\n- residual uncertainty if still missing: high\n- escalation needed: unknown\n\n[Planner Rationale]\n- Selected skills: morphology_analysis_skill, color_pattern_analysis_skill, border_surface_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, malignancy_risk_assessment_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill\n- morphology_analysis_skill: Boosted by skill retrieval score=9.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.\n- color_pattern_analysis_skill: Boosted by skill retrieval score=8.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.\n- border_surface_analysis_skill: Boosted by skill retrieval score=9.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=0.99.; Matched active trigger profile `foundational_observation`.",
+  "evidence_calibration_debug": {
+    "calibrator_type": "heuristic",
+    "calibrator_version": "v1",
+    "section_plan": {
+      "observation": {
+        "skill_names": [
+          "lesion_description_structuring_skill",
+          "morphology_analysis_skill"
+        ],
+        "merged_groups": [
+          {
+            "label": "structured_lesion_observation",
+            "skills": [
+              "lesion_description_structuring_skill",
+              "morphology_analysis_skill"
+            ],
+            "max_members": 2
+          }
+        ],
+        "raw_case_source_ids": [
+          "sd198_000001"
+        ]
+      },
+      "comparison": {
+        "skill_names": [],
+        "merged_groups": [],
+        "tactical_source_ids": [],
+        "abstract_source_ids": []
+      },
+      "risk": {
+        "skill_names": [
+          "malignancy_risk_assessment_skill"
+        ],
+        "abstract_source_ids": [
+          "abs_confusion_d04271ff0848",
+          "abs_rule_728af0bf29e5"
+        ]
+      },
+      "conflict_uncertainty": {
+        "skill_names": [
+          "information_gap_detection_skill",
+          "contradiction_check_skill"
+        ]
+      },
+      "planner": {
+        "max_reason_skills": 3
+      },
+      "section_order": [
+        "observation",
+        "comparison",
+        "risk",
+        "conflict_uncertainty",
+        "planner"
+      ]
+    },
+    "item_scores": [
+      {
+        "item_id": "lesion_description_structuring_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 9.0,
+        "learned_score": 0.0,
+        "final_score": 9.0,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 1,
+        "dedup_key": "description:lesion_description_structuring_skill"
+      },
+      {
+        "item_id": "morphology_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 8.16,
+        "learned_score": 0.0,
+        "final_score": 8.16,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 2,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "border_surface_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.96,
+        "learned_score": 0.0,
+        "final_score": 7.96,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.88,
+        "learned_score": 0.0,
+        "final_score": 7.88,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "malignancy_risk_assessment_skill",
+        "item_type": "skill_output",
+        "section": "risk",
+        "heuristic_score": 7.64,
+        "learned_score": 0.0,
+        "final_score": 7.64,
+        "selected": true,
+        "reason": "kept",
+        "category": "risk",
+        "rank": 3,
+        "dedup_key": "risk:malignancy"
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.58,
+        "learned_score": 0.0,
+        "final_score": 7.58,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "information_gap_detection_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 7.58,
+        "learned_score": 0.0,
+        "final_score": 7.58,
+        "selected": true,
+        "reason": "kept",
+        "category": "contradiction_gap",
+        "rank": 4,
+        "dedup_key": "uncertainty:information_gap_detection_skill"
+      },
+      {
+        "item_id": "contradiction_check_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 7.26,
+        "learned_score": 0.0,
+        "final_score": 7.26,
+        "selected": true,
+        "reason": "kept",
+        "category": "contradiction_gap",
+        "rank": 5,
+        "dedup_key": "uncertainty:contradiction_check_skill"
+      },
+      {
+        "item_id": "uncertainty_assessment_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 6.68,
+        "learned_score": 0.0,
+        "final_score": 6.68,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "contradiction_gap",
+        "rank": 0,
+        "dedup_key": "uncertainty:uncertainty_assessment_skill"
+      },
+      {
+        "item_id": "abs_confusion_d04271ff0848",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 5.4,
+        "learned_score": 0.0,
+        "final_score": 5.4,
+        "selected": true,
+        "reason": "kept",
+        "category": "experience_hint",
+        "rank": 6,
+        "dedup_key": "abstract_experience:abs_confusion_d04271ff0848"
+      },
+      {
+        "item_id": "abs_rule_728af0bf29e5",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 5.2,
+        "learned_score": 0.0,
+        "final_score": 5.2,
+        "selected": true,
+        "reason": "kept",
+        "category": "experience_hint",
+        "rank": 7,
+        "dedup_key": "abstract_experience:abs_rule_728af0bf29e5"
+      },
+      {
+        "item_id": "abs_composite_a4288d56e42e",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 4.9,
+        "learned_score": 0.0,
+        "final_score": 4.9,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "abstract_experience:abs_composite_a4288d56e42e"
+      },
+      {
+        "item_id": "tac_sd198_000689_f9bf40782239",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 3.8,
+        "learned_score": 0.0,
+        "final_score": 3.8,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_sd198_000689_f9bf40782239"
+      },
+      {
+        "item_id": "tac_sd198_000689_f0152010c15d",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 3.8,
+        "learned_score": 0.0,
+        "final_score": 3.8,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_sd198_000689_f0152010c15d"
+      },
+      {
+        "item_id": "tac_sd198_000689_ea7b54e2327b",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 3.8,
+        "learned_score": 0.0,
+        "final_score": 3.8,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_sd198_000689_ea7b54e2327b"
+      },
+      {
+        "item_id": "tac_sd198_000689_e6055fc25fdb",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 3.8,
+        "learned_score": 0.0,
+        "final_score": 3.8,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_sd198_000689_e6055fc25fdb"
+      },
+      {
+        "item_id": "sd198_000689",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 2.3,
+        "learned_score": 0.0,
+        "final_score": 2.3,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:sd198_000689"
+      },
+      {
+        "item_id": "sd198_000001",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 2.3,
+        "learned_score": 0.0,
+        "final_score": 2.3,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 8,
+        "dedup_key": "raw_case_memory:sd198_000001"
+      },
+      {
+        "item_id": "sd198_000925",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 1.9,
+        "learned_score": 0.0,
+        "final_score": 1.9,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:sd198_000925"
+      }
+    ],
+    "omitted_items": [
+      {
+        "item_id": "border_surface_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 7.96
+      },
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 7.88
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 7.58
+      },
+      {
+        "item_id": "uncertainty_assessment_skill",
+        "item_type": "skill_output",
+        "reason": "category_quota_exceeded",
+        "section": "conflict_uncertainty",
+        "category": "contradiction_gap",
+        "score": 6.68
+      },
+      {
+        "item_id": "abs_composite_a4288d56e42e",
+        "item_type": "retrieval_record",
+        "reason": "category_quota_exceeded",
+        "section": "abstract_experience",
+        "category": "experience_hint",
+        "score": 4.9
+      },
+      {
+        "item_id": "tac_sd198_000689_e6055fc25fdb",
+        "item_type": "retrieval_record",
+        "reason": "category_quota_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 3.8
+      },
+      {
+        "item_id": "tac_sd198_000689_ea7b54e2327b",
+        "item_type": "retrieval_record",
+        "reason": "category_quota_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 3.8
+      },
+      {
+        "item_id": "tac_sd198_000689_f0152010c15d",
+        "item_type": "retrieval_record",
+        "reason": "category_quota_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 3.8
+      },
+      {
+        "item_id": "tac_sd198_000689_f9bf40782239",
+        "item_type": "retrieval_record",
+        "reason": "category_quota_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 3.8
+      },
+      {
+        "item_id": "sd198_000689",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 2.3
+      },
+      {
+        "item_id": "sd198_000925",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 1.9
+      }
+    ],
+    "debug": {
+      "policy": {
+        "enable_evidence_calibrator": true,
+        "calibrator_mode": "heuristic",
+        "calibrator_checkpoint_path": "",
+        "learned_calibration_weight": 1.2,
+        "max_total_items": 8,
+        "max_observation_skills": 4,
+        "max_comparison_skills": 3,
+        "max_risk_skills": 2,
+        "max_uncertainty_skills": 3,
+        "max_exclusion_items": 2,
+        "max_experience_hints": 2,
+        "max_raw_cases": 1,
+        "max_tactical": 2,
+        "max_abstract": 2,
+        "max_planner_reasons": 3,
+        "omit_low_value_evidence": true,
+        "min_effective_score": 2.4,
+        "dedup_similar_evidence": true,
+        "cluster_aware_ordering": true,
+        "cluster_opposing_bonus": 1.8,
+        "cluster_exclusion_bonus": 1.4,
+        "risk_overweight_penalty": 1.2,
+        "uncertainty_overweight_penalty": 1.0,
+        "description_priority_bonus": 0.6,
+        "exclusion_priority_bonus": 1.2,
+        "negative_evidence_priority_bonus": 1.0,
+        "allow_family_override": false,
+        "allow_keratinocyte_subtype_override": false,
+        "debug_output": true,
+        "conservative_fusion_mode": "soft"
+      },
+      "learned_scorer_loaded": false,
+      "contradiction_count": 3,
+      "uncertainty_level": "medium",
+      "risk_flag_count": 0,
+      "confusion_clusters": [],
+      "kept_items": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "rank": 1,
+          "score": 9.0
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "rank": 2,
+          "score": 8.16
+        },
+        {
+          "item_id": "malignancy_risk_assessment_skill",
+          "item_type": "skill_output",
+          "section": "risk",
+          "category": "risk",
+          "rank": 6,
+          "score": 7.64
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "rank": 7,
+          "score": 7.58
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "rank": 8,
+          "score": 7.26
+        },
+        {
+          "item_id": "abs_confusion_d04271ff0848",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "rank": 10,
+          "score": 5.4
+        },
+        {
+          "item_id": "abs_rule_728af0bf29e5",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "rank": 11,
+          "score": 5.2
+        },
+        {
+          "item_id": "sd198_000001",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "rank": 17,
+          "score": 2.3
+        }
+      ],
+      "pruned_items": [
+        {
+          "item_id": "border_surface_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 7.96,
+          "heuristic_score": 7.96,
+          "learned_score": 0.0,
+          "payload": {
+            "border_clarity": "crisp",
+            "border_irregularity": "irregular",
+            "surface_texture": "keratotic",
+            "scaling_presence": "absent",
+            "referenced_experiences": [
+              "sd198_000689",
+              "sd198_000001"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 9.5,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 8.36,
+          "rank": 3,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "color_pattern_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 7.879999999999999,
+          "heuristic_score": 7.879999999999999,
+          "learned_score": 0.0,
+          "payload": {
+            "primary_color": "white",
+            "color_variation": "unknown",
+            "pigmentation_pattern": "mixed",
+            "asymmetry_color": "present",
+            "referenced_experiences": [
+              "sd198_000689",
+              "sd198_000001"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 8.5,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 8.28,
+          "rank": 4,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "distribution_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 7.58,
+          "heuristic_score": 7.58,
+          "learned_score": 0.0,
+          "payload": {
+            "body_location": "scalp",
+            "symmetry": "asymmetric",
+            "localized_vs_generalized": "localized",
+            "clustering_pattern": "solitary",
+            "referenced_experiences": [
+              "sd198_000689",
+              "sd198_000001",
+              "abs_confusion_d04271ff0848",
+              "abs_composite_d43804e3c129",
+              "abs_composite_a4288d56e42e"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 8.5,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 7.98,
+          "rank": 5,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "uncertainty_assessment_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "score": 6.680000000000001,
+          "heuristic_score": 6.680000000000001,
+          "learned_score": 0.0,
+          "payload": {
+            "uncertainty_level": "medium",
+            "reasons": [
+              "The lesion's exact nature is unclear due to the limited visual information.",
+              "The absence of clinical history and patient symptoms limits differential diagnosis."
+            ],
+            "missing_information": [
+              "Clinical history and patient symptoms",
+              "Additional imaging modalities (e.g., ultrasound, MRI)"
+            ],
+            "referenced_experiences": [
+              "sd198_000689",
+              "sd198_000001",
+              "abs_confusion_d04271ff0848",
+              "abs_composite_d43804e3c129",
+              "abs_composite_a4288d56e42e"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 3.5,
+          "dedup_key": "uncertainty:uncertainty_assessment_skill",
+          "ordering_score": 6.28,
+          "rank": 9,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "abs_composite_a4288d56e42e",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "score": 4.9,
+          "heuristic_score": 4.9,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "abs_composite_a4288d56e42e",
+            "source_layer": "abstract_experience",
+            "experience_type": "composite_skill_seed",
+            "case_id": "sd198_000689",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=Apocrine Hydrocystoma, Sebaceous Cyst, Molluscum Contagiosum; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium",
+            "learning_points": [
+              "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+              "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+border_surface_analysis_skill+distribution_analysis_skill",
+              "Candidate only; do not auto-materialize a composite skill in the current stage."
+            ],
+            "retrieval_score": 7.0,
+            "base_retrieval_score": 7.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "abstract_experience:abs_composite_a4288d56e42e",
+          "ordering_score": 4.9,
+          "rank": 12,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "tac_sd198_000689_e6055fc25fdb",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 3.8,
+          "heuristic_score": 3.8,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_sd198_000689_e6055fc25fdb",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "sd198_000689",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=Apocrine Hydrocystoma, Sebaceous Cyst, Molluscum Contagiosum; ; uncertainty=medium",
+            "learning_points": [
+              "made pigment variation explicit",
+              "surfaced color asymmetry as auditable evidence",
+              "required downstream integration beyond color_pattern_analysis_skill"
+            ],
+            "retrieval_score": 6.0,
+            "base_retrieval_score": 6.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_sd198_000689_e6055fc25fdb",
+          "ordering_score": 3.8,
+          "rank": 13,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "tac_sd198_000689_ea7b54e2327b",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 3.8,
+          "heuristic_score": 3.8,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_sd198_000689_ea7b54e2327b",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "sd198_000689",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=Apocrine Hydrocystoma, Sebaceous Cyst, Molluscum Contagiosum; ; uncertainty=medium",
+            "learning_points": [
+              "kept the differential open",
+              "made pairwise reasoning explicit",
+              "required downstream integration beyond differential_compare_skill"
+            ],
+            "retrieval_score": 6.0,
+            "base_retrieval_score": 6.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_sd198_000689_ea7b54e2327b",
+          "ordering_score": 3.8,
+          "rank": 14,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "tac_sd198_000689_f0152010c15d",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 3.8,
+          "heuristic_score": 3.8,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_sd198_000689_f0152010c15d",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "sd198_000689",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=Apocrine Hydrocystoma, Sebaceous Cyst, Molluscum Contagiosum; ; uncertainty=medium",
+            "learning_points": [
+              "separated edge evidence from surface evidence",
+              "highlighted margin quality explicitly",
+              "required downstream integration beyond border_surface_analysis_skill"
+            ],
+            "retrieval_score": 6.0,
+            "base_retrieval_score": 6.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_sd198_000689_f0152010c15d",
+          "ordering_score": 3.8,
+          "rank": 15,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "tac_sd198_000689_f9bf40782239",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 3.8,
+          "heuristic_score": 3.8,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_sd198_000689_f9bf40782239",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "sd198_000689",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=Apocrine Hydrocystoma, Sebaceous Cyst, Molluscum Contagiosum; ; uncertainty=medium",
+            "learning_points": [
+              "focused a high-value confusion pair",
+              "sharpened specialist keratinization clues",
+              "required downstream integration beyond ack_scc_specialist_skill"
+            ],
+            "retrieval_score": 6.0,
+            "base_retrieval_score": 6.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_sd198_000689_f9bf40782239",
+          "ordering_score": 3.8,
+          "rank": 16,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "sd198_000689",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 2.3,
+          "heuristic_score": 2.3,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "sd198_000689",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "sd198_000689",
+            "confusion_pair": "None",
+            "perception_summary": "A close-up view of an eyelid showing a small, translucent, dome-shaped lesion near the lash line.",
+            "learning_points": [
+              "Final decision: Apocrine Hydrocystoma",
+              "Correctness: True"
+            ],
+            "retrieval_score": 5.0,
+            "base_retrieval_score": 5.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:sd198_000689",
+          "ordering_score": 2.6999999999999997,
+          "rank": 18,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "sd198_000925",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 1.9000000000000001,
+          "heuristic_score": 1.9000000000000001,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "sd198_000925",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "sd198_000925",
+            "confusion_pair": "None",
+            "perception_summary": "A small, raised, keratotic lesion is present on the skin near the eyelid margin.",
+            "learning_points": [
+              "Final decision: Actinic Keratosis",
+              "Correctness: False"
+            ],
+            "retrieval_score": 3.0,
+            "base_retrieval_score": 3.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:sd198_000925",
+          "ordering_score": 2.3000000000000003,
+          "rank": 19,
+          "reason": "global_budget_exceeded"
+        }
+      ],
+      "reordered_items": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "from_section": "observation",
+          "category": "description",
+          "new_rank": 1
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "from_section": "observation",
+          "category": "description",
+          "new_rank": 2
+        },
+        {
+          "item_id": "malignancy_risk_assessment_skill",
+          "item_type": "skill_output",
+          "from_section": "risk",
+          "category": "risk",
+          "new_rank": 3
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "from_section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "new_rank": 4
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "from_section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "new_rank": 5
+        },
+        {
+          "item_id": "abs_confusion_d04271ff0848",
+          "item_type": "retrieval_record",
+          "from_section": "abstract_experience",
+          "category": "experience_hint",
+          "new_rank": 6
+        },
+        {
+          "item_id": "abs_rule_728af0bf29e5",
+          "item_type": "retrieval_record",
+          "from_section": "abstract_experience",
+          "category": "experience_hint",
+          "new_rank": 7
+        },
+        {
+          "item_id": "sd198_000001",
+          "item_type": "retrieval_record",
+          "from_section": "raw_case_memory",
+          "category": "description",
+          "new_rank": 8
+        }
+      ],
+      "quota_state": {
+        "max_total_items": 8,
+        "per_category_quota": {
+          "description": 3,
+          "differential_support": 2,
+          "exclusion_opposing": 2,
+          "risk": 1,
+          "contradiction_gap": 2,
+          "experience_hint": 2
+        },
+        "category_counts": {
+          "description": 3,
+          "differential_support": 0,
+          "exclusion_opposing": 0,
+          "risk": 1,
+          "contradiction_gap": 2,
+          "experience_hint": 2
+        }
+      }
+    }
+  }
+}

@@ -12,7 +12,7 @@ from agent.workflow_profiles import ensure_workflow_context
 from dataio.case_schema import CaseSourceConfig, FieldCandidate, StandardizedCaseRecord
 from dataio.ham10000_loader import DEFAULT_HAM10000_ROOT, load_ham10000_case_input_by_index, load_ham10000_case_inputs
 from dataio.isic2019_loader import DEFAULT_ISIC2019_ROOT, load_isic2019_case_input_by_index, load_isic2019_case_inputs
-from dataio.scin_loader import DEFAULT_SCIN_ROOT, load_scin_case_input_by_index, load_scin_case_inputs
+from dataio.scin_loader import DEFAULT_SCIN_ROOT, discover_scin_case_source, load_scin_case_input_by_index, load_scin_case_inputs
 from dataio.sd198_loader import (
     DEFAULT_SD198_ROOT,
     discover_sd198_case_source,
@@ -477,7 +477,9 @@ register_dataset_loader(
     "scin",
     load_by_index=load_scin_case_input_by_index,
     load_all=load_scin_case_inputs,
+    discover_source=discover_scin_case_source,
     data_root=DEFAULT_SCIN_ROOT,
+    data_roots=[DEFAULT_SCIN_ROOT.parent],
 )
 register_dataset_loader(
     "sd198",
@@ -485,6 +487,7 @@ register_dataset_loader(
     load_all=load_sd198_case_inputs,
     discover_source=discover_sd198_case_source,
     data_root=DEFAULT_SD198_ROOT,
+    data_roots=[DEFAULT_SD198_ROOT.parent],
 )
 register_dataset_loader(
     "xiangya_sft",

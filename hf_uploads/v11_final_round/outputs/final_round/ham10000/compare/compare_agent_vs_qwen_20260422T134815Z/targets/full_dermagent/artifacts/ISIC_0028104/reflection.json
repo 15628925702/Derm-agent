@@ -1,0 +1,1935 @@
+{
+  "reasoning_summary": "Perception summary: A lesion on the back with a central dark area surrounded by a lighter, irregular border. | Useful skills: morphology_analysis_skill, color_pattern_analysis_skill, lesion_description_structuring_skill, malignancy_risk_assessment_skill, differential_compare_skill, mel_nev_specialist_skill | Final answer: Basal Cell Carcinoma | Uncertainty: low | Risk flags: malignancy_risk:medium | Detected errors: final_diagnosis_mismatch_reference",
+  "useful_skills": [
+    "morphology_analysis_skill",
+    "color_pattern_analysis_skill",
+    "lesion_description_structuring_skill",
+    "malignancy_risk_assessment_skill",
+    "differential_compare_skill",
+    "mel_nev_specialist_skill"
+  ],
+  "detected_errors": [
+    "final_diagnosis_mismatch_reference"
+  ],
+  "experience_type": "confusion_experience",
+  "diagnosis_correct": false,
+  "write_experience": true,
+  "case_outcome": {
+    "status": "failure",
+    "has_ground_truth": true,
+    "is_correct": false,
+    "error_type": "final_diagnosis_mismatch_reference",
+    "predicted_label": "Basal Cell Carcinoma",
+    "reference_label": "bkl",
+    "predicted_canonical_label": "BCC",
+    "reference_canonical_label": "BKL",
+    "confidence_level": "moderate",
+    "uncertainty_level": "low",
+    "malignant_flag": {
+      "ground_truth": false,
+      "predicted": true
+    },
+    "confusion_pair": "Basal Cell Carcinoma->bkl",
+    "risk_flags": [
+      "malignancy_risk:medium"
+    ],
+    "label_space": {
+      "label_space_id": "ham10000_full",
+      "canonical_labels": [
+        "MEL",
+        "BCC",
+        "NV",
+        "BKL",
+        "DF",
+        "VASC",
+        "AKIEC"
+      ],
+      "malignant_labels": [
+        "MEL",
+        "BCC",
+        "AKIEC"
+      ],
+      "benign_labels": [
+        "NV",
+        "BKL",
+        "DF",
+        "VASC"
+      ]
+    }
+  },
+  "skill_assessments": [
+    {
+      "skill_name": "morphology_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "BCC",
+          "NV",
+          "AKIEC"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "low",
+        "region": "back"
+      },
+      "helped_aspects": [
+        "stabilized lesion structure",
+        "made morphology explicit for downstream reasoning"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "inspect dominant lesion silhouette",
+        "judge elevation and lesion count"
+      ],
+      "referenced_experiences": [
+        "ISIC_0031724",
+        "ISIC_0031245"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "morphology_analysis_skill",
+        "ddx:BCC|NV",
+        "risk:malignancy_risk:medium",
+        "region:back",
+        "uncertainty:low",
+        "confusion:Basal Cell Carcinoma->bkl"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "morphology_analysis_skill remains reusable for Basal Cell Carcinoma->bkl style confusion"
+    },
+    {
+      "skill_name": "color_pattern_analysis_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "BCC",
+          "NV",
+          "AKIEC"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "low",
+        "region": "back"
+      },
+      "helped_aspects": [
+        "made pigment variation explicit",
+        "surfaced color asymmetry as auditable evidence"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "inspect dominant color",
+        "compare internal color asymmetry"
+      ],
+      "referenced_experiences": [
+        "tac_ISIC_0030594_e6055fc25fdb"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "color_pattern_analysis_skill",
+        "ddx:BCC|NV",
+        "risk:malignancy_risk:medium",
+        "region:back",
+        "uncertainty:low",
+        "confusion:Basal Cell Carcinoma->bkl"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "color_pattern_analysis_skill remains reusable for Basal Cell Carcinoma->bkl style confusion"
+    },
+    {
+      "skill_name": "lesion_description_structuring_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "BCC",
+          "NV",
+          "AKIEC"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "low",
+        "region": "back"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "produce structured evidence",
+        "support downstream reasoning"
+      ],
+      "referenced_experiences": [
+        "ISIC_0031724",
+        "ISIC_0031245",
+        "tac_ISIC_0030594_ea7b54e2327b",
+        "tac_ISIC_0030594_e6055fc25fdb",
+        "tac_ISIC_0030594_e4a8c7c2c58e",
+        "abs_confusion_3a328c374e34",
+        "abs_composite_90ff6f092744",
+        "abs_composite_1c5fd5852833"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "descriptive_evidence",
+      "uncertainty_reduction": true,
+      "contradiction_detected": false,
+      "malignant_flag_support": false,
+      "evidence_usage_score": 0.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "lesion_description_structuring_skill",
+        "ddx:BCC|NV",
+        "risk:malignancy_risk:medium",
+        "region:back",
+        "uncertainty:low",
+        "confusion:Basal Cell Carcinoma->bkl"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "lesion_description_structuring_skill remains reusable for Basal Cell Carcinoma->bkl style confusion"
+    },
+    {
+      "skill_name": "malignancy_risk_assessment_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "partially_helpful",
+      "impact": "partially_helpful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "BCC",
+          "NV",
+          "AKIEC"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "low",
+        "region": "back"
+      },
+      "helped_aspects": [
+        "made risk framing explicit",
+        "highlighted alarm signals without forcing diagnosis"
+      ],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "key_steps": [
+        "collect alarm signals",
+        "balance concerning and reassuring evidence"
+      ],
+      "referenced_experiences": [
+        "tac_ISIC_0030594_ea7b54e2327b",
+        "tac_ISIC_0030594_e6055fc25fdb",
+        "tac_ISIC_0030594_e4a8c7c2c58e"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "risk_signal",
+      "uncertainty_reduction": false,
+      "contradiction_detected": false,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 1.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [],
+      "applicable_scenarios": [
+        "malignancy_risk_assessment_skill",
+        "ddx:BCC|NV",
+        "risk:malignancy_risk:medium",
+        "region:back",
+        "uncertainty:low",
+        "confusion:Basal Cell Carcinoma->bkl"
+      ],
+      "failure_modes": [
+        "active_confusion_unresolved",
+        "final_reasoning_failed"
+      ],
+      "reusable": true,
+      "reuse_reason": "malignancy_risk_assessment_skill remains reusable for Basal Cell Carcinoma->bkl style confusion"
+    },
+    {
+      "skill_name": "differential_compare_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "failure",
+      "impact": "harmful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "BCC",
+          "NV",
+          "AKIEC"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "low",
+        "region": "back"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing",
+        "differential_compare_skill likely added little net value under the observed evidence state"
+      ],
+      "key_steps": [
+        "select the most relevant candidate pair",
+        "preserve unresolved comparative evidence"
+      ],
+      "referenced_experiences": [
+        "abs_confusion_3a328c374e34",
+        "tac_ISIC_0030594_ea7b54e2327b",
+        "tac_ISIC_0030594_e6055fc25fdb"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "conflict_signal",
+      "uncertainty_reduction": true,
+      "contradiction_detected": true,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 0.55,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [
+        "false_conflict_signal",
+        "uncertainty_reduction_not_needed"
+      ],
+      "applicable_scenarios": [
+        "differential_compare_skill",
+        "ddx:BCC|NV",
+        "risk:malignancy_risk:medium",
+        "region:back",
+        "uncertainty:low",
+        "confusion:Basal Cell Carcinoma->bkl"
+      ],
+      "failure_modes": [
+        "low_net_reasoning_value",
+        "active_confusion_unresolved",
+        "final_reasoning_failed",
+        "false_conflict_signal",
+        "uncertainty_reduction_not_needed"
+      ],
+      "reusable": false,
+      "reuse_reason": ""
+    },
+    {
+      "skill_name": "mel_nev_specialist_skill",
+      "triggered": true,
+      "selected": true,
+      "output_present": true,
+      "helpfulness": "failure",
+      "impact": "harmful",
+      "trigger_context": {
+        "ddx_candidates": [
+          "BCC",
+          "NV",
+          "AKIEC"
+        ],
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty_level": "low",
+        "region": "back"
+      },
+      "helped_aspects": [],
+      "failed_aspects": [
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing",
+        "mel_nev_specialist_skill likely added little net value under the observed evidence state"
+      ],
+      "key_steps": [
+        "focus the confusion pair",
+        "contrast differentiating clues without forcing closure"
+      ],
+      "referenced_experiences": [
+        "tac_ISIC_0030594_ea7b54e2327b",
+        "tac_ISIC_0030594_e6055fc25fdb",
+        "tac_ISIC_0030594_e4a8c7c2c58e"
+      ],
+      "evidence_strength": "medium",
+      "evidence_strength_score": 0.6,
+      "recommendation_type": "conflict_signal",
+      "uncertainty_reduction": true,
+      "contradiction_detected": true,
+      "malignant_flag_support": true,
+      "evidence_usage_score": 0.3,
+      "judgement_version": "skill_helpfulness_judgement_v3",
+      "judgement_reasons": [
+        "structured_output_present",
+        "evidence_strength_medium"
+      ],
+      "harmful_reasons": [
+        "false_conflict_signal",
+        "uncertainty_reduction_not_needed"
+      ],
+      "applicable_scenarios": [
+        "mel_nev_specialist_skill",
+        "ddx:BCC|NV",
+        "risk:malignancy_risk:medium",
+        "region:back",
+        "uncertainty:low",
+        "confusion:Basal Cell Carcinoma->bkl"
+      ],
+      "failure_modes": [
+        "low_net_reasoning_value",
+        "active_confusion_unresolved",
+        "final_reasoning_failed",
+        "false_conflict_signal",
+        "uncertainty_reduction_not_needed"
+      ],
+      "reusable": false,
+      "reuse_reason": ""
+    }
+  ],
+  "reflection_extract": {
+    "raw_case_memory_ready": true,
+    "tactical_experience_count": 6,
+    "abstract_experience_candidate_count": 2,
+    "reusable_tactical_count": 4,
+    "composite_skill_seed_count": 0,
+    "composite_skill_seed_ids": [],
+    "abstract_flags": {
+      "confusion_memory": true,
+      "prototype": false,
+      "rule": true,
+      "rule_candidate": false,
+      "composite_skill_seed": false
+    },
+    "case_status": "failure"
+  },
+  "writeback_bundle": {
+    "raw_case_memory": {
+      "case_id": "ISIC_0028104",
+      "image_paths": [
+        "/root/DermAgent/data/ham10000/HAM10000_images_part_1/ISIC_0028104.jpg"
+      ],
+      "metadata": {
+        "lesion_id": "HAM_0002424",
+        "image_id": "ISIC_0028104",
+        "age": "65.0",
+        "sex": "male",
+        "localization": "back",
+        "region": "back",
+        "diagnosis_confidence": "histopathology_confirmed",
+        "has_histopathology": true,
+        "label_space_id": "ham10000_full"
+      },
+      "dataset_name": "HAM10000",
+      "label_space_id": "ham10000_full",
+      "true_label": "bkl",
+      "qwen_output": {
+        "final_diagnosis": "Basal Cell Carcinoma",
+        "differential_diagnoses": [
+          "Basal Cell Carcinoma",
+          "Actinic Keratosis"
+        ],
+        "rationale": "The lesion exhibits a central dark area and an irregular border, which are concerning features for Basal Cell Carcinoma. However, the lack of ulceration, rapid growth, and irregular vascular patterns makes a definitive diagnosis challenging. Further dermoscopic evaluation and clinical follow-up are recommended. agent conservative fusion: kept the agent diagnosis.",
+        "confidence": "Moderate",
+        "follow_up_considerations": [
+          "C",
+          "l",
+          "i",
+          "n",
+          "i",
+          "c",
+          "a",
+          "l",
+          " ",
+          "f",
+          "o",
+          "l",
+          "l",
+          "o",
+          "w",
+          "-",
+          "u",
+          "p",
+          " ",
+          "a",
+          "n",
+          "d",
+          " ",
+          "c",
+          "l",
+          "o",
+          "s",
+          "e",
+          "r",
+          " ",
+          "i",
+          "n",
+          "s",
+          "p",
+          "e",
+          "c",
+          "t",
+          "i",
+          "o",
+          "n",
+          " ",
+          "a",
+          "r",
+          "e",
+          " ",
+          "a",
+          "d",
+          "v",
+          "i",
+          "s",
+          "e",
+          "d",
+          " ",
+          "i",
+          "f",
+          " ",
+          "c",
+          "o",
+          "n",
+          "c",
+          "e",
+          "r",
+          "n",
+          " ",
+          "p",
+          "e",
+          "r",
+          "s",
+          "i",
+          "s",
+          "t",
+          "s",
+          ".",
+          " ",
+          "D",
+          "e",
+          "r",
+          "m",
+          "o",
+          "s",
+          "c",
+          "o",
+          "p",
+          "y",
+          " ",
+          "t",
+          "o",
+          " ",
+          "a",
+          "s",
+          "s",
+          "e",
+          "s",
+          "s",
+          " ",
+          "f",
+          "o",
+          "r",
+          " ",
+          "a",
+          "t",
+          "y",
+          "p",
+          "i",
+          "c",
+          "a",
+          "l",
+          " ",
+          "p",
+          "i",
+          "g",
+          "m",
+          "e",
+          "n",
+          "t",
+          " ",
+          "n",
+          "e",
+          "t",
+          "w",
+          "o",
+          "r",
+          "k",
+          ",",
+          " ",
+          "r",
+          "e",
+          "g",
+          "r",
+          "e",
+          "s",
+          "s",
+          "i",
+          "o",
+          "n",
+          " ",
+          "s",
+          "t",
+          "r",
+          "u",
+          "c",
+          "t",
+          "u",
+          "r",
+          "e",
+          "s",
+          ",",
+          " ",
+          "o",
+          "r",
+          " ",
+          "o",
+          "t",
+          "h",
+          "e",
+          "r",
+          " ",
+          "d",
+          "e",
+          "r",
+          "m",
+          "o",
+          "s",
+          "c",
+          "o",
+          "p",
+          "i",
+          "c",
+          " ",
+          "f",
+          "e",
+          "a",
+          "t",
+          "u",
+          "r",
+          "e",
+          "s",
+          " ",
+          "t",
+          "h",
+          "a",
+          "t",
+          " ",
+          "c",
+          "o",
+          "u",
+          "l",
+          "d",
+          " ",
+          "a",
+          "i",
+          "d",
+          " ",
+          "i",
+          "n",
+          " ",
+          "d",
+          "i",
+          "s",
+          "t",
+          "i",
+          "n",
+          "g",
+          "u",
+          "i",
+          "s",
+          "h",
+          "i",
+          "n",
+          "g",
+          " ",
+          "b",
+          "e",
+          "t",
+          "w",
+          "e",
+          "e",
+          "n",
+          " ",
+          "M",
+          "E",
+          "L",
+          " ",
+          "a",
+          "n",
+          "d",
+          " ",
+          "N",
+          "E",
+          "V",
+          " ",
+          "i",
+          "s",
+          " ",
+          "r",
+          "e",
+          "c",
+          "o",
+          "m",
+          "m",
+          "e",
+          "n",
+          "d",
+          "e",
+          "d",
+          ".",
+          "Fusion note: agent_matches_baseline; use_agent_output"
+        ],
+        "fusion_decision": {
+          "use_agent_output": true,
+          "fusion_mode": "soft",
+          "merge_baseline_differentials": true,
+          "consensus_override_label": "",
+          "consensus_candidates": [],
+          "baseline_label": "Basal Cell Carcinoma",
+          "agent_label": "Basal Cell Carcinoma",
+          "baseline_confidence": "moderate",
+          "agent_confidence": "moderate",
+          "selected_evidence_present": true,
+          "override_allowed": true,
+          "malignancy_override_allowed": false,
+          "subtype_override_allowed": true,
+          "family_override_allowed": false,
+          "override_mode": "subtype_override",
+          "support_margin": 36.44,
+          "subtype_support_margin": 24.92,
+          "uncertainty_level": "low",
+          "workflow_profile": "sparse_lesion_workflow",
+          "baseline_preview": {
+            "early_ddx_candidates": [
+              "BCC",
+              "NV",
+              "AKIEC"
+            ],
+            "image_summary": "A lesion on the back with a central dark area surrounded by a lighter, irregular border.",
+            "baseline_final_diagnosis": "Basal Cell Carcinoma",
+            "baseline_differential_diagnoses": [
+              "Basal Cell Carcinoma"
+            ],
+            "baseline_confidence": "Moderate"
+          },
+          "reasons": [
+            "agent_matches_baseline",
+            "use_agent_output"
+          ]
+        }
+      },
+      "agent_output": {
+        "perception": {
+          "image_summary": "A lesion on the back with a central dark area surrounded by a lighter, irregular border.",
+          "ddx_candidates": [
+            "BCC",
+            "NV",
+            "AKIEC"
+          ],
+          "uncertainty": {
+            "level": "low",
+            "reasons": [
+              "The lesion has a central dark area which could be indicative of a BCC or a melanoma."
+            ]
+          },
+          "notes": [
+            "The lesion appears to have a central dark area, which could suggest a BCC or a melanoma. The surrounding border is irregular, which is also seen in some cases of BCC and melanoma. The lesion's location on the back is not typically associated with AKIEC, but it cannot be ruled out based on this image alone."
+          ]
+        },
+        "skill_outputs": {
+          "morphology_analysis_skill": {
+            "lesion_type": "nodule",
+            "size_range": "small to medium",
+            "elevation": "raised",
+            "count": "solitary",
+            "referenced_experiences": [
+              "ISIC_0031724",
+              "ISIC_0031245"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "color_pattern_analysis_skill": {
+            "primary_color": "Dark brown",
+            "color_variation": "Marked",
+            "pigmentation_pattern": "Reticular",
+            "asymmetry_color": "Present",
+            "referenced_experiences": [
+              "tac_ISIC_0030594_e6055fc25fdb"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "lesion_description_structuring_skill": {
+            "primary_lesion_morphology": "Nodular",
+            "color": [
+              "Dark brown with marked pigmentation variation and reticular pattern"
+            ],
+            "border": [
+              "Irregular"
+            ],
+            "surface": [
+              "Smooth"
+            ],
+            "size_count": [
+              "size: Small to medium, count: Solitary"
+            ],
+            "distribution": [
+              "site: Back, pattern: Central dark area surrounded by a lighter, irregular border"
+            ],
+            "associated_context": [
+              "age: 65.0, sex: Male, localization: Back, region: Back, diagnosis_confidence: Histopathology confirmed, has_histopathology: True, label_space_id: ham10000_full"
+            ],
+            "referenced_experiences": [
+              "ISIC_0031724",
+              "ISIC_0031245",
+              "tac_ISIC_0030594_ea7b54e2327b",
+              "tac_ISIC_0030594_e6055fc25fdb",
+              "tac_ISIC_0030594_e4a8c7c2c58e",
+              "abs_confusion_3a328c374e34",
+              "abs_composite_90ff6f092744",
+              "abs_composite_1c5fd5852833"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "malignancy_risk_assessment_skill": {
+            "risk_level": "medium",
+            "risk_evidence": [
+              "The lesion has a central dark area which could be indicative of a BCC or a melanoma.",
+              "The surrounding border is irregular, which is also seen in some cases of BCC and melanoma."
+            ],
+            "alarm_signals": [
+              "Central dark area",
+              "Irregular border"
+            ],
+            "benign_reassuring_features": [
+              "No ulceration",
+              "No rapid growth",
+              "No irregular vascular patterns"
+            ],
+            "referenced_experiences": [
+              "tac_ISIC_0030594_ea7b54e2327b",
+              "tac_ISIC_0030594_e6055fc25fdb",
+              "tac_ISIC_0030594_e4a8c7c2c58e"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "risk_signal"
+          },
+          "differential_compare_skill": {
+            "candidate_pairs": [
+              "BCC vs NV"
+            ],
+            "supporting_evidence": [
+              "The lesion has a central dark area which could be indicative of a BCC or a melanoma.",
+              "The surrounding border is irregular, which is also seen in some cases of BCC and melanoma."
+            ],
+            "conflicting_evidence": [
+              "The lesion appears to have a central dark area, which could suggest a BCC or a melanoma. The surrounding border is irregular, which is also seen in some cases of BCC and melanoma."
+            ],
+            "required_missing_evidence": [
+              "Missing dermoscopic detail for atypical pigment network or additional structures.",
+              "Missing evolution history when growth or change is not documented."
+            ],
+            "referenced_experiences": [
+              "abs_confusion_3a328c374e34",
+              "tac_ISIC_0030594_ea7b54e2327b",
+              "tac_ISIC_0030594_e6055fc25fdb"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "conflict_signal"
+          },
+          "mel_nev_specialist_skill": {
+            "differentiation_features": [
+              "asymmetry",
+              "border irregularity",
+              "pigment complexity",
+              "size/evolution context"
+            ],
+            "supporting_evidence": [
+              "The lesion has a central dark area which could be indicative of a BCC or a melanoma.",
+              "The surrounding border is irregular, which is also seen in some cases of BCC and melanoma."
+            ],
+            "opposing_evidence": [
+              "The lesion appears to have a central dark area, which could suggest a BCC or a melanoma. The surrounding border is irregular, which is also seen in some cases of BCC and melanoma."
+            ],
+            "required_missing_evidence": [
+              "Missing dermoscopic detail for atypical pigment network or additional structures.",
+              "Missing evolution history when growth or change is not documented."
+            ],
+            "uncertainty_under_current_evidence": "medium",
+            "further_observation_suggestions": [
+              "Perform dermoscopy to assess for atypical pigment network, regression structures, or other dermoscopic features that could aid in distinguishing between MEL and NEV."
+            ],
+            "cluster_watchouts": [
+              "Do not call melanoma based on size or darkness alone.",
+              "NV is the dominant class (67%) — do not over-escalate to melanoma without clear structural evidence.",
+              "Do not ignore nevus-like opposing evidence when uncertainty remains high."
+            ],
+            "referenced_confusion_patterns": [],
+            "critical_supporting_evidence": [
+              "The lesion has a central dark area which could be indicative of a BCC or a melanoma.",
+              "The surrounding border is irregular, which is also seen in some cases of BCC and melanoma."
+            ],
+            "counterexample_watchouts": [
+              "Counterexamples, such as lesions with a central dark area but a regular border and uniform pigmentation, should be kept in mind."
+            ],
+            "referenced_experiences": [
+              "tac_ISIC_0030594_ea7b54e2327b",
+              "tac_ISIC_0030594_e6055fc25fdb",
+              "tac_ISIC_0030594_e4a8c7c2c58e"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "conflict_signal"
+          }
+        },
+        "risk_flags": [
+          "malignancy_risk:medium"
+        ],
+        "uncertainty": {
+          "uncertainty_level": "low",
+          "reasons": [
+            "The lesion has a central dark area which could be indicative of a BCC or a melanoma."
+          ],
+          "missing_information": []
+        },
+        "retrieved_experience_refs": [
+          "abs_composite_1c5fd5852833",
+          "abs_confusion_3a328c374e34",
+          "abs_composite_69d48afa45e2"
+        ],
+        "notes": [
+          "Agent generated structured evidence only.",
+          "Qwen remains the sole final diagnostic decision maker.",
+          "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, lesion_description_structuring_skill, malignancy_risk_assessment_skill, differential_compare_skill, mel_nev_specialist_skill.",
+          "Policy in use: ham10000_v2_heuristic_stable__full_dermagent.",
+          "Skill retrieval candidates: metadata_consistency_skill, color_pattern_analysis_skill, lesion_description_structuring_skill, morphology_analysis_skill, distribution_analysis_skill, malignancy_risk_assessment_skill, uncertainty_assessment_skill, mel_nev_specialist_skill, temporal_evolution_skill, differential_compare_skill, contradiction_check_skill, border_surface_analysis_skill, information_gap_detection_skill, escalation_recommendation_skill.",
+          "The lesion appears to have a central dark area, which could suggest a BCC or a melanoma. The surrounding border is irregular, which is also seen in some cases of BCC and melanoma. The lesion's location on the back is not typically associated with AKIEC, but it cannot be ruled out based on this image alone.",
+          "Retrieved prior reasoning experience for context."
+        ],
+        "skill_assessments": [
+          {
+            "skill_name": "morphology_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "BCC",
+                "NV",
+                "AKIEC"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "low",
+              "region": "back"
+            },
+            "helped_aspects": [
+              "stabilized lesion structure",
+              "made morphology explicit for downstream reasoning"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "inspect dominant lesion silhouette",
+              "judge elevation and lesion count"
+            ],
+            "referenced_experiences": [
+              "ISIC_0031724",
+              "ISIC_0031245"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "morphology_analysis_skill",
+              "ddx:BCC|NV",
+              "risk:malignancy_risk:medium",
+              "region:back",
+              "uncertainty:low",
+              "confusion:Basal Cell Carcinoma->bkl"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "morphology_analysis_skill remains reusable for Basal Cell Carcinoma->bkl style confusion"
+          },
+          {
+            "skill_name": "color_pattern_analysis_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "BCC",
+                "NV",
+                "AKIEC"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "low",
+              "region": "back"
+            },
+            "helped_aspects": [
+              "made pigment variation explicit",
+              "surfaced color asymmetry as auditable evidence"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "inspect dominant color",
+              "compare internal color asymmetry"
+            ],
+            "referenced_experiences": [
+              "tac_ISIC_0030594_e6055fc25fdb"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "color_pattern_analysis_skill",
+              "ddx:BCC|NV",
+              "risk:malignancy_risk:medium",
+              "region:back",
+              "uncertainty:low",
+              "confusion:Basal Cell Carcinoma->bkl"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "color_pattern_analysis_skill remains reusable for Basal Cell Carcinoma->bkl style confusion"
+          },
+          {
+            "skill_name": "lesion_description_structuring_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "BCC",
+                "NV",
+                "AKIEC"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "low",
+              "region": "back"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "produce structured evidence",
+              "support downstream reasoning"
+            ],
+            "referenced_experiences": [
+              "ISIC_0031724",
+              "ISIC_0031245",
+              "tac_ISIC_0030594_ea7b54e2327b",
+              "tac_ISIC_0030594_e6055fc25fdb",
+              "tac_ISIC_0030594_e4a8c7c2c58e",
+              "abs_confusion_3a328c374e34",
+              "abs_composite_90ff6f092744",
+              "abs_composite_1c5fd5852833"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "descriptive_evidence",
+            "uncertainty_reduction": true,
+            "contradiction_detected": false,
+            "malignant_flag_support": false,
+            "evidence_usage_score": 0.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "lesion_description_structuring_skill",
+              "ddx:BCC|NV",
+              "risk:malignancy_risk:medium",
+              "region:back",
+              "uncertainty:low",
+              "confusion:Basal Cell Carcinoma->bkl"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "lesion_description_structuring_skill remains reusable for Basal Cell Carcinoma->bkl style confusion"
+          },
+          {
+            "skill_name": "malignancy_risk_assessment_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "partially_helpful",
+            "impact": "partially_helpful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "BCC",
+                "NV",
+                "AKIEC"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "low",
+              "region": "back"
+            },
+            "helped_aspects": [
+              "made risk framing explicit",
+              "highlighted alarm signals without forcing diagnosis"
+            ],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing"
+            ],
+            "key_steps": [
+              "collect alarm signals",
+              "balance concerning and reassuring evidence"
+            ],
+            "referenced_experiences": [
+              "tac_ISIC_0030594_ea7b54e2327b",
+              "tac_ISIC_0030594_e6055fc25fdb",
+              "tac_ISIC_0030594_e4a8c7c2c58e"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "risk_signal",
+            "uncertainty_reduction": false,
+            "contradiction_detected": false,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 1.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [],
+            "applicable_scenarios": [
+              "malignancy_risk_assessment_skill",
+              "ddx:BCC|NV",
+              "risk:malignancy_risk:medium",
+              "region:back",
+              "uncertainty:low",
+              "confusion:Basal Cell Carcinoma->bkl"
+            ],
+            "failure_modes": [
+              "active_confusion_unresolved",
+              "final_reasoning_failed"
+            ],
+            "reusable": true,
+            "reuse_reason": "malignancy_risk_assessment_skill remains reusable for Basal Cell Carcinoma->bkl style confusion"
+          },
+          {
+            "skill_name": "differential_compare_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "failure",
+            "impact": "harmful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "BCC",
+                "NV",
+                "AKIEC"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "low",
+              "region": "back"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing",
+              "differential_compare_skill likely added little net value under the observed evidence state"
+            ],
+            "key_steps": [
+              "select the most relevant candidate pair",
+              "preserve unresolved comparative evidence"
+            ],
+            "referenced_experiences": [
+              "abs_confusion_3a328c374e34",
+              "tac_ISIC_0030594_ea7b54e2327b",
+              "tac_ISIC_0030594_e6055fc25fdb"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "conflict_signal",
+            "uncertainty_reduction": true,
+            "contradiction_detected": true,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 0.55,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [
+              "false_conflict_signal",
+              "uncertainty_reduction_not_needed"
+            ],
+            "applicable_scenarios": [
+              "differential_compare_skill",
+              "ddx:BCC|NV",
+              "risk:malignancy_risk:medium",
+              "region:back",
+              "uncertainty:low",
+              "confusion:Basal Cell Carcinoma->bkl"
+            ],
+            "failure_modes": [
+              "low_net_reasoning_value",
+              "active_confusion_unresolved",
+              "final_reasoning_failed",
+              "false_conflict_signal",
+              "uncertainty_reduction_not_needed"
+            ],
+            "reusable": false,
+            "reuse_reason": ""
+          },
+          {
+            "skill_name": "mel_nev_specialist_skill",
+            "triggered": true,
+            "selected": true,
+            "output_present": true,
+            "helpfulness": "failure",
+            "impact": "harmful",
+            "trigger_context": {
+              "ddx_candidates": [
+                "BCC",
+                "NV",
+                "AKIEC"
+              ],
+              "risk_flags": [
+                "malignancy_risk:medium"
+              ],
+              "uncertainty_level": "low",
+              "region": "back"
+            },
+            "helped_aspects": [],
+            "failed_aspects": [
+              "did not fully resolve the active confusion pattern",
+              "did not prevent the final decision from failing",
+              "mel_nev_specialist_skill likely added little net value under the observed evidence state"
+            ],
+            "key_steps": [
+              "focus the confusion pair",
+              "contrast differentiating clues without forcing closure"
+            ],
+            "referenced_experiences": [
+              "tac_ISIC_0030594_ea7b54e2327b",
+              "tac_ISIC_0030594_e6055fc25fdb",
+              "tac_ISIC_0030594_e4a8c7c2c58e"
+            ],
+            "evidence_strength": "medium",
+            "evidence_strength_score": 0.6,
+            "recommendation_type": "conflict_signal",
+            "uncertainty_reduction": true,
+            "contradiction_detected": true,
+            "malignant_flag_support": true,
+            "evidence_usage_score": 0.3,
+            "judgement_version": "skill_helpfulness_judgement_v3",
+            "judgement_reasons": [
+              "structured_output_present",
+              "evidence_strength_medium"
+            ],
+            "harmful_reasons": [
+              "false_conflict_signal",
+              "uncertainty_reduction_not_needed"
+            ],
+            "applicable_scenarios": [
+              "mel_nev_specialist_skill",
+              "ddx:BCC|NV",
+              "risk:malignancy_risk:medium",
+              "region:back",
+              "uncertainty:low",
+              "confusion:Basal Cell Carcinoma->bkl"
+            ],
+            "failure_modes": [
+              "low_net_reasoning_value",
+              "active_confusion_unresolved",
+              "final_reasoning_failed",
+              "false_conflict_signal",
+              "uncertainty_reduction_not_needed"
+            ],
+            "reusable": false,
+            "reuse_reason": ""
+          }
+        ]
+      },
+      "final_decision": {
+        "label": "Basal Cell Carcinoma",
+        "source": "qwen_final_diagnosis",
+        "canonical_label": "BCC"
+      },
+      "correctness": {
+        "has_ground_truth": true,
+        "is_correct": false,
+        "error_type": "final_diagnosis_mismatch_reference"
+      },
+      "malignant_flag": {
+        "ground_truth": false,
+        "predicted": true
+      }
+    },
+    "tactical_experiences": [
+      {
+        "exp_id": "tac_ISIC_0028104_e5b6956c8c26",
+        "case_id": "ISIC_0028104",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Basal Cell Carcinoma->bkl",
+          "observed_state": {
+            "ddx_candidates": [
+              "BCC",
+              "NV",
+              "AKIEC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "low",
+            "region": "back"
+          },
+          "constraints": [
+            "single_image"
+          ]
+        },
+        "action": {
+          "skill_name": "morphology_analysis_skill",
+          "skills_used": [
+            "morphology_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "stabilized lesion structure",
+          "made morphology explicit for downstream reasoning",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "inspect dominant lesion silhouette",
+          "judge elevation and lesion count"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "morphology_analysis_skill",
+            "Basal Cell Carcinoma->bkl",
+            "BCC",
+            "NV",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0028104_5d8de46f6089",
+        "case_id": "ISIC_0028104",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Basal Cell Carcinoma->bkl",
+          "observed_state": {
+            "ddx_candidates": [
+              "BCC",
+              "NV",
+              "AKIEC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "low",
+            "region": "back"
+          },
+          "constraints": [
+            "single_image"
+          ]
+        },
+        "action": {
+          "skill_name": "color_pattern_analysis_skill",
+          "skills_used": [
+            "color_pattern_analysis_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made pigment variation explicit",
+          "surfaced color asymmetry as auditable evidence",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "inspect dominant color",
+          "compare internal color asymmetry"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "color_pattern_analysis_skill",
+            "Basal Cell Carcinoma->bkl",
+            "BCC",
+            "NV",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0028104_8fa365c666e8",
+        "case_id": "ISIC_0028104",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Basal Cell Carcinoma->bkl",
+          "observed_state": {
+            "ddx_candidates": [
+              "BCC",
+              "NV",
+              "AKIEC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "low",
+            "region": "back"
+          },
+          "constraints": [
+            "single_image"
+          ]
+        },
+        "action": {
+          "skill_name": "lesion_description_structuring_skill",
+          "skills_used": [
+            "lesion_description_structuring_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "produce structured evidence",
+          "support downstream reasoning"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "lesion_description_structuring_skill",
+            "Basal Cell Carcinoma->bkl",
+            "BCC",
+            "NV",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0028104_47d9748366d2",
+        "case_id": "ISIC_0028104",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Basal Cell Carcinoma->bkl",
+          "observed_state": {
+            "ddx_candidates": [
+              "BCC",
+              "NV",
+              "AKIEC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "low",
+            "region": "back"
+          },
+          "constraints": [
+            "single_image"
+          ]
+        },
+        "action": {
+          "skill_name": "malignancy_risk_assessment_skill",
+          "skills_used": [
+            "malignancy_risk_assessment_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "made risk framing explicit",
+          "highlighted alarm signals without forcing diagnosis",
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing"
+        ],
+        "step_trace": [
+          "collect alarm signals",
+          "balance concerning and reassuring evidence"
+        ],
+        "outcome": {
+          "result": "partially_helpful",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "malignancy_risk_assessment_skill",
+            "Basal Cell Carcinoma->bkl",
+            "BCC",
+            "NV",
+            "malignancy_risk:medium"
+          ],
+          "priority": "high"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0028104_8484aff5a3d6",
+        "case_id": "ISIC_0028104",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Basal Cell Carcinoma->bkl",
+          "observed_state": {
+            "ddx_candidates": [
+              "BCC",
+              "NV",
+              "AKIEC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "low",
+            "region": "back"
+          },
+          "constraints": [
+            "single_image"
+          ]
+        },
+        "action": {
+          "skill_name": "differential_compare_skill",
+          "skills_used": [
+            "differential_compare_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing",
+          "differential_compare_skill likely added little net value under the observed evidence state"
+        ],
+        "step_trace": [
+          "select the most relevant candidate pair",
+          "preserve unresolved comparative evidence"
+        ],
+        "outcome": {
+          "result": "failure",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "differential_compare_skill",
+            "Basal Cell Carcinoma->bkl",
+            "BCC",
+            "NV",
+            "malignancy_risk:medium"
+          ],
+          "priority": "low"
+        }
+      },
+      {
+        "exp_id": "tac_ISIC_0028104_3749920ddbaf",
+        "case_id": "ISIC_0028104",
+        "condition": {
+          "trigger_type": "confusion_pair",
+          "confusion_pair": "Basal Cell Carcinoma->bkl",
+          "observed_state": {
+            "ddx_candidates": [
+              "BCC",
+              "NV",
+              "AKIEC"
+            ],
+            "risk_flags": [
+              "malignancy_risk:medium"
+            ],
+            "uncertainty_level": "low",
+            "region": "back"
+          },
+          "constraints": [
+            "single_image"
+          ]
+        },
+        "action": {
+          "skill_name": "mel_nev_specialist_skill",
+          "skills_used": [
+            "mel_nev_specialist_skill"
+          ],
+          "decision_pattern": "structured_skill_sequence"
+        },
+        "rationale": [
+          "did not fully resolve the active confusion pattern",
+          "did not prevent the final decision from failing",
+          "mel_nev_specialist_skill likely added little net value under the observed evidence state"
+        ],
+        "step_trace": [
+          "focus the confusion pair",
+          "contrast differentiating clues without forcing closure"
+        ],
+        "outcome": {
+          "result": "failure",
+          "case_status": "failure",
+          "error_type": "final_diagnosis_mismatch_reference",
+          "confidence_state": "moderate"
+        },
+        "reusable_scope": {
+          "applies_to": [
+            "mel_nev_specialist_skill",
+            "Basal Cell Carcinoma->bkl",
+            "BCC",
+            "NV",
+            "malignancy_risk:medium"
+          ],
+          "priority": "low"
+        }
+      }
+    ],
+    "abstract_experiences": [
+      {
+        "abs_id": "abs_confusion_5c1564b9508a",
+        "type": "confusion_memory",
+        "concept": "basal_cell_carcinoma->bkl",
+        "pattern_summary": {
+          "confusion_pair": "Basal Cell Carcinoma->bkl",
+          "supporting_pattern": [
+            "A lesion on the back with a central dark area surrounded by a lighter, irregular border.",
+            "BCC",
+            "NV",
+            "malignancy_risk:medium"
+          ],
+          "failure_pattern": [
+            "final_diagnosis_mismatch_reference"
+          ]
+        },
+        "supporting_cases": [
+          "ISIC_0028104"
+        ],
+        "counter_cases": [],
+        "derived_rule": {
+          "rule_text": "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+          "action_hint": "structured_skill_sequence"
+        },
+        "version": "v1",
+        "seed_id": null,
+        "composite_skill_seed": {},
+        "provenance": {}
+      },
+      {
+        "abs_id": "abs_rule_728af0bf29e5",
+        "type": "rule",
+        "concept": "structured_skill_sequence",
+        "pattern_summary": {
+          "supporting_pattern": [
+            "A lesion on the back with a central dark area surrounded by a lighter, irregular border.",
+            "BCC",
+            "NV",
+            "malignancy_risk:medium"
+          ],
+          "failure_pattern": [
+            "final_diagnosis_mismatch_reference"
+          ]
+        },
+        "supporting_cases": [
+          "ISIC_0028104"
+        ],
+        "counter_cases": [],
+        "derived_rule": {
+          "rule_text": "When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Qwen integration.",
+          "action_hint": "structured_skill_sequence"
+        },
+        "version": "v1",
+        "seed_id": null,
+        "composite_skill_seed": {},
+        "provenance": {}
+      }
+    ],
+    "cognition_update": {
+      "total_cases_increment": 1,
+      "failed_cases_increment": 1,
+      "confusion_cases_increment": 1,
+      "hard_cases_increment": 0,
+      "confusion_pair": "Basal Cell Carcinoma->bkl",
+      "preferred_skills": [
+        "morphology_analysis_skill",
+        "color_pattern_analysis_skill",
+        "lesion_description_structuring_skill",
+        "malignancy_risk_assessment_skill"
+      ]
+    },
+    "skill_stats_update": [
+      {
+        "skill_name": "morphology_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "color_pattern_analysis_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "lesion_description_structuring_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 0,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "malignancy_risk_assessment_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 1,
+        "harmful_increment": 0,
+        "failure_increment": 0,
+        "reusable_increment": 1,
+        "uncertainty_reduction_increment": 0,
+        "contradiction_detection_increment": 0,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 0,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "differential_compare_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 1,
+        "failure_increment": 1,
+        "reusable_increment": 0,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 1,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 1,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      },
+      {
+        "skill_name": "mel_nev_specialist_skill",
+        "call_increment": 1,
+        "selected_increment": 1,
+        "success_increment": 0,
+        "partially_helpful_increment": 0,
+        "harmful_increment": 1,
+        "failure_increment": 1,
+        "reusable_increment": 0,
+        "uncertainty_reduction_increment": 1,
+        "contradiction_detection_increment": 1,
+        "malignant_flag_support_increment": 1,
+        "evidence_usage_increment": 1,
+        "harmful_regression_increment": 0,
+        "harmful_bias_increment": 1,
+        "harmful_redundancy_increment": 0,
+        "evidence_strength_sum": 0.6,
+        "evidence_strength_count": 1
+      }
+    ],
+    "reflection_extract": {
+      "raw_case_memory_ready": true,
+      "tactical_experience_count": 6,
+      "abstract_experience_candidate_count": 2,
+      "reusable_tactical_count": 4,
+      "composite_skill_seed_count": 0,
+      "composite_skill_seed_ids": [],
+      "abstract_flags": {
+        "confusion_memory": true,
+        "prototype": false,
+        "rule": true,
+        "rule_candidate": false,
+        "composite_skill_seed": false
+      },
+      "case_status": "failure"
+    }
+  },
+  "cognition_update": {
+    "total_cases_increment": 1,
+    "failed_cases_increment": 1,
+    "confusion_cases_increment": 1,
+    "hard_cases_increment": 0,
+    "confusion_pair": "Basal Cell Carcinoma->bkl",
+    "preferred_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "lesion_description_structuring_skill",
+      "malignancy_risk_assessment_skill"
+    ]
+  }
+}

@@ -1,0 +1,2061 @@
+{
+  "perception": {
+    "image_summary": "A small, irregularly shaped lesion with a dark center and a slightly elevated border is present on the face.",
+    "ddx_candidates": [
+      "BCC",
+      "SEK"
+    ],
+    "uncertainty": {
+      "level": "low",
+      "reasons": [
+        "Lesion size and shape are within typical ranges for both BCC and SEK.",
+        "The lesion's elevation suggests it could be a seborrheic keratosis."
+      ]
+    },
+    "notes": [
+      "The lesion appears to have a rough texture."
+    ]
+  },
+  "retrieved_experience": [
+    {
+      "case_id": "PAT_1582_2574",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "A slightly irregular, hyperpigmented lesion on the face.; NEV; BCC",
+      "confusion_pair": "Basal Cell Carcinoma->SEK",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "risk_then_uncertainty_audit"
+      ],
+      "source_id": "abs_confusion_1fa578b0081c",
+      "retrieval_score": 12
+    },
+    {
+      "case_id": "PAT_684_1302",
+      "source_layer": "abstract_experience",
+      "source_subtype": "composite_skill_seed",
+      "experience_type": "composite_skill_seed",
+      "perception_summary": "ddx=BCC, SEK; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium",
+      "confusion_pair": null,
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+distribution_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage.",
+        "Promote only after repeated successful supporting cases under a stable trigger pattern."
+      ],
+      "source_id": "abs_composite_ff85ed3481d4",
+      "retrieval_score": 12
+    },
+    {
+      "case_id": "PAT_684_1302",
+      "source_layer": "abstract_experience",
+      "source_subtype": "composite_skill_seed",
+      "experience_type": "composite_skill_seed",
+      "perception_summary": "ddx=BCC, SEK; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium",
+      "confusion_pair": null,
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+distribution_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage.",
+        "Promote only after repeated successful supporting cases under a stable trigger pattern."
+      ],
+      "source_id": "abs_composite_602e21f01160",
+      "retrieval_score": 12
+    }
+  ],
+  "skill_outputs": {
+    "morphology_analysis_skill": {
+      "lesion_type": "nodule",
+      "size_range": "small",
+      "elevation": "raised",
+      "count": "solitary",
+      "referenced_experiences": [
+        "PAT_778_1471",
+        "PAT_741_1401"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "color_pattern_analysis_skill": {
+      "primary_color": "Dark",
+      "color_variation": "Marked",
+      "pigmentation_pattern": "Reticular",
+      "asymmetry_color": "Present",
+      "referenced_experiences": [
+        "PAT_778_1471",
+        "PAT_741_1401"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "distribution_analysis_skill": {
+      "body_location": "face",
+      "symmetry": "asymmetric",
+      "localized_vs_generalized": "localized",
+      "clustering_pattern": "solitary",
+      "referenced_experiences": [
+        "PAT_778_1471",
+        "PAT_741_1401",
+        "abs_confusion_e862d24b71bb",
+        "abs_confusion_ce158bd5a2a1",
+        "abs_confusion_1fa578b0081c"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "lesion_description_structuring_skill": {
+      "primary_lesion_morphology": "Irregular nodule",
+      "color": [
+        "Dark"
+      ],
+      "border": [
+        "Elevated, slightly irregular"
+      ],
+      "surface": [
+        "Rough, granular"
+      ],
+      "size_count": [
+        "size: Small, count: Solitary"
+      ],
+      "distribution": [
+        "body_location: Face, symmetry: Asymmetric, localized_vs_generalized: Localized"
+      ],
+      "associated_context": [
+        "age: 67, itch: True, grew: False, hurt: False, changed: False, bleed: False, elevation: True"
+      ],
+      "referenced_experiences": [
+        "PAT_778_1471",
+        "PAT_741_1401",
+        "abs_confusion_e862d24b71bb",
+        "abs_confusion_ce158bd5a2a1",
+        "abs_confusion_1fa578b0081c"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "metadata_consistency_skill": {
+      "consistency_score": "medium",
+      "conflicts": [],
+      "suspicious_points": [
+        "The lesion's color is described as 'Dark' but the image shows a reddish hue.",
+        "The lesion's surface is described as 'Rough, granular' but the image shows a smooth texture."
+      ],
+      "referenced_experiences": [
+        "PAT_778_1471",
+        "PAT_741_1401",
+        "abs_confusion_e862d24b71bb",
+        "abs_confusion_ce158bd5a2a1",
+        "abs_confusion_1fa578b0081c"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "malignancy_risk_assessment_skill": {
+      "risk_level": "medium",
+      "risk_evidence": [
+        "{'alarm_signals': ['Dark color', 'Irregular border', 'Asymmetric', 'Raised', 'Rough, granular surface'], 'benign_reassuring_features': ['Small size (<6mm)', 'Solitary', 'Face location', 'No itch, no pain, no change, no bleeding']}"
+      ],
+      "alarm_signals": [
+        "Dark color",
+        "Irregular border",
+        "Asymmetric",
+        "Raised",
+        "Rough, granular surface"
+      ],
+      "benign_reassuring_features": [
+        "Small size (<6mm)",
+        "Solitary",
+        "Face location",
+        "No itch, no pain, no change, no bleeding"
+      ],
+      "referenced_experiences": [
+        "PAT_778_1471",
+        "PAT_741_1401"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "risk_signal"
+    },
+    "differential_compare_skill": {
+      "candidate_pairs": [
+        "BCC vs SEK"
+      ],
+      "supporting_evidence": [
+        "Dark color",
+        "Irregular border",
+        "Asymmetric",
+        "Raised",
+        "Rough, granular surface"
+      ],
+      "conflicting_evidence": [
+        "Small size (<6mm)",
+        "Solitary",
+        "Face location",
+        "No itch, no pain, no change, no bleeding"
+      ],
+      "required_missing_evidence": [
+        "Detailed history (e.g., growth, change, pain, bleeding)",
+        "Clinical examination (e.g., palpation, symmetry check)"
+      ],
+      "referenced_experiences": [
+        "PAT_778_1471",
+        "PAT_741_1401",
+        "abs_confusion_e862d24b71bb",
+        "abs_confusion_ce158bd5a2a1",
+        "abs_confusion_1fa578b0081c"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "information_gap_detection_skill": {
+      "missing_information": [
+        "Detailed history of the lesion (growth, change, pain, bleeding)",
+        "Clinical examination details (palpation, symmetry check)"
+      ],
+      "why_it_matters": [
+        "A detailed history helps in assessing the natural history of the lesion, which can be crucial in differentiating between benign and malignant lesions.",
+        "Clinical examination provides tactile feedback and symmetry assessment, which are important for distinguishing between various dermatological conditions."
+      ],
+      "impact_on_differential": [
+        "Without a detailed history, it is challenging to determine if the lesion has been growing or changing over time, which can be indicative of malignancy.",
+        "Clinical examination, including palpation and symmetry check, helps in assessing the lesion's characteristics more comprehensively, aiding in the differentiation between benign and potentially malignant lesions."
+      ],
+      "uncertainty_if_missing": "medium",
+      "referenced_experiences": [
+        "PAT_778_1471",
+        "PAT_741_1401"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "uncertainty_assessment_skill": {
+      "uncertainty_level": "medium",
+      "reasons": [
+        "The lesion has a dark center and a slightly elevated border, which are features common to both basal cell carcinoma (BCC) and seborrheic keratosis (SEK).",
+        "The lesion's rough texture is suggestive of seborrheic keratosis, but can also be seen in BCC.",
+        "The patient's history includes itching, which is more commonly associated with BCC."
+      ],
+      "missing_information": [
+        "Detailed history regarding the lesion's growth, change, pain, and bleeding.",
+        "Clinical examination details such as palpation and symmetry check."
+      ],
+      "referenced_experiences": [
+        "PAT_778_1471",
+        "PAT_741_1401",
+        "abs_confusion_e862d24b71bb",
+        "abs_confusion_ce158bd5a2a1",
+        "abs_confusion_1fa578b0081c"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "contradiction_check_skill": {
+      "contradictions": [
+        {
+          "description": "The lesion's rough texture mentioned in the initial perception contradicts the smooth appearance observed in the image.",
+          "evidence_sources": [
+            "initial_perception",
+            "image"
+          ]
+        }
+      ],
+      "missing_links": [
+        {
+          "description": "The lesion's growth pattern is not described in the metadata, which is crucial for differential diagnosis.",
+          "evidence_sources": [
+            "metadata"
+          ]
+        },
+        {
+          "description": "The lesion's exact size is not specified in the metadata, which is important for assessing malignancy risk.",
+          "evidence_sources": [
+            "metadata"
+          ]
+        }
+      ],
+      "reasoning_gaps": [
+        {
+          "description": "The lesion's exact location on the face is not detailed in the metadata, which could affect the differential diagnosis.",
+          "evidence_sources": [
+            "metadata"
+          ]
+        },
+        {
+          "description": "The lesion's symmetry is not confirmed in the metadata, which is essential for assessing malignancy risk.",
+          "evidence_sources": [
+            "metadata"
+          ]
+        }
+      ],
+      "referenced_experiences": [
+        "PAT_778_1471",
+        "PAT_741_1401",
+        "abs_confusion_e862d24b71bb",
+        "abs_confusion_ce158bd5a2a1",
+        "abs_confusion_1fa578b0081c"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "escalation_recommendation_skill": {
+      "whether_escalation_needed": "consider",
+      "escalation_reason": [
+        "The lesion exhibits features that are concerning for malignancy, such as a dark center and an irregular border, despite being within typical size and shape ranges. The rough texture, which is suggestive of seborrheic keratosis, does not definitively rule out malignancy. Additionally, the lack of detailed history and clinical examination details increases uncertainty."
+      ],
+      "suggested_next_check_type": "biopsy",
+      "caution_flags": [
+        "Dark color and irregular border suggest malignancy risk",
+        "Rough texture is not exclusive to seborrheic keratosis"
+      ],
+      "referenced_experiences": [
+        "PAT_778_1471",
+        "PAT_741_1401"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "risk_signal"
+    }
+  },
+  "risk_flags": [
+    "malignancy_risk:medium"
+  ],
+  "uncertainty": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The lesion has a dark center and a slightly elevated border, which are features common to both basal cell carcinoma (BCC) and seborrheic keratosis (SEK).",
+      "The lesion's rough texture is suggestive of seborrheic keratosis, but can also be seen in BCC.",
+      "The patient's history includes itching, which is more commonly associated with BCC."
+    ],
+    "missing_information": [
+      "Detailed history regarding the lesion's growth, change, pain, and bleeding.",
+      "Clinical examination details such as palpation and symmetry check."
+    ],
+    "referenced_experiences": [
+      "PAT_778_1471",
+      "PAT_741_1401",
+      "abs_confusion_e862d24b71bb",
+      "abs_confusion_ce158bd5a2a1",
+      "abs_confusion_1fa578b0081c"
+    ],
+    "evidence_strength": "medium",
+    "recommendation_type": "descriptive_evidence"
+  },
+  "notes": [
+    "Agent generated structured evidence only.",
+    "Qwen remains the sole final diagnostic decision maker.",
+    "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, differential_compare_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill.",
+    "Policy in use: mainline_parameterized_agent_20260331.",
+    "Skill retrieval candidates: metadata_consistency_skill, lesion_description_structuring_skill, distribution_analysis_skill, malignancy_risk_assessment_skill, color_pattern_analysis_skill, morphology_analysis_skill, contradiction_check_skill, uncertainty_assessment_skill, ack_scc_specialist_skill, temporal_evolution_skill, border_surface_analysis_skill, differential_compare_skill, information_gap_detection_skill, escalation_recommendation_skill.",
+    "The lesion appears to have a rough texture.",
+    "Retrieved prior reasoning experience for context."
+  ],
+  "initial_perception_summary": {
+    "image_summary": "A small, irregularly shaped lesion with a dark center and a slightly elevated border is present on the face.",
+    "ddx_candidates": [
+      "BCC",
+      "SEK"
+    ],
+    "uncertainty_level": "low",
+    "uncertainty_reasons": [
+      "Lesion size and shape are within typical ranges for both BCC and SEK.",
+      "The lesion's elevation suggests it could be a seborrheic keratosis."
+    ],
+    "observation_notes": [
+      "The lesion appears to have a rough texture."
+    ]
+  },
+  "retrieved_raw_cases_summary": [
+    {
+      "source_id": "PAT_741_1401",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "PAT_741_1401",
+      "confusion_pair": "None",
+      "perception_summary": "A raised, reddish lesion on the face with surrounding erythema and some hair present.",
+      "learning_points": [
+        "Final decision: Seborrheic Keratosis",
+        "Correctness: False"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "PAT_722_1377",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "PAT_722_1377",
+      "confusion_pair": "None",
+      "perception_summary": "A raised, irregularly shaped lesion with a central depression and surrounding erythema on the face.",
+      "learning_points": [
+        "Final decision: Basal cell carcinoma",
+        "Correctness: True"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "PAT_691_1311",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "PAT_691_1311",
+      "confusion_pair": "None",
+      "perception_summary": "A raised, irregularly shaped lesion on hairy skin.",
+      "learning_points": [
+        "Final decision: Actinic Keratosis",
+        "Correctness: False"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_tactical_experiences_summary": [
+    {
+      "source_id": "tac_PAT_684_1302_f9bf40782239",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "PAT_684_1302",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=BCC, SEK; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "focused a high-value confusion pair",
+        "sharpened specialist keratinization clues",
+        "required downstream integration beyond ack_scc_specialist_skill"
+      ],
+      "retrieval_score": 11.0,
+      "base_retrieval_score": 11.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_PAT_684_1302_ea7b54e2327b",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "PAT_684_1302",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=BCC, SEK; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "kept the differential open",
+        "made pairwise reasoning explicit",
+        "required downstream integration beyond differential_compare_skill"
+      ],
+      "retrieval_score": 11.0,
+      "base_retrieval_score": 11.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_PAT_684_1302_e6055fc25fdb",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "PAT_684_1302",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=BCC, SEK; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "made pigment variation explicit",
+        "surfaced color asymmetry as auditable evidence",
+        "required downstream integration beyond color_pattern_analysis_skill"
+      ],
+      "retrieval_score": 11.0,
+      "base_retrieval_score": 11.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_PAT_684_1302_e4a8c7c2c58e",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "PAT_684_1302",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=BCC, SEK; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "required downstream integration beyond lesion_description_structuring_skill",
+        "Action pattern: structured_skill_sequence"
+      ],
+      "retrieval_score": 11.0,
+      "base_retrieval_score": 11.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_abstract_experiences_summary": [
+    {
+      "source_id": "abs_confusion_1fa578b0081c",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "PAT_1582_2574",
+      "confusion_pair": "Basal Cell Carcinoma->SEK",
+      "perception_summary": "A slightly irregular, hyperpigmented lesion on the face.; NEV; BCC",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "risk_then_uncertainty_audit"
+      ],
+      "retrieval_score": 12.0,
+      "base_retrieval_score": 12.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_composite_ff85ed3481d4",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "PAT_684_1302",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=BCC, SEK; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+distribution_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 12.0,
+      "base_retrieval_score": 12.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_composite_602e21f01160",
+      "source_layer": "abstract_experience",
+      "experience_type": "composite_skill_seed",
+      "case_id": "PAT_684_1302",
+      "confusion_pair": "None",
+      "perception_summary": "ddx=BCC, SEK; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium",
+      "learning_points": [
+        "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+        "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+distribution_analysis_skill+lesion_description_structuring_skill",
+        "Candidate only; do not auto-materialize a composite skill in the current stage."
+      ],
+      "retrieval_score": 12.0,
+      "base_retrieval_score": 12.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "uncertainty_summary": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "The lesion has a dark center and a slightly elevated border, which are features common to both basal cell carcinoma (BCC) and seborrheic keratosis (SEK).",
+      "The lesion's rough texture is suggestive of seborrheic keratosis, but can also be seen in BCC.",
+      "The patient's history includes itching, which is more commonly associated with BCC."
+    ],
+    "missing_information": [
+      "Detailed history regarding the lesion's growth, change, pain, and bleeding.",
+      "Clinical examination details such as palpation and symmetry check."
+    ],
+    "referenced_experiences": [
+      "PAT_778_1471",
+      "PAT_741_1401",
+      "abs_confusion_e862d24b71bb",
+      "abs_confusion_ce158bd5a2a1",
+      "abs_confusion_1fa578b0081c"
+    ]
+  },
+  "contradiction_summary": {
+    "contradictions": [
+      "{'description': \"The lesion's rough texture mentioned in the initial perception contradicts the smooth appearance observed in the image.\", 'evidence_sources': ['initial_perception', 'image']}"
+    ],
+    "missing_links": [
+      "{'description': \"The lesion's growth pattern is not described in the metadata, which is crucial for differential diagnosis.\", 'evidence_sources': ['metadata']}",
+      "{'description': \"The lesion's exact size is not specified in the metadata, which is important for assessing malignancy risk.\", 'evidence_sources': ['metadata']}"
+    ],
+    "reasoning_gaps": [
+      "{'description': \"The lesion's exact location on the face is not detailed in the metadata, which could affect the differential diagnosis.\", 'evidence_sources': ['metadata']}",
+      "{'description': \"The lesion's symmetry is not confirmed in the metadata, which is essential for assessing malignancy risk.\", 'evidence_sources': ['metadata']}"
+    ],
+    "metadata_conflicts": [],
+    "suspicious_points": [
+      "The lesion's color is described as 'Dark' but the image shows a reddish hue.",
+      "The lesion's surface is described as 'Rough, granular' but the image shows a smooth texture."
+    ]
+  },
+  "information_gap_summary": {
+    "missing_information": [
+      "Detailed history of the lesion (growth, change, pain, bleeding)",
+      "Clinical examination details (palpation, symmetry check)"
+    ],
+    "why_it_matters": [
+      "A detailed history helps in assessing the natural history of the lesion, which can be crucial in differentiating between benign and malignant lesions.",
+      "Clinical examination provides tactile feedback and symmetry assessment, which are important for distinguishing between various dermatological conditions."
+    ],
+    "impact_on_differential": [
+      "Without a detailed history, it is challenging to determine if the lesion has been growing or changing over time, which can be indicative of malignancy.",
+      "Clinical examination, including palpation and symmetry check, helps in assessing the lesion's characteristics more comprehensively, aiding in the differentiation between benign and potentially malignant lesions."
+    ],
+    "uncertainty_if_missing": "medium"
+  },
+  "escalation_summary": {
+    "whether_escalation_needed": "consider",
+    "escalation_reason": [
+      "The lesion exhibits features that are concerning for malignancy, such as a dark center and an irregular border, despite being within typical size and shape ranges. The rough texture, which is suggestive of seborrheic keratosis, does not definitively rule out malignancy. Additionally, the lack of detailed history and clinical examination details increases uncertainty."
+    ],
+    "suggested_next_check_type": "biopsy",
+    "caution_flags": [
+      "Dark color and irregular border suggest malignancy risk",
+      "Rough texture is not exclusive to seborrheic keratosis"
+    ]
+  },
+  "planner_rationale": {
+    "planner_type": "rule_based",
+    "planner_version": "v1",
+    "selected_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "distribution_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "malignancy_risk_assessment_skill",
+      "differential_compare_skill",
+      "information_gap_detection_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill",
+      "escalation_recommendation_skill"
+    ],
+    "selection_reasons": {
+      "morphology_analysis_skill": [
+        "Boosted by skill retrieval score=14.00.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "color_pattern_analysis_skill": [
+        "Boosted by skill retrieval score=14.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "distribution_analysis_skill": [
+        "Boosted by skill retrieval score=15.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "lesion_description_structuring_skill": [
+        "Boosted by skill retrieval score=16.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "metadata_consistency_skill": [
+        "Boosted by skill retrieval score=19.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "malignancy_risk_assessment_skill": [
+        "Boosted by skill retrieval score=15.00.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "differential_compare_skill": [
+        "Boosted by skill retrieval score=8.00.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "information_gap_detection_skill": [
+        "Boosted by skill retrieval score=7.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `malignancy_possible`."
+      ],
+      "uncertainty_assessment_skill": [
+        "Boosted by skill retrieval score=12.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ],
+      "contradiction_check_skill": [
+        "Boosted by skill retrieval score=13.00.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ],
+      "escalation_recommendation_skill": [
+        "Boosted by skill retrieval score=7.50.",
+        "Boosted by cognition helpful_rate=0.89.",
+        "Matched active trigger profile `malignancy_possible`.",
+        "Matched active trigger profile `contradiction_rich`."
+      ]
+    }
+  },
+  "confusion_cluster_summary": {
+    "active_clusters": [],
+    "guidance": []
+  },
+  "selected_evidence": [
+    {
+      "item_id": "lesion_description_structuring_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "lesion_description_structuring_skill",
+      "skill_name": "lesion_description_structuring_skill",
+      "retrieval_type": "",
+      "section": "observation",
+      "category": "description",
+      "summary": "lesion_description_structuring_skill: primary_lesion_morphology=Irregular nodule | color=Dark | border=Elevated, slightly irregular | surface=Rough, granular | size_count=size: Small, count: Solitary | distribution=body_location: Face, symmetry: Asymmetric, localized_vs_generalized: Localized",
+      "score": 9.72,
+      "rank": 1,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "malignancy_risk_assessment_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "malignancy_risk_assessment_skill",
+      "skill_name": "malignancy_risk_assessment_skill",
+      "retrieval_type": "",
+      "section": "risk",
+      "category": "risk",
+      "summary": "malignancy_risk_assessment_skill: risk_level=medium | risk_evidence={'alarm_signals': ['Dark color', 'Irregular border', 'Asymmetric', 'Raised', 'Rough, granular surface'], 'benign_reassuring_features': ['Small size (<6mm)', ... | alarm_signals=Dark color; Irregular border; Asymmetric | benign_reassuring_features=Small size (<6mm); Solitary; Face location...",
+      "score": 9.8,
+      "rank": 2,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "morphology_analysis_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "morphology_analysis_skill",
+      "skill_name": "morphology_analysis_skill",
+      "retrieval_type": "",
+      "section": "observation",
+      "category": "description",
+      "summary": "morphology_analysis_skill: lesion_type=nodule | size_range=small | elevation=raised | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence",
+      "score": 8.52,
+      "rank": 3,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "contradiction_check_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "contradiction_check_skill",
+      "skill_name": "contradiction_check_skill",
+      "retrieval_type": "",
+      "section": "conflict_uncertainty",
+      "category": "contradiction_gap",
+      "summary": "contradiction_check_skill: contradictions={'description': \"The lesion's rough texture mentioned in the initial perception contradicts the smooth appearance observed in the image.\", 'evidence_sources'... | missing_links={'description': \"The lesion's growth pattern is not described in the metadata, which is crucial for differential diagnosis.\", 'evidence_so...",
+      "score": 8.44,
+      "rank": 6,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "metadata_consistency_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "metadata_consistency_skill",
+      "skill_name": "metadata_consistency_skill",
+      "retrieval_type": "",
+      "section": "comparison",
+      "category": "differential_support",
+      "summary": "metadata_consistency_skill: consistency_score=medium | suspicious_points=The lesion's color is described as 'Dark' but the image shows a reddish hue.; The lesion's surface is described as 'Rough, granular' but the image shows a sm... | evidence_strength=medium | recommendation_type=descriptive_evidence",
+      "score": 7.8,
+      "rank": 7,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "escalation_recommendation_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "escalation_recommendation_skill",
+      "skill_name": "escalation_recommendation_skill",
+      "retrieval_type": "",
+      "section": "conflict_uncertainty",
+      "category": "contradiction_gap",
+      "summary": "escalation_recommendation_skill: whether_escalation_needed=consider | escalation_reason=The lesion exhibits features that are concerning for malignancy, such as a dark center and an irregular border, despite being within typical size and shape r... | suggested_next_check_type=biopsy | caution_flags=Dark color and irregular border suggest malignancy risk; ...",
+      "score": 8.2,
+      "rank": 8,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "differential_compare_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "differential_compare_skill",
+      "skill_name": "differential_compare_skill",
+      "retrieval_type": "",
+      "section": "comparison",
+      "category": "differential_support",
+      "summary": "differential_compare_skill: candidate_pairs=BCC vs SEK | supporting_evidence=Dark color; Irregular border; Asymmetric | conflicting_evidence=Small size (<6mm); Solitary; Face location | required_missing_evidence=Detailed history (e.g., growth, change, pain, bleeding); Clinical examination (e.g., palpation, symmetry check) | evidence_strength=medium | reco...",
+      "score": 6.94,
+      "rank": 11,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "abs_confusion_1fa578b0081c",
+      "item_type": "retrieval_record",
+      "source_type": "retrieval_record",
+      "source_name": "abs_confusion_1fa578b0081c",
+      "skill_name": "",
+      "retrieval_type": "abstract_experience",
+      "section": "abstract_experience",
+      "category": "experience_hint",
+      "summary": "A slightly irregular, hyperpigmented lesion on the face.; NEV; BCC | When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; risk_then_uncertainty_audit | confusion_pair=Basal Cell Carcinoma->SEK",
+      "score": 6.8,
+      "rank": 12,
+      "keep_reason": "kept"
+    }
+  ],
+  "evidence_decision_policy": {
+    "risk_layer": {
+      "risk_flag": "malignancy_risk_medium",
+      "caution_flags": [
+        "contradictions_present",
+        "follow_up_or_biopsy_consideration"
+      ],
+      "follow_up_suggestion": "biopsy",
+      "selected_evidence": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "lesion_description_structuring_skill",
+          "skill_name": "lesion_description_structuring_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "lesion_description_structuring_skill: primary_lesion_morphology=Irregular nodule | color=Dark | border=Elevated, slightly irregular | surface=Rough, granular | size_count=size: Small, count: Solitary | distribution=body_location: Face, symmetry: Asymmetric, localized_vs_generalized: Localized",
+          "score": 9.72,
+          "rank": 1,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "malignancy_risk_assessment_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "malignancy_risk_assessment_skill",
+          "skill_name": "malignancy_risk_assessment_skill",
+          "retrieval_type": "",
+          "section": "risk",
+          "category": "risk",
+          "summary": "malignancy_risk_assessment_skill: risk_level=medium | risk_evidence={'alarm_signals': ['Dark color', 'Irregular border', 'Asymmetric', 'Raised', 'Rough, granular surface'], 'benign_reassuring_features': ['Small size (<6mm)', ... | alarm_signals=Dark color; Irregular border; Asymmetric | benign_reassuring_features=Small size (<6mm); Solitary; Face location...",
+          "score": 9.8,
+          "rank": 2,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "morphology_analysis_skill",
+          "skill_name": "morphology_analysis_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "morphology_analysis_skill: lesion_type=nodule | size_range=small | elevation=raised | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 8.52,
+          "rank": 3,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "contradiction_check_skill",
+          "skill_name": "contradiction_check_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "contradiction_check_skill: contradictions={'description': \"The lesion's rough texture mentioned in the initial perception contradicts the smooth appearance observed in the image.\", 'evidence_sources'... | missing_links={'description': \"The lesion's growth pattern is not described in the metadata, which is crucial for differential diagnosis.\", 'evidence_so...",
+          "score": 8.44,
+          "rank": 6,
+          "keep_reason": "kept"
+        }
+      ],
+      "baseline_preview": {
+        "early_ddx_candidates": [
+          "BCC",
+          "SEK"
+        ],
+        "image_summary": "A small, irregularly shaped lesion with a dark center and a slightly elevated border is present on the face.",
+        "baseline_final_diagnosis": "Basal Cell Carcinoma",
+        "baseline_differential_diagnoses": [
+          "Basal Cell Carcinoma"
+        ],
+        "baseline_confidence": "Moderate"
+      }
+    },
+    "diagnosis_override_layer": {
+      "workflow_context": {
+        "label_granularity": "unknown",
+        "presentation_mode": "focal_lesion",
+        "workflow_profile": "clinical_full_taxonomy_lesion_workflow",
+        "available_tests": [
+          "clinical_photo_only",
+          "lesion_photo"
+        ],
+        "workflow_preference": "morphology_first",
+        "hospital_type": "specialist_clinic",
+        "time_budget": "standard",
+        "metadata_completeness": "full",
+        "workflow_capabilities": [
+          "clinical_metadata_reasoning",
+          "full_taxonomy_reasoning",
+          "focal_lesion_reasoning",
+          "legacy_agent_final_reasoning"
+        ]
+      },
+      "override_allowed": false,
+      "malignancy_override_allowed": false,
+      "subtype_override_allowed": false,
+      "family_override_allowed": false,
+      "override_mode": "risk_only",
+      "override_reasons": [
+        "supporting_evidence_outweighs_opposition",
+        "subtype_specific_support_present",
+        "uncertainty_not_high",
+        "consistent_retrieval_support"
+      ],
+      "why_not_confident_enough_to_override": [
+        "malignancy risk is not high enough for a diagnosis override",
+        "no specialist evidence strongly supports the override direction",
+        "contradictions or reasoning gaps remain too numerous",
+        "opposing or exclusion evidence quota is not satisfied"
+      ],
+      "supporting_evidence": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "lesion_description_structuring_skill",
+          "skill_name": "lesion_description_structuring_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "lesion_description_structuring_skill: primary_lesion_morphology=Irregular nodule | color=Dark | border=Elevated, slightly irregular | surface=Rough, granular | size_count=size: Small, count: Solitary | distribution=body_location: Face, symmetry: Asymmetric, localized_vs_generalized: Localized",
+          "score": 9.72,
+          "rank": 1,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "malignancy_risk_assessment_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "malignancy_risk_assessment_skill",
+          "skill_name": "malignancy_risk_assessment_skill",
+          "retrieval_type": "",
+          "section": "risk",
+          "category": "risk",
+          "summary": "malignancy_risk_assessment_skill: risk_level=medium | risk_evidence={'alarm_signals': ['Dark color', 'Irregular border', 'Asymmetric', 'Raised', 'Rough, granular surface'], 'benign_reassuring_features': ['Small size (<6mm)', ... | alarm_signals=Dark color; Irregular border; Asymmetric | benign_reassuring_features=Small size (<6mm); Solitary; Face location...",
+          "score": 9.8,
+          "rank": 2,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "morphology_analysis_skill",
+          "skill_name": "morphology_analysis_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "morphology_analysis_skill: lesion_type=nodule | size_range=small | elevation=raised | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 8.52,
+          "rank": 3,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "contradiction_check_skill",
+          "skill_name": "contradiction_check_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "contradiction_check_skill: contradictions={'description': \"The lesion's rough texture mentioned in the initial perception contradicts the smooth appearance observed in the image.\", 'evidence_sources'... | missing_links={'description': \"The lesion's growth pattern is not described in the metadata, which is crucial for differential diagnosis.\", 'evidence_so...",
+          "score": 8.44,
+          "rank": 6,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "metadata_consistency_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "metadata_consistency_skill",
+          "skill_name": "metadata_consistency_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "differential_support",
+          "summary": "metadata_consistency_skill: consistency_score=medium | suspicious_points=The lesion's color is described as 'Dark' but the image shows a reddish hue.; The lesion's surface is described as 'Rough, granular' but the image shows a sm... | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 7.8,
+          "rank": 7,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "escalation_recommendation_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "escalation_recommendation_skill",
+          "skill_name": "escalation_recommendation_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "escalation_recommendation_skill: whether_escalation_needed=consider | escalation_reason=The lesion exhibits features that are concerning for malignancy, such as a dark center and an irregular border, despite being within typical size and shape r... | suggested_next_check_type=biopsy | caution_flags=Dark color and irregular border suggest malignancy risk; ...",
+          "score": 8.2,
+          "rank": 8,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "differential_compare_skill",
+          "skill_name": "differential_compare_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "differential_support",
+          "summary": "differential_compare_skill: candidate_pairs=BCC vs SEK | supporting_evidence=Dark color; Irregular border; Asymmetric | conflicting_evidence=Small size (<6mm); Solitary; Face location | required_missing_evidence=Detailed history (e.g., growth, change, pain, bleeding); Clinical examination (e.g., palpation, symmetry check) | evidence_strength=medium | reco...",
+          "score": 6.94,
+          "rank": 11,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "abs_confusion_1fa578b0081c",
+          "item_type": "retrieval_record",
+          "source_type": "retrieval_record",
+          "source_name": "abs_confusion_1fa578b0081c",
+          "skill_name": "",
+          "retrieval_type": "abstract_experience",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "summary": "A slightly irregular, hyperpigmented lesion on the face.; NEV; BCC | When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; risk_then_uncertainty_audit | confusion_pair=Basal Cell Carcinoma->SEK",
+          "score": 6.8,
+          "rank": 12,
+          "keep_reason": "kept"
+        }
+      ],
+      "opposing_evidence": [],
+      "supporting_score": 66.22,
+      "opposing_score": 0,
+      "support_margin": 66.22,
+      "selected_evidence_present": true,
+      "subtype_support_score": 21.54,
+      "subtype_support_margin": 21.54,
+      "specialist_support_present": false,
+      "consistent_retrieval_count": 1,
+      "contradiction_count": 7,
+      "uncertainty_level": "medium",
+      "opposing_quota_satisfied": false,
+      "subtype_support_quota_satisfied": true
+    }
+  },
+  "serialized_evidence_text": "[Observation Evidence]\n- Initial image summary: A small, irregularly shaped lesion with a dark center and a slightly elevated border is present on the face.\n- Early differential candidates: BCC, SEK\n- structured lesion observation: lesion_description_structuring_skill: primary_lesion_morphology=Irregular nodule | color=Dark | border=Elevated, slightly irregular | surface=Rough, granular | size_count=size: Small, count: Solitary | distribution=body_location: Face, symmetry: Asymmetric, localized_vs_generalized: Localized || morphology_analysis_skill: lesion_type=nodule | size_range=small | elevation=raised | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Raw case reference PAT_741_1401: A raised, reddish lesion on the face with surrounding erythema and some hair present.\n- Raw case reference PAT_722_1377: A raised, irregularly shaped lesion with a central depression and surrounding erythema on the face.\n- Raw case reference PAT_691_1311: A raised, irregularly shaped lesion on hairy skin.\n\n[Exclusion And Comparison Evidence]\n- metadata_consistency_skill: consistency_score=medium | suspicious_points=The lesion's color is described as 'Dark' but the image shows a reddish hue.; The lesion's surface is described as 'Rough, granular' but the image shows a sm... | evidence_strength=medium | recommendation_type=descriptive_evidence\n- differential_compare_skill: candidate_pairs=BCC vs SEK | supporting_evidence=Dark color; Irregular border; Asymmetric | conflicting_evidence=Small size (<6mm); Solitary; Face location | required_missing_evidence=Detailed history (e.g., growth, change, pain, bleeding); Clinical examination (e.g., palpation, symmetry check) | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Tactical experience tac_PAT_684_1302_f9bf40782239: ddx=BCC, SEK; risk=malignancy_risk:medium; uncertainty=medium; focused a high-value confusion pair; sharpened specialist keratinization clues; required downstream integration beyond ack_scc_specialist_skill\n- Tactical experience tac_PAT_684_1302_ea7b54e2327b: ddx=BCC, SEK; risk=malignancy_risk:medium; uncertainty=medium; kept the differential open; made pairwise reasoning explicit; required downstream integration beyond differential_compare_skill\n- Tactical experience tac_PAT_684_1302_e6055fc25fdb: ddx=BCC, SEK; risk=malignancy_risk:medium; uncertainty=medium; made pigment variation explicit; surfaced color asymmetry as auditable evidence; required downstream integration beyond color_pattern_analysis_skill\n- Tactical experience tac_PAT_684_1302_e4a8c7c2c58e: ddx=BCC, SEK; risk=malignancy_risk:medium; uncertainty=medium; required downstream integration beyond lesion_description_structuring_skill; Action pattern: structured_skill_sequence\n\n[Risk Evidence]\n- Risk flags: malignancy_risk:medium\n- malignancy_risk_assessment_skill: risk_level=medium | risk_evidence={'alarm_signals': ['Dark color', 'Irregular border', 'Asymmetric', 'Raised', 'Rough, granular surface'], 'benign_reassuring_features': ['Small size (<6mm)', ... | alarm_signals=Dark color; Irregular border; Asymmetric | benign_reassuring_features=Small size (<6mm); Solitary; Face location | evidence_strength=medium | recommendation_type=risk_signal\n- Abstract experience abs_confusion_1fa578b0081c: A slightly irregular, hyperpigmented lesion on the face.; NEV; BCC; When a confusion pair remains active, preserve differential openness and avoid forcing an early label.; risk_then_uncertainty_audit\n\n[Conflict And Uncertainty]\n- Uncertainty level: medium\n- Uncertainty reasons: The lesion has a dark center and a slightly elevated border, which are features common to both basal cell carcinoma (BCC) and seborrheic keratosis (SEK).; The lesion's rough texture is suggestive of seborrheic keratosis, but can also be seen in BCC.; The patient's history includes itching, which is more commonly associated with BCC.\n- Missing information: Detailed history regarding the lesion's growth, change, pain, and bleeding.; Clinical examination details such as palpation and symmetry check.\n- contradictions: {'description': \"The lesion's rough texture mentioned in the initial perception contradicts the smooth appearance observed in the image.\", 'evidence_sources': ['initial_perception', 'image']}\n- missing links: {'description': \"The lesion's growth pattern is not described in the metadata, which is crucial for differential diagnosis.\", 'evidence_sources': ['metadata']}; {'description': \"The lesion's exact size is not specified in the metadata, which is important for assessing malignancy risk.\", 'evidence_sources': ['metadata']}\n- reasoning gaps: {'description': \"The lesion's exact location on the face is not detailed in the metadata, which could affect the differential diagnosis.\", 'evidence_sources': ['metadata']}; {'description': \"The lesion's symmetry is not confirmed in the metadata, which is essential for assessing malignancy risk.\", 'evidence_sources': ['metadata']}\n- suspicious points: The lesion's color is described as 'Dark' but the image shows a reddish hue.; The lesion's surface is described as 'Rough, granular' but the image shows a smooth texture.\n- contradiction_check_skill: contradictions={'description': \"The lesion's rough texture mentioned in the initial perception contradicts the smooth appearance observed in the image.\", 'evidence_sources'... | missing_links={'description': \"The lesion's growth pattern is not described in the metadata, which is crucial for differential diagnosis.\", 'evidence_sources': ['metadata'... | reasoning_gaps={'description': \"The lesion's exact location on the face is not detailed in the metadata, which could affect the differential diagnosis.\", 'evidence_sources'... | evidence_strength=medium | recommendation_type=descriptive_evidence\n- explicit information gaps: Detailed history of the lesion (growth, change, pain, bleeding); Clinical examination details (palpation, symmetry check)\n- why gaps matter: A detailed history helps in assessing the natural history of the lesion, which can be crucial in differentiating between benign and malignant lesions.; Clinical examination provides tactile feedback and symmetry assessment, which are important for distinguishing between various dermatological conditions.\n- impact on differential: Without a detailed history, it is challenging to determine if the lesion has been growing or changing over time, which can be indicative of malignancy.; Clinical examination, including palpation and symmetry check, helps in assessing the lesion's characteristics more comprehensively, aiding in the differentiation between benign and potentially malignant lesions.\n- residual uncertainty if still missing: medium\n- escalation_recommendation_skill: whether_escalation_needed=consider | escalation_reason=The lesion exhibits features that are concerning for malignancy, such as a dark center and an irregular border, despite being within typical size and shape r... | suggested_next_check_type=biopsy | caution_flags=Dark color and irregular border suggest malignancy risk; Rough texture is not exclusive to seborrheic keratosis | evidence_strength=medium | recommendation_type=risk_signal\n- escalation needed: consider\n- escalation reasons: The lesion exhibits features that are concerning for malignancy, such as a dark center and an irregular border, despite being within typical size and shape ranges. The rough texture, which is suggestive of seborrheic keratosis, does not definitively rule out malignancy. Additionally, the lack of detailed history and clinical examination details increases uncertainty.\n- suggested next check type: biopsy\n- caution flags: Dark color and irregular border suggest malignancy risk; Rough texture is not exclusive to seborrheic keratosis\n\n[Planner Rationale]\n- Selected skills: morphology_analysis_skill, color_pattern_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, differential_compare_skill, information_gap_detection_skill, uncertainty_assessment_skill, contradiction_check_skill, escalation_recommendation_skill\n- morphology_analysis_skill: Boosted by skill retrieval score=14.00.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=1.00.; Matched active trigger profile `foundational_observation`.\n- color_pattern_analysis_skill: Boosted by skill retrieval score=14.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=1.00.; Matched active trigger profile `foundational_observation`.\n- distribution_analysis_skill: Boosted by skill retrieval score=15.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=1.00.; Matched active trigger profile `foundational_observation`.",
+  "evidence_calibration_debug": {
+    "calibrator_type": "heuristic",
+    "calibrator_version": "v1",
+    "section_plan": {
+      "observation": {
+        "skill_names": [
+          "lesion_description_structuring_skill",
+          "morphology_analysis_skill"
+        ],
+        "merged_groups": [
+          {
+            "label": "structured_lesion_observation",
+            "skills": [
+              "lesion_description_structuring_skill",
+              "morphology_analysis_skill"
+            ],
+            "max_members": 2
+          }
+        ],
+        "raw_case_source_ids": []
+      },
+      "comparison": {
+        "skill_names": [
+          "metadata_consistency_skill",
+          "differential_compare_skill"
+        ],
+        "merged_groups": [],
+        "tactical_source_ids": [],
+        "abstract_source_ids": []
+      },
+      "risk": {
+        "skill_names": [
+          "malignancy_risk_assessment_skill"
+        ],
+        "abstract_source_ids": [
+          "abs_confusion_1fa578b0081c"
+        ]
+      },
+      "conflict_uncertainty": {
+        "skill_names": [
+          "contradiction_check_skill",
+          "escalation_recommendation_skill"
+        ]
+      },
+      "planner": {
+        "max_reason_skills": 3
+      },
+      "section_order": [
+        "observation",
+        "comparison",
+        "risk",
+        "conflict_uncertainty",
+        "planner"
+      ]
+    },
+    "item_scores": [
+      {
+        "item_id": "malignancy_risk_assessment_skill",
+        "item_type": "skill_output",
+        "section": "risk",
+        "heuristic_score": 9.8,
+        "learned_score": 0.0,
+        "final_score": 9.8,
+        "selected": true,
+        "reason": "kept",
+        "category": "risk",
+        "rank": 2,
+        "dedup_key": "risk:malignancy"
+      },
+      {
+        "item_id": "lesion_description_structuring_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 9.72,
+        "learned_score": 0.0,
+        "final_score": 9.72,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 1,
+        "dedup_key": "description:lesion_description_structuring_skill"
+      },
+      {
+        "item_id": "morphology_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 8.52,
+        "learned_score": 0.0,
+        "final_score": 8.52,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 3,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 8.46,
+        "learned_score": 0.0,
+        "final_score": 8.46,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "contradiction_check_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 8.44,
+        "learned_score": 0.0,
+        "final_score": 8.44,
+        "selected": true,
+        "reason": "kept",
+        "category": "contradiction_gap",
+        "rank": 4,
+        "dedup_key": "uncertainty:contradiction_check_skill"
+      },
+      {
+        "item_id": "escalation_recommendation_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 8.2,
+        "learned_score": 0.0,
+        "final_score": 8.2,
+        "selected": true,
+        "reason": "kept",
+        "category": "contradiction_gap",
+        "rank": 6,
+        "dedup_key": "uncertainty:escalation_recommendation_skill"
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 8.14,
+        "learned_score": 0.0,
+        "final_score": 8.14,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "information_gap_detection_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 7.9,
+        "learned_score": 0.0,
+        "final_score": 7.9,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "contradiction_gap",
+        "rank": 0,
+        "dedup_key": "uncertainty:information_gap_detection_skill"
+      },
+      {
+        "item_id": "metadata_consistency_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 7.8,
+        "learned_score": 0.0,
+        "final_score": 7.8,
+        "selected": true,
+        "reason": "kept",
+        "category": "differential_support",
+        "rank": 5,
+        "dedup_key": "differential_support:metadata_consistency_skill"
+      },
+      {
+        "item_id": "uncertainty_assessment_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 7.4,
+        "learned_score": 0.0,
+        "final_score": 7.4,
+        "selected": false,
+        "reason": "category_quota_exceeded",
+        "category": "contradiction_gap",
+        "rank": 0,
+        "dedup_key": "uncertainty:uncertainty_assessment_skill"
+      },
+      {
+        "item_id": "differential_compare_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 6.94,
+        "learned_score": 0.0,
+        "final_score": 6.94,
+        "selected": true,
+        "reason": "kept",
+        "category": "differential_support",
+        "rank": 7,
+        "dedup_key": "differential_support:differential_compare_skill"
+      },
+      {
+        "item_id": "abs_confusion_1fa578b0081c",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 6.8,
+        "learned_score": 0.0,
+        "final_score": 6.8,
+        "selected": true,
+        "reason": "kept",
+        "category": "experience_hint",
+        "rank": 8,
+        "dedup_key": "abstract_experience:abs_confusion_1fa578b0081c"
+      },
+      {
+        "item_id": "abs_composite_ff85ed3481d4",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 6.3,
+        "learned_score": 0.0,
+        "final_score": 6.3,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "abstract_experience:abs_composite_ff85ed3481d4"
+      },
+      {
+        "item_id": "abs_composite_602e21f01160",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 6.3,
+        "learned_score": 0.0,
+        "final_score": 6.3,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "abstract_experience:abs_composite_602e21f01160"
+      },
+      {
+        "item_id": "tac_PAT_684_1302_f9bf40782239",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 5.2,
+        "learned_score": 0.0,
+        "final_score": 5.2,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_PAT_684_1302_f9bf40782239"
+      },
+      {
+        "item_id": "tac_PAT_684_1302_ea7b54e2327b",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 5.2,
+        "learned_score": 0.0,
+        "final_score": 5.2,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_PAT_684_1302_ea7b54e2327b"
+      },
+      {
+        "item_id": "tac_PAT_684_1302_e6055fc25fdb",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 5.2,
+        "learned_score": 0.0,
+        "final_score": 5.2,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_PAT_684_1302_e6055fc25fdb"
+      },
+      {
+        "item_id": "tac_PAT_684_1302_e4a8c7c2c58e",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 5.2,
+        "learned_score": 0.0,
+        "final_score": 5.2,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_PAT_684_1302_e4a8c7c2c58e"
+      },
+      {
+        "item_id": "PAT_741_1401",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 3.1,
+        "learned_score": 0.0,
+        "final_score": 3.1,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:PAT_741_1401"
+      },
+      {
+        "item_id": "PAT_722_1377",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 3.1,
+        "learned_score": 0.0,
+        "final_score": 3.1,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:PAT_722_1377"
+      },
+      {
+        "item_id": "PAT_691_1311",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 3.1,
+        "learned_score": 0.0,
+        "final_score": 3.1,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:PAT_691_1311"
+      }
+    ],
+    "omitted_items": [
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 8.46
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 8.14
+      },
+      {
+        "item_id": "information_gap_detection_skill",
+        "item_type": "skill_output",
+        "reason": "category_quota_exceeded",
+        "section": "conflict_uncertainty",
+        "category": "contradiction_gap",
+        "score": 7.9
+      },
+      {
+        "item_id": "uncertainty_assessment_skill",
+        "item_type": "skill_output",
+        "reason": "category_quota_exceeded",
+        "section": "conflict_uncertainty",
+        "category": "contradiction_gap",
+        "score": 7.4
+      },
+      {
+        "item_id": "abs_composite_602e21f01160",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "abstract_experience",
+        "category": "experience_hint",
+        "score": 6.3
+      },
+      {
+        "item_id": "abs_composite_ff85ed3481d4",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "abstract_experience",
+        "category": "experience_hint",
+        "score": 6.3
+      },
+      {
+        "item_id": "tac_PAT_684_1302_e4a8c7c2c58e",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 5.2
+      },
+      {
+        "item_id": "tac_PAT_684_1302_e6055fc25fdb",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 5.2
+      },
+      {
+        "item_id": "tac_PAT_684_1302_ea7b54e2327b",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 5.2
+      },
+      {
+        "item_id": "tac_PAT_684_1302_f9bf40782239",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 5.2
+      },
+      {
+        "item_id": "PAT_691_1311",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 3.1
+      },
+      {
+        "item_id": "PAT_722_1377",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 3.1
+      },
+      {
+        "item_id": "PAT_741_1401",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 3.1
+      }
+    ],
+    "debug": {
+      "policy": {
+        "enable_evidence_calibrator": true,
+        "calibrator_mode": "heuristic",
+        "calibrator_checkpoint_path": "",
+        "learned_calibration_weight": 1.2,
+        "max_total_items": 8,
+        "max_observation_skills": 4,
+        "max_comparison_skills": 3,
+        "max_risk_skills": 2,
+        "max_uncertainty_skills": 3,
+        "max_exclusion_items": 2,
+        "max_experience_hints": 2,
+        "max_raw_cases": 1,
+        "max_tactical": 2,
+        "max_abstract": 2,
+        "max_planner_reasons": 3,
+        "omit_low_value_evidence": true,
+        "min_effective_score": 2.4,
+        "dedup_similar_evidence": true,
+        "cluster_aware_ordering": true,
+        "cluster_opposing_bonus": 1.8,
+        "cluster_exclusion_bonus": 1.4,
+        "risk_overweight_penalty": 1.2,
+        "uncertainty_overweight_penalty": 1.0,
+        "description_priority_bonus": 0.6,
+        "exclusion_priority_bonus": 1.2,
+        "negative_evidence_priority_bonus": 1.0,
+        "allow_family_override": false,
+        "allow_keratinocyte_subtype_override": false,
+        "debug_output": true,
+        "conservative_fusion_mode": "off"
+      },
+      "learned_scorer_loaded": false,
+      "contradiction_count": 7,
+      "uncertainty_level": "medium",
+      "risk_flag_count": 1,
+      "confusion_clusters": [],
+      "kept_items": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "rank": 1,
+          "score": 9.72
+        },
+        {
+          "item_id": "malignancy_risk_assessment_skill",
+          "item_type": "skill_output",
+          "section": "risk",
+          "category": "risk",
+          "rank": 2,
+          "score": 9.8
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "rank": 3,
+          "score": 8.52
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "rank": 6,
+          "score": 8.44
+        },
+        {
+          "item_id": "metadata_consistency_skill",
+          "item_type": "skill_output",
+          "section": "comparison",
+          "category": "differential_support",
+          "rank": 7,
+          "score": 7.8
+        },
+        {
+          "item_id": "escalation_recommendation_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "rank": 8,
+          "score": 8.2
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "section": "comparison",
+          "category": "differential_support",
+          "rank": 11,
+          "score": 6.94
+        },
+        {
+          "item_id": "abs_confusion_1fa578b0081c",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "rank": 12,
+          "score": 6.8
+        }
+      ],
+      "pruned_items": [
+        {
+          "item_id": "color_pattern_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 8.46,
+          "heuristic_score": 8.46,
+          "learned_score": 0.0,
+          "payload": {
+            "primary_color": "Dark",
+            "color_variation": "Marked",
+            "pigmentation_pattern": "Reticular",
+            "asymmetry_color": "Present",
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_741_1401"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 14.5,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 8.860000000000001,
+          "rank": 4,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "distribution_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 8.14,
+          "heuristic_score": 8.14,
+          "learned_score": 0.0,
+          "payload": {
+            "body_location": "face",
+            "symmetry": "asymmetric",
+            "localized_vs_generalized": "localized",
+            "clustering_pattern": "solitary",
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_741_1401",
+              "abs_confusion_e862d24b71bb",
+              "abs_confusion_ce158bd5a2a1",
+              "abs_confusion_1fa578b0081c"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 15.5,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 8.540000000000001,
+          "rank": 5,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "information_gap_detection_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "score": 7.9,
+          "heuristic_score": 7.9,
+          "learned_score": 0.0,
+          "payload": {
+            "missing_information": [
+              "Detailed history of the lesion (growth, change, pain, bleeding)",
+              "Clinical examination details (palpation, symmetry check)"
+            ],
+            "why_it_matters": [
+              "A detailed history helps in assessing the natural history of the lesion, which can be crucial in differentiating between benign and malignant lesions.",
+              "Clinical examination provides tactile feedback and symmetry assessment, which are important for distinguishing between various dermatological conditions."
+            ],
+            "impact_on_differential": [
+              "Without a detailed history, it is challenging to determine if the lesion has been growing or changing over time, which can be indicative of malignancy.",
+              "Clinical examination, including palpation and symmetry check, helps in assessing the lesion's characteristics more comprehensively, aiding in the differentiation between benign and potentially malignant lesions."
+            ],
+            "uncertainty_if_missing": "medium",
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_741_1401"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 7.5,
+          "dedup_key": "uncertainty:information_gap_detection_skill",
+          "ordering_score": 7.5,
+          "rank": 9,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "uncertainty_assessment_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "score": 7.4,
+          "heuristic_score": 7.4,
+          "learned_score": 0.0,
+          "payload": {
+            "uncertainty_level": "medium",
+            "reasons": [
+              "The lesion has a dark center and a slightly elevated border, which are features common to both basal cell carcinoma (BCC) and seborrheic keratosis (SEK).",
+              "The lesion's rough texture is suggestive of seborrheic keratosis, but can also be seen in BCC.",
+              "The patient's history includes itching, which is more commonly associated with BCC."
+            ],
+            "missing_information": [
+              "Detailed history regarding the lesion's growth, change, pain, and bleeding.",
+              "Clinical examination details such as palpation and symmetry check."
+            ],
+            "referenced_experiences": [
+              "PAT_778_1471",
+              "PAT_741_1401",
+              "abs_confusion_e862d24b71bb",
+              "abs_confusion_ce158bd5a2a1",
+              "abs_confusion_1fa578b0081c"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 12.5,
+          "dedup_key": "uncertainty:uncertainty_assessment_skill",
+          "ordering_score": 7.0,
+          "rank": 10,
+          "reason": "category_quota_exceeded"
+        },
+        {
+          "item_id": "abs_composite_602e21f01160",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "score": 6.300000000000001,
+          "heuristic_score": 6.300000000000001,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "abs_composite_602e21f01160",
+            "source_layer": "abstract_experience",
+            "experience_type": "composite_skill_seed",
+            "case_id": "PAT_684_1302",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=BCC, SEK; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium",
+            "learning_points": [
+              "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+              "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+distribution_analysis_skill+lesion_description_structuring_skill",
+              "Candidate only; do not auto-materialize a composite skill in the current stage."
+            ],
+            "retrieval_score": 12.0,
+            "base_retrieval_score": 12.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "abstract_experience:abs_composite_602e21f01160",
+          "ordering_score": 6.300000000000001,
+          "rank": 13,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "abs_composite_ff85ed3481d4",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "score": 6.300000000000001,
+          "heuristic_score": 6.300000000000001,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "abs_composite_ff85ed3481d4",
+            "source_layer": "abstract_experience",
+            "experience_type": "composite_skill_seed",
+            "case_id": "PAT_684_1302",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=BCC, SEK; decision_pattern=compare_then_audit_uncertainty; uncertainty=medium; risk=malignancy_risk:medium",
+            "learning_points": [
+              "Repeated successful skill sequences under a stable trigger pattern can later be promoted into a composite workflow skill.",
+              "compose_candidate:morphology_analysis_skill+color_pattern_analysis_skill+distribution_analysis_skill+lesion_description_structuring_skill",
+              "Candidate only; do not auto-materialize a composite skill in the current stage."
+            ],
+            "retrieval_score": 12.0,
+            "base_retrieval_score": 12.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "abstract_experience:abs_composite_ff85ed3481d4",
+          "ordering_score": 6.300000000000001,
+          "rank": 14,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_PAT_684_1302_e4a8c7c2c58e",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 5.2,
+          "heuristic_score": 5.2,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_PAT_684_1302_e4a8c7c2c58e",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "PAT_684_1302",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=BCC, SEK; risk=malignancy_risk:medium; uncertainty=medium",
+            "learning_points": [
+              "required downstream integration beyond lesion_description_structuring_skill",
+              "Action pattern: structured_skill_sequence"
+            ],
+            "retrieval_score": 11.0,
+            "base_retrieval_score": 11.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_PAT_684_1302_e4a8c7c2c58e",
+          "ordering_score": 5.2,
+          "rank": 15,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_PAT_684_1302_e6055fc25fdb",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 5.2,
+          "heuristic_score": 5.2,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_PAT_684_1302_e6055fc25fdb",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "PAT_684_1302",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=BCC, SEK; risk=malignancy_risk:medium; uncertainty=medium",
+            "learning_points": [
+              "made pigment variation explicit",
+              "surfaced color asymmetry as auditable evidence",
+              "required downstream integration beyond color_pattern_analysis_skill"
+            ],
+            "retrieval_score": 11.0,
+            "base_retrieval_score": 11.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_PAT_684_1302_e6055fc25fdb",
+          "ordering_score": 5.2,
+          "rank": 16,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_PAT_684_1302_ea7b54e2327b",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 5.2,
+          "heuristic_score": 5.2,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_PAT_684_1302_ea7b54e2327b",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "PAT_684_1302",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=BCC, SEK; risk=malignancy_risk:medium; uncertainty=medium",
+            "learning_points": [
+              "kept the differential open",
+              "made pairwise reasoning explicit",
+              "required downstream integration beyond differential_compare_skill"
+            ],
+            "retrieval_score": 11.0,
+            "base_retrieval_score": 11.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_PAT_684_1302_ea7b54e2327b",
+          "ordering_score": 5.2,
+          "rank": 17,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_PAT_684_1302_f9bf40782239",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 5.2,
+          "heuristic_score": 5.2,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_PAT_684_1302_f9bf40782239",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "PAT_684_1302",
+            "confusion_pair": "None",
+            "perception_summary": "ddx=BCC, SEK; risk=malignancy_risk:medium; uncertainty=medium",
+            "learning_points": [
+              "focused a high-value confusion pair",
+              "sharpened specialist keratinization clues",
+              "required downstream integration beyond ack_scc_specialist_skill"
+            ],
+            "retrieval_score": 11.0,
+            "base_retrieval_score": 11.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_PAT_684_1302_f9bf40782239",
+          "ordering_score": 5.2,
+          "rank": 18,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "PAT_691_1311",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 3.0999999999999996,
+          "heuristic_score": 3.0999999999999996,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "PAT_691_1311",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "PAT_691_1311",
+            "confusion_pair": "None",
+            "perception_summary": "A raised, irregularly shaped lesion on hairy skin.",
+            "learning_points": [
+              "Final decision: Actinic Keratosis",
+              "Correctness: False"
+            ],
+            "retrieval_score": 9.0,
+            "base_retrieval_score": 9.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:PAT_691_1311",
+          "ordering_score": 3.4999999999999996,
+          "rank": 19,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "PAT_722_1377",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 3.0999999999999996,
+          "heuristic_score": 3.0999999999999996,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "PAT_722_1377",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "PAT_722_1377",
+            "confusion_pair": "None",
+            "perception_summary": "A raised, irregularly shaped lesion with a central depression and surrounding erythema on the face.",
+            "learning_points": [
+              "Final decision: Basal cell carcinoma",
+              "Correctness: True"
+            ],
+            "retrieval_score": 9.0,
+            "base_retrieval_score": 9.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:PAT_722_1377",
+          "ordering_score": 3.4999999999999996,
+          "rank": 20,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "PAT_741_1401",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 3.0999999999999996,
+          "heuristic_score": 3.0999999999999996,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "PAT_741_1401",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "PAT_741_1401",
+            "confusion_pair": "None",
+            "perception_summary": "A raised, reddish lesion on the face with surrounding erythema and some hair present.",
+            "learning_points": [
+              "Final decision: Seborrheic Keratosis",
+              "Correctness: False"
+            ],
+            "retrieval_score": 9.0,
+            "base_retrieval_score": 9.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:PAT_741_1401",
+          "ordering_score": 3.4999999999999996,
+          "rank": 21,
+          "reason": "global_budget_exceeded"
+        }
+      ],
+      "reordered_items": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "from_section": "observation",
+          "category": "description",
+          "new_rank": 1
+        },
+        {
+          "item_id": "malignancy_risk_assessment_skill",
+          "item_type": "skill_output",
+          "from_section": "risk",
+          "category": "risk",
+          "new_rank": 2
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "from_section": "observation",
+          "category": "description",
+          "new_rank": 3
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "from_section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "new_rank": 4
+        },
+        {
+          "item_id": "metadata_consistency_skill",
+          "item_type": "skill_output",
+          "from_section": "comparison",
+          "category": "differential_support",
+          "new_rank": 5
+        },
+        {
+          "item_id": "escalation_recommendation_skill",
+          "item_type": "skill_output",
+          "from_section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "new_rank": 6
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "from_section": "comparison",
+          "category": "differential_support",
+          "new_rank": 7
+        },
+        {
+          "item_id": "abs_confusion_1fa578b0081c",
+          "item_type": "retrieval_record",
+          "from_section": "abstract_experience",
+          "category": "experience_hint",
+          "new_rank": 8
+        }
+      ],
+      "quota_state": {
+        "max_total_items": 8,
+        "per_category_quota": {
+          "description": 3,
+          "differential_support": 2,
+          "exclusion_opposing": 2,
+          "risk": 1,
+          "contradiction_gap": 2,
+          "experience_hint": 2
+        },
+        "category_counts": {
+          "description": 2,
+          "differential_support": 2,
+          "exclusion_opposing": 0,
+          "risk": 1,
+          "contradiction_gap": 2,
+          "experience_hint": 1
+        }
+      }
+    }
+  }
+}

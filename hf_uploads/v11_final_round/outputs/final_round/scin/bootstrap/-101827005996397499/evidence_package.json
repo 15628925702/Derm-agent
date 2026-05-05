@@ -1,0 +1,1920 @@
+{
+  "perception": {
+    "image_summary": "The image shows a patchy area of skin on the arm with a reddish hue and some darkening. The texture appears slightly rough.",
+    "ddx_candidates": [
+      "DERMATITIS_ECZEMA",
+      "ACNE_ROSACEA_FOLLICULAR"
+    ],
+    "uncertainty": {
+      "level": "low",
+      "reasons": [
+        "Insufficient information from a single image"
+      ]
+    },
+    "notes": [
+      "The lesion is located on the arm.",
+      "The texture is flat.",
+      "There is no significant scaling or crusting observed."
+    ]
+  },
+  "retrieved_experience": [
+    {
+      "case_id": "-1013831220015814987",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "Close-up of a raised, reddish-brown patch on the back, surrounded by small red dots and hair follicles.; DERMATITIS_ECZEMA; ACNE_ROSACEA_FOLLICULAR",
+      "confusion_pair": "DERMATITIS_ECZEMA->Basal Cell Carcinoma",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_confusion_d8fbfe16656f",
+      "retrieval_score": 12
+    },
+    {
+      "case_id": "-1002039107727665188",
+      "source_layer": "abstract_experience",
+      "source_subtype": "rule",
+      "experience_type": "rule",
+      "perception_summary": "Close-up of a raised, reddish-brown patch on the back, surrounded by small red dots and hair follicles.; DERMATITIS_ECZEMA; ACNE_ROSACEA_FOLLICULAR",
+      "confusion_pair": null,
+      "learning_points": [
+        "When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Qwen integration.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_rule_97a155a28150",
+      "retrieval_score": 11
+    },
+    {
+      "case_id": "-1013831220015814987",
+      "source_layer": "tactical_experience",
+      "source_subtype": "confusion_pair",
+      "experience_type": "tactical_experience",
+      "perception_summary": "ddx=DERMATITIS_ECZEMA, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium",
+      "confusion_pair": "DERMATITIS_ECZEMA->Basal Cell Carcinoma",
+      "learning_points": [
+        "made risk framing explicit",
+        "highlighted alarm signals without forcing diagnosis",
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "source_id": "tac_-1013831220015814987_47d9748366d2",
+      "retrieval_score": 11
+    },
+    {
+      "case_id": "-1010778459521153386",
+      "source_layer": "tactical_experience",
+      "source_subtype": "confusion_pair",
+      "experience_type": "tactical_experience",
+      "perception_summary": "ddx=DERMATITIS_ECZEMA, URTICARIA_BITE_FOLLICULITIS, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium",
+      "confusion_pair": "INFECTION_VIRAL_FUNGAL->Urticaria",
+      "learning_points": [
+        "made risk framing explicit",
+        "highlighted alarm signals without forcing diagnosis",
+        "did not fully resolve the active confusion pattern",
+        "did not prevent the final decision from failing"
+      ],
+      "source_id": "tac_-1010778459521153386_47d9748366d2",
+      "retrieval_score": 11
+    },
+    {
+      "case_id": "-1010778459521153386",
+      "source_layer": "abstract_experience",
+      "source_subtype": "confusion_memory",
+      "experience_type": "confusion_memory",
+      "perception_summary": "The image shows multiple raised, red patches on the back, with some areas appearing more confluent than others. The skin around the lesions appears slightly erythematous.; DERMATITIS_ECZEMA; URTICARIA_BITE_FOLLICULITIS",
+      "confusion_pair": "INFECTION_VIRAL_FUNGAL->Urticaria",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "source_id": "abs_confusion_1504ee66ad3c",
+      "retrieval_score": 9
+    },
+    {
+      "case_id": "-1013831220015814987",
+      "source_layer": "raw_case_memory",
+      "source_subtype": "case_reference",
+      "experience_type": "raw_case_memory",
+      "perception_summary": "Close-up of a raised, reddish-brown patch on the back, surrounded by small red dots and hair follicles.",
+      "confusion_pair": null,
+      "learning_points": [
+        "Final decision: DERMATITIS_ECZEMA",
+        "Correctness: False"
+      ],
+      "source_id": "-1013831220015814987",
+      "retrieval_score": 9
+    }
+  ],
+  "skill_outputs": {
+    "morphology_analysis_skill": {
+      "lesion_type": "macule",
+      "size_range": "small to medium",
+      "elevation": "flat",
+      "count": "solitary",
+      "referenced_experiences": [
+        "-1003358831658393077",
+        "-1013831220015814987",
+        "tac_-1000600354148496558_47d9748366d2",
+        "abs_confusion_d8fbfe16656f",
+        "abs_composite_391a6e8967c0",
+        "abs_rule_97a155a28150"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "color_pattern_analysis_skill": {
+      "primary_color": "reddish",
+      "color_variation": "marked",
+      "pigmentation_pattern": "patchy",
+      "asymmetry_color": "present",
+      "referenced_experiences": [
+        "-1003358831658393077",
+        "-1013831220015814987",
+        "tac_-1000600354148496558_47d9748366d2",
+        "abs_confusion_d8fbfe16656f",
+        "abs_composite_391a6e8967c0",
+        "abs_rule_97a155a28150"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "distribution_analysis_skill": {
+      "body_location": "arm",
+      "symmetry": "asymmetric",
+      "localized_vs_generalized": "generalized",
+      "clustering_pattern": "clustered",
+      "referenced_experiences": [
+        "-1003358831658393077",
+        "-1013831220015814987",
+        "tac_-1000600354148496558_47d9748366d2",
+        "abs_confusion_d8fbfe16656f",
+        "abs_composite_391a6e8967c0",
+        "abs_rule_97a155a28150"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "lesion_description_structuring_skill": {
+      "primary_lesion_morphology": "macule",
+      "color": [
+        "reddish, marked pigmentation"
+      ],
+      "border": [
+        "slightly irregular, patchy"
+      ],
+      "surface": [
+        "flat, rough texture"
+      ],
+      "size_count": [
+        "small to medium, solitary"
+      ],
+      "distribution": [
+        "generalized, localized on arm"
+      ],
+      "associated_context": [
+        "body_site: arm, age_group: AGE_18_TO_29, sex_at_birth: MALE, fitzpatrick_skin_type: FST2, combined_race: HISPANIC_LATINO_OR_SPANISH_ORIGIN, condition_duration: ONE_TO_THREE_MONTHS, textures_present: [flat], symptoms_present: [darkening], other_symptoms_present: [no_relevant_symptoms]"
+      ],
+      "referenced_experiences": [
+        "-1003358831658393077",
+        "-1013831220015814987"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "metadata_consistency_skill": {
+      "consistency_score": "medium",
+      "conflicts": [],
+      "suspicious_points": [
+        {
+          "description": "The lesion is described as having a flat texture, but the image shows a slightly rough texture.",
+          "type": "soft"
+        }
+      ],
+      "referenced_experiences": [
+        "-1003358831658393077",
+        "-1013831220015814987",
+        "tac_-1000600354148496558_47d9748366d2",
+        "abs_confusion_d8fbfe16656f",
+        "abs_composite_391a6e8967c0",
+        "abs_rule_97a155a28150"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "descriptive_evidence"
+    },
+    "malignancy_risk_assessment_skill": {
+      "risk_level": "medium",
+      "risk_evidence": [
+        "{'type': 'border', 'description': 'The border of the lesion is slightly irregular and patchy.'}",
+        "{'type': 'color', 'description': 'The primary color is reddish, and there is marked pigmentation variation.'}",
+        "{'type': 'evolution', 'description': 'The lesion appears to be increasing in size over time.'}"
+      ],
+      "alarm_signals": [
+        "Marked color variation",
+        "Irregular border",
+        "Increasing size"
+      ],
+      "benign_reassuring_features": [
+        "Symmetry (bilateral or radial)",
+        "Regular border (smooth, well-defined)",
+        "Uniform color (single color, homogeneous)"
+      ],
+      "referenced_experiences": [
+        "tac_-1000600354148496558_47d9748366d2",
+        "abs_confusion_d8fbfe16656f",
+        "abs_composite_391a6e8967c0"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "risk_signal"
+    },
+    "differential_compare_skill": {
+      "candidate_pairs": [
+        "DERMATITIS_ECZEMA vs ACNE_ROSACEA_FOLLICULAR"
+      ],
+      "supporting_evidence": [
+        "The lesion is macular and has a reddish hue with marked pigmentation variation.",
+        "The texture appears slightly rough."
+      ],
+      "conflicting_evidence": [
+        "The lesion is located on the arm and is described as flat, which is less typical for acne rosacea follicular."
+      ],
+      "required_missing_evidence": [
+        "More detailed temporal evolution data to assess if the lesion is increasing in size over time."
+      ],
+      "referenced_experiences": [
+        "-1003358831658393077",
+        "-1013831220015814987",
+        "tac_-1000600354148496558_47d9748366d2",
+        "abs_confusion_d8fbfe16656f",
+        "abs_composite_391a6e8967c0",
+        "abs_rule_97a155a28150"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "comparative_support"
+    },
+    "uncertainty_assessment_skill": {
+      "uncertainty_level": "medium",
+      "reasons": [
+        "Insufficient information from a single image",
+        "Missing temporal evolution data",
+        "Unresolved differential conflict between dermatitis eczema and acne rosacea follicular"
+      ],
+      "missing_information": [
+        "More detailed temporal evolution data to assess if the lesion is increasing in size over time.",
+        "Additional images to confirm the lesion's characteristics and progression."
+      ],
+      "referenced_experiences": [
+        "-1003358831658393077",
+        "-1013831220015814987",
+        "tac_-1000600354148496558_47d9748366d2",
+        "abs_confusion_d8fbfe16656f",
+        "abs_composite_391a6e8967c0",
+        "abs_rule_97a155a28150"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "uncertainty_signal"
+    },
+    "contradiction_check_skill": {
+      "contradictions": [
+        {
+          "type": "metadata_image_mismatch",
+          "description": "The metadata indicates the presence of crusting and scaling, which is not consistent with the image summary that mentions no significant scaling or crusting."
+        }
+      ],
+      "missing_links": [
+        {
+          "type": "temporal_evolution_data",
+          "description": "There is a need for more detailed temporal evolution data to assess if the lesion is increasing in size over time."
+        },
+        {
+          "type": "additional_images",
+          "description": "Additional images would help confirm the lesion's characteristics and progression."
+        }
+      ],
+      "reasoning_gaps": [
+        {
+          "type": "differential_narrowing",
+          "description": "The differential diagnosis candidates (DERMATITIS_ECZEMA, ACNE_ROSACEA_FOLLICULAR) need further differentiation based on additional evidence."
+        }
+      ],
+      "referenced_experiences": [
+        "-1003358831658393077",
+        "-1013831220015814987",
+        "tac_-1000600354148496558_47d9748366d2",
+        "abs_confusion_d8fbfe16656f",
+        "abs_composite_391a6e8967c0",
+        "abs_rule_97a155a28150"
+      ],
+      "evidence_strength": "medium",
+      "recommendation_type": "uncertainty_signal"
+    }
+  },
+  "risk_flags": [
+    "malignancy_risk:medium"
+  ],
+  "uncertainty": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "Insufficient information from a single image",
+      "Missing temporal evolution data",
+      "Unresolved differential conflict between dermatitis eczema and acne rosacea follicular"
+    ],
+    "missing_information": [
+      "More detailed temporal evolution data to assess if the lesion is increasing in size over time.",
+      "Additional images to confirm the lesion's characteristics and progression."
+    ],
+    "referenced_experiences": [
+      "-1003358831658393077",
+      "-1013831220015814987",
+      "tac_-1000600354148496558_47d9748366d2",
+      "abs_confusion_d8fbfe16656f",
+      "abs_composite_391a6e8967c0",
+      "abs_rule_97a155a28150"
+    ],
+    "evidence_strength": "medium",
+    "recommendation_type": "uncertainty_signal"
+  },
+  "notes": [
+    "Agent generated structured evidence only.",
+    "Qwen remains the sole final diagnostic decision maker.",
+    "Planner selected skills: morphology_analysis_skill, color_pattern_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, differential_compare_skill, uncertainty_assessment_skill, contradiction_check_skill.",
+    "Policy in use: heuristic_with_penalty.",
+    "Skill retrieval candidates: metadata_consistency_skill, morphology_analysis_skill, lesion_description_structuring_skill, distribution_analysis_skill, color_pattern_analysis_skill, malignancy_risk_assessment_skill, temporal_evolution_skill, border_surface_analysis_skill, uncertainty_assessment_skill, contradiction_check_skill, differential_compare_skill, exclusion_reasoning_skill.",
+    "The lesion is located on the arm.",
+    "The texture is flat.",
+    "There is no significant scaling or crusting observed.",
+    "Retrieved prior reasoning experience for context."
+  ],
+  "initial_perception_summary": {
+    "image_summary": "The image shows a patchy area of skin on the arm with a reddish hue and some darkening. The texture appears slightly rough.",
+    "ddx_candidates": [
+      "DERMATITIS_ECZEMA",
+      "ACNE_ROSACEA_FOLLICULAR"
+    ],
+    "uncertainty_level": "low",
+    "uncertainty_reasons": [
+      "Insufficient information from a single image"
+    ],
+    "observation_notes": [
+      "The lesion is located on the arm.",
+      "The texture is flat.",
+      "There is no significant scaling or crusting observed."
+    ]
+  },
+  "retrieved_raw_cases_summary": [
+    {
+      "source_id": "-1013831220015814987",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "-1013831220015814987",
+      "confusion_pair": "None",
+      "perception_summary": "Close-up of a raised, reddish-brown patch on the back, surrounded by small red dots and hair follicles.",
+      "learning_points": [
+        "Final decision: DERMATITIS_ECZEMA",
+        "Correctness: False"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "-1010778459521153386",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "-1010778459521153386",
+      "confusion_pair": "None",
+      "perception_summary": "The image shows multiple raised, red patches on the back, with some areas appearing more confluent than others. The skin around the lesions appears slightly erythematous.",
+      "learning_points": [
+        "Final decision: INFECTION_VIRAL_FUNGAL",
+        "Correctness: False"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "-1003358831658393077",
+      "source_layer": "raw_case_memory",
+      "experience_type": "raw_case_memory",
+      "case_id": "-1003358831658393077",
+      "confusion_pair": "None",
+      "perception_summary": "The image shows a patchy area of erythema on the forearm with some crusting and scaling. The lesions appear to be increasing in size and are accompanied by itching.",
+      "learning_points": [
+        "Final decision: Contact Dermatitis",
+        "Correctness: False"
+      ],
+      "retrieval_score": 8.0,
+      "base_retrieval_score": 8.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_tactical_experiences_summary": [
+    {
+      "source_id": "tac_-1013831220015814987_47d9748366d2",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "-1013831220015814987",
+      "confusion_pair": "DERMATITIS_ECZEMA->Basal Cell Carcinoma",
+      "perception_summary": "ddx=DERMATITIS_ECZEMA, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "made risk framing explicit",
+        "highlighted alarm signals without forcing diagnosis",
+        "did not fully resolve the active confusion pattern"
+      ],
+      "retrieval_score": 11.0,
+      "base_retrieval_score": 11.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_-1010778459521153386_47d9748366d2",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "-1010778459521153386",
+      "confusion_pair": "INFECTION_VIRAL_FUNGAL->Urticaria",
+      "perception_summary": "ddx=DERMATITIS_ECZEMA, URTICARIA_BITE_FOLLICULITIS, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "made risk framing explicit",
+        "highlighted alarm signals without forcing diagnosis",
+        "did not fully resolve the active confusion pattern"
+      ],
+      "retrieval_score": 11.0,
+      "base_retrieval_score": 11.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_-1013831220015814987_e5b6956c8c26",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "-1013831220015814987",
+      "confusion_pair": "DERMATITIS_ECZEMA->Basal Cell Carcinoma",
+      "perception_summary": "ddx=DERMATITIS_ECZEMA, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "stabilized lesion structure",
+        "made morphology explicit for downstream reasoning",
+        "did not fully resolve the active confusion pattern"
+      ],
+      "retrieval_score": 10.0,
+      "base_retrieval_score": 10.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "tac_-1013831220015814987_e21fa70f1cb7",
+      "source_layer": "tactical_experience",
+      "experience_type": "tactical_experience",
+      "case_id": "-1013831220015814987",
+      "confusion_pair": "DERMATITIS_ECZEMA->Basal Cell Carcinoma",
+      "perception_summary": "ddx=DERMATITIS_ECZEMA, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium",
+      "learning_points": [
+        "made evidence limits explicit",
+        "prevented overconfident downstream use",
+        "did not fully resolve the active confusion pattern"
+      ],
+      "retrieval_score": 10.0,
+      "base_retrieval_score": 10.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "retrieved_abstract_experiences_summary": [
+    {
+      "source_id": "abs_confusion_d8fbfe16656f",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "-1013831220015814987",
+      "confusion_pair": "DERMATITIS_ECZEMA->Basal Cell Carcinoma",
+      "perception_summary": "Close-up of a raised, reddish-brown patch on the back, surrounded by small red dots and hair follicles.; DERMATITIS_ECZEMA; ACNE_ROSACEA_FOLLICULAR",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 12.0,
+      "base_retrieval_score": 12.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_rule_97a155a28150",
+      "source_layer": "abstract_experience",
+      "experience_type": "rule",
+      "case_id": "-1002039107727665188",
+      "confusion_pair": "None",
+      "perception_summary": "Close-up of a raised, reddish-brown patch on the back, surrounded by small red dots and hair follicles.; DERMATITIS_ECZEMA; ACNE_ROSACEA_FOLLICULAR",
+      "learning_points": [
+        "When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Qwen integration.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 11.0,
+      "base_retrieval_score": 11.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    },
+    {
+      "source_id": "abs_confusion_1504ee66ad3c",
+      "source_layer": "abstract_experience",
+      "experience_type": "confusion_memory",
+      "case_id": "-1010778459521153386",
+      "confusion_pair": "INFECTION_VIRAL_FUNGAL->Urticaria",
+      "perception_summary": "The image shows multiple raised, red patches on the back, with some areas appearing more confluent than others. The skin around the lesions appears slightly erythematous.; DERMATITIS_ECZEMA; URTICARIA_BITE_FOLLICULITIS",
+      "learning_points": [
+        "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+        "compare_then_audit_uncertainty"
+      ],
+      "retrieval_score": 9.0,
+      "base_retrieval_score": 9.0,
+      "rerank_score": 0.0,
+      "rerank_probability": 0.0
+    }
+  ],
+  "uncertainty_summary": {
+    "uncertainty_level": "medium",
+    "reasons": [
+      "Insufficient information from a single image",
+      "Missing temporal evolution data",
+      "Unresolved differential conflict between dermatitis eczema and acne rosacea follicular"
+    ],
+    "missing_information": [
+      "More detailed temporal evolution data to assess if the lesion is increasing in size over time.",
+      "Additional images to confirm the lesion's characteristics and progression."
+    ],
+    "referenced_experiences": [
+      "-1003358831658393077",
+      "-1013831220015814987",
+      "tac_-1000600354148496558_47d9748366d2",
+      "abs_confusion_d8fbfe16656f",
+      "abs_composite_391a6e8967c0",
+      "abs_rule_97a155a28150"
+    ]
+  },
+  "contradiction_summary": {
+    "contradictions": [
+      "{'type': 'metadata_image_mismatch', 'description': 'The metadata indicates the presence of crusting and scaling, which is not consistent with the image summary that mentions no significant scaling or crusting.'}"
+    ],
+    "missing_links": [
+      "{'type': 'temporal_evolution_data', 'description': 'There is a need for more detailed temporal evolution data to assess if the lesion is increasing in size over time.'}",
+      "{'type': 'additional_images', 'description': \"Additional images would help confirm the lesion's characteristics and progression.\"}"
+    ],
+    "reasoning_gaps": [
+      "{'type': 'differential_narrowing', 'description': 'The differential diagnosis candidates (DERMATITIS_ECZEMA, ACNE_ROSACEA_FOLLICULAR) need further differentiation based on additional evidence.'}"
+    ],
+    "metadata_conflicts": [],
+    "suspicious_points": [
+      "{'description': 'The lesion is described as having a flat texture, but the image shows a slightly rough texture.', 'type': 'soft'}"
+    ]
+  },
+  "information_gap_summary": {
+    "missing_information": [],
+    "why_it_matters": [],
+    "impact_on_differential": [],
+    "uncertainty_if_missing": "unknown"
+  },
+  "escalation_summary": {
+    "whether_escalation_needed": "unknown",
+    "escalation_reason": [],
+    "suggested_next_check_type": "",
+    "caution_flags": []
+  },
+  "planner_rationale": {
+    "planner_type": "rule_based",
+    "planner_version": "v1",
+    "selected_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "distribution_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "malignancy_risk_assessment_skill",
+      "differential_compare_skill",
+      "uncertainty_assessment_skill",
+      "contradiction_check_skill"
+    ],
+    "selection_reasons": {
+      "morphology_analysis_skill": [
+        "Boosted by skill retrieval score=12.00.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "color_pattern_analysis_skill": [
+        "Boosted by skill retrieval score=11.50.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "distribution_analysis_skill": [
+        "Boosted by skill retrieval score=12.00.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "lesion_description_structuring_skill": [
+        "Boosted by skill retrieval score=12.00.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "metadata_consistency_skill": [
+        "Boosted by skill retrieval score=14.00.",
+        "Included as part of the core structured observation layer.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`."
+      ],
+      "malignancy_risk_assessment_skill": [
+        "Boosted by skill retrieval score=11.00.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "differential_compare_skill": [
+        "Boosted by skill retrieval score=5.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `multiple_ddx`."
+      ],
+      "uncertainty_assessment_skill": [
+        "Boosted by skill retrieval score=7.00.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `multiple_ddx`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ],
+      "contradiction_check_skill": [
+        "Boosted by skill retrieval score=6.50.",
+        "Boosted by cognition helpful_rate=1.00.",
+        "Matched active trigger profile `foundational_observation`.",
+        "Matched active trigger profile `location_or_size_metadata`."
+      ]
+    }
+  },
+  "confusion_cluster_summary": {
+    "active_clusters": [],
+    "guidance": []
+  },
+  "selected_evidence": [
+    {
+      "item_id": "metadata_consistency_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "metadata_consistency_skill",
+      "skill_name": "metadata_consistency_skill",
+      "retrieval_type": "",
+      "section": "comparison",
+      "category": "differential_support",
+      "summary": "metadata_consistency_skill: consistency_score=medium | suspicious_points={'description': 'The lesion is described as having a flat texture, but the image shows a slightly rough texture.', 'type': 'soft'} | evidence_strength=medium | recommendation_type=descriptive_evidence",
+      "score": 7.42,
+      "rank": 7,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "lesion_description_structuring_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "lesion_description_structuring_skill",
+      "skill_name": "lesion_description_structuring_skill",
+      "retrieval_type": "",
+      "section": "observation",
+      "category": "description",
+      "summary": "lesion_description_structuring_skill: primary_lesion_morphology=macule | color=reddish, marked pigmentation | border=slightly irregular, patchy | surface=flat, rough texture | size_count=small to medium, solitary | distribution=generalized, localized on arm",
+      "score": 9.36,
+      "rank": 1,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "malignancy_risk_assessment_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "malignancy_risk_assessment_skill",
+      "skill_name": "malignancy_risk_assessment_skill",
+      "retrieval_type": "",
+      "section": "risk",
+      "category": "risk",
+      "summary": "malignancy_risk_assessment_skill: risk_level=medium | risk_evidence={'type': 'border', 'description': 'The border of the lesion is slightly irregular and patchy.'}; {'type': 'color', 'description': 'The primary color is reddi... | alarm_signals=Marked color variation; Irregular border; Increasing size | benign_reassuring_features=Symmetry (bilateral or ra...",
+      "score": 9.48,
+      "rank": 2,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "morphology_analysis_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "morphology_analysis_skill",
+      "skill_name": "morphology_analysis_skill",
+      "retrieval_type": "",
+      "section": "observation",
+      "category": "description",
+      "summary": "morphology_analysis_skill: lesion_type=macule | size_range=small to medium | elevation=flat | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence",
+      "score": 8.36,
+      "rank": 3,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "contradiction_check_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "contradiction_check_skill",
+      "skill_name": "contradiction_check_skill",
+      "retrieval_type": "",
+      "section": "conflict_uncertainty",
+      "category": "contradiction_gap",
+      "summary": "contradiction_check_skill: contradictions={'type': 'metadata_image_mismatch', 'description': 'The metadata indicates the presence of crusting and scaling, which is not consistent with the image summa... | missing_links={'type': 'temporal_evolution_data', 'description': 'There is a need for more detailed temporal evolution data to assess if the lesion is i...",
+      "score": 8.22,
+      "rank": 6,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "abs_rule_97a155a28150",
+      "item_type": "retrieval_record",
+      "source_type": "retrieval_record",
+      "source_name": "abs_rule_97a155a28150",
+      "skill_name": "",
+      "retrieval_type": "abstract_experience",
+      "section": "abstract_experience",
+      "category": "experience_hint",
+      "summary": "Close-up of a raised, reddish-brown patch on the back, surrounded by small red dots and hair follicles.; DERMATITIS_ECZEMA; ACNE_ROSACEA_FOLLICULAR | When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Q...; compare_then_audit_uncertainty | confusion_pair=None",
+      "score": 7.2,
+      "rank": 8,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "differential_compare_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "differential_compare_skill",
+      "skill_name": "differential_compare_skill",
+      "retrieval_type": "",
+      "section": "comparison",
+      "category": "differential_support",
+      "summary": "differential_compare_skill: candidate_pairs=DERMATITIS_ECZEMA vs ACNE_ROSACEA_FOLLICULAR | supporting_evidence=The lesion is macular and has a reddish hue with marked pigmentation variation.; The texture appears slightly rough. | conflicting_evidence=The lesion is located on the arm and is described as flat, which is less typical for acne rosacea follicul...",
+      "score": 7.04,
+      "rank": 9,
+      "keep_reason": "kept"
+    },
+    {
+      "item_id": "uncertainty_assessment_skill",
+      "item_type": "skill_output",
+      "source_type": "skill_output",
+      "source_name": "uncertainty_assessment_skill",
+      "skill_name": "uncertainty_assessment_skill",
+      "retrieval_type": "",
+      "section": "conflict_uncertainty",
+      "category": "contradiction_gap",
+      "summary": "uncertainty_assessment_skill: uncertainty_level=medium | reasons=Insufficient information from a single image; Missing temporal evolution data; Unresolved differential conflict between dermatitis eczema and acne rosacea fo... | missing_information=More detailed temporal evolution data to assess if the lesion is increasing in size over time.; Additional im...",
+      "score": 7.26,
+      "rank": 10,
+      "keep_reason": "kept"
+    }
+  ],
+  "evidence_decision_policy": {
+    "risk_layer": {
+      "risk_flag": "malignancy_risk_medium",
+      "caution_flags": [
+        "contradictions_present"
+      ],
+      "follow_up_suggestion": "clinical follow-up and closer inspection if concern persists",
+      "selected_evidence": [
+        {
+          "item_id": "metadata_consistency_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "metadata_consistency_skill",
+          "skill_name": "metadata_consistency_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "differential_support",
+          "summary": "metadata_consistency_skill: consistency_score=medium | suspicious_points={'description': 'The lesion is described as having a flat texture, but the image shows a slightly rough texture.', 'type': 'soft'} | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 7.42,
+          "rank": 7,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "lesion_description_structuring_skill",
+          "skill_name": "lesion_description_structuring_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "lesion_description_structuring_skill: primary_lesion_morphology=macule | color=reddish, marked pigmentation | border=slightly irregular, patchy | surface=flat, rough texture | size_count=small to medium, solitary | distribution=generalized, localized on arm",
+          "score": 9.36,
+          "rank": 1,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "malignancy_risk_assessment_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "malignancy_risk_assessment_skill",
+          "skill_name": "malignancy_risk_assessment_skill",
+          "retrieval_type": "",
+          "section": "risk",
+          "category": "risk",
+          "summary": "malignancy_risk_assessment_skill: risk_level=medium | risk_evidence={'type': 'border', 'description': 'The border of the lesion is slightly irregular and patchy.'}; {'type': 'color', 'description': 'The primary color is reddi... | alarm_signals=Marked color variation; Irregular border; Increasing size | benign_reassuring_features=Symmetry (bilateral or ra...",
+          "score": 9.48,
+          "rank": 2,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "morphology_analysis_skill",
+          "skill_name": "morphology_analysis_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "morphology_analysis_skill: lesion_type=macule | size_range=small to medium | elevation=flat | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 8.36,
+          "rank": 3,
+          "keep_reason": "kept"
+        }
+      ],
+      "baseline_preview": {
+        "early_ddx_candidates": [
+          "DERMATITIS_ECZEMA",
+          "ACNE_ROSACEA_FOLLICULAR"
+        ],
+        "image_summary": "The image shows a patchy area of skin on the arm with a reddish hue and some darkening. The texture appears slightly rough.",
+        "baseline_final_diagnosis": "Contact Dermatitis",
+        "baseline_differential_diagnoses": [
+          "Contact Dermatitis"
+        ],
+        "baseline_confidence": "Moderate"
+      }
+    },
+    "diagnosis_override_layer": {
+      "workflow_context": {
+        "label_granularity": "grouped",
+        "presentation_mode": "diffuse_rash",
+        "workflow_profile": "family_routing_workflow",
+        "available_tests": [
+          "clinical_photo_only"
+        ],
+        "workflow_preference": "metadata_first",
+        "hospital_type": "specialist_clinic",
+        "time_budget": "standard",
+        "metadata_completeness": "full",
+        "workflow_capabilities": [
+          "family_routing",
+          "grouped_label_reasoning",
+          "rash_reasoning"
+        ]
+      },
+      "override_allowed": true,
+      "malignancy_override_allowed": true,
+      "subtype_override_allowed": false,
+      "family_override_allowed": true,
+      "override_mode": "family_override",
+      "override_reasons": [
+        "supporting_evidence_outweighs_opposition",
+        "subtype_specific_support_present",
+        "family_level_override_allowed",
+        "uncertainty_not_high",
+        "consistent_retrieval_support"
+      ],
+      "why_not_confident_enough_to_override": [
+        "malignancy risk is not high enough for a diagnosis override",
+        "no specialist evidence strongly supports the override direction",
+        "contradictions or reasoning gaps remain too numerous",
+        "opposing or exclusion evidence quota is not satisfied"
+      ],
+      "supporting_evidence": [
+        {
+          "item_id": "metadata_consistency_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "metadata_consistency_skill",
+          "skill_name": "metadata_consistency_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "differential_support",
+          "summary": "metadata_consistency_skill: consistency_score=medium | suspicious_points={'description': 'The lesion is described as having a flat texture, but the image shows a slightly rough texture.', 'type': 'soft'} | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 7.42,
+          "rank": 7,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "lesion_description_structuring_skill",
+          "skill_name": "lesion_description_structuring_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "lesion_description_structuring_skill: primary_lesion_morphology=macule | color=reddish, marked pigmentation | border=slightly irregular, patchy | surface=flat, rough texture | size_count=small to medium, solitary | distribution=generalized, localized on arm",
+          "score": 9.36,
+          "rank": 1,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "malignancy_risk_assessment_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "malignancy_risk_assessment_skill",
+          "skill_name": "malignancy_risk_assessment_skill",
+          "retrieval_type": "",
+          "section": "risk",
+          "category": "risk",
+          "summary": "malignancy_risk_assessment_skill: risk_level=medium | risk_evidence={'type': 'border', 'description': 'The border of the lesion is slightly irregular and patchy.'}; {'type': 'color', 'description': 'The primary color is reddi... | alarm_signals=Marked color variation; Irregular border; Increasing size | benign_reassuring_features=Symmetry (bilateral or ra...",
+          "score": 9.48,
+          "rank": 2,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "morphology_analysis_skill",
+          "skill_name": "morphology_analysis_skill",
+          "retrieval_type": "",
+          "section": "observation",
+          "category": "description",
+          "summary": "morphology_analysis_skill: lesion_type=macule | size_range=small to medium | elevation=flat | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence",
+          "score": 8.36,
+          "rank": 3,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "contradiction_check_skill",
+          "skill_name": "contradiction_check_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "contradiction_check_skill: contradictions={'type': 'metadata_image_mismatch', 'description': 'The metadata indicates the presence of crusting and scaling, which is not consistent with the image summa... | missing_links={'type': 'temporal_evolution_data', 'description': 'There is a need for more detailed temporal evolution data to assess if the lesion is i...",
+          "score": 8.22,
+          "rank": 6,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "abs_rule_97a155a28150",
+          "item_type": "retrieval_record",
+          "source_type": "retrieval_record",
+          "source_name": "abs_rule_97a155a28150",
+          "skill_name": "",
+          "retrieval_type": "abstract_experience",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "summary": "Close-up of a raised, reddish-brown patch on the back, surrounded by small red dots and hair follicles.; DERMATITIS_ECZEMA; ACNE_ROSACEA_FOLLICULAR | When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Q...; compare_then_audit_uncertainty | confusion_pair=None",
+          "score": 7.2,
+          "rank": 8,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "differential_compare_skill",
+          "skill_name": "differential_compare_skill",
+          "retrieval_type": "",
+          "section": "comparison",
+          "category": "differential_support",
+          "summary": "differential_compare_skill: candidate_pairs=DERMATITIS_ECZEMA vs ACNE_ROSACEA_FOLLICULAR | supporting_evidence=The lesion is macular and has a reddish hue with marked pigmentation variation.; The texture appears slightly rough. | conflicting_evidence=The lesion is located on the arm and is described as flat, which is less typical for acne rosacea follicul...",
+          "score": 7.04,
+          "rank": 9,
+          "keep_reason": "kept"
+        },
+        {
+          "item_id": "uncertainty_assessment_skill",
+          "item_type": "skill_output",
+          "source_type": "skill_output",
+          "source_name": "uncertainty_assessment_skill",
+          "skill_name": "uncertainty_assessment_skill",
+          "retrieval_type": "",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "summary": "uncertainty_assessment_skill: uncertainty_level=medium | reasons=Insufficient information from a single image; Missing temporal evolution data; Unresolved differential conflict between dermatitis eczema and acne rosacea fo... | missing_information=More detailed temporal evolution data to assess if the lesion is increasing in size over time.; Additional im...",
+          "score": 7.26,
+          "rank": 10,
+          "keep_reason": "kept"
+        }
+      ],
+      "opposing_evidence": [],
+      "supporting_score": 64.34,
+      "opposing_score": 0,
+      "support_margin": 64.34,
+      "selected_evidence_present": true,
+      "subtype_support_score": 14.46,
+      "subtype_support_margin": 14.46,
+      "specialist_support_present": false,
+      "consistent_retrieval_count": 1,
+      "contradiction_count": 5,
+      "uncertainty_level": "medium",
+      "opposing_quota_satisfied": false,
+      "subtype_support_quota_satisfied": true
+    }
+  },
+  "serialized_evidence_text": "[Observation Evidence]\n- Initial image summary: The image shows a patchy area of skin on the arm with a reddish hue and some darkening. The texture appears slightly rough.\n- Early differential candidates: DERMATITIS_ECZEMA, ACNE_ROSACEA_FOLLICULAR\n- structured lesion observation: lesion_description_structuring_skill: primary_lesion_morphology=macule | color=reddish, marked pigmentation | border=slightly irregular, patchy | surface=flat, rough texture | size_count=small to medium, solitary | distribution=generalized, localized on arm || morphology_analysis_skill: lesion_type=macule | size_range=small to medium | elevation=flat | count=solitary | evidence_strength=medium | recommendation_type=descriptive_evidence\n- Raw case reference -1013831220015814987: Close-up of a raised, reddish-brown patch on the back, surrounded by small red dots and hair follicles.\n- Raw case reference -1010778459521153386: The image shows multiple raised, red patches on the back, with some areas appearing more confluent than others. The skin around the lesions appears slightly erythematous.\n- Raw case reference -1003358831658393077: The image shows a patchy area of erythema on the forearm with some crusting and scaling. The lesions appear to be increasing in size and are accompanied by itching.\n\n[Exclusion And Comparison Evidence]\n- metadata_consistency_skill: consistency_score=medium | suspicious_points={'description': 'The lesion is described as having a flat texture, but the image shows a slightly rough texture.', 'type': 'soft'} | evidence_strength=medium | recommendation_type=descriptive_evidence\n- differential_compare_skill: candidate_pairs=DERMATITIS_ECZEMA vs ACNE_ROSACEA_FOLLICULAR | supporting_evidence=The lesion is macular and has a reddish hue with marked pigmentation variation.; The texture appears slightly rough. | conflicting_evidence=The lesion is located on the arm and is described as flat, which is less typical for acne rosacea follicular. | required_missing_evidence=More detailed temporal evolution data to assess if the lesion is increasing in size over time. | evidence_strength=medium | recommendation_type=comparative_support\n- Tactical experience tac_-1013831220015814987_47d9748366d2: ddx=DERMATITIS_ECZEMA, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium; made risk framing explicit; highlighted alarm signals without forcing diagnosis; did not fully resolve the active confusion pattern\n- Tactical experience tac_-1010778459521153386_47d9748366d2: ddx=DERMATITIS_ECZEMA, URTICARIA_BITE_FOLLICULITIS, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium; made risk framing explicit; highlighted alarm signals without forcing diagnosis; did not fully resolve the active confusion pattern\n- Tactical experience tac_-1013831220015814987_e5b6956c8c26: ddx=DERMATITIS_ECZEMA, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium; stabilized lesion structure; made morphology explicit for downstream reasoning; did not fully resolve the active confusion pattern\n- Tactical experience tac_-1013831220015814987_e21fa70f1cb7: ddx=DERMATITIS_ECZEMA, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium; made evidence limits explicit; prevented overconfident downstream use; did not fully resolve the active confusion pattern\n- Abstract comparison memory abs_rule_97a155a28150: Close-up of a raised, reddish-brown patch on the back, surrounded by small red dots and hair follicles.; DERMATITIS_ECZEMA; ACNE_ROSACEA_FOLLICULAR; When ambiguity or risk remains elevated, explicitly structure observation, comparison, and uncertainty before final Qwen integration.; compare_then_audit_uncertainty\n\n[Risk Evidence]\n- Risk flags: malignancy_risk:medium\n- malignancy_risk_assessment_skill: risk_level=medium | risk_evidence={'type': 'border', 'description': 'The border of the lesion is slightly irregular and patchy.'}; {'type': 'color', 'description': 'The primary color is reddi... | alarm_signals=Marked color variation; Irregular border; Increasing size | benign_reassuring_features=Symmetry (bilateral or radial); Regular border (smooth, well-defined); Uniform color (single color, homogeneous) | evidence_strength=medium | recommendation_type=risk_signal\n\n[Conflict And Uncertainty]\n- Uncertainty level: medium\n- Uncertainty reasons: Insufficient information from a single image; Missing temporal evolution data; Unresolved differential conflict between dermatitis eczema and acne rosacea follicular\n- Missing information: More detailed temporal evolution data to assess if the lesion is increasing in size over time.; Additional images to confirm the lesion's characteristics and progression.\n- contradictions: {'type': 'metadata_image_mismatch', 'description': 'The metadata indicates the presence of crusting and scaling, which is not consistent with the image summary that mentions no significant scaling or crusting.'}\n- missing links: {'type': 'temporal_evolution_data', 'description': 'There is a need for more detailed temporal evolution data to assess if the lesion is increasing in size over time.'}; {'type': 'additional_images', 'description': \"Additional images would help confirm the lesion's characteristics and progression.\"}\n- reasoning gaps: {'type': 'differential_narrowing', 'description': 'The differential diagnosis candidates (DERMATITIS_ECZEMA, ACNE_ROSACEA_FOLLICULAR) need further differentiation based on additional evidence.'}\n- suspicious points: {'description': 'The lesion is described as having a flat texture, but the image shows a slightly rough texture.', 'type': 'soft'}\n- contradiction_check_skill: contradictions={'type': 'metadata_image_mismatch', 'description': 'The metadata indicates the presence of crusting and scaling, which is not consistent with the image summa... | missing_links={'type': 'temporal_evolution_data', 'description': 'There is a need for more detailed temporal evolution data to assess if the lesion is increasing in size o... | reasoning_gaps={'type': 'differential_narrowing', 'description': 'The differential diagnosis candidates (DERMATITIS_ECZEMA, ACNE_ROSACEA_FOLLICULAR) need further differenti... | evidence_strength=medium | recommendation_type=uncertainty_signal\n- uncertainty_assessment_skill: uncertainty_level=medium | reasons=Insufficient information from a single image; Missing temporal evolution data; Unresolved differential conflict between dermatitis eczema and acne rosacea fo... | missing_information=More detailed temporal evolution data to assess if the lesion is increasing in size over time.; Additional images to confirm the lesion's characteristics and... | evidence_strength=medium | recommendation_type=uncertainty_signal\n- residual uncertainty if still missing: unknown\n- escalation needed: unknown\n\n[Planner Rationale]\n- Selected skills: morphology_analysis_skill, color_pattern_analysis_skill, distribution_analysis_skill, lesion_description_structuring_skill, metadata_consistency_skill, malignancy_risk_assessment_skill, differential_compare_skill, uncertainty_assessment_skill, contradiction_check_skill\n- morphology_analysis_skill: Boosted by skill retrieval score=12.00.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=1.00.; Matched active trigger profile `foundational_observation`.\n- color_pattern_analysis_skill: Boosted by skill retrieval score=11.50.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=1.00.; Matched active trigger profile `foundational_observation`.\n- distribution_analysis_skill: Boosted by skill retrieval score=12.00.; Included as part of the core structured observation layer.; Boosted by cognition helpful_rate=1.00.; Matched active trigger profile `foundational_observation`.",
+  "evidence_calibration_debug": {
+    "calibrator_type": "heuristic",
+    "calibrator_version": "v1",
+    "section_plan": {
+      "observation": {
+        "skill_names": [
+          "lesion_description_structuring_skill",
+          "morphology_analysis_skill"
+        ],
+        "merged_groups": [
+          {
+            "label": "structured_lesion_observation",
+            "skills": [
+              "lesion_description_structuring_skill",
+              "morphology_analysis_skill"
+            ],
+            "max_members": 2
+          }
+        ],
+        "raw_case_source_ids": []
+      },
+      "comparison": {
+        "skill_names": [
+          "metadata_consistency_skill",
+          "differential_compare_skill"
+        ],
+        "merged_groups": [],
+        "tactical_source_ids": [],
+        "abstract_source_ids": [
+          "abs_rule_97a155a28150"
+        ]
+      },
+      "risk": {
+        "skill_names": [
+          "malignancy_risk_assessment_skill"
+        ],
+        "abstract_source_ids": []
+      },
+      "conflict_uncertainty": {
+        "skill_names": [
+          "contradiction_check_skill",
+          "uncertainty_assessment_skill"
+        ]
+      },
+      "planner": {
+        "max_reason_skills": 3
+      },
+      "section_order": [
+        "observation",
+        "comparison",
+        "risk",
+        "conflict_uncertainty",
+        "planner"
+      ]
+    },
+    "item_scores": [
+      {
+        "item_id": "malignancy_risk_assessment_skill",
+        "item_type": "skill_output",
+        "section": "risk",
+        "heuristic_score": 9.48,
+        "learned_score": 0.0,
+        "final_score": 9.48,
+        "selected": true,
+        "reason": "kept",
+        "category": "risk",
+        "rank": 2,
+        "dedup_key": "risk:malignancy"
+      },
+      {
+        "item_id": "lesion_description_structuring_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 9.36,
+        "learned_score": 0.0,
+        "final_score": 9.36,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 1,
+        "dedup_key": "description:lesion_description_structuring_skill"
+      },
+      {
+        "item_id": "morphology_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 8.36,
+        "learned_score": 0.0,
+        "final_score": 8.36,
+        "selected": true,
+        "reason": "kept",
+        "category": "description",
+        "rank": 3,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 8.22,
+        "learned_score": 0.0,
+        "final_score": 8.22,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "contradiction_check_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 8.22,
+        "learned_score": 0.0,
+        "final_score": 8.22,
+        "selected": true,
+        "reason": "kept",
+        "category": "contradiction_gap",
+        "rank": 4,
+        "dedup_key": "uncertainty:contradiction_check_skill"
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "section": "observation",
+        "heuristic_score": 7.86,
+        "learned_score": 0.0,
+        "final_score": 7.86,
+        "selected": false,
+        "reason": "duplicate_of_higher_ranked_item",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "description:secondary_observation"
+      },
+      {
+        "item_id": "metadata_consistency_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 7.42,
+        "learned_score": 0.0,
+        "final_score": 7.42,
+        "selected": true,
+        "reason": "kept",
+        "category": "differential_support",
+        "rank": 5,
+        "dedup_key": "differential_support:metadata_consistency_skill"
+      },
+      {
+        "item_id": "uncertainty_assessment_skill",
+        "item_type": "skill_output",
+        "section": "conflict_uncertainty",
+        "heuristic_score": 7.26,
+        "learned_score": 0.0,
+        "final_score": 7.26,
+        "selected": true,
+        "reason": "kept",
+        "category": "contradiction_gap",
+        "rank": 8,
+        "dedup_key": "uncertainty:uncertainty_assessment_skill"
+      },
+      {
+        "item_id": "abs_rule_97a155a28150",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 7.2,
+        "learned_score": 0.0,
+        "final_score": 7.2,
+        "selected": true,
+        "reason": "kept",
+        "category": "experience_hint",
+        "rank": 6,
+        "dedup_key": "abstract_experience:abs_rule_97a155a28150"
+      },
+      {
+        "item_id": "differential_compare_skill",
+        "item_type": "skill_output",
+        "section": "comparison",
+        "heuristic_score": 7.04,
+        "learned_score": 0.0,
+        "final_score": 7.04,
+        "selected": true,
+        "reason": "kept",
+        "category": "differential_support",
+        "rank": 7,
+        "dedup_key": "differential_support:differential_compare_skill"
+      },
+      {
+        "item_id": "abs_confusion_d8fbfe16656f",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 6.4,
+        "learned_score": 0.0,
+        "final_score": 6.4,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "abstract_experience:abs_confusion_d8fbfe16656f"
+      },
+      {
+        "item_id": "abs_confusion_1504ee66ad3c",
+        "item_type": "retrieval_record",
+        "section": "abstract_experience",
+        "heuristic_score": 5.8,
+        "learned_score": 0.0,
+        "final_score": 5.8,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "abstract_experience:abs_confusion_1504ee66ad3c"
+      },
+      {
+        "item_id": "tac_-1013831220015814987_47d9748366d2",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 5.2,
+        "learned_score": 0.0,
+        "final_score": 5.2,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_-1013831220015814987_47d9748366d2"
+      },
+      {
+        "item_id": "tac_-1010778459521153386_47d9748366d2",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 5.2,
+        "learned_score": 0.0,
+        "final_score": 5.2,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_-1010778459521153386_47d9748366d2"
+      },
+      {
+        "item_id": "tac_-1013831220015814987_e5b6956c8c26",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 5.0,
+        "learned_score": 0.0,
+        "final_score": 5.0,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_-1013831220015814987_e5b6956c8c26"
+      },
+      {
+        "item_id": "tac_-1013831220015814987_e21fa70f1cb7",
+        "item_type": "retrieval_record",
+        "section": "tactical_experience",
+        "heuristic_score": 5.0,
+        "learned_score": 0.0,
+        "final_score": 5.0,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "experience_hint",
+        "rank": 0,
+        "dedup_key": "tactical_experience:tac_-1013831220015814987_e21fa70f1cb7"
+      },
+      {
+        "item_id": "-1013831220015814987",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 3.1,
+        "learned_score": 0.0,
+        "final_score": 3.1,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:-1013831220015814987"
+      },
+      {
+        "item_id": "-1010778459521153386",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 2.9,
+        "learned_score": 0.0,
+        "final_score": 2.9,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:-1010778459521153386"
+      },
+      {
+        "item_id": "-1003358831658393077",
+        "item_type": "retrieval_record",
+        "section": "raw_case_memory",
+        "heuristic_score": 2.9,
+        "learned_score": 0.0,
+        "final_score": 2.9,
+        "selected": false,
+        "reason": "global_budget_exceeded",
+        "category": "description",
+        "rank": 0,
+        "dedup_key": "raw_case_memory:-1003358831658393077"
+      }
+    ],
+    "omitted_items": [
+      {
+        "item_id": "color_pattern_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 8.22
+      },
+      {
+        "item_id": "distribution_analysis_skill",
+        "item_type": "skill_output",
+        "reason": "duplicate_of_higher_ranked_item",
+        "section": "observation",
+        "category": "description",
+        "score": 7.86
+      },
+      {
+        "item_id": "abs_confusion_d8fbfe16656f",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "abstract_experience",
+        "category": "experience_hint",
+        "score": 6.4
+      },
+      {
+        "item_id": "abs_confusion_1504ee66ad3c",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "abstract_experience",
+        "category": "experience_hint",
+        "score": 5.8
+      },
+      {
+        "item_id": "tac_-1010778459521153386_47d9748366d2",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 5.2
+      },
+      {
+        "item_id": "tac_-1013831220015814987_47d9748366d2",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 5.2
+      },
+      {
+        "item_id": "tac_-1013831220015814987_e21fa70f1cb7",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 5.0
+      },
+      {
+        "item_id": "tac_-1013831220015814987_e5b6956c8c26",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "tactical_experience",
+        "category": "experience_hint",
+        "score": 5.0
+      },
+      {
+        "item_id": "-1013831220015814987",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 3.1
+      },
+      {
+        "item_id": "-1003358831658393077",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 2.9
+      },
+      {
+        "item_id": "-1010778459521153386",
+        "item_type": "retrieval_record",
+        "reason": "global_budget_exceeded",
+        "section": "raw_case_memory",
+        "category": "description",
+        "score": 2.9
+      }
+    ],
+    "debug": {
+      "policy": {
+        "enable_evidence_calibrator": true,
+        "calibrator_mode": "heuristic",
+        "calibrator_checkpoint_path": "",
+        "learned_calibration_weight": 1.2,
+        "max_total_items": 8,
+        "max_observation_skills": 4,
+        "max_comparison_skills": 3,
+        "max_risk_skills": 2,
+        "max_uncertainty_skills": 3,
+        "max_exclusion_items": 2,
+        "max_experience_hints": 2,
+        "max_raw_cases": 1,
+        "max_tactical": 2,
+        "max_abstract": 2,
+        "max_planner_reasons": 3,
+        "omit_low_value_evidence": true,
+        "min_effective_score": 2.4,
+        "dedup_similar_evidence": true,
+        "cluster_aware_ordering": true,
+        "cluster_opposing_bonus": 1.8,
+        "cluster_exclusion_bonus": 1.4,
+        "risk_overweight_penalty": 1.2,
+        "uncertainty_overweight_penalty": 1.0,
+        "description_priority_bonus": 0.6,
+        "exclusion_priority_bonus": 1.2,
+        "negative_evidence_priority_bonus": 1.0,
+        "allow_family_override": true,
+        "allow_keratinocyte_subtype_override": false,
+        "debug_output": true,
+        "conservative_fusion_mode": "soft"
+      },
+      "learned_scorer_loaded": false,
+      "contradiction_count": 5,
+      "uncertainty_level": "medium",
+      "risk_flag_count": 1,
+      "confusion_clusters": [],
+      "kept_items": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "rank": 1,
+          "score": 9.36
+        },
+        {
+          "item_id": "malignancy_risk_assessment_skill",
+          "item_type": "skill_output",
+          "section": "risk",
+          "category": "risk",
+          "rank": 2,
+          "score": 9.48
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "rank": 3,
+          "score": 8.36
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "rank": 6,
+          "score": 8.22
+        },
+        {
+          "item_id": "metadata_consistency_skill",
+          "item_type": "skill_output",
+          "section": "comparison",
+          "category": "differential_support",
+          "rank": 7,
+          "score": 7.42
+        },
+        {
+          "item_id": "abs_rule_97a155a28150",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "rank": 8,
+          "score": 7.2
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "section": "comparison",
+          "category": "differential_support",
+          "rank": 9,
+          "score": 7.04
+        },
+        {
+          "item_id": "uncertainty_assessment_skill",
+          "item_type": "skill_output",
+          "section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "rank": 10,
+          "score": 7.26
+        }
+      ],
+      "pruned_items": [
+        {
+          "item_id": "color_pattern_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 8.22,
+          "heuristic_score": 8.22,
+          "learned_score": 0.0,
+          "payload": {
+            "primary_color": "reddish",
+            "color_variation": "marked",
+            "pigmentation_pattern": "patchy",
+            "asymmetry_color": "present",
+            "referenced_experiences": [
+              "-1003358831658393077",
+              "-1013831220015814987",
+              "tac_-1000600354148496558_47d9748366d2",
+              "abs_confusion_d8fbfe16656f",
+              "abs_composite_391a6e8967c0",
+              "abs_rule_97a155a28150"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 11.5,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 8.620000000000001,
+          "rank": 4,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "distribution_analysis_skill",
+          "item_type": "skill_output",
+          "section": "observation",
+          "category": "description",
+          "score": 7.86,
+          "heuristic_score": 7.86,
+          "learned_score": 0.0,
+          "payload": {
+            "body_location": "arm",
+            "symmetry": "asymmetric",
+            "localized_vs_generalized": "generalized",
+            "clustering_pattern": "clustered",
+            "referenced_experiences": [
+              "-1003358831658393077",
+              "-1013831220015814987",
+              "tac_-1000600354148496558_47d9748366d2",
+              "abs_confusion_d8fbfe16656f",
+              "abs_composite_391a6e8967c0",
+              "abs_rule_97a155a28150"
+            ],
+            "evidence_strength": "medium",
+            "recommendation_type": "descriptive_evidence"
+          },
+          "retrieval_score": 12.0,
+          "dedup_key": "description:secondary_observation",
+          "ordering_score": 8.26,
+          "rank": 5,
+          "reason": "duplicate_of_higher_ranked_item"
+        },
+        {
+          "item_id": "abs_confusion_d8fbfe16656f",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "score": 6.4,
+          "heuristic_score": 6.4,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "abs_confusion_d8fbfe16656f",
+            "source_layer": "abstract_experience",
+            "experience_type": "confusion_memory",
+            "case_id": "-1013831220015814987",
+            "confusion_pair": "DERMATITIS_ECZEMA->Basal Cell Carcinoma",
+            "perception_summary": "Close-up of a raised, reddish-brown patch on the back, surrounded by small red dots and hair follicles.; DERMATITIS_ECZEMA; ACNE_ROSACEA_FOLLICULAR",
+            "learning_points": [
+              "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+              "compare_then_audit_uncertainty"
+            ],
+            "retrieval_score": 12.0,
+            "base_retrieval_score": 12.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "abstract_experience:abs_confusion_d8fbfe16656f",
+          "ordering_score": 6.4,
+          "rank": 11,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "abs_confusion_1504ee66ad3c",
+          "item_type": "retrieval_record",
+          "section": "abstract_experience",
+          "category": "experience_hint",
+          "score": 5.8,
+          "heuristic_score": 5.8,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "abs_confusion_1504ee66ad3c",
+            "source_layer": "abstract_experience",
+            "experience_type": "confusion_memory",
+            "case_id": "-1010778459521153386",
+            "confusion_pair": "INFECTION_VIRAL_FUNGAL->Urticaria",
+            "perception_summary": "The image shows multiple raised, red patches on the back, with some areas appearing more confluent than others. The skin around the lesions appears slightly erythematous.; DERMATITIS_ECZEMA; URTICARIA_BITE_FOLLICULITIS",
+            "learning_points": [
+              "When a confusion pair remains active, preserve differential openness and avoid forcing an early label.",
+              "compare_then_audit_uncertainty"
+            ],
+            "retrieval_score": 9.0,
+            "base_retrieval_score": 9.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "abstract_experience:abs_confusion_1504ee66ad3c",
+          "ordering_score": 5.8,
+          "rank": 12,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_-1010778459521153386_47d9748366d2",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 5.2,
+          "heuristic_score": 5.2,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_-1010778459521153386_47d9748366d2",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "-1010778459521153386",
+            "confusion_pair": "INFECTION_VIRAL_FUNGAL->Urticaria",
+            "perception_summary": "ddx=DERMATITIS_ECZEMA, URTICARIA_BITE_FOLLICULITIS, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium",
+            "learning_points": [
+              "made risk framing explicit",
+              "highlighted alarm signals without forcing diagnosis",
+              "did not fully resolve the active confusion pattern"
+            ],
+            "retrieval_score": 11.0,
+            "base_retrieval_score": 11.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_-1010778459521153386_47d9748366d2",
+          "ordering_score": 5.2,
+          "rank": 13,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_-1013831220015814987_47d9748366d2",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 5.2,
+          "heuristic_score": 5.2,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_-1013831220015814987_47d9748366d2",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "-1013831220015814987",
+            "confusion_pair": "DERMATITIS_ECZEMA->Basal Cell Carcinoma",
+            "perception_summary": "ddx=DERMATITIS_ECZEMA, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium",
+            "learning_points": [
+              "made risk framing explicit",
+              "highlighted alarm signals without forcing diagnosis",
+              "did not fully resolve the active confusion pattern"
+            ],
+            "retrieval_score": 11.0,
+            "base_retrieval_score": 11.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_-1013831220015814987_47d9748366d2",
+          "ordering_score": 5.2,
+          "rank": 14,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_-1013831220015814987_e21fa70f1cb7",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 5.0,
+          "heuristic_score": 5.0,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_-1013831220015814987_e21fa70f1cb7",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "-1013831220015814987",
+            "confusion_pair": "DERMATITIS_ECZEMA->Basal Cell Carcinoma",
+            "perception_summary": "ddx=DERMATITIS_ECZEMA, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium",
+            "learning_points": [
+              "made evidence limits explicit",
+              "prevented overconfident downstream use",
+              "did not fully resolve the active confusion pattern"
+            ],
+            "retrieval_score": 10.0,
+            "base_retrieval_score": 10.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_-1013831220015814987_e21fa70f1cb7",
+          "ordering_score": 5.0,
+          "rank": 15,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "tac_-1013831220015814987_e5b6956c8c26",
+          "item_type": "retrieval_record",
+          "section": "tactical_experience",
+          "category": "experience_hint",
+          "score": 5.0,
+          "heuristic_score": 5.0,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "tac_-1013831220015814987_e5b6956c8c26",
+            "source_layer": "tactical_experience",
+            "experience_type": "tactical_experience",
+            "case_id": "-1013831220015814987",
+            "confusion_pair": "DERMATITIS_ECZEMA->Basal Cell Carcinoma",
+            "perception_summary": "ddx=DERMATITIS_ECZEMA, ACNE_ROSACEA_FOLLICULAR; risk=malignancy_risk:medium; uncertainty=medium",
+            "learning_points": [
+              "stabilized lesion structure",
+              "made morphology explicit for downstream reasoning",
+              "did not fully resolve the active confusion pattern"
+            ],
+            "retrieval_score": 10.0,
+            "base_retrieval_score": 10.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "tactical_experience:tac_-1013831220015814987_e5b6956c8c26",
+          "ordering_score": 5.0,
+          "rank": 16,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "-1013831220015814987",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 3.0999999999999996,
+          "heuristic_score": 3.0999999999999996,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "-1013831220015814987",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "-1013831220015814987",
+            "confusion_pair": "None",
+            "perception_summary": "Close-up of a raised, reddish-brown patch on the back, surrounded by small red dots and hair follicles.",
+            "learning_points": [
+              "Final decision: DERMATITIS_ECZEMA",
+              "Correctness: False"
+            ],
+            "retrieval_score": 9.0,
+            "base_retrieval_score": 9.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:-1013831220015814987",
+          "ordering_score": 3.4999999999999996,
+          "rank": 17,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "-1003358831658393077",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 2.9,
+          "heuristic_score": 2.9,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "-1003358831658393077",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "-1003358831658393077",
+            "confusion_pair": "None",
+            "perception_summary": "The image shows a patchy area of erythema on the forearm with some crusting and scaling. The lesions appear to be increasing in size and are accompanied by itching.",
+            "learning_points": [
+              "Final decision: Contact Dermatitis",
+              "Correctness: False"
+            ],
+            "retrieval_score": 8.0,
+            "base_retrieval_score": 8.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:-1003358831658393077",
+          "ordering_score": 3.3,
+          "rank": 18,
+          "reason": "global_budget_exceeded"
+        },
+        {
+          "item_id": "-1010778459521153386",
+          "item_type": "retrieval_record",
+          "section": "raw_case_memory",
+          "category": "description",
+          "score": 2.9,
+          "heuristic_score": 2.9,
+          "learned_score": 0.0,
+          "payload": {
+            "source_id": "-1010778459521153386",
+            "source_layer": "raw_case_memory",
+            "experience_type": "raw_case_memory",
+            "case_id": "-1010778459521153386",
+            "confusion_pair": "None",
+            "perception_summary": "The image shows multiple raised, red patches on the back, with some areas appearing more confluent than others. The skin around the lesions appears slightly erythematous.",
+            "learning_points": [
+              "Final decision: INFECTION_VIRAL_FUNGAL",
+              "Correctness: False"
+            ],
+            "retrieval_score": 8.0,
+            "base_retrieval_score": 8.0,
+            "rerank_score": 0.0,
+            "rerank_probability": 0.0
+          },
+          "dedup_key": "raw_case_memory:-1010778459521153386",
+          "ordering_score": 3.3,
+          "rank": 19,
+          "reason": "global_budget_exceeded"
+        }
+      ],
+      "reordered_items": [
+        {
+          "item_id": "lesion_description_structuring_skill",
+          "item_type": "skill_output",
+          "from_section": "observation",
+          "category": "description",
+          "new_rank": 1
+        },
+        {
+          "item_id": "malignancy_risk_assessment_skill",
+          "item_type": "skill_output",
+          "from_section": "risk",
+          "category": "risk",
+          "new_rank": 2
+        },
+        {
+          "item_id": "morphology_analysis_skill",
+          "item_type": "skill_output",
+          "from_section": "observation",
+          "category": "description",
+          "new_rank": 3
+        },
+        {
+          "item_id": "contradiction_check_skill",
+          "item_type": "skill_output",
+          "from_section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "new_rank": 4
+        },
+        {
+          "item_id": "metadata_consistency_skill",
+          "item_type": "skill_output",
+          "from_section": "comparison",
+          "category": "differential_support",
+          "new_rank": 5
+        },
+        {
+          "item_id": "abs_rule_97a155a28150",
+          "item_type": "retrieval_record",
+          "from_section": "abstract_experience",
+          "category": "experience_hint",
+          "new_rank": 6
+        },
+        {
+          "item_id": "differential_compare_skill",
+          "item_type": "skill_output",
+          "from_section": "comparison",
+          "category": "differential_support",
+          "new_rank": 7
+        },
+        {
+          "item_id": "uncertainty_assessment_skill",
+          "item_type": "skill_output",
+          "from_section": "conflict_uncertainty",
+          "category": "contradiction_gap",
+          "new_rank": 8
+        }
+      ],
+      "quota_state": {
+        "max_total_items": 8,
+        "per_category_quota": {
+          "description": 3,
+          "differential_support": 2,
+          "exclusion_opposing": 2,
+          "risk": 1,
+          "contradiction_gap": 2,
+          "experience_hint": 2
+        },
+        "category_counts": {
+          "description": 2,
+          "differential_support": 2,
+          "exclusion_opposing": 0,
+          "risk": 1,
+          "contradiction_gap": 2,
+          "experience_hint": 1
+        }
+      }
+    }
+  }
+}

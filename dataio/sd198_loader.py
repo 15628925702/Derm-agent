@@ -56,7 +56,7 @@ class Sd198DatasetSummary:
 
 
 def discover_sd198_assets(data_root: str | Path = DEFAULT_SD198_ROOT) -> Sd198DatasetSummary:
-    return _discover_sd198_assets_cached(str(Path(data_root)))
+    return _discover_sd198_assets_cached(str(_resolve_sd198_root(data_root)))
 
 
 @lru_cache(maxsize=16)
@@ -93,7 +93,7 @@ def _discover_sd198_assets_cached(data_root: str) -> Sd198DatasetSummary:
 
 
 def load_sd198_rows(data_root: str | Path = DEFAULT_SD198_ROOT) -> list[dict[str, Any]]:
-    return list(_load_sd198_rows_cached(str(Path(data_root))))
+    return list(_load_sd198_rows_cached(str(_resolve_sd198_root(data_root))))
 
 
 @lru_cache(maxsize=16)
@@ -177,7 +177,7 @@ def load_sd198_case_inputs(
         seed=seed,
         shuffle=shuffle,
     )
-    source_path = Path(data_root) / "images.txt"
+    source_path = _resolve_sd198_root(data_root) / "images.txt"
     return [
         CaseInput(
             case_id=record.case_id,
@@ -205,7 +205,7 @@ def load_sd198_case_input_by_index(
     data_root: str | Path = DEFAULT_SD198_ROOT,
 ) -> CaseInput:
     record = load_sd198_record_by_index(case_index, data_root=data_root)
-    source_path = Path(data_root) / "images.txt"
+    source_path = _resolve_sd198_root(data_root) / "images.txt"
     return CaseInput(
         case_id=record.case_id,
         image_path=record.image_path,
@@ -225,7 +225,7 @@ def load_sd198_case_input_by_index(
 
 
 def discover_sd198_case_source(data_root: str | Path = DEFAULT_SD198_ROOT) -> CaseSourceConfig:
-    root = Path(data_root)
+    root = _resolve_sd198_root(data_root)
     return CaseSourceConfig(
         data_root=root,
         metadata_path=root / "images.txt",
@@ -242,7 +242,7 @@ def standardize_sd198_row(
     *,
     data_root: str | Path = DEFAULT_SD198_ROOT,
 ) -> Sd198CaseRecord:
-    root = Path(data_root)
+    root = _resolve_sd198_root(data_root)
     image_id = int(row.get("image_id", 0))
     relative_image_path = str(row.get("relative_image_path", "")).strip()
     if not relative_image_path:
@@ -277,6 +277,16 @@ def _load_sd198_class_map(data_root: str) -> dict[int, str]:
             class_id_text, raw_label = line.split(" ", 1)
             class_map[int(class_id_text)] = raw_label.strip()
     return class_map
+
+
+def _resolve_sd198_root(data_root: str | Path = DEFAULT_SD198_ROOT) -> Path:
+    root = Path(data_root)
+    if (root / "classes.txt").exists() and (root / "images.txt").exists():
+        return root
+    nested = root / "sd-198"
+    if (nested / "classes.txt").exists() and (nested / "images.txt").exists():
+        return nested
+    return root
 
 
 @lru_cache(maxsize=16)
