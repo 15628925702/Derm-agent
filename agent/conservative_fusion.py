@@ -184,6 +184,21 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("medgemma_ham10000_face_akiec_consensus_override")
+        elif medgemma_isic_override_label := _medgemma_isic_consensus_override_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            initial_ddx=initial_ddx,
+            baseline_preview=baseline_preview,
+            agent_confidence=agent_confidence,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = medgemma_isic_override_label
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("medgemma_isic_bcc_consensus_override")
         elif agent_label == baseline_label:
             use_agent_output = True
             reasons.append("agent_matches_baseline")
@@ -588,6 +603,20 @@ def _route_specific_fallback_reason(
             dataset_name=dataset_name,
         ):
             return "medgemma_ham10000_baseline_anchor_guard"
+
+    if workflow_cell_id == "medgemma__isic2019__archive_guard_v1":
+        if baseline_label != agent_label and not _medgemma_isic_consensus_override_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            initial_ddx=initial_ddx,
+            baseline_preview=baseline_preview,
+            agent_confidence=agent_confidence,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            return "medgemma_isic2019_baseline_anchor_guard"
 
     if model_profile == "conservative_archive_workflow" and dataset_profile == "image_archive_full_taxonomy_lesion_workflow":
         if malformed_agent_output:
@@ -1127,6 +1156,109 @@ def _medgemma_ham10000_consensus_override_label(
         return ""
 
     return "Actinic Keratosis"
+
+
+def _medgemma_isic_consensus_override_label(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    initial_ddx: list[str],
+    baseline_preview: dict[str, Any],
+    agent_confidence: str,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> str:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "medgemma__isic2019__archive_guard_v1":
+        return ""
+    if str(uncertainty_level or "").strip().lower() != "low":
+        return ""
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if agent_canonical != "BCC":
+        return ""
+    if baseline_canonical != "MEL":
+        return ""
+
+    initial_canonicals = [
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in initial_ddx
+    ]
+    initial_first = initial_canonicals[0] if initial_canonicals else ""
+    summary = str(baseline_preview.get("image_summary", "")).strip().lower()
+    if not summary:
+        return ""
+    strict_bcc_surface_signal = any(
+        marker in summary
+        for marker in (
+            "necrosis",
+            "ulcer",
+            "ulceration",
+            "crust",
+            "crusted",
+            "pearly",
+            "rolled border",
+            "telangiect",
+        )
+    )
+    if initial_first == "BCC" and strict_bcc_surface_signal:
+        return "Basal Cell Carcinoma"
+
+    if initial_first == "MEL":
+        return ""
+    moderate_bcc_surface_signal = any(
+        marker in summary
+        for marker in (
+            "blue-gray",
+            "blue grey",
+            "red and white",
+            "white components",
+            "red structures",
+            "hypopigmentation",
+            "inflammatory",
+            "inflammation",
+            "defined structure",
+            "hemorrhage",
+        )
+    )
+    if not moderate_bcc_surface_signal:
+        return ""
+    if not _medgemma_isic_confident_bcc_agent(agent_confidence):
+        confidence_backstop_signal = any(
+            marker in summary
+            for marker in (
+                "red and white",
+                "white components",
+                "red structures",
+                "hypopigmentation",
+                "defined structure",
+            )
+        )
+        if not confidence_backstop_signal:
+            return ""
+
+    return "Basal Cell Carcinoma"
+
+
+def _medgemma_isic_confident_bcc_agent(agent_confidence: str) -> bool:
+    normalized = str(agent_confidence or "").strip().lower()
+    if normalized in {"medium", "moderate", "high"}:
+        return True
+    try:
+        return float(normalized) >= 0.7
+    except ValueError:
+        return False
 
 
 def _summary_mentions_face(summary: str) -> bool:

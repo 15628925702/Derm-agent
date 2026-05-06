@@ -146,6 +146,23 @@ MODEL_DATASET_WORKFLOW_PROFILES = {
         },
     },
     "medgemma-4b-it": {
+        "isic2019": {
+            "workflow_cell_id": "medgemma__isic2019__archive_guard_v1",
+            "label_space_id": "isic2019_full",
+            "workflow_profile": "medgemma_isic2019_archive_guard_workflow",
+            "workflow_capabilities": ["baseline_anchored_final", "melanocytic_guard_reasoning"],
+            "inherit_dataset_workflow": True,
+            "force_conservative_fusion": True,
+            "fallback_on_malformed_final": True,
+            "disable_legacy_final_path": True,
+            "force_disable_skills": [
+                "metadata_consistency_skill",
+                "uncertainty_assessment_skill",
+                "information_gap_detection_skill",
+                "contradiction_check_skill",
+                "escalation_recommendation_skill",
+            ],
+        },
         "ham10000": {
             "workflow_cell_id": "medgemma__ham10000__akiec_face_guard_v1",
             "label_space_id": "ham10000_full",
