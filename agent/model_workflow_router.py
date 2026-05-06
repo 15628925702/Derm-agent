@@ -134,6 +134,16 @@ MODEL_DATASET_WORKFLOW_PROFILES = {
             "fallback_on_malformed_final": True,
             "disable_legacy_final_path": True,
         },
+        "sd198": {
+            "workflow_cell_id": "dermatollama__sd198__grouped_guard_v1",
+            "label_space_id": "sd198_grouped",
+            "environment": {"DERMAGENT_SD198_LABEL_SPACE_ID": "sd198_grouped"},
+            "inherit_dataset_workflow": True,
+            "workflow_capabilities": ["baseline_anchored_final"],
+            "force_conservative_fusion": True,
+            "fallback_on_malformed_final": True,
+            "disable_legacy_final_path": True,
+        },
     },
 }
 

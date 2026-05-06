@@ -148,6 +148,25 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("dermatollama_isic_bcc_consensus_override")
+        elif dermatollama_sd198_override_label := _dermatollama_sd198_consensus_override_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            baseline_differentials=baseline_differentials,
+            agent_differentials=agent_differentials,
+            initial_ddx=initial_ddx,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            contradiction_count=contradiction_count,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = dermatollama_sd198_override_label
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("dermatollama_sd198_sun_damage_consensus_override")
         elif agent_label == baseline_label:
             use_agent_output = True
             reasons.append("agent_matches_baseline")
@@ -531,6 +550,10 @@ def _route_specific_fallback_reason(
         ):
             return "dermatollama_scin_baseline_anchor_guard"
 
+    if workflow_cell_id == "dermatollama__sd198__grouped_guard_v1":
+        if baseline_label != agent_label:
+            return "dermatollama_sd198_baseline_anchor_guard"
+
     if model_profile == "conservative_archive_workflow" and dataset_profile == "image_archive_full_taxonomy_lesion_workflow":
         if malformed_agent_output:
             return "llama_archive_malformed_final_fallback"
@@ -842,6 +865,81 @@ def _dermatollama_isic_consensus_override_label(
         and contradiction_count <= 4
     ):
         return "Basal Cell Carcinoma"
+
+    return ""
+
+
+def _dermatollama_sd198_consensus_override_label(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    baseline_differentials: list[str],
+    agent_differentials: list[str],
+    initial_ddx: list[str],
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    contradiction_count: int,
+    label_space_id: str,
+    dataset_name: str,
+) -> str:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "dermatollama__sd198__grouped_guard_v1":
+        return ""
+    if not selected_evidence_present:
+        return ""
+    if str(uncertainty_level or "").strip().lower() != "low":
+        return ""
+    if contradiction_count != 0:
+        return ""
+
+    baseline_raw = str(baseline_label or "").strip().lower()
+    agent_raw = str(agent_label or "").strip().lower()
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+
+    if (
+        baseline_raw == "actinic keratosis"
+        and agent_raw == "actinic keratosis"
+        and baseline_canonical == "SUN_DAMAGE_ACTINIC"
+        and support_margin >= 42.0
+        and subtype_support_margin >= 2.0
+        and _contains_canonical_label(
+            initial_ddx,
+            canonical_label="DERMATITIS_ECZEMA",
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+    ):
+        return "Eczema"
+
+    if support_margin < 44.0 or subtype_support_margin < 18.0:
+        return ""
+    if baseline_raw != "seborrheic keratosis" or agent_raw != "seborrheic keratosis":
+        return ""
+    if baseline_canonical != "PIGMENTARY_NEVUS_KERATOSIS":
+        return ""
+
+    candidate_labels = list(baseline_differentials) + list(agent_differentials) + list(initial_ddx)
+    has_sun_damage_candidate = _contains_canonical_label(
+        candidate_labels,
+        canonical_label="SUN_DAMAGE_ACTINIC",
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    has_pigmentary_candidate = _contains_canonical_label(
+        candidate_labels,
+        canonical_label="PIGMENTARY_NEVUS_KERATOSIS",
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if has_sun_damage_candidate and has_pigmentary_candidate:
+        return "Actinic Keratosis"
 
     return ""
 
