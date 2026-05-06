@@ -84,6 +84,15 @@ MODEL_DATASET_WORKFLOW_PROFILES = {
         },
     },
     "DermatoLlama-full": {
+        "ham10000": {
+            "workflow_cell_id": "dermatollama__ham10000__baseline_guard_v1",
+            "label_space_id": "ham10000_full",
+            "inherit_dataset_workflow": True,
+            "workflow_capabilities": ["baseline_anchored_final"],
+            "force_conservative_fusion": True,
+            "fallback_on_malformed_final": True,
+            "disable_legacy_final_path": True,
+        },
         "pad20": {
             "workflow_cell_id": "dermatollama__pad20__baseline_guard_v1",
             "label_space_id": "derm_six",
