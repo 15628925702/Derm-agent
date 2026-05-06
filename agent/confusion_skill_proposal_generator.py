@@ -9,8 +9,9 @@ from typing import Any
 from agent.confusion_clusters import get_confusion_cluster_definitions
 from cognition.cognition_state import CognitionState
 from memory.experience_schema import stable_hash
+from project_paths import repo_root
 
-DEFAULT_PROPOSALS_DIR = Path("/root/DermAgent/proposals/confusion_triggered_skills")
+DEFAULT_PROPOSALS_DIR = repo_root() / "proposals" / "confusion_triggered_skills"
 DEFAULT_THRESHOLD = 3
 
 

@@ -12,9 +12,10 @@ from typing import Any
 from agent.state import CaseInput
 from agent.workflow_profiles import ensure_workflow_context
 from dataio.case_schema import CaseSourceConfig
+from project_paths import data_root
 
 
-DEFAULT_SCIN_ROOT = Path("/root/DermAgent/data/scin/official_mirror")
+DEFAULT_SCIN_ROOT = data_root() / "scin" / "official_mirror"
 SCIN_METADATA_LEAKY_KEYS = {
     "dermatologist_skin_condition_on_label_name",
     "dermatologist_skin_condition_confidence",

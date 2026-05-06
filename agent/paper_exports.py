@@ -6,8 +6,10 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+from project_paths import outputs_root
 
-DEFAULT_OUTPUTS_ROOT = Path("/root/DermAgent/outputs")
+
+DEFAULT_OUTPUTS_ROOT = outputs_root()
 DEFAULT_PAPER_EXPORT_ROOT = DEFAULT_OUTPUTS_ROOT / "paper_exports"
 TABLE_FILE_ORDER = (
     "main_comparison_table",

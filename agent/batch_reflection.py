@@ -12,11 +12,12 @@ from agent.hard_case_miner import build_hard_case_candidate, load_execution_reco
 from agent.skill_fitness_snapshot import DEFAULT_SNAPSHOT_DIR, save_skill_fitness_snapshot
 from cognition.cognition_state import CognitionState
 from memory.experience_schema import dedupe_strings, stable_hash
+from project_paths import outputs_root
 
 
-DEFAULT_OUTPUT_DIR = Path("/root/DermAgent/outputs/batch_reflection")
-DEFAULT_HARD_CASES_PATH = Path("/root/DermAgent/outputs/hard_case_mining/hard_cases.jsonl")
-DEFAULT_REFINEMENT_CANDIDATES_PATH = Path("/root/DermAgent/outputs/skill_refinement_candidates/skill_refinement_candidates.jsonl")
+DEFAULT_OUTPUT_DIR = outputs_root() / "batch_reflection"
+DEFAULT_HARD_CASES_PATH = outputs_root() / "hard_case_mining" / "hard_cases.jsonl"
+DEFAULT_REFINEMENT_CANDIDATES_PATH = outputs_root() / "skill_refinement_candidates" / "skill_refinement_candidates.jsonl"
 DEFAULT_MIN_SUPPORT = 2
 
 

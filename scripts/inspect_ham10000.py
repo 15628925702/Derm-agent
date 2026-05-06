@@ -7,10 +7,11 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
+from project_paths import data_root, outputs_root
 
 IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".bmp", ".webp", ".tif", ".tiff")
-DEFAULT_DATA_ROOT = Path("/root/DermAgent/data/ham10000")
-DEFAULT_OUTPUT_DIR = Path("/root/DermAgent/outputs/external_eval/ham10000/inspection")
+DEFAULT_DATA_ROOT = data_root() / "ham10000"
+DEFAULT_OUTPUT_DIR = outputs_root() / "external_eval" / "ham10000" / "inspection"
 
 
 def parse_args() -> argparse.Namespace:

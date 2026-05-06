@@ -6,8 +6,9 @@ from pathlib import Path
 from typing import Any
 
 from agent.contamination_guard import build_split_state_version, infer_split_from_path, normalize_split_name
+from project_paths import state_root
 
-DEFAULT_COGNITION_PATH = Path("/root/DermAgent/state/cognition_state.json")
+DEFAULT_COGNITION_PATH = state_root() / "cognition_state.json"
 
 
 @dataclass

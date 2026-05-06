@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-source /root/DermAgent/final-script/configs/dermatollama_final.env
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/../configs/dermatollama_final.env"
 cd "$DERMAGENT_REPO_ROOT"
 
 export GPU_MEMORY_UTILIZATION="${GPU_MEMORY_UTILIZATION:-$DERMATOLLAMA_FINAL_GPU_MEMORY_UTILIZATION}"
@@ -10,4 +11,4 @@ export MAX_NUM_SEQS="${MAX_NUM_SEQS:-$DERMATOLLAMA_FINAL_MAX_NUM_SEQS}"
 export LORA_MODULE_NAME="${LORA_MODULE_NAME:-$DERMATOLLAMA_SERVER_MODEL}"
 export OPENAI_API_KEY="${OPENAI_API_KEY:-$DERMATOLLAMA_SERVER_API_KEY}"
 
-exec bash /root/DermAgent/scripts/start_dermatollama_server.sh "$DERMAGENT_REPO_ROOT"
+exec bash "${DERMAGENT_REPO_ROOT}/scripts/start_dermatollama_server.sh" "$DERMAGENT_REPO_ROOT"

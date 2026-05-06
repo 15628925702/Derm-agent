@@ -8,9 +8,10 @@ from pathlib import Path
 from typing import Any
 
 from agent.skill_helpfulness_analyzer import normalize_skill_assessments_for_record
+from project_paths import outputs_root
 
 
-DEFAULT_OUTPUT_DIR = Path("/root/DermAgent/outputs/controller_training_data")
+DEFAULT_OUTPUT_DIR = outputs_root() / "controller_training_data"
 
 
 @dataclass

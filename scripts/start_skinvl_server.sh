@@ -6,10 +6,15 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="${1:-$(cd "${SCRIPT_DIR}/.." && pwd)}"
 
 mkdir -p "${PROJECT_ROOT}/logs" "${PROJECT_ROOT}/outputs" "${PROJECT_ROOT}/state"
+mkdir -p "${PROJECT_ROOT}/.tmp"
+export TMPDIR="${TMPDIR:-${PROJECT_ROOT}/.tmp}"
 
-CONDA_ENV_NAME="${CONDA_ENV_NAME:-derm-qwen}"
-MODEL_ROOTS=("/models" "/root/models")
+CONDA_ENV_NAME="${CONDA_ENV_NAME:-dermagent-6x6}"
+WORKSPACE_ROOT="$(cd "${PROJECT_ROOT}/.." && pwd)"
+MODEL_ROOTS=("${DERMAGENT_MODELS_ROOT:-${WORKSPACE_ROOT}/models}" "/data/gh/models" "/models" "/root/models")
 PREFERRED_MODEL_PATHS=(
+  "${DERMAGENT_MODELS_ROOT:-${WORKSPACE_ROOT}/models}/SkinVL-MM"
+  "/data/gh/models/SkinVL-MM"
   "/models/SkinVL-MM"
   "/root/models/SkinVL-MM"
   "/models/skinvl-mm"
@@ -32,8 +37,9 @@ WAIT_SECONDS="${WAIT_SECONDS:-300}"
 CHECK_INTERVAL_SECONDS="${CHECK_INTERVAL_SECONDS:-5}"
 
 resolve_python_bin() {
-  local env_bin
-  env_bin="/root/miniconda3/envs/${CONDA_ENV_NAME}/bin/python"
+  local conda_base env_bin
+  conda_base="$(conda info --base 2>/dev/null || true)"
+  env_bin="${conda_base}/envs/${CONDA_ENV_NAME}/bin/python"
   if [[ -x "${env_bin}" ]]; then
     echo "${env_bin}"
     return 0
@@ -115,6 +121,7 @@ fi
 
 SERVED_MODEL_NAME="${SERVED_MODEL_NAME:-SkinVL-MM}"
 SERVICE_URL="http://${HOST}:${PORT}/v1/models"
+export LIBRARY_PATH="$(dirname "$(dirname "${PYTHON_BIN}")")/lib:${LIBRARY_PATH:-}"
 
 if service_ready && [[ "${FORCE_RESTART}" != "1" ]]; then
   echo "[ok] SkinVL service is already ready."
@@ -147,6 +154,11 @@ launch_args=(
   --conv-mode "${CONV_MODE}"
   --max-new-tokens-default "${MAX_NEW_TOKENS_DEFAULT}"
 )
+
+if [[ "${DRY_RUN:-0}" == "1" ]]; then
+  echo "[dry-run] command: ${launch_args[*]}"
+  exit 0
+fi
 
 if command -v setsid >/dev/null 2>&1; then
   nohup setsid "${launch_args[@]}" > "${LOG_FILE}" 2>&1 &

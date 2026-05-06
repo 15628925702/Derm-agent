@@ -23,6 +23,7 @@ from agent.workflow_profiles import has_workflow_capability, uses_legacy_agent_f
 from cognition.cognition_state import CognitionState
 from integrations.openai_client import DermOpenAIClient
 from memory.experience_bank import ExperienceBank
+from project_paths import outputs_root, state_root
 from skills.registry import build_default_registry
 
 try:
@@ -37,7 +38,7 @@ def run_agent(
     experience_bank: ExperienceBank | None = None,
     cognition: CognitionState | None = None,
     policy_config: dict | None = None,
-    output_dir: str | Path = "/root/DermAgent/outputs",
+    output_dir: str | Path | None = None,
     enable_writeback: bool = True,
     run_mode: str = "training",
     data_split: str = "train",
@@ -46,6 +47,7 @@ def run_agent(
     baseline_diagnosis_override: dict | None = None,
 ) -> tuple[CaseState, EvidencePackage]:
     qwen_client = client or DermOpenAIClient()
+    output_dir = output_dir or outputs_root()
     normalized_split = normalize_split_name(data_split, default="train")
     split_state_root = resolve_split_state_root() / normalized_split
     cognition_path = split_state_root / "cognition_state.json"
@@ -337,7 +339,7 @@ def _build_state_versions(
         )
     )
     cognition_split = normalize_split_name(
-        str(getattr(cognition_state, "state_split", "")).strip() or infer_split_from_path("/root/DermAgent/state/cognition_state.json"),
+        str(getattr(cognition_state, "state_split", "")).strip() or infer_split_from_path(str(state_root() / "cognition_state.json")),
         default="global",
     )
     cognition_version = str(getattr(cognition_state, "state_version", "")).strip() or build_split_state_version(

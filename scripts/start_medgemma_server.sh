@@ -6,10 +6,15 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="${1:-$(cd "${SCRIPT_DIR}/.." && pwd)}"
 
 mkdir -p "${PROJECT_ROOT}/logs" "${PROJECT_ROOT}/outputs" "${PROJECT_ROOT}/state"
+mkdir -p "${PROJECT_ROOT}/.tmp"
+export TMPDIR="${TMPDIR:-${PROJECT_ROOT}/.tmp}"
 
-CONDA_ENV_NAME="${CONDA_ENV_NAME:-derm-qwen}"
-MODEL_ROOTS=("/models" "/root/models")
+CONDA_ENV_NAME="${CONDA_ENV_NAME:-dermagent-6x6}"
+WORKSPACE_ROOT="$(cd "${PROJECT_ROOT}/.." && pwd)"
+MODEL_ROOTS=("${DERMAGENT_MODELS_ROOT:-${WORKSPACE_ROOT}/models}" "/data/gh/models" "/models" "/root/models")
 PREFERRED_MODEL_PATHS=(
+  "${DERMAGENT_MODELS_ROOT:-${WORKSPACE_ROOT}/models}/medgemma-4b-it"
+  "/data/gh/models/medgemma-4b-it"
   "/models/medgemma-4b-it"
   "/root/models/medgemma-4b-it"
 )
@@ -39,8 +44,9 @@ resolve_vllm_bin() {
     return 0
   fi
 
-  local env_bin
-  env_bin="/root/miniconda3/envs/${CONDA_ENV_NAME}/bin/vllm"
+  local conda_base env_bin
+  conda_base="$(conda info --base 2>/dev/null || true)"
+  env_bin="${conda_base}/envs/${CONDA_ENV_NAME}/bin/vllm"
   if [[ -x "${env_bin}" ]]; then
     echo "${env_bin}"
     return 0
@@ -143,6 +149,7 @@ echo "Enforce eager     : ${ENFORCE_EAGER}"
 echo "Compilation config: ${COMPILATION_CONFIG}"
 
 export PYTORCH_CUDA_ALLOC_CONF
+export LIBRARY_PATH="$(dirname "$(dirname "${VLLM_BIN}")")/lib:${LIBRARY_PATH:-}"
 
 vllm_args=(
   serve "${RESOLVED_MODEL_PATH}"
@@ -156,7 +163,6 @@ vllm_args=(
   --compilation-config "${COMPILATION_CONFIG}"
   --limit-mm-per-prompt.image 1
   --limit-mm-per-prompt.video 0
-  --skip-mm-profiling
 )
 
 if [[ "${CPU_OFFLOAD_GB}" != "0" ]]; then
@@ -167,7 +173,16 @@ if [[ "${ENFORCE_EAGER}" == "1" ]]; then
   vllm_args+=(--enforce-eager)
 fi
 
-nohup "${VLLM_BIN}" "${vllm_args[@]}" > "${LOG_FILE}" 2>&1 &
+if [[ "${DRY_RUN:-0}" == "1" ]]; then
+  echo "[dry-run] command: ${VLLM_BIN} ${vllm_args[*]}"
+  exit 0
+fi
+
+if command -v setsid >/dev/null 2>&1; then
+  nohup setsid "${VLLM_BIN}" "${vllm_args[@]}" > "${LOG_FILE}" 2>&1 &
+else
+  nohup "${VLLM_BIN}" "${vllm_args[@]}" > "${LOG_FILE}" 2>&1 &
+fi
 
 echo $! > "${PID_FILE}"
 

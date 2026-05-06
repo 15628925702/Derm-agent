@@ -10,9 +10,10 @@ from typing import Any
 
 from agent.state import CaseInput
 from agent.workflow_profiles import ensure_workflow_context
+from project_paths import data_root
 
 
-DEFAULT_ISIC2019_ROOT = Path("/root/DermAgent/data/isic2019")
+DEFAULT_ISIC2019_ROOT = data_root() / "isic2019"
 ISIC2019_METADATA_LEAKY_KEYS = {
     "mel",
     "nv",

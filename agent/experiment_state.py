@@ -11,9 +11,10 @@ from agent.policy_config import CURRENT_STABLE_POLICY_PATH
 from cognition.cognition_state import CognitionState
 from configs.dataset_splits import DEFAULT_DATA_ROOT, DEFAULT_SPLIT_ID, build_fixed_split_payload, resolve_split_range
 from memory.experience_store import ExperienceStore
+from project_paths import state_root
 
 
-DEFAULT_SPLIT_STATE_ROOT = Path("/root/DermAgent/state/split_states")
+DEFAULT_SPLIT_STATE_ROOT = state_root() / "split_states"
 
 
 def resolve_split_state_root() -> Path:

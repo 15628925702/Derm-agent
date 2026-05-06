@@ -12,9 +12,10 @@ from agent.label_space import canonicalize_label
 from agent.state import CaseInput
 from agent.workflow_profiles import ensure_workflow_context
 from dataio.case_schema import CaseSourceConfig
+from project_paths import data_root
 
 
-DEFAULT_XIANGYA_SFT_ROOT = Path("/root/DermAgent/data/sft数据")
+DEFAULT_XIANGYA_SFT_ROOT = data_root() / "sft数据"
 DEFAULT_XIANGYA_SFT_LABEL_SPACE_ID = "xiangya_sft_grouped"
 
 

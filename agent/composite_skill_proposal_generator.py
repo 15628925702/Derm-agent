@@ -10,11 +10,12 @@ from typing import Any
 
 from memory.experience_schema import dedupe_strings, stable_hash
 from memory.experience_store import ExperienceStore
+from project_paths import outputs_root, repo_root
 
 
-DEFAULT_BATCH_CRITIQUE_PATH = Path("/root/DermAgent/outputs/batch_reflection/batch_critique.json")
-DEFAULT_REFINEMENT_CANDIDATES_PATH = Path("/root/DermAgent/outputs/skill_refinement_candidates/skill_refinement_candidates.jsonl")
-DEFAULT_PROPOSALS_DIR = Path("/root/DermAgent/proposals/composite_skills")
+DEFAULT_BATCH_CRITIQUE_PATH = outputs_root() / "batch_reflection" / "batch_critique.json"
+DEFAULT_REFINEMENT_CANDIDATES_PATH = outputs_root() / "skill_refinement_candidates" / "skill_refinement_candidates.jsonl"
+DEFAULT_PROPOSALS_DIR = repo_root() / "proposals" / "composite_skills"
 DEFAULT_MIN_SUPPORTING_CASES = 2
 
 
@@ -120,8 +121,8 @@ def generate_composite_skill_proposals(
                 "target_proposal_dir": str(DEFAULT_PROPOSALS_DIR / f"{suggested_skill_name}.json"),
                 "future_skill_type": "composite_workflow_skill",
                 "manual_integration_targets": {
-                    "design_skill_spec_path": f"/root/DermAgent/design/skill_specs/composite/{suggested_skill_name}.md",
-                    "python_skill_path": f"/root/DermAgent/skills/{suggested_skill_name.replace('_skill', '')}.py",
+                    "design_skill_spec_path": str(repo_root() / "design" / "skill_specs" / "composite" / f"{suggested_skill_name}.md"),
+                    "python_skill_path": str(repo_root() / "skills" / f"{suggested_skill_name.replace('_skill', '')}.py"),
                     "registry_update_required": True,
                 },
             },

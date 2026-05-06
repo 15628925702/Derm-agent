@@ -11,9 +11,10 @@ from agent.sd198_label_catalog import SD198_RAW_TO_CANONICAL, sd198_grouped_labe
 from agent.state import CaseInput
 from agent.workflow_profiles import ensure_workflow_context
 from dataio.case_schema import CaseSourceConfig
+from project_paths import data_root
 
 
-DEFAULT_SD198_ROOT = Path("/root/DermAgent/data/sd198/sd-198")
+DEFAULT_SD198_ROOT = data_root() / "sd198" / "sd-198"
 DEFAULT_SD198_LABEL_SPACE_ID = "sd198_full"
 SD198_METADATA_LEAKY_KEYS = {
     "class_id",

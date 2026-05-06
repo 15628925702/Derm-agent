@@ -8,12 +8,13 @@ from pathlib import Path
 from typing import Any
 
 from agent.policy_evaluation import gate_policy_candidate
+from project_paths import outputs_root
 
 
 CHECKPOINT_SELECTION_SCHEMA_VERSION = "checkpoint_selection_v1"
-DEFAULT_TRAIN_RUNS_ROOT = Path("/root/DermAgent/outputs/train_runs")
-DEFAULT_SELECTION_OUTPUT_ROOT = Path("/root/DermAgent/outputs/checkpoint_selection")
-DEFAULT_CHECKPOINT_EXPORT_ROOT = Path("/root/DermAgent/outputs/checkpoints")
+DEFAULT_TRAIN_RUNS_ROOT = outputs_root() / "train_runs"
+DEFAULT_SELECTION_OUTPUT_ROOT = outputs_root() / "checkpoint_selection"
+DEFAULT_CHECKPOINT_EXPORT_ROOT = outputs_root() / "checkpoints"
 DEFAULT_SELECTION_WEIGHTS = {
     "malignant_recall": 0.30,
     "top1": 0.22,

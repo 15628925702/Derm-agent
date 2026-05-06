@@ -58,6 +58,8 @@ def is_coarse_taxonomy_case(*, workflow_context: dict[str, Any] | None) -> bool:
 
 
 def uses_legacy_agent_final_path(workflow_context: dict[str, Any] | None) -> bool:
+    if workflow_context and bool(workflow_context.get("disable_legacy_final_path", False)):
+        return False
     return has_workflow_capability(workflow_context, "legacy_agent_final_reasoning")
 
 

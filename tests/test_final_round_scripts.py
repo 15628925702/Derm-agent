@@ -21,6 +21,7 @@ FINAL_SCRIPTS = [
     PROJECT_ROOT / "scripts" / "run_sd198_final_round.sh",
     PROJECT_ROOT / "scripts" / "run_xiangya_sft_final_round.sh",
     PROJECT_ROOT / "scripts" / "run_all_final_rounds.sh",
+    PROJECT_ROOT / "scripts" / "run_qwen_final_round_asset_rerun.sh",
 ]
 
 
@@ -73,3 +74,11 @@ def test_all_final_rounds_support_dry_run_and_print_totals() -> None:
     assert "[all-final] total case steps" in completed.stdout
     assert "[all-final] >>> 1/6 PAD-UFES-20" in completed.stdout
     assert "[all-final] >>> 6/6 HAM10000" in completed.stdout
+
+
+def test_qwen_asset_rerun_preserves_grouped_label_spaces() -> None:
+    script = (PROJECT_ROOT / "scripts" / "run_qwen_final_round_asset_rerun.sh").read_text(encoding="utf-8")
+
+    assert 'DERMAGENT_SCIN_LABEL_SPACE_ID="${DERMAGENT_SCIN_LABEL_SPACE_ID:-scin_grouped}"' in script
+    assert 'DERMAGENT_SD198_LABEL_SPACE_ID="${DERMAGENT_SD198_LABEL_SPACE_ID:-sd198_grouped}"' in script
+    assert "DERMAGENT_DISABLE_MODEL_WORKFLOW_ROUTING=1" in script

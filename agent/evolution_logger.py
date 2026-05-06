@@ -5,7 +5,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-DEFAULT_EVOLUTION_LOG_PATH = Path("/root/DermAgent/state/cognition_evolution_log.jsonl")
+from project_paths import state_root
+
+DEFAULT_EVOLUTION_LOG_PATH = state_root() / "cognition_evolution_log.jsonl"
 
 
 def compute_cognition_diff(before: dict[str, Any], after: dict[str, Any]) -> dict[str, Any]:

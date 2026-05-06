@@ -13,11 +13,12 @@ from cognition.cognition_state import CognitionState
 from memory.experience_schema import stable_hash
 from memory.experience_store import ExperienceStore
 from skills.registry import build_default_registry
+from project_paths import outputs_root, repo_root
 
 
-DEFAULT_HARD_CASES_PATH = Path("/root/DermAgent/outputs/hard_case_mining/hard_cases.jsonl")
-DEFAULT_SKILL_HELPFULNESS_DIR = Path("/root/DermAgent/outputs/skill_helpfulness")
-DEFAULT_OUTPUT_DIR = Path("/root/DermAgent/outputs/skill_refinement_candidates")
+DEFAULT_HARD_CASES_PATH = outputs_root() / "hard_case_mining" / "hard_cases.jsonl"
+DEFAULT_SKILL_HELPFULNESS_DIR = outputs_root() / "skill_helpfulness"
+DEFAULT_OUTPUT_DIR = outputs_root() / "skill_refinement_candidates"
 CONTRADICTION_FOCUSED_SKILLS = {
     "metadata_consistency_skill",
     "contradiction_check_skill",
@@ -832,7 +833,7 @@ def _confidence_rank(value: Any) -> int:
 
 def _discover_skill_spec_paths() -> dict[str, str]:
     result: dict[str, str] = {}
-    root = Path("/root/DermAgent/design/skill_specs")
+    root = repo_root() / "design" / "skill_specs"
     if not root.exists():
         return result
     for path in root.rglob("*.md"):

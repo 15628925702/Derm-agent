@@ -9,8 +9,9 @@ from pathlib import Path
 from typing import Any
 
 from agent.contamination_guard import build_split_state_version, infer_split_from_path, normalize_split_name
+from project_paths import state_root
 
-DEFAULT_POLICY_STATE_ROOT = Path("/root/DermAgent/state/policy")
+DEFAULT_POLICY_STATE_ROOT = state_root() / "policy"
 
 
 def _policy_state_root() -> Path:

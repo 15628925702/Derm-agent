@@ -6,8 +6,10 @@ import binascii
 import json
 import logging
 import os
+import shutil
 import sys
 import time
+from functools import wraps
 from io import BytesIO
 from pathlib import Path
 from typing import Any
@@ -20,7 +22,14 @@ from PIL import Image
 from pydantic import BaseModel, Field
 
 
-MM_SKIN_ROOT = Path("/root/MM-Skin")
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from project_paths import models_root, state_root
+
+DEFAULT_MM_SKIN_ROOT = Path(os.environ.get("MM_SKIN_ROOT", Path(__file__).resolve().parents[2] / "MM-Skin"))
+MM_SKIN_ROOT = DEFAULT_MM_SKIN_ROOT
 if str(MM_SKIN_ROOT) not in sys.path:
     sys.path.insert(0, str(MM_SKIN_ROOT))
 
@@ -36,6 +45,87 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(name)s %(message)s",
 )
+
+
+def _resolve_vision_tower_path(raw_path: str | None) -> str | None:
+    if not raw_path:
+        return None
+
+    explicit = os.environ.get("SKINVL_VISION_TOWER_PATH")
+    candidates = []
+    if explicit:
+        candidates.append(Path(explicit))
+
+    raw = Path(raw_path)
+    candidates.append(raw)
+    candidates.append(models_root() / raw.name)
+    candidates.append(Path("/data/gh/models") / raw.name)
+
+    for candidate in candidates:
+        try:
+            exists = candidate.exists()
+        except PermissionError:
+            exists = False
+        if exists:
+            return str(candidate.resolve())
+    return None
+
+
+def _prepare_model_path(model_path: str) -> str:
+    source = Path(model_path).resolve()
+    config_path = source / "config.json"
+    if not config_path.exists():
+        return str(source)
+
+    with config_path.open() as f:
+        config = json.load(f)
+
+    current_vision_tower = config.get("mm_vision_tower")
+    resolved_vision_tower = _resolve_vision_tower_path(current_vision_tower)
+    if not current_vision_tower or current_vision_tower == resolved_vision_tower:
+        return str(source)
+    if not resolved_vision_tower:
+        return str(source)
+
+    runtime_dir = state_root() / "runtime" / "skinvl_model_view"
+    runtime_dir.mkdir(parents=True, exist_ok=True)
+
+    for child in source.iterdir():
+        target = runtime_dir / child.name
+        if child.name == "config.json":
+            continue
+        if target.exists() or target.is_symlink():
+            if target.is_dir() and not target.is_symlink():
+                shutil.rmtree(target)
+            else:
+                target.unlink()
+        target.symlink_to(child, target_is_directory=child.is_dir())
+
+    config["mm_vision_tower"] = resolved_vision_tower
+    with (runtime_dir / "config.json").open("w") as f:
+        json.dump(config, f, indent=2)
+        f.write("\n")
+
+    LOGGER.info(
+        "SkinVL model config view prepared: source=%s runtime=%s mm_vision_tower=%s",
+        source,
+        runtime_dir,
+        resolved_vision_tower,
+    )
+    return str(runtime_dir)
+
+
+def _patch_skinvl_generation_compat(model: Any) -> None:
+    """Drop generation kwargs added by newer Transformers but unsupported by SkinVL."""
+    original_forward = model.forward
+
+    @wraps(original_forward)
+    def forward_without_cache_position(*args: Any, **kwargs: Any) -> Any:
+        kwargs.pop("cache_position", None)
+        return original_forward(*args, **kwargs)
+
+    model.forward = forward_without_cache_position
+    LOGGER.info("Applied SkinVL generation compatibility patch for cache_position")
 
 
 class ImageURLPayload(BaseModel):
@@ -76,14 +166,16 @@ class SkinVLServer:
         self.conv_mode = conv_mode
         self.max_new_tokens_default = max_new_tokens_default
 
+        load_model_path = _prepare_model_path(model_path)
         disable_torch_init()
         tokenizer, model, image_processor, context_len = load_pretrained_model(
-            model_path=model_path,
+            model_path=load_model_path,
             model_base=None,
             model_name="llava-mistral",
             device=device,
             device_map="auto" if device == "cuda" else device,
         )
+        _patch_skinvl_generation_compat(model)
         model.eval()
 
         self.tokenizer = tokenizer
@@ -329,7 +421,7 @@ def create_app(server: SkinVLServer, api_key: str) -> FastAPI:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Serve SkinVL-MM through a minimal OpenAI-compatible API.")
-    parser.add_argument("--model-path", default="/root/models/SkinVL-MM")
+    parser.add_argument("--model-path", default=str(Path(__file__).resolve().parents[2] / "models" / "SkinVL-MM"))
     parser.add_argument("--served-model-name", default="SkinVL-MM")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8011)

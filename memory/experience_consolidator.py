@@ -11,12 +11,13 @@ from typing import Any
 from agent.label_space import canonicalize_label
 from memory.experience_schema import AbstractExperience, CompositeSkillSeed, dedupe_strings, stable_hash
 from memory.experience_store import ExperienceStore
+from project_paths import outputs_root
 
 
 CONSOLIDATION_VERSION = "consolidated_v1"
 DEFAULT_MIN_SUPPORTING_CASES = 2
-DEFAULT_OUTPUT_DIR = Path("/root/DermAgent/outputs/experience_consolidation")
-DEFAULT_HARD_CASES_PATH = Path("/root/DermAgent/outputs/hard_case_mining/hard_cases.jsonl")
+DEFAULT_OUTPUT_DIR = outputs_root() / "experience_consolidation"
+DEFAULT_HARD_CASES_PATH = outputs_root() / "hard_case_mining" / "hard_cases.jsonl"
 
 
 @dataclass

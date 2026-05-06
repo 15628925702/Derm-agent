@@ -8,7 +8,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from agent.conservative_fusion import decide_conservative_agent_fusion
+from agent.conservative_fusion import apply_conservative_agent_fusion, decide_conservative_agent_fusion
 
 
 def test_soft_fusion_allows_scin_grouped_family_override() -> None:
@@ -458,3 +458,222 @@ def test_soft_fusion_allows_sparse_lesion_safe_override_for_bcc_to_nevus() -> No
 
     assert decision["use_agent_output"] is True
     assert "sparse_lesion_safe_override" in decision["reasons"]
+
+
+def test_skinvl_direct_baseline_route_always_falls_back_to_baseline() -> None:
+    baseline_output = {
+        "final_diagnosis": "Basal Cell Carcinoma",
+        "differential_diagnoses": ["Basal Cell Carcinoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "source_id raw_case_memory retrieval_score",
+        "differential_diagnoses": ["Nevus"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_profile": "clinical_full_taxonomy_lesion_workflow",
+                    "dataset_workflow_profile": "clinical_full_taxonomy_lesion_workflow",
+                    "model_workflow_profile": "direct_baseline_workflow",
+                    "fallback_on_malformed_final": True,
+                    "label_space_id": "derm_six",
+                    "dataset_name": "pad_ufes_20",
+                },
+                "selected_evidence_present": True,
+                "support_margin": 99.0,
+                "subtype_support_margin": 99.0,
+                "uncertainty_level": "medium",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "model_route_malformed_final_fallback" in result["fusion_decision"]["reasons"]
+
+
+def test_llama_archive_route_preserves_malignant_baseline_against_benign_drift() -> None:
+    baseline_output = {
+        "final_diagnosis": "MEL",
+        "differential_diagnoses": ["MEL", "BKL"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "BKL",
+        "differential_diagnoses": ["BKL"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "evidence_decision_policy": {
+            "risk_layer": {"baseline_preview": {"early_ddx_candidates": ["MEL", "BKL"]}},
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "dataset_workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "model_workflow_profile": "conservative_archive_workflow",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                },
+                "selected_evidence_present": True,
+                "support_margin": 12.0,
+                "subtype_support_margin": 5.0,
+                "uncertainty_level": "medium",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "MEL"
+    assert "llama_archive_malignant_recall_guard" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_archive_guard_allows_melanoma_upgrade_without_benign_reassurance() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Malignant Melanoma",
+        "differential_diagnoses": ["Malignant Melanoma", "Nevus"],
+        "confidence": "High",
+    }
+    evidence_bundle = {
+        "skill_outputs": {
+            "malignancy_risk_assessment_skill": {
+                "benign_reassuring_features": [],
+            }
+        },
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "dataset_workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "model_workflow_profile": "qwen_isic2019_archive_guard_workflow",
+                    "workflow_cell_id": "qwen__isic2019__dataset_best",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                },
+                "selected_evidence_present": False,
+                "support_margin": 0.0,
+                "subtype_support_margin": 0.0,
+                "uncertainty_level": "high",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Malignant Melanoma"
+    assert "qwen_isic_guarded_archive_override" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_archive_guard_preserves_nevus_when_benign_reassurance_is_present() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Malignant Melanoma",
+        "differential_diagnoses": ["Malignant Melanoma", "Nevus"],
+        "confidence": "High",
+    }
+    evidence_bundle = {
+        "skill_outputs": {
+            "malignancy_risk_assessment_skill": {
+                "benign_reassuring_features": ["Symmetry", "Regular border", "Uniform color"],
+            }
+        },
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "dataset_workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "model_workflow_profile": "qwen_isic2019_archive_guard_workflow",
+                    "workflow_cell_id": "qwen__isic2019__dataset_best",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                },
+                "selected_evidence_present": False,
+                "support_margin": 0.0,
+                "subtype_support_margin": 0.0,
+                "uncertainty_level": "high",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "qwen_isic_nevus_preservation_guard" in result["fusion_decision"]["reasons"]
+
+
+def test_clinical_route_blocks_weak_benign_overwrite_when_malignant_is_in_baseline_topk() -> None:
+    baseline_output = {
+        "final_diagnosis": "Basal Cell Carcinoma",
+        "differential_diagnoses": ["Basal Cell Carcinoma", "Seborrheic Keratosis"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Seborrheic Keratosis",
+        "differential_diagnoses": ["Seborrheic Keratosis"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": ["Basal Cell Carcinoma", "Seborrheic Keratosis"],
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_profile": "clinical_full_taxonomy_lesion_workflow",
+                    "dataset_workflow_profile": "clinical_full_taxonomy_lesion_workflow",
+                    "model_workflow_profile": "clinical_malignant_guard_workflow",
+                    "label_space_id": "derm_six",
+                    "dataset_name": "pad_ufes_20",
+                },
+                "selected_evidence_present": True,
+                "support_margin": 4.0,
+                "subtype_support_margin": 2.0,
+                "uncertainty_level": "medium",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "clinical_malignant_recall_guard" in result["fusion_decision"]["reasons"]

@@ -18,6 +18,8 @@ BOOTSTRAP_COUNT="${BOOTSTRAP_COUNT:-30}"
 BOOTSTRAP_SEED="${BOOTSTRAP_SEED:-42}"
 COMPARE_COUNT="${COMPARE_COUNT:-30}"
 COMPARE_SEED="${COMPARE_SEED:-42}"
+USE_EXISTING_SERVERS="${USE_EXISTING_SERVERS:-0}"
+MAX_PARALLEL_MODELS="${MAX_PARALLEL_MODELS:-6}"
 
 # Model definitions: name, port, GPU, start script
 declare -A MODEL_PORTS=(
@@ -27,15 +29,25 @@ declare -A MODEL_PORTS=(
   [llama]=8012
   [hulumed]=8013
   [dermatollama]=8014
+  [llama_replica]=8022
+  [hulumed_replica]=8023
+  [dermatollama_replica]=8024
+  [skinvl_heavy]=8025
+  [skinvl_light]=8026
 )
 
 declare -A MODEL_GPUS=(
-  [qwen]=0
-  [llama]=1
-  [skinvl]=2
-  [hulumed]=3
-  [medgemma]=0
-  [dermatollama]=1
+  [llama_replica]=0
+  [dermatollama_replica]=1
+  [qwen]=2
+  [medgemma]=3
+  [skinvl]=4
+  [llama]=5
+  [hulumed]=6
+  [dermatollama]=7
+  [hulumed_replica]=4
+  [skinvl_heavy]=2
+  [skinvl_light]=3
 )
 
 declare -A MODEL_SCRIPTS=(
@@ -45,6 +57,11 @@ declare -A MODEL_SCRIPTS=(
   [llama]="${SCRIPT_DIR}/start_llama_server.sh"
   [hulumed]="${SCRIPT_DIR}/start_hulumed_server.sh"
   [dermatollama]="${SCRIPT_DIR}/start_dermatollama_server.sh"
+  [llama_replica]="${SCRIPT_DIR}/start_llama_server.sh"
+  [hulumed_replica]="${SCRIPT_DIR}/start_hulumed_server.sh"
+  [dermatollama_replica]="${SCRIPT_DIR}/start_dermatollama_server.sh"
+  [skinvl_heavy]="${SCRIPT_DIR}/start_skinvl_server.sh"
+  [skinvl_light]="${SCRIPT_DIR}/start_skinvl_server.sh"
 )
 
 # Model name mapping (short name -> actual served model name)
@@ -55,7 +72,22 @@ declare -A MODEL_NAMES=(
   [llama]="Llama-3.2-11B-Vision-Instruct"
   [hulumed]="Hulu-Med-7B"
   [dermatollama]="DermatoLlama-full"
+  [llama_replica]="Llama-3.2-11B-Vision-Instruct"
+  [hulumed_replica]="Hulu-Med-7B"
+  [dermatollama_replica]="DermatoLlama-full"
+  [skinvl_heavy]="SkinVL-MM"
+  [skinvl_light]="SkinVL-MM"
 )
+
+declare -A MODEL_OUTPUT_NAMES=(
+  [llama_replica]="llama"
+  [hulumed_replica]="hulumed"
+  [dermatollama_replica]="dermatollama"
+  [skinvl_heavy]="skinvl"
+  [skinvl_light]="skinvl"
+)
+
+declare -A MODEL_DATASETS=()
 
 # Dataset definitions:
 # - DATASET_DATA_ROOTS are the runtime roots consumed by dataio loaders.
@@ -106,6 +138,24 @@ log_info() {
 
 log_error() {
   echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] [ERROR] $*" | tee -a "${OUTPUT_ROOT}/runner.log" >&2
+}
+
+canonical_model_name() {
+  local model="$1"
+  if [[ -n "${MODEL_OUTPUT_NAMES[$model]+x}" ]]; then
+    printf '%s\n' "${MODEL_OUTPUT_NAMES[$model]}"
+  else
+    printf '%s\n' "${model}"
+  fi
+}
+
+datasets_for_model() {
+  local model="$1"
+  if [[ -n "${MODEL_DATASETS[$model]+x}" ]]; then
+    printf '%s\n' "${MODEL_DATASETS[$model]}"
+  else
+    printf '%s\n' "${DATASETS[*]}"
+  fi
 }
 
 init_summary_tsv() {
@@ -172,6 +222,12 @@ start_model_server() {
   local gpu="${MODEL_GPUS[$model]}"
   local script="${MODEL_SCRIPTS[$model]}"
 
+  if [[ "${USE_EXISTING_SERVERS}" == "1" ]]; then
+    log_info "Using existing ${model} server on port ${port}"
+    wait_for_model_ready "${model}"
+    return $?
+  fi
+
   if [[ ! -f "${script}" ]]; then
     log_error "Start script not found for ${model}: ${script}"
     return 1
@@ -210,6 +266,11 @@ start_model_server() {
 stop_model_server() {
   local model="$1"
   local pid_file="${OUTPUT_ROOT}/${model}_server.pid"
+
+  if [[ "${USE_EXISTING_SERVERS}" == "1" ]]; then
+    log_info "Leaving existing ${model} server running"
+    return 0
+  fi
 
   if [[ -f "${pid_file}" ]]; then
     local pid
@@ -311,11 +372,13 @@ run_bootstrap() {
   local split_root="${DATASET_SPLIT_ROOTS[$dataset]}"
   local port="${MODEL_PORTS[$model]}"
   local model_name="${MODEL_NAMES[$model]}"
+  local output_model
+  output_model="$(canonical_model_name "${model}")"
 
-  local output_dir="${OUTPUT_ROOT}/${model}/${dataset}/bootstrap"
-  local policy_root="${OUTPUT_ROOT}/${model}/${dataset}/policy"
-  local split_state_root="${OUTPUT_ROOT}/${model}/${dataset}/split_states"
-  local split_json="${OUTPUT_ROOT}/${model}/${dataset}/${dataset}_split.json"
+  local output_dir="${OUTPUT_ROOT}/${output_model}/${dataset}/bootstrap"
+  local policy_root="${OUTPUT_ROOT}/${output_model}/${dataset}/policy"
+  local split_state_root="${OUTPUT_ROOT}/${output_model}/${dataset}/split_states"
+  local split_json="${OUTPUT_ROOT}/${output_model}/${dataset}/${dataset}_split.json"
 
   mkdir -p "${output_dir}" "${policy_root}" "${split_state_root}"
 
@@ -324,7 +387,7 @@ run_bootstrap() {
   write_dataset_split_json "${dataset}" "${split_id}" "${split_root}" "${split_json}"
 
   # Generate stratified sample indices
-  local indices_json="${OUTPUT_ROOT}/${model}/${dataset}/bootstrap_indices.json"
+  local indices_json="${OUTPUT_ROOT}/${output_model}/${dataset}/bootstrap_indices.json"
   python "${SCRIPT_DIR}/bootstrap_stratified_30case.py" \
     --split-id "${split_id}" \
     --data-root "${split_root}" \
@@ -381,11 +444,13 @@ run_compare() {
   local data_root="${DATASET_DATA_ROOTS[$dataset]}"
   local port="${MODEL_PORTS[$model]}"
   local model_name="${MODEL_NAMES[$model]}"
+  local output_model
+  output_model="$(canonical_model_name "${model}")"
 
-  local output_dir="${OUTPUT_ROOT}/${model}/${dataset}/compare"
-  local policy_root="${OUTPUT_ROOT}/${model}/${dataset}/policy"
-  local split_state_root="${OUTPUT_ROOT}/${model}/${dataset}/split_states"
-  local split_json="${OUTPUT_ROOT}/${model}/${dataset}/${dataset}_split.json"
+  local output_dir="${OUTPUT_ROOT}/${output_model}/${dataset}/compare"
+  local policy_root="${OUTPUT_ROOT}/${output_model}/${dataset}/policy"
+  local split_state_root="${OUTPUT_ROOT}/${output_model}/${dataset}/split_states"
+  local split_json="${OUTPUT_ROOT}/${output_model}/${dataset}/${dataset}_split.json"
 
   mkdir -p "${output_dir}"
   mapfile -t DATASET_ENV < <(dataset_env_vars "${dataset}")
@@ -413,7 +478,7 @@ run_compare() {
          --data-split test \
          --split-json "${split_json}" \
          --output-dir "${output_dir}" \
-         --policy-label "${model} ${dataset} 30case policy" \
+         --policy-label "${output_model} ${dataset} ${BOOTSTRAP_COUNT}case policy" \
          >> "${LOG_DIR}/${model}_${dataset}_compare.log" 2>&1; then
     log_error "${model}/${dataset}: Compare failed"
     return 1
@@ -425,20 +490,26 @@ run_compare() {
 
 run_model_all_datasets() {
   local model="$1"
+  local output_model
+  output_model="$(canonical_model_name "${model}")"
+  local model_datasets_raw
+  model_datasets_raw="$(datasets_for_model "${model}")"
+  local model_datasets=()
+  read -r -a model_datasets <<< "${model_datasets_raw}"
 
-  log_info "========== Starting ${model} lane =========="
+  log_info "========== Starting ${model} lane (output=${output_model}, datasets=${model_datasets[*]}) =========="
 
   # Start model server
   if ! start_model_server "${model}"; then
     log_error "${model}: Failed to start server, skipping all datasets"
-    for dataset in "${DATASETS[@]}"; do
-      update_summary "${model}" "${dataset}" "SKIPPED" "SKIPPED" "SKIPPED" "" "" "0" ""
+    for dataset in "${model_datasets[@]}"; do
+      update_summary "${output_model}" "${dataset}" "SKIPPED" "SKIPPED" "SKIPPED" "" "" "0" ""
     done
     return 1
   fi
 
-  # Run all datasets sequentially for this model
-  for dataset in "${DATASETS[@]}"; do
+  # Run assigned datasets sequentially for this model lane.
+  for dataset in "${model_datasets[@]}"; do
     local start_time
     start_time=$(date -u +%Y-%m-%dT%H:%M:%SZ)
     local start_sec
@@ -480,7 +551,7 @@ run_model_all_datasets() {
       overall_status="OK"
     fi
 
-    update_summary "${model}" "${dataset}" "${overall_status}" "${bootstrap_status}" "${compare_status}" \
+    update_summary "${output_model}" "${dataset}" "${overall_status}" "${bootstrap_status}" "${compare_status}" \
       "${start_time}" "${end_time}" "${duration}" "${LOG_DIR}/${model}_${dataset}_*.log"
 
     log_info "${model}/${dataset}: Completed (${overall_status})"
@@ -502,11 +573,13 @@ main() {
   log_info "Datasets: ${DATASETS[*]}"
   log_info "Bootstrap count: ${BOOTSTRAP_COUNT}"
   log_info "Compare count: ${COMPARE_COUNT}"
+  log_info "Use existing servers: ${USE_EXISTING_SERVERS}"
+  log_info "Max parallel models: ${MAX_PARALLEL_MODELS}"
   log_info "Output root: ${OUTPUT_ROOT}"
 
   init_summary_tsv
 
-  # Run models in parallel (4 GPUs, so 4 concurrent models max)
+  # Run models in parallel.
   # We'll use background jobs and wait
   local pids=()
   local model_idx=0
@@ -517,9 +590,8 @@ main() {
 
     model_idx=$((model_idx + 1))
 
-    # Limit to 4 concurrent models (4 GPUs)
-    if (( model_idx % 4 == 0 )); then
-      log_info "Waiting for current batch of 4 models to complete..."
+    if (( model_idx % MAX_PARALLEL_MODELS == 0 )); then
+      log_info "Waiting for current batch of ${MAX_PARALLEL_MODELS} models to complete..."
       for pid in "${pids[@]}"; do
         wait "${pid}" || true
       done

@@ -10,6 +10,13 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+from agent.model_workflow_router import (
+    apply_model_workflow_to_case,
+    execution_overrides_for_run_agent,
+    get_model_workflow_overrides,
+    merge_model_workflow_policy_overrides,
+)
+from agent.policy_config import load_stable_policy
 from agent.run_agent import run_agent
 from dataio.case_loader import load_case_by_index
 from integrations.openai_client import DermOpenAIClient
@@ -45,13 +52,53 @@ def main() -> int:
         timeout=args.client_timeout,
         max_retries=args.client_max_retries,
     )
+    model_name = args.client_model or client.model
+    overrides = get_model_workflow_overrides(
+        model_name,
+        dataset_name=case_input.dataset_name,
+        base_workflow_context=case_input.workflow_context,
+    )
+    if overrides:
+        apply_model_workflow_to_case(
+            case_input,
+            model_name,
+            dataset_name=case_input.dataset_name,
+        )
+        print(
+            json.dumps(
+                {
+                    "model_workflow_routing": {
+                        "model": model_name,
+                        "dataset": case_input.dataset_name,
+                        "dataset_workflow_profile": (case_input.workflow_context or {}).get("dataset_workflow_profile", ""),
+                        "model_workflow_profile": (case_input.workflow_context or {}).get("model_workflow_profile", ""),
+                        "execution_overrides": execution_overrides_for_run_agent(overrides),
+                        "skip_specialist_skills": bool(overrides.get("skip_specialist_skills", False)),
+                        "skip_experience_retrieval": bool(overrides.get("skip_experience_retrieval", False)),
+                    }
+                },
+                ensure_ascii=False,
+            ),
+            flush=True,
+        )
+    policy_config = None
+    if overrides.get("skip_specialist_skills"):
+        policy_config = merge_model_workflow_policy_overrides(
+            load_stable_policy().to_dict(),
+            overrides,
+        )
     state, _ = run_agent(
         case_input,
         client=client,
+        policy_config=policy_config,
         output_dir=args.output_dir,
         enable_writeback=bool(args.enable_writeback),
         run_mode=str(args.run_mode),
         data_split=str(args.data_split),
+        execution_overrides={
+            **overrides,
+            **execution_overrides_for_run_agent(overrides),
+        },
     )
 
     abstract_by_id = {

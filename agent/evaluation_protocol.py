@@ -19,6 +19,11 @@ from agent.experiment_state import (
     validate_selected_case_ids,
 )
 from agent.policy_evaluation import build_policy_summary, compare_policy_summaries
+from agent.model_workflow_router import (
+    apply_model_workflow_to_case,
+    execution_overrides_for_run_agent,
+    merge_model_workflow_policy_overrides,
+)
 from agent.run_agent import run_agent
 from cognition.cognition_state import CognitionState
 from dataio.case_loader import discover_case_source, load_case_by_index
@@ -26,14 +31,15 @@ from integrations.openai_client import DermOpenAIClient
 from memory.experience_schema import DEFAULT_EXPERIENCE_ROOT
 from memory.experience_store import ExperienceStore
 from memory.experience_bank import ExperienceBank
+from project_paths import outputs_root, repo_root, state_root
 from agent.workflow_profiles import get_workflow_specialist_skills
 from skills.registry import build_default_registry
 
 EVALUATION_PROTOCOL_VERSION = "paper_eval_protocol_v1"
-DEFAULT_EVAL_OUTPUT_ROOT = Path("/root/DermAgent/outputs/evaluation_protocol")
-DEFAULT_COGNITION_PATH = Path("/root/DermAgent/state/cognition_state.json")
-DEFAULT_SKILL_SPEC_ROOT = Path("/root/DermAgent/design/skill_specs")
-DEFAULT_POLICY_PATH = Path("/root/DermAgent/state/policy/current_stable_policy.json")
+DEFAULT_EVAL_OUTPUT_ROOT = outputs_root() / "evaluation_protocol"
+DEFAULT_COGNITION_PATH = state_root() / "cognition_state.json"
+DEFAULT_SKILL_SPEC_ROOT = repo_root() / "design" / "skill_specs"
+DEFAULT_POLICY_PATH = state_root() / "policy" / "current_stable_policy.json"
 
 FOUNDATIONAL_SKILLS = {
     "morphology_analysis_skill",
@@ -389,8 +395,11 @@ def collect_cases(*, data_root: Path, case_indices: list[int]) -> tuple[list[dic
 
 def resolve_case_data_root(*, data_root: Path, split_payload: dict[str, Any]) -> Path:
     metadata_path = Path(str(split_payload.get("metadata_path", "")).strip())
-    if metadata_path.exists():
-        return metadata_path.parent
+    try:
+        if metadata_path.exists():
+            return metadata_path.parent
+    except OSError:
+        pass
     return data_root
 
 
@@ -582,7 +591,7 @@ def snapshot_skill_bank(target_root: Path) -> dict[str, Any]:
         shutil.rmtree(target_root)
     target_root.mkdir(parents=True, exist_ok=True)
     for source_path in source_files:
-        relative_path = source_path.relative_to(Path("/root/DermAgent"))
+        relative_path = source_path.relative_to(repo_root())
         target_path = target_root / relative_path
         target_path.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source_path, target_path)
@@ -627,7 +636,7 @@ def snapshot_skill_bank(target_root: Path) -> dict[str, Any]:
 def discover_skill_bank_files() -> list[Path]:
     paths = sorted(
         path
-        for path in Path("/root/DermAgent/skills").glob("*.py")
+        for path in (repo_root() / "skills").glob("*.py")
         if path.is_file()
     )
     paths.extend(sorted(path for path in DEFAULT_SKILL_SPEC_ROOT.rglob("*.md") if path.is_file()))
@@ -771,19 +780,38 @@ def run_agent_target(
         baseline_qwen = dict(baseline_outputs.get(case_input.case_id, {}))
         if not baseline_qwen:
             baseline_qwen = client.baseline_diagnosis(case_input)
+        agent_case_input = deepcopy(case_input)
+        model_workflow_model = str(
+            target_spec.execution_overrides.get("model_name", "")
+            or target_spec.execution_overrides.get("model_workflow_profile", "")
+        ).strip()
+        if model_workflow_model:
+            case_model_overrides = apply_model_workflow_to_case(
+                agent_case_input,
+                model_workflow_model,
+                dataset_name=agent_case_input.dataset_name,
+            )
+        else:
+            case_model_overrides = {}
+        merged_execution_overrides = {
+            **dict(target_spec.execution_overrides),
+            **case_model_overrides,
+            **execution_overrides_for_run_agent(case_model_overrides),
+        }
+        case_target_policy = merge_model_workflow_policy_overrides(target_policy, case_model_overrides)
         cognition_state = CognitionState.load(cognition_path)
         cognition_state.state_split = normalized_split
         agent_state, _ = run_agent(
-            case_input=case_input,
+            case_input=agent_case_input,
             client=client,
             experience_bank=ExperienceBank(root=experience_root),
             cognition=cognition_state,
-            policy_config=target_policy,
+            policy_config=case_target_policy,
             output_dir=target_output_dir / "artifacts",
             enable_writeback=False,
             run_mode=f"{normalized_split}_frozen_inference",
             data_split=normalized_split,
-            execution_overrides=target_spec.execution_overrides,
+            execution_overrides=merged_execution_overrides,
             baseline_diagnosis_override=baseline_qwen,
         )
         enriched_record = enrich_execution_record_with_baseline(
@@ -803,7 +831,7 @@ def run_agent_target(
             "data_split": normalized_split,
             "experience_variant": target_spec.experience_variant,
             "cognition_variant": target_spec.cognition_variant,
-            "execution_overrides": dict(target_spec.execution_overrides),
+            "execution_overrides": dict(merged_execution_overrides),
             "policy_overrides": deepcopy(target_spec.policy_overrides),
         }
         save_case_execution_record(enriched_record, records_dir)

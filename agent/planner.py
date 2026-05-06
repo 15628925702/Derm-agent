@@ -345,8 +345,20 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
         matched_fields: list[str] = []
         skill_text = _skill_text(skill)
         skill_overrides = dict(policy.get("skill_overrides", {}) or {}).get(skill.name, {})
+        allowed_skills = {str(item).strip() for item in policy.get("allowed_skills", []) or [] if str(item).strip()}
         force_disable = set(policy.get("force_disable_skills", []) or [])
         force_select = set(policy.get("force_select_skills", []) or [])
+
+        if allowed_skills and skill.name not in allowed_skills:
+            reasons.append("Excluded by current planner allowed_skills policy.")
+            return SkillSelectionDecision(
+                skill_name=skill.name,
+                selected=False,
+                score=-999,
+                reasons=dedupe_reasons(reasons),
+                ordering_hint=ORDERING_HINTS.get(skill.name, 999),
+                matched_fields=["policy.allowed_skills"],
+            )
 
         if skill.name in force_disable or skill_overrides.get("enabled") is False:
             reasons.append("Disabled by current planner policy.")

@@ -9,10 +9,11 @@ from typing import Any
 from agent.state import CaseInput
 from agent.workflow_profiles import ensure_workflow_context
 from dataio.ham10000_schema import Ham10000CaseRecord, Ham10000DatasetSummary, binary_label_for_ham10000
+from project_paths import data_root
 
 
 IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".bmp", ".webp", ".tif", ".tiff")
-DEFAULT_HAM10000_ROOT = Path("/root/DermAgent/data/ham10000")
+DEFAULT_HAM10000_ROOT = data_root() / "ham10000"
 HAM10000_METADATA_LEAKY_KEYS = {
     "dx",
     "dx_type",

@@ -92,7 +92,7 @@ pid_is_model_like() {
   fi
   comm="$(ps -p "${pid}" -o comm= 2>/dev/null || true)"
   args="$(ps -p "${pid}" -o args= 2>/dev/null || true)"
-  [[ "${comm} ${args}" =~ VLLM::EngineCore|vllm[[:space:]]+serve|serve_skinvl_openai.py|serve_transformers_openai.py|/root/MM-Skin|SkinVL-MM ]]
+  [[ "${comm} ${args}" =~ VLLM::EngineCore|vllm[[:space:]]+serve|serve_skinvl_openai.py|serve_transformers_openai.py|MM-Skin|SkinVL-MM ]]
 }
 
 kill_pid_tree() {
@@ -199,7 +199,7 @@ stop_process_patterns() {
     fi
   fi
 
-  pids="$(pgrep -f "serve_skinvl_openai.py|serve_transformers_openai.py|/root/MM-Skin|SkinVL-MM" 2>/dev/null || true)"
+  pids="$(pgrep -f "serve_skinvl_openai.py|serve_transformers_openai.py|MM-Skin|SkinVL-MM" 2>/dev/null || true)"
   if [[ -n "${pids}" ]]; then
     echo "[warn] found SkinVL process(es): ${pids}"
     for pid in ${pids}; do
@@ -237,7 +237,7 @@ stop_gpu_residuals() {
     fi
     comm="$(ps -p "${pid}" -o comm= 2>/dev/null || true)"
     args="$(ps -p "${pid}" -o args= 2>/dev/null || true)"
-    if [[ "${comm} ${args}" =~ VLLM::EngineCore|vllm|serve_skinvl_openai.py|serve_transformers_openai.py|SkinVL-MM|/root/MM-Skin ]]; then
+    if [[ "${comm} ${args}" =~ VLLM::EngineCore|vllm|serve_skinvl_openai.py|serve_transformers_openai.py|SkinVL-MM|MM-Skin ]]; then
       echo "[warn] found GPU residual process pid=${pid}: ${comm} ${args}"
       kill_pid_tree "${pid}" "GPU residual model process"
     fi
@@ -260,7 +260,7 @@ wait_for_model_gpu_release() {
       fi
       comm="$(ps -p "${pid}" -o comm= 2>/dev/null || true)"
       args="$(ps -p "${pid}" -o args= 2>/dev/null || true)"
-      if [[ "${comm} ${args}" =~ VLLM::EngineCore|vllm|serve_skinvl_openai.py|serve_transformers_openai.py|SkinVL-MM|/root/MM-Skin ]]; then
+      if [[ "${comm} ${args}" =~ VLLM::EngineCore|vllm|serve_skinvl_openai.py|serve_transformers_openai.py|SkinVL-MM|MM-Skin ]]; then
         residual_found=1
         break
       fi

@@ -3,6 +3,8 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any
 
+from agent.label_space import canonicalize_label, is_malignant_label
+
 KERATINOCYTE_FAMILY = {
     "Actinic Keratosis",
     "Basal Cell Carcinoma",
@@ -81,6 +83,12 @@ def decide_conservative_agent_fusion(
 
     selected_evidence_present = bool(diagnosis_layer.get("selected_evidence_present", False))
     workflow_context = dict(diagnosis_layer.get("workflow_context", {}) or {})
+    model_workflow_profile = str(workflow_context.get("model_workflow_profile", "")).strip().lower()
+    dataset_workflow_profile = str(
+        workflow_context.get("dataset_workflow_profile", "") or workflow_context.get("workflow_profile", "")
+    ).strip().lower()
+    dataset_name = str(workflow_context.get("dataset_name", "")).strip().lower()
+    label_space_id = str(workflow_context.get("label_space_id", "")).strip()
     override_allowed = bool(diagnosis_layer.get("override_allowed", False))
     malignancy_override_allowed = bool(diagnosis_layer.get("malignancy_override_allowed", False))
     subtype_override_allowed = bool(diagnosis_layer.get("subtype_override_allowed", False))
@@ -92,6 +100,13 @@ def decide_conservative_agent_fusion(
     baseline_preview = dict(risk_layer.get("baseline_preview", {})) if isinstance(risk_layer.get("baseline_preview", {}), dict) else {}
     baseline_differentials = [str(item).strip() for item in baseline_output.get("differential_diagnoses", []) if str(item).strip()]
     initial_ddx = [str(item).strip() for item in baseline_preview.get("early_ddx_candidates", []) if str(item).strip()]
+    skill_outputs = dict(evidence_bundle.get("skill_outputs", {}) or {})
+    risk_skill_output = dict(skill_outputs.get("malignancy_risk_assessment_skill", {}) or {})
+    benign_reassuring_features = [
+        str(item).strip()
+        for item in risk_skill_output.get("benign_reassuring_features", [])
+        if str(item).strip()
+    ]
     consensus_candidates = _consensus_candidates(
         baseline_label=baseline_label,
         baseline_differentials=baseline_differentials,
@@ -103,6 +118,7 @@ def decide_conservative_agent_fusion(
     reasons: list[str] = []
     merge_baseline_differentials = False
     consensus_override_label = ""
+    malformed_agent_output = _is_malformed_final_label(agent_label)
 
     if fusion_mode == "off":
         use_agent_output = True
@@ -153,6 +169,21 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("image_archive_consensus_override_without_selected_evidence")
+        elif (
+            not selected_evidence_present
+            and _allow_qwen_isic_archive_guarded_override(
+                workflow_context=workflow_context,
+                baseline_label=baseline_label,
+                agent_label=agent_label,
+                agent_confidence=agent_confidence,
+                label_space_id=label_space_id,
+                dataset_name=dataset_name,
+                benign_reassuring_features=benign_reassuring_features,
+            )
+        ):
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("qwen_isic_guarded_archive_override")
         elif not selected_evidence_present:
             use_agent_output = False
             reasons.append("no_selected_evidence")
@@ -242,6 +273,28 @@ def decide_conservative_agent_fusion(
             use_agent_output = False
             reasons.append("agent_confidence_below_baseline")
 
+    route_guard = _route_specific_fallback_reason(
+        workflow_context=workflow_context,
+        baseline_label=baseline_label,
+        agent_label=agent_label,
+        baseline_differentials=baseline_differentials,
+        initial_ddx=initial_ddx,
+        selected_evidence_present=selected_evidence_present,
+        subtype_support_margin=subtype_support_margin,
+        support_margin=support_margin,
+        uncertainty_level=uncertainty_level,
+        malformed_agent_output=malformed_agent_output,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+        agent_confidence=agent_confidence,
+        benign_reassuring_features=benign_reassuring_features,
+    )
+    if route_guard:
+        use_agent_output = False
+        merge_baseline_differentials = False
+        consensus_override_label = ""
+        reasons.append(route_guard)
+
     if use_agent_output:
         reasons.append("use_agent_output")
     else:
@@ -267,6 +320,9 @@ def decide_conservative_agent_fusion(
         "subtype_support_margin": subtype_support_margin,
         "uncertainty_level": uncertainty_level,
         "workflow_profile": str(workflow_context.get("workflow_profile", "")).strip(),
+        "dataset_workflow_profile": dataset_workflow_profile,
+        "model_workflow_profile": model_workflow_profile,
+        "malformed_agent_output": malformed_agent_output,
         "baseline_preview": deepcopy(baseline_preview),
         "reasons": reasons,
     }
@@ -297,6 +353,138 @@ def _merge_differentials(*, primary: list[Any], baseline: list[Any], final_label
         seen.add(text)
         merged.append(text)
     return merged[:5]
+
+
+def _route_specific_fallback_reason(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    baseline_differentials: list[str],
+    initial_ddx: list[str],
+    selected_evidence_present: bool,
+    subtype_support_margin: float,
+    support_margin: float,
+    uncertainty_level: str,
+    malformed_agent_output: bool,
+    label_space_id: str,
+    dataset_name: str,
+    agent_confidence: str,
+    benign_reassuring_features: list[str],
+) -> str:
+    model_profile = str(workflow_context.get("model_workflow_profile", "")).strip().lower()
+    dataset_profile = str(
+        workflow_context.get("dataset_workflow_profile", "") or workflow_context.get("workflow_profile", "")
+    ).strip().lower()
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+
+    if bool(workflow_context.get("fallback_on_malformed_final", False)) and malformed_agent_output:
+        return "model_route_malformed_final_fallback"
+
+    if model_profile == "direct_baseline_workflow":
+        return "skinvl_direct_baseline_workflow_fallback"
+
+    if (
+        workflow_cell_id == "qwen__isic2019__dataset_best"
+        or model_profile == "qwen_isic2019_archive_guard_workflow"
+    ):
+        baseline_canonical = canonicalize_label(
+            baseline_label,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+        agent_canonical = canonicalize_label(
+            agent_label,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+        if baseline_canonical == "NV" and agent_canonical == "MEL" and benign_reassuring_features:
+            return "qwen_isic_nevus_preservation_guard"
+        if baseline_canonical == "AK" and agent_canonical != "AK" and agent_confidence == "low":
+            return "qwen_isic_low_confidence_ak_preservation_guard"
+
+    if model_profile == "conservative_archive_workflow" and dataset_profile == "image_archive_full_taxonomy_lesion_workflow":
+        if malformed_agent_output:
+            return "llama_archive_malformed_final_fallback"
+        baseline_is_malignant = _is_malignant_for_route(
+            baseline_label,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+        agent_is_malignant = _is_malignant_for_route(
+            agent_label,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+        if baseline_is_malignant is True and agent_is_malignant is False:
+            return "llama_archive_malignant_recall_guard"
+        if not selected_evidence_present or uncertainty_level in {"high", "unknown"} or subtype_support_margin < 4.0:
+            return "llama_archive_baseline_anchor_guard"
+
+    if dataset_profile == "clinical_full_taxonomy_lesion_workflow":
+        baseline_or_ddx_malignant = any(
+            _is_malignant_for_route(label, label_space_id=label_space_id, dataset_name=dataset_name) is True
+            for label in [baseline_label] + list(baseline_differentials) + list(initial_ddx)
+        )
+        agent_is_benign = (
+            _is_malignant_for_route(agent_label, label_space_id=label_space_id, dataset_name=dataset_name)
+            is False
+        )
+        if baseline_or_ddx_malignant and agent_is_benign and support_margin < 10.0:
+            return "clinical_malignant_recall_guard"
+
+    return ""
+
+
+def _is_malformed_final_label(label: str) -> bool:
+    text = str(label or "").strip()
+    if not text:
+        return True
+    lowered = text.lower()
+    malformed_markers = (
+        "source_id",
+        "retrieval_score",
+        "raw_case_memory",
+        "experience_type",
+        "decision_trace",
+        "skill retrieval",
+        "boosted by skill",
+        "correctness:",
+        "\\\\",
+        "{",
+        "}",
+        "[",
+        "]",
+    )
+    if any(marker in lowered for marker in malformed_markers):
+        return True
+    if len(text) > 120:
+        return True
+    return False
+
+
+def _is_malignant_for_route(
+    label: str,
+    *,
+    label_space_id: str,
+    dataset_name: str,
+) -> bool | None:
+    result = is_malignant_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+    if result is not None:
+        return result
+    canonical = canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+    if canonical:
+        result = is_malignant_label(canonical, label_space_id=label_space_id, dataset_name=dataset_name)
+        if result is not None:
+            return result
+    normalized = str(label or "").strip().lower()
+    if not normalized:
+        return None
+    if any(term in normalized for term in ("melanoma", "malignant", "basal cell", "squamous cell", "actinic keratos", "bcc", "scc", "ack", "akiec")):
+        return True
+    if any(term in normalized for term in ("nevus", "naevus", "seborrheic", "keratosis", "dermatofibroma", "vascular", "benign")):
+        return False
+    return None
 
 
 def _all_in_family(values: list[str], family: set[str]) -> bool:
@@ -417,6 +605,44 @@ def _allow_image_archive_consensus_override(
             "seborrheic keratosis",
         }
 
+    return False
+
+
+def _allow_qwen_isic_archive_guarded_override(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    agent_confidence: str,
+    label_space_id: str,
+    dataset_name: str,
+    benign_reassuring_features: list[str],
+) -> bool:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    model_profile = str(workflow_context.get("model_workflow_profile", "")).strip().lower()
+    if (
+        workflow_cell_id != "qwen__isic2019__dataset_best"
+        and model_profile != "qwen_isic2019_archive_guard_workflow"
+    ):
+        return False
+    if agent_confidence not in {"moderate", "medium", "high"}:
+        return False
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if baseline_canonical != "NV":
+        return False
+    if agent_canonical == "BCC":
+        return True
+    if agent_canonical == "MEL":
+        return not benign_reassuring_features
     return False
 
 

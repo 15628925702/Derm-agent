@@ -15,6 +15,7 @@ from agent.evaluation_protocol import (
     experience_layers_for_variant,
 )
 from agent.execution_record import build_baseline_case_execution_record
+from agent.model_workflow_router import apply_model_workflow_to_case, execution_overrides_for_run_agent
 from agent.state import CaseInput
 
 
@@ -106,3 +107,35 @@ def test_build_contamination_check_marks_snapshot_isolation() -> None:
     assert contamination["live_state_mutation_allowed_to_affect_eval"] is False
     assert contamination["strict_frozen_eval"] is True
     assert contamination["target_execution_modes"]["full_dermagent"]["execution_overrides"]["enable_skill_retrieval"] is False
+
+
+def test_case_specific_model_overlay_is_merged_from_target_model_name() -> None:
+    case_input = CaseInput(
+        case_id="case_2",
+        image_path="/tmp/missing.png",
+        metadata={"region": "forearm"},
+        label="BCC",
+        dataset_name="pad_ufes_20",
+        workflow_context={
+            "workflow_profile": "clinical_full_taxonomy_lesion_workflow",
+            "workflow_capabilities": ["clinical_metadata_reasoning"],
+        },
+    )
+    target_execution_overrides = {"model_name": "Qwen2.5-VL-7B-Instruct"}
+
+    case_overrides = apply_model_workflow_to_case(
+        case_input,
+        target_execution_overrides["model_name"],
+        dataset_name=case_input.dataset_name,
+    )
+    merged_execution_overrides = {
+        **target_execution_overrides,
+        **case_overrides,
+        **execution_overrides_for_run_agent(case_overrides),
+    }
+
+    assert case_input.workflow_context is not None
+    assert case_input.workflow_context["workflow_profile"] == "clinical_full_taxonomy_lesion_workflow"
+    assert case_input.workflow_context["model_workflow_profile"] == "clinical_malignant_guard_workflow"
+    assert merged_execution_overrides["model_name"] == "Qwen2.5-VL-7B-Instruct"
+    assert merged_execution_overrides["force_conservative_fusion"] is True

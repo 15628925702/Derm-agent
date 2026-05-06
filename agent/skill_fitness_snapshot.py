@@ -5,7 +5,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-DEFAULT_SNAPSHOT_DIR = Path("/root/DermAgent/state/skill_fitness_snapshots")
+from project_paths import state_root
+
+DEFAULT_SNAPSHOT_DIR = state_root() / "skill_fitness_snapshots"
 
 
 def save_skill_fitness_snapshot(

@@ -7,11 +7,12 @@ from pathlib import Path
 from typing import Any
 
 from agent.label_space import is_malignant_label as _shared_is_malignant_label
+from project_paths import state_root
 
 
-DEFAULT_EXPERIENCE_ROOT = Path("/root/DermAgent/state/experience")
-LEGACY_EXPERIENCE_JSON_PATH = Path("/root/DermAgent/state/experience_bank.json")
-LEGACY_EXPERIENCE_JSONL_PATH = Path("/root/DermAgent/state/experience_bank.jsonl")
+DEFAULT_EXPERIENCE_ROOT = state_root() / "experience"
+LEGACY_EXPERIENCE_JSON_PATH = state_root() / "experience_bank.json"
+LEGACY_EXPERIENCE_JSONL_PATH = state_root() / "experience_bank.jsonl"
 
 
 def stable_hash(payload: Any) -> str:

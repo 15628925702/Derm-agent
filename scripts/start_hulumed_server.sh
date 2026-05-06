@@ -6,10 +6,15 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="${1:-$(cd "${SCRIPT_DIR}/.." && pwd)}"
 
 mkdir -p "${PROJECT_ROOT}/logs" "${PROJECT_ROOT}/outputs" "${PROJECT_ROOT}/state"
+mkdir -p "${PROJECT_ROOT}/.tmp"
+export TMPDIR="${TMPDIR:-${PROJECT_ROOT}/.tmp}"
 
-CONDA_ENV_NAME="${CONDA_ENV_NAME:-derm-qwen}"
-MODEL_ROOTS=("/models" "/root/models")
+CONDA_ENV_NAME="${CONDA_ENV_NAME:-dermagent-6x6}"
+WORKSPACE_ROOT="$(cd "${PROJECT_ROOT}/.." && pwd)"
+MODEL_ROOTS=("${DERMAGENT_MODELS_ROOT:-${WORKSPACE_ROOT}/models}" "/data/gh/models" "/models" "/root/models")
 PREFERRED_MODEL_PATHS=(
+  "${DERMAGENT_MODELS_ROOT:-${WORKSPACE_ROOT}/models}/Hulu-Med-7B"
+  "/data/gh/models/Hulu-Med-7B"
   "/models/Hulu-Med-7B"
   "/root/models/Hulu-Med-7B"
 )
@@ -46,8 +51,9 @@ resolve_vllm_bin() {
     return 0
   fi
 
-  local env_bin
-  env_bin="/root/miniconda3/envs/${CONDA_ENV_NAME}/bin/vllm"
+  local conda_base env_bin
+  conda_base="$(conda info --base 2>/dev/null || true)"
+  env_bin="${conda_base}/envs/${CONDA_ENV_NAME}/bin/vllm"
   if [[ -x "${env_bin}" ]]; then
     echo "${env_bin}"
     return 0
@@ -57,8 +63,9 @@ resolve_vllm_bin() {
 }
 
 resolve_python_bin() {
-  local env_bin
-  env_bin="/root/miniconda3/envs/${CONDA_ENV_NAME}/bin/python"
+  local conda_base env_bin
+  conda_base="$(conda info --base 2>/dev/null || true)"
+  env_bin="${conda_base}/envs/${CONDA_ENV_NAME}/bin/python"
   if [[ -x "${env_bin}" ]]; then
     echo "${env_bin}"
     return 0
@@ -137,7 +144,7 @@ PY
 
   if [[ -n "${missing}" ]]; then
     echo "[error] Hulu-Med remote processor dependencies are missing: ${missing}"
-    echo "[error] install them in /root/miniconda3/envs/${CONDA_ENV_NAME} before starting Hulu-Med."
+    echo "[error] install them in conda env '${CONDA_ENV_NAME}' before starting Hulu-Med."
     exit 1
   fi
 
@@ -225,6 +232,7 @@ echo "CUDA alloc conf   : ${PYTORCH_CUDA_ALLOC_CONF}"
 echo "[info] Hulu-Med is served directly to avoid vLLM AutoModel remote-code incompatibility."
 
 export PYTORCH_CUDA_ALLOC_CONF
+export LIBRARY_PATH="$(dirname "$(dirname "${PYTHON_BIN}")")/lib:${LIBRARY_PATH:-}"
 
 launch_args=(
   "${PYTHON_BIN}" "${PROJECT_ROOT}/scripts/serve_transformers_openai.py"
@@ -238,6 +246,11 @@ launch_args=(
   --dtype "${DTYPE}"
   --max-new-tokens-default "${MAX_NEW_TOKENS_DEFAULT}"
 )
+
+if [[ "${DRY_RUN:-0}" == "1" ]]; then
+  echo "[dry-run] command: ${launch_args[*]}"
+  exit 0
+fi
 
 if command -v setsid >/dev/null 2>&1; then
   nohup setsid "${launch_args[@]}" > "${LOG_FILE}" 2>&1 &

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -11,10 +12,37 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from agent.evaluation_protocol import DEFAULT_EVAL_OUTPUT_ROOT, EvaluationTargetSpec, run_evaluation_suite
+from agent.model_workflow_router import (
+    dataset_environment_overrides_for_model_dataset,
+    execution_overrides_for_run_agent,
+    get_model_workflow_overrides,
+    merge_model_workflow_policy_overrides,
+)
 from agent.policy_config import load_policy, load_stable_policy
+from dataio.case_loader import resolve_registered_dataset_loader
 from integrations.openai_client import DermOpenAIClient
 DEFAULT_DATA_ROOT = PROJECT_ROOT / "data"
 DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "outputs" / "comparison"
+
+
+def infer_dataset_name_from_data_root(data_root: Path) -> str:
+    spec = resolve_registered_dataset_loader(data_root)
+    if spec is not None:
+        return spec.dataset_name
+    parts = {part.strip().lower() for part in data_root.resolve().parts}
+    if "pad_ufes_20" in parts:
+        return "pad20"
+    if "isic2019" in parts:
+        return "isic2019"
+    if "scin" in parts:
+        return "scin"
+    if "sd198" in parts or "sd-198" in parts:
+        return "sd198"
+    if "ham10000" in parts:
+        return "ham10000"
+    if "sft数据" in parts or "xiangya_sft" in parts:
+        return "xiangya_sft"
+    return ""
 
 
 def parse_args() -> argparse.Namespace:
@@ -52,6 +80,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--client-timeout", type=float, default=None, help="Override per-request timeout in seconds.")
     parser.add_argument("--client-max-retries", type=int, default=None, help="Override automatic retries for transient local inference failures.")
     parser.add_argument("--phase", type=str, default="full", help="Compatibility label for legacy run scripts; recorded but does not alter target selection.")
+    parser.add_argument(
+        "--disable-model-workflow-routing",
+        action="store_true",
+        help="Do not apply model workflow overlays; keep dataset workflow routing only.",
+    )
     return parser.parse_args()
 
 
@@ -74,6 +107,69 @@ def main() -> int:
         max_retries=args.client_max_retries,
     )
     policy = load_policy(args.policy_config).to_dict() if args.policy_config else load_stable_policy().to_dict()
+    agent_model_name = args.agent_model or client.model
+    inferred_dataset_name = infer_dataset_name_from_data_root(args.data_root)
+    disable_model_workflow_routing = bool(args.disable_model_workflow_routing) or str(
+        os.getenv("DERMAGENT_DISABLE_MODEL_WORKFLOW_ROUTING", "")
+    ).strip().lower() in {"1", "true", "yes", "on"}
+    if not disable_model_workflow_routing:
+        dataset_env_overrides = dataset_environment_overrides_for_model_dataset(
+            agent_model_name,
+            inferred_dataset_name,
+        )
+        for key, value in dataset_env_overrides.items():
+            os.environ.setdefault(key, value)
+        if dataset_env_overrides:
+            print(
+                json.dumps(
+                    {
+                        "model_dataset_workflow_environment": {
+                            "model": agent_model_name,
+                            "dataset": inferred_dataset_name,
+                            "environment": dataset_env_overrides,
+                        }
+                    },
+                    ensure_ascii=False,
+                ),
+                flush=True,
+            )
+    if disable_model_workflow_routing:
+        model_workflow_overrides = {}
+        agent_execution_overrides = {}
+    else:
+        model_workflow_overrides = get_model_workflow_overrides(
+            agent_model_name,
+            dataset_name=None,
+            base_workflow_context=None,
+        )
+        agent_execution_overrides = execution_overrides_for_run_agent(model_workflow_overrides)
+        if model_workflow_overrides.get("skip_specialist_skills"):
+            policy = merge_model_workflow_policy_overrides(policy, model_workflow_overrides)
+    if model_workflow_overrides:
+        print(
+            json.dumps(
+                {
+                    "model_workflow_routing": {
+                        "model": agent_model_name,
+                        "model_workflow_profile": model_workflow_overrides.get("workflow_profile", ""),
+                        "execution_overrides": agent_execution_overrides,
+                        "skip_specialist_skills": bool(model_workflow_overrides.get("skip_specialist_skills", False)),
+                        "skip_experience_retrieval": bool(model_workflow_overrides.get("skip_experience_retrieval", False)),
+                    }
+                },
+                ensure_ascii=False,
+            ),
+            flush=True,
+        )
+    agent_target_execution_overrides = (
+        {
+            "model_name": agent_model_name,
+            **model_workflow_overrides,
+            **agent_execution_overrides,
+        }
+        if not disable_model_workflow_routing
+        else {}
+    )
     target_specs = [
         EvaluationTargetSpec(
             target_id="direct_baseline",
@@ -88,6 +184,10 @@ def main() -> int:
             target_type="full_agent",
             mode="agent",
             description=args.agent_description,
+            execution_overrides=agent_target_execution_overrides,
+            notes=[
+                "Model workflow routing is layered on top of dataset workflow routing."
+            ] if model_workflow_overrides else [],
         ),
     ]
 
@@ -137,6 +237,11 @@ def main() -> int:
             "phase": args.phase,
             "strict_frozen_eval": not args.non_strict_frozen_eval,
             "evaluation_protocol_version": result_manifest.get("protocol_version"),
+            "agent_model_name": agent_model_name,
+            "inferred_dataset_name": inferred_dataset_name,
+            "disable_model_workflow_routing": disable_model_workflow_routing,
+            "model_workflow_overrides": model_workflow_overrides,
+            "agent_execution_overrides": agent_execution_overrides,
         },
         "summary": {
             "baseline": baseline_summary,
