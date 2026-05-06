@@ -1,6 +1,6 @@
-# DermAgent Docs
+# DermAgent Project Index
 
-This directory is the stable home for project notes and experiment guides.
+This is the top-level index for project notes, experiment guides, and active runtime entry points.
 
 ## Active docs
 
