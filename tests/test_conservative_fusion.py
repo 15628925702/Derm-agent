@@ -220,6 +220,47 @@ def test_medgemma_sd198_grouped_blocks_malignant_demotion() -> None:
     assert "medgemma_sd198_grouped_conservative_guard" in result["fusion_decision"]["reasons"]
 
 
+def test_medgemma_sd198_grouped_allows_strong_cyst_family_malignant_demotion() -> None:
+    baseline_output = {
+        "final_diagnosis": "Basal Cell Carcinoma",
+        "differential_diagnoses": ["Basal Cell Carcinoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "BENIGN_TUMOR_CYST",
+        "differential_diagnoses": ["BENIGN_TUMOR_CYST", "Epidermoid Cyst"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "evidence_decision_policy": {
+            "risk_layer": {"baseline_preview": {"early_ddx_candidates": ["Epidermoid Cyst"]}},
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "medgemma__sd198__grouped_coarse_v1",
+                    "workflow_profile": "coarse_taxonomy_workflow",
+                    "label_space_id": "sd198_grouped",
+                    "dataset_name": "sd198",
+                },
+                "selected_evidence_present": True,
+                "support_margin": 45.0,
+                "subtype_support_margin": 9.5,
+                "uncertainty_level": "low",
+                "contradiction_count": 0,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "BENIGN_TUMOR_CYST"
+    assert "medgemma_sd198_grouped_moderate_override" in result["fusion_decision"]["reasons"]
+
+
 def test_medgemma_sd198_grouped_allows_cheilitis_mucosal_override() -> None:
     baseline_output = {
         "final_diagnosis": "Actinic Keratosis",

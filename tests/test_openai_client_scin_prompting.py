@@ -331,6 +331,72 @@ def test_medgemma_scin_grouped_refinement_preserves_scaling_raised_arm_dermatiti
     assert refined["final_diagnosis"] == "DERMATITIS_ECZEMA"
 
 
+def test_medgemma_sd198_grouped_refinement_uses_strong_acne_family_evidence() -> None:
+    case = CaseInput(
+        case_id="sd198_case",
+        image_path="/tmp/missing.png",
+        metadata={"label_space_id": "sd198_grouped"},
+        dataset_name="sd198",
+        label_space_id="sd198_grouped",
+        workflow_context={
+            "workflow_profile": "coarse_taxonomy_workflow",
+            "workflow_capabilities": ["coarse_taxonomy_reasoning", "grouped_label_reasoning"],
+            "workflow_cell_id": "medgemma__sd198__grouped_coarse_v1",
+        },
+    )
+    payload = {
+        "final_diagnosis": "Actinic Keratosis",
+        "differential_diagnoses": ["Actinic Keratosis"],
+        "rationale": "Multiple raised lesions on the scalp.",
+        "confidence": "Moderate",
+    }
+
+    refined = _refine_scin_payload_for_runtime(
+        case_input=case,
+        payload=payload,
+        evidence_package={
+            "serialized_evidence_text": (
+                "Initial image summary: scalp papules. Early differential candidates: "
+                "Acne Keloidalis Nuchae, Folliculitis, Kerion."
+            )
+        },
+        baseline_mode=False,
+    )
+
+    assert refined["final_diagnosis"] == "ACNE_FOLLICULITIS_ROSACEA"
+    assert refined["raw_final_diagnosis"] == "Actinic Keratosis"
+
+
+def test_medgemma_sd198_grouped_refinement_is_agent_only() -> None:
+    case = CaseInput(
+        case_id="sd198_case",
+        image_path="/tmp/missing.png",
+        metadata={"label_space_id": "sd198_grouped"},
+        dataset_name="sd198",
+        label_space_id="sd198_grouped",
+        workflow_context={
+            "workflow_profile": "coarse_taxonomy_workflow",
+            "workflow_capabilities": ["coarse_taxonomy_reasoning", "grouped_label_reasoning"],
+            "workflow_cell_id": "medgemma__sd198__grouped_coarse_v1",
+        },
+    )
+    payload = {
+        "final_diagnosis": "Contact Dermatitis",
+        "differential_diagnoses": ["Contact Dermatitis"],
+        "rationale": "Corner of the mouth scaling suggests angular cheilitis.",
+        "confidence": "Moderate",
+    }
+
+    refined = _refine_scin_payload_for_runtime(
+        case_input=case,
+        payload=payload,
+        evidence_package={"serialized_evidence_text": "Angular Cheilitis at the corner of the mouth."},
+        baseline_mode=True,
+    )
+
+    assert refined["final_diagnosis"] == "Contact Dermatitis"
+
+
 def test_xiangya_label_hint_mentions_grouped_eczematous_family_distinctions() -> None:
     case = CaseInput(
         case_id="xiangya_case",

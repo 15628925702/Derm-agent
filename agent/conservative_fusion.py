@@ -1504,6 +1504,45 @@ def _allow_medgemma_sd198_grouped_override(
     ):
         return True
 
+    if contradiction_count <= 1 and support_margin >= 44.0 and subtype_support_margin >= 7.0:
+        if baseline_canonical == "SUN_DAMAGE_ACTINIC" and agent_canonical in {
+            "ACNE_FOLLICULITIS_ROSACEA",
+            "MUCOSAL_GENITAL_ORAL",
+        }:
+            return True
+        if baseline_canonical == "DERMATITIS_ECZEMA" and agent_canonical in {
+            "MUCOSAL_GENITAL_ORAL",
+            "INFECTION_INFESTATION",
+        }:
+            return True
+
+    if (
+        contradiction_count == 0
+        and baseline_canonical == "SUN_DAMAGE_ACTINIC"
+        and agent_canonical == "HAIR_NAIL_APPENDAGE"
+        and support_margin >= 42.0
+        and subtype_support_margin >= 10.0
+    ):
+        return True
+
+    if (
+        contradiction_count == 0
+        and baseline_canonical == "SUN_DAMAGE_ACTINIC"
+        and agent_canonical == "BENIGN_TUMOR_CYST"
+        and support_margin >= 44.0
+        and subtype_support_margin >= 12.0
+    ):
+        return True
+
+    if (
+        contradiction_count == 0
+        and baseline_canonical == "MALIGNANT_SKIN_CANCER"
+        and agent_canonical in {"BENIGN_TUMOR_CYST", "MUCOSAL_GENITAL_ORAL"}
+        and support_margin >= 44.0
+        and subtype_support_margin >= 9.0
+    ):
+        return True
+
     if support_margin < 48.0 or subtype_support_margin < 5.0:
         return False
 

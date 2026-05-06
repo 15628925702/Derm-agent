@@ -738,6 +738,86 @@ def _refine_scin_grouped_agent_payload(
     return refined
 
 
+def _refine_sd198_grouped_agent_payload(
+    *,
+    case_input: CaseInput,
+    payload: dict[str, Any],
+    evidence_package: dict[str, Any],
+) -> dict[str, Any]:
+    label_space_id = str(getattr(case_input, "label_space_id", "") or "").strip().lower()
+    workflow_context = _case_workflow_context(case_input)
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if label_space_id != "sd198_grouped" or workflow_cell_id != "medgemma__sd198__grouped_coarse_v1":
+        return payload
+
+    final_label = str(payload.get("final_diagnosis", "")).strip()
+    text_parts = [final_label, str(payload.get("rationale", "")).strip()]
+    differentials = payload.get("differential_diagnoses", [])
+    if isinstance(differentials, list):
+        text_parts.extend(str(item).strip() for item in differentials if str(item).strip())
+    for item in evidence_package.get("selected_evidence", [])[:8]:
+        if isinstance(item, dict):
+            text_parts.append(str(item.get("summary", "")).strip())
+    text_parts.append(str(evidence_package.get("serialized_evidence_text", "")).strip())
+    normalized = re.sub(r"[^a-z0-9]+", " ", " \n".join(text_parts).lower())
+    normalized = " ".join(normalized.split())
+
+    scores: dict[str, float] = {
+        "ACNE_FOLLICULITIS_ROSACEA": 0.0,
+        "MUCOSAL_GENITAL_ORAL": 0.0,
+        "BENIGN_TUMOR_CYST": 0.0,
+        "INFECTION_INFESTATION": 0.0,
+        "HAIR_NAIL_APPENDAGE": 0.0,
+        "VASCULAR_ULCER_PURPURA": 0.0,
+    }
+
+    def boost(bucket: str, value: float) -> None:
+        scores[bucket] = scores.get(bucket, 0.0) + float(value)
+
+    if "acne keloidalis" in normalized:
+        boost("ACNE_FOLLICULITIS_ROSACEA", 11.0)
+    if "folliculitis" in normalized and ("scalp" in normalized or "papules" in normalized or "pustules" in normalized):
+        boost("ACNE_FOLLICULITIS_ROSACEA", 5.0)
+    if any(keyword in normalized for keyword in ("angular cheilitis", "actinic cheilitis")):
+        boost("MUCOSAL_GENITAL_ORAL", 11.0)
+    if (
+        any(keyword in normalized for keyword in ("corner of the mouth", "oral mucosa", "oral cavity", "glans penis"))
+        or ("balanitis" in normalized and "penis" in normalized)
+    ):
+        boost("MUCOSAL_GENITAL_ORAL", 8.0)
+    if any(keyword in normalized for keyword in ("behcet", "oral ulceration", "oral lesion")) and (
+        "oral mucosa" in normalized or "oral cavity" in normalized
+    ):
+        boost("MUCOSAL_GENITAL_ORAL", 8.0)
+    if any(keyword in normalized for keyword in ("apocrine hydrocystoma", "epidermoid cyst", "epithelioma adenoides cysticum")):
+        boost("BENIGN_TUMOR_CYST", 12.0)
+    if any(keyword in normalized for keyword in ("lipoma", "fibroma", "papilloma", "other benign tumor", "other benign lesion")):
+        boost("BENIGN_TUMOR_CYST", 8.0)
+    if "cystic" in normalized and ("well defined" in normalized or "central" in normalized or "round" in normalized):
+        boost("BENIGN_TUMOR_CYST", 6.0)
+    if any(keyword in normalized for keyword in ("candidiasis", "intertrigo", "intertriginous")):
+        boost("INFECTION_INFESTATION", 11.0)
+    if ("papules" in normalized or "pustules" in normalized) and "intertriginous" in normalized:
+        boost("INFECTION_INFESTATION", 5.0)
+    if any(keyword in normalized for keyword in ("beau s lines", "fingernail", "nail bed", "nail dystrophy", "nail ridging")):
+        boost("HAIR_NAIL_APPENDAGE", 11.0)
+    if any(keyword in normalized for keyword in ("angioma", "hemangioma", "pyogenic granuloma", "vascular lesion")):
+        boost("VASCULAR_ULCER_PURPURA", 7.0)
+
+    best_label = max(scores, key=lambda key: scores[key])
+    if scores.get(best_label, 0.0) < 10.0:
+        return payload
+
+    refined = dict(payload)
+    refined["raw_final_diagnosis"] = final_label or refined.get("raw_final_diagnosis", "")
+    refined["final_diagnosis"] = best_label
+    if isinstance(differentials, list):
+        refined["differential_diagnoses"] = [best_label] + [str(item).strip() for item in differentials[:4] if str(item).strip()]
+    else:
+        refined["differential_diagnoses"] = [best_label]
+    return refined
+
+
 def _refine_scin_payload_for_runtime(
     *,
     case_input: CaseInput,
@@ -754,6 +834,12 @@ def _refine_scin_payload_for_runtime(
             payload=dict(payload),
             evidence_package=evidence_package,
             baseline_mode=baseline_mode,
+        )
+    if label_space_id == "sd198_grouped" and not baseline_mode:
+        return _refine_sd198_grouped_agent_payload(
+            case_input=case_input,
+            payload=dict(payload),
+            evidence_package=evidence_package or {},
         )
     if not is_family_routing_case(workflow_context=workflow_context, label_space_id=label_space_id) and label_space_id != "scin_full":
         return payload
