@@ -20,6 +20,7 @@
 
 当前已知状态：
 - qwen 这一整行已经调好，并已保存到 GitHub 分支 `qwenOK`。
+- OK 分支是累积迭代 checkpoint，不是彼此独立的平行分支。后续新 OK 分支必须从当前最新 OK 分支继续，包含前面所有已经调好的 workflow。例如调完 qwen 后继续调 dermatollama，最终 `dermatollamaOK` 应包含 `qwenOK` 的全部内容以及 dermatollama 全行的新增 workflow。
 - 当前架构已经支持 model×dataset 专属 workflow cell。
 - workflow 优先级是：
   1. model×dataset override
@@ -145,7 +146,7 @@
 9. 更新根目录 `6x6工作流状态_20260506.md`。
 10. 如果该 cell 或该模型线调好了：
     - git commit
-    - 推到 GitHub 新分支
+    - 推到 GitHub 新分支；注意新分支必须从当前最新 OK 分支继续，保留前面所有已调好的 workflow，不要从 `master`、旧基线或单独分叉开始
     - 分支名使用“本次完成后分支名”
     - 如果整条模型线 6 个数据集都调好了，就推成：
       - llamaOK
