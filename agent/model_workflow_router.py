@@ -83,6 +83,18 @@ MODEL_DATASET_WORKFLOW_PROFILES = {
             "block_model_workflow_profile": True,
         },
     },
+    "DermatoLlama-full": {
+        "pad20": {
+            "workflow_cell_id": "dermatollama__pad20__baseline_guard_v1",
+            "label_space_id": "derm_six",
+            "inherit_dataset_workflow": True,
+            "workflow_capabilities": ["baseline_anchored_final"],
+            "skip_specialist_skills": True,
+            "force_conservative_fusion": True,
+            "fallback_on_malformed_final": True,
+            "disable_legacy_final_path": True,
+        },
+    },
 }
 
 

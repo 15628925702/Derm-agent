@@ -184,6 +184,20 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("qwen_isic_guarded_archive_override")
+        elif _allow_dermatollama_pad20_guarded_override(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("dermatollama_pad20_guarded_override")
         elif not selected_evidence_present:
             use_agent_output = False
             reasons.append("no_selected_evidence")
@@ -402,6 +416,20 @@ def _route_specific_fallback_reason(
             return "qwen_isic_nevus_preservation_guard"
         if baseline_canonical == "AK" and agent_canonical != "AK" and agent_confidence == "low":
             return "qwen_isic_low_confidence_ak_preservation_guard"
+
+    if workflow_cell_id == "dermatollama__pad20__baseline_guard_v1":
+        if baseline_label != agent_label and not _allow_dermatollama_pad20_guarded_override(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            return "dermatollama_pad20_baseline_anchor_guard"
 
     if model_profile == "conservative_archive_workflow" and dataset_profile == "image_archive_full_taxonomy_lesion_workflow":
         if malformed_agent_output:
@@ -643,6 +671,51 @@ def _allow_qwen_isic_archive_guarded_override(
         return True
     if agent_canonical == "MEL":
         return not benign_reassuring_features
+    return False
+
+
+def _allow_dermatollama_pad20_guarded_override(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> bool:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "dermatollama__pad20__baseline_guard_v1":
+        return False
+    if not selected_evidence_present:
+        return False
+    if support_margin < 40.0:
+        return False
+    if str(uncertainty_level or "").strip().lower() == "high":
+        return False
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+
+    if baseline_canonical == "NEV" and agent_canonical == "SEK":
+        return subtype_support_margin >= 10.0
+
+    if baseline_canonical == "NEV" and agent_canonical == "BCC":
+        return subtype_support_margin <= 7.0
+
+    if baseline_canonical == "BCC" and agent_canonical == "ACK":
+        return subtype_support_margin >= 8.0
+
     return False
 
 
