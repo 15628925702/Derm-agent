@@ -84,6 +84,16 @@ MODEL_DATASET_WORKFLOW_PROFILES = {
         },
     },
     "DermatoLlama-full": {
+        "isic2019": {
+            "workflow_cell_id": "dermatollama__isic2019__archive_guard_v1",
+            "label_space_id": "isic2019_full",
+            "workflow_profile": "dermatollama_isic2019_archive_guard_workflow",
+            "workflow_capabilities": ["baseline_anchored_final", "melanocytic_guard_reasoning"],
+            "inherit_dataset_workflow": True,
+            "force_conservative_fusion": True,
+            "fallback_on_malformed_final": True,
+            "disable_legacy_final_path": True,
+        },
         "ham10000": {
             "workflow_cell_id": "dermatollama__ham10000__baseline_guard_v1",
             "label_space_id": "ham10000_full",

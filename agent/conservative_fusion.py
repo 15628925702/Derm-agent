@@ -98,7 +98,8 @@ def decide_conservative_agent_fusion(
     uncertainty_level = str(diagnosis_layer.get("uncertainty_level", "")).strip().lower()
     override_mode = str(diagnosis_layer.get("override_mode", "")).strip().lower()
     baseline_preview = dict(risk_layer.get("baseline_preview", {})) if isinstance(risk_layer.get("baseline_preview", {}), dict) else {}
-    baseline_differentials = [str(item).strip() for item in baseline_output.get("differential_diagnoses", []) if str(item).strip()]
+    baseline_differentials = _coerce_label_list(baseline_output.get("differential_diagnoses", []))
+    agent_differentials = _coerce_label_list(agent_output.get("differential_diagnoses", []))
     initial_ddx = [str(item).strip() for item in baseline_preview.get("early_ddx_candidates", []) if str(item).strip()]
     skill_outputs = dict(evidence_bundle.get("skill_outputs", {}) or {})
     risk_skill_output = dict(skill_outputs.get("malignancy_risk_assessment_skill", {}) or {})
@@ -119,6 +120,7 @@ def decide_conservative_agent_fusion(
     merge_baseline_differentials = False
     consensus_override_label = ""
     malformed_agent_output = _is_malformed_final_label(agent_label)
+    contradiction_count = _safe_int(diagnosis_layer.get("contradiction_count"))
 
     if fusion_mode == "off":
         use_agent_output = True
@@ -128,6 +130,24 @@ def decide_conservative_agent_fusion(
         if not agent_label or not baseline_label:
             use_agent_output = False
             reasons.append("missing_final_diagnosis")
+        elif dermatollama_isic_override_label := _dermatollama_isic_consensus_override_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            baseline_differentials=baseline_differentials,
+            agent_differentials=agent_differentials,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            contradiction_count=contradiction_count,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = dermatollama_isic_override_label
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("dermatollama_isic_bcc_consensus_override")
         elif agent_label == baseline_label:
             use_agent_output = True
             reasons.append("agent_matches_baseline")
@@ -448,6 +468,10 @@ def _route_specific_fallback_reason(
         if baseline_canonical == "AK" and agent_canonical != "AK" and agent_confidence == "low":
             return "qwen_isic_low_confidence_ak_preservation_guard"
 
+    if workflow_cell_id == "dermatollama__isic2019__archive_guard_v1":
+        if baseline_label != agent_label:
+            return "dermatollama_isic2019_baseline_anchor_guard"
+
     if workflow_cell_id == "dermatollama__pad20__baseline_guard_v1":
         if baseline_label != agent_label and not _allow_dermatollama_pad20_guarded_override(
             workflow_context=workflow_context,
@@ -750,6 +774,78 @@ def _allow_qwen_isic_archive_guarded_override(
     return False
 
 
+def _dermatollama_isic_consensus_override_label(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    baseline_differentials: list[str],
+    agent_differentials: list[str],
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    contradiction_count: int,
+    label_space_id: str,
+    dataset_name: str,
+) -> str:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "dermatollama__isic2019__archive_guard_v1":
+        return ""
+    if not selected_evidence_present:
+        return ""
+    if str(uncertainty_level or "").strip().lower() in {"high", "unknown"}:
+        return ""
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if baseline_canonical != "NV":
+        return ""
+
+    bcc_in_baseline = _contains_canonical_label(
+        baseline_differentials,
+        canonical_label="BCC",
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    bcc_in_agent = _contains_canonical_label(
+        agent_differentials,
+        canonical_label="BCC",
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if not bcc_in_agent:
+        return ""
+
+    if (
+        agent_canonical == "NV"
+        and bcc_in_baseline
+        and support_margin >= 55.0
+        and subtype_support_margin >= 18.0
+        and contradiction_count <= 6
+    ):
+        return "Basal Cell Carcinoma"
+
+    if (
+        agent_canonical == "NV"
+        and not bcc_in_baseline
+        and support_margin >= 62.0
+        and subtype_support_margin >= 20.0
+        and contradiction_count <= 4
+    ):
+        return "Basal Cell Carcinoma"
+
+    return ""
+
+
 def _allow_dermatollama_pad20_guarded_override(
     *,
     workflow_context: dict[str, Any],
@@ -995,3 +1091,39 @@ def _safe_float(value: Any) -> float:
         return float(value or 0.0)
     except Exception:
         return 0.0
+
+
+def _safe_int(value: Any) -> int:
+    try:
+        return int(float(value or 0))
+    except Exception:
+        return 0
+
+
+def _coerce_label_list(value: Any) -> list[str]:
+    if isinstance(value, list):
+        return [str(item).strip() for item in value if str(item).strip()]
+    if isinstance(value, str):
+        return [item.strip() for item in value.split(",") if item.strip()]
+    return []
+
+
+def _contains_canonical_label(
+    values: list[str],
+    *,
+    canonical_label: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> bool:
+    target = str(canonical_label or "").strip()
+    if not target:
+        return False
+    for value in values:
+        canonical = canonicalize_label(
+            value,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+        if canonical == target:
+            return True
+    return False
