@@ -103,6 +103,16 @@ MODEL_DATASET_WORKFLOW_PROFILES = {
             "fallback_on_malformed_final": True,
             "disable_legacy_final_path": True,
         },
+        "xiangya_sft": {
+            "workflow_cell_id": "dermatollama__xiangya_sft__baseline_guard_v1",
+            "label_space_id": "xiangya_sft_grouped",
+            "inherit_dataset_workflow": True,
+            "workflow_capabilities": ["baseline_anchored_final"],
+            "skip_specialist_skills": True,
+            "force_conservative_fusion": True,
+            "fallback_on_malformed_final": True,
+            "disable_legacy_final_path": True,
+        },
     },
 }
 

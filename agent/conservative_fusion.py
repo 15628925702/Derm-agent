@@ -314,6 +314,7 @@ def decide_conservative_agent_fusion(
         malformed_agent_output=malformed_agent_output,
         label_space_id=label_space_id,
         dataset_name=dataset_name,
+        baseline_confidence=baseline_confidence,
         agent_confidence=agent_confidence,
         benign_reassuring_features=benign_reassuring_features,
     )
@@ -397,6 +398,7 @@ def _route_specific_fallback_reason(
     malformed_agent_output: bool,
     label_space_id: str,
     dataset_name: str,
+    baseline_confidence: str,
     agent_confidence: str,
     benign_reassuring_features: list[str],
 ) -> str:
@@ -458,6 +460,22 @@ def _route_specific_fallback_reason(
             dataset_name=dataset_name,
         ):
             return "dermatollama_ham10000_baseline_anchor_guard"
+
+    if workflow_cell_id == "dermatollama__xiangya_sft__baseline_guard_v1":
+        if baseline_label != agent_label and not _allow_dermatollama_xiangya_sft_guarded_override(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            baseline_confidence=baseline_confidence,
+            agent_confidence=agent_confidence,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            return "dermatollama_xiangya_sft_baseline_anchor_guard"
 
     if model_profile == "conservative_archive_workflow" and dataset_profile == "image_archive_full_taxonomy_lesion_workflow":
         if malformed_agent_output:
@@ -780,6 +798,51 @@ def _allow_dermatollama_ham10000_guarded_override(
 
     if baseline_canonical == "BCC" and agent_canonical == "NV":
         return support_margin < 40.0 and subtype_support_margin < 10.0
+
+    return False
+
+
+def _allow_dermatollama_xiangya_sft_guarded_override(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    baseline_confidence: str,
+    agent_confidence: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> bool:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "dermatollama__xiangya_sft__baseline_guard_v1":
+        return False
+    if not selected_evidence_present:
+        return False
+    if str(baseline_confidence or "").strip().lower() == "high":
+        return False
+    if str(uncertainty_level or "").strip().lower() != "low":
+        return False
+    if support_margin < 50.0 or subtype_support_margin < 10.0:
+        return False
+    if str(agent_confidence or "").strip().lower() not in {"unknown", "medium", "moderate", "high"}:
+        return False
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+
+    if baseline_canonical == "CONTACT_DERMATITIS" and agent_canonical == "ATOPIC_DERMATITIS":
+        return True
 
     return False
 
