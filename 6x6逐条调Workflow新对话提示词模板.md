@@ -74,6 +74,7 @@
 - 如果必须新增 skill，只新增小而明确的 skill，并注册到现有 skill registry。
 
 运行要求：
+测试时一定要把8个卡都用上一起跑，保持最快速度
 - compare 必须保持 frozen evaluation。
 - 不要打开 test writeback。
 - 不要污染 test split。
