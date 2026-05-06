@@ -113,6 +113,17 @@ MODEL_DATASET_WORKFLOW_PROFILES = {
             "fallback_on_malformed_final": True,
             "disable_legacy_final_path": True,
         },
+        "scin": {
+            "workflow_cell_id": "dermatollama__scin__grouped_guard_v1",
+            "label_space_id": "scin_grouped",
+            "environment": {"DERMAGENT_SCIN_LABEL_SPACE_ID": "scin_grouped"},
+            "inherit_dataset_workflow": True,
+            "workflow_capabilities": ["baseline_anchored_final"],
+            "skip_specialist_skills": True,
+            "force_conservative_fusion": True,
+            "fallback_on_malformed_final": True,
+            "disable_legacy_final_path": True,
+        },
     },
 }
 

@@ -212,6 +212,21 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("dermatollama_ham10000_guarded_override")
+        elif _allow_dermatollama_scin_guarded_override(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            uncertainty_level=uncertainty_level,
+            baseline_confidence=baseline_confidence,
+            agent_confidence=agent_confidence,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("dermatollama_scin_guarded_override")
         elif not selected_evidence_present:
             use_agent_output = False
             reasons.append("no_selected_evidence")
@@ -476,6 +491,21 @@ def _route_specific_fallback_reason(
             dataset_name=dataset_name,
         ):
             return "dermatollama_xiangya_sft_baseline_anchor_guard"
+
+    if workflow_cell_id == "dermatollama__scin__grouped_guard_v1":
+        if baseline_label != agent_label and not _allow_dermatollama_scin_guarded_override(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            uncertainty_level=uncertainty_level,
+            baseline_confidence=baseline_confidence,
+            agent_confidence=agent_confidence,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            return "dermatollama_scin_baseline_anchor_guard"
 
     if model_profile == "conservative_archive_workflow" and dataset_profile == "image_archive_full_taxonomy_lesion_workflow":
         if malformed_agent_output:
@@ -843,6 +873,49 @@ def _allow_dermatollama_xiangya_sft_guarded_override(
 
     if baseline_canonical == "CONTACT_DERMATITIS" and agent_canonical == "ATOPIC_DERMATITIS":
         return True
+
+    return False
+
+
+def _allow_dermatollama_scin_guarded_override(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    selected_evidence_present: bool,
+    support_margin: float,
+    uncertainty_level: str,
+    baseline_confidence: str,
+    agent_confidence: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> bool:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "dermatollama__scin__grouped_guard_v1":
+        return False
+    if not selected_evidence_present:
+        return False
+    if str(uncertainty_level or "").strip().lower() != "low":
+        return False
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    baseline_conf = str(baseline_confidence or "").strip().lower()
+    agent_conf = str(agent_confidence or "").strip().lower()
+
+    if baseline_canonical == "MALIGNANT_PREMALIGNANT" and agent_canonical == "DERMATITIS_ECZEMA":
+        return baseline_conf == "high" and agent_conf == "unknown" and 40.0 <= support_margin <= 46.5
+
+    if baseline_canonical == "URTICARIA_BITE_FOLLICULITIS" and agent_canonical == "DERMATITIS_ECZEMA":
+        return baseline_conf == "medium" and agent_conf in {"unknown", "medium"} and 40.0 <= support_margin <= 46.5
 
     return False
 
