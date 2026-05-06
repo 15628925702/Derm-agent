@@ -146,6 +146,23 @@ MODEL_DATASET_WORKFLOW_PROFILES = {
         },
     },
     "medgemma-4b-it": {
+        "pad20": {
+            "workflow_cell_id": "medgemma__pad20__clinical_core_v2",
+            "label_space_id": "derm_six",
+            "workflow_profile": "medgemma_pad20_clinical_core_workflow",
+            "inherit_dataset_workflow": True,
+            "force_disable_skills": [
+                "metadata_consistency_skill",
+                "uncertainty_assessment_skill",
+                "information_gap_detection_skill",
+                "contradiction_check_skill",
+                "escalation_recommendation_skill",
+                "ack_scc_specialist_skill",
+                "benign_mimic_specialist_skill",
+                "mel_nev_specialist_skill",
+                "exclusion_reasoning_skill",
+            ],
+        },
         "isic2019": {
             "workflow_cell_id": "medgemma__isic2019__archive_guard_v1",
             "label_space_id": "isic2019_full",

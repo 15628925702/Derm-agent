@@ -1083,6 +1083,16 @@ class DermOpenAIClient:
                 raise last_error
             raise RuntimeError(f"Failed final diagnosis for case: {case_input.case_id}")
 
+        workflow_context = _case_workflow_context(case_input)
+        workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+        compact_final_output = workflow_cell_id == "medgemma__pad20__clinical_core_v2"
+        final_max_tokens = 900 if compact_final_output else FINAL_DIAGNOSIS_MAX_TOKENS
+        compact_final_line = (
+            "Return compact JSON: final_diagnosis must be one short label; rationale must be at most two short sentences; "
+            "follow_up_considerations must contain at most two short strings; do not repeat evidence text.\n"
+            if compact_final_output
+            else ""
+        )
         profile_sequence: list[dict[str, Any]] = [{"profile_id": FULL_CLINICAL_PROFILE_ID}] + list(COMPACT_PROFILE_PRESETS)
         calibration_note = _build_label_space_calibration_note(case_input)
         calibration_line = f"{calibration_note}\n" if calibration_note else ""
@@ -1138,6 +1148,7 @@ class DermOpenAIClient:
                 "When opposing evidence is present in the evidence package, weigh it carefully against supporting evidence.\n"
                 "Integrate image, metadata, and evidence, then return a structured final diagnosis result.\n"
                 "Include: final_diagnosis, differential_diagnoses, rationale, confidence, follow_up_considerations.\n"
+                f"{compact_final_line}"
                 "When override is not allowed, keep the diagnosis conservative but include risk, caution, follow-up, and why the evidence was not strong enough to override.\n"
                 f"{calibration_line}"
                 f"{label_space_line}"
@@ -1157,7 +1168,7 @@ class DermOpenAIClient:
             try:
                 payload = self._create_json_payload(
                     messages=messages,
-                    max_tokens=FINAL_DIAGNOSIS_MAX_TOKENS,
+                    max_tokens=final_max_tokens,
                     request_name=request_name,
                 )
                 return _refine_scin_payload_for_runtime(
