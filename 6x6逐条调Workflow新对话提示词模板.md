@@ -1,12 +1,25 @@
 # 6x6 逐条调 Workflow 新对话提示词模板
 
-下面这段提示词用于后续每次新开对话时复用。复制整段给 Codex，让它按当前 6x6 架构继续逐个调 `model x dataset` workflow。
+用法：每次新开对话时，复制下面整段，把 `【...】` 里的空位填上。没想好的地方可以保留“自动选择/待确认”，让新对话先读状态文档后决定。
 
 ```text
 你现在在 /data/gh/DermAgent 项目中。我要继续按 6 个模型 x 6 个数据集逐条调 workflow，让每个 model×dataset cell 都有自己的可控 workflow，并尽量让 agent 在同批 case 上比 direct baseline 更好。
 
+本次任务填写区：
+- 本次要调的模型：`【填写模型名，例如 hulumed / llama / skinvl / medgemma / dermatollama；如果不指定，写“自动选择最值得优先调的差 cell”】`
+- 本次要调的数据集：`【填写数据集名，例如 isic2019 / pad20 / ham10000 / scin / sd198 / xiangya_sft；如果不指定，写“自动选择”】`
+- 本次目标 cell：`【填写 model x dataset，例如 hulumed x isic2019；如果不指定，写“自动选择”】`
+- 本次优化目标：`【例如 top1 必须超过 baseline；或 top1 不退、topk 提升；或 malignant recall 不能掉；或优先修格式稳定性】`
+- 本次可接受的取舍：`【例如 top1 赢但 malignant recall 小幅下降是否接受；不接受就写“不接受”】`
+- 本次验证规模：`【例如 smoke 5 case -> 50 case -> 80 case；或直接 8 卡 80 case】`
+- 本次是否使用 8 卡并行：`【是/否；默认是】`
+- 本次模型服务端口：`【例如 8000,8100,8101,8102,8103,8104,8105,8106；如果没有就让 Codex 启动】`
+- 本次输出目录前缀：`【例如 outputs/hulumed_isic_workflow_tune_$(date -u +%Y%m%dT%H%M%SZ)；也可以写“由 Codex 命名”】`
+- 本次完成后分支名：`【例如 hulumed_isicOK / llama_sd198OK / skinvl_round1 / medgemma_fix1；如果整条模型线完成就用 hulumedOK 等】`
+- 其他特别要求：`【例如不要动某些文件、不要停某个正在跑的进程、优先保守融合等】`
+
 当前已知状态：
-- qwen 这一整行已经调好，并已保存到 GitHub 分支 qwenOK。
+- qwen 这一整行已经调好，并已保存到 GitHub 分支 `qwenOK`。
 - 当前架构已经支持 model×dataset 专属 workflow cell。
 - workflow 优先级是：
   1. model×dataset override
@@ -23,7 +36,7 @@
   - 项目索引.md
   - 6x6工作流状态_20260506.md
 
-模型：
+模型范围：
 - qwen
 - medgemma
 - skinvl
@@ -31,7 +44,7 @@
 - hulumed
 - dermatollama
 
-数据集：
+数据集范围：
 - ham10000
 - isic2019
 - pad20
@@ -40,7 +53,7 @@
 - xiangya_sft / xiangya
 
 总体目标：
-- 以后每次只选一个或少数几个效果差的 model×dataset cell 定向调。
+- 每次只选一个或少数几个效果差的 model×dataset cell 定向调。
 - 不要泛泛重构。
 - 优先改 workflow 的可控旋钮：
   - workflow_profile
@@ -65,13 +78,13 @@
 - 不要污染 test split。
 - 不要重置用户已有改动。
 - 不要停止正在运行的大实验，除非我明确要求。
-- 调参先 smoke，再扩大：
+- 调参先 smoke，再扩大，除非我在“本次验证规模”里明确要求直接 8 卡完整复检：
   1. 先跑 3-5 case smoke。
   2. smoke 没有格式错误/timeout/明显退化后，跑 30-50 case。
   3. 如果效果好，再跑完整 80 或该数据集可用完整 case。
 - 判定“调好”的主标准：同批 case agent top1 > direct baseline top1。
 - 同时记录 topk、malignant recall、regression/improvement case 数。
-- 如果 top1 赢但 malignant recall 明显掉，要在文档里标注风险。
+- 如果 top1 赢但 malignant recall 明显掉，要在文档里标注风险，并说明是否符合“本次可接受的取舍”。
 
 8 卡加速策略：
 - 如果要调某一个模型，就尽量启动 8 个该模型 replica，占用 8 张卡。
@@ -96,8 +109,8 @@
   - offset 70 limit 10
 - 8 个 shard 分别打到 8 个端口。
 - 跑完后必须聚合 8 个 shard 的 summary 和 records，确认：
-  - 总 case = 80
-  - unique case = 80
+  - 总 case 数
+  - unique case 数
   - baseline top1/topk/malignant recall
   - agent top1/topk/malignant recall
   - workflow distribution
@@ -117,7 +130,7 @@
    - agent/conservative_fusion.py
    - scripts/compare_agent_vs_qwen.py
 3. 检查当前 git 分支和状态。
-4. 根据 6x6工作流状态_20260506.md，选我指定的 cell 或自动挑一个最值得优先调的差 cell。
+4. 根据“本次任务填写区”和 `6x6工作流状态_20260506.md`，确定本次 cell。
 5. 分析该 cell 失败原因：
    - baseline 是否已经强
    - agent 是否经常改坏 baseline
@@ -127,18 +140,13 @@
    - 是否 skill 太多、retrieval 太重、planner 自由度太高
    - 是否 label_space/workflow routing 错误
 6. 做最小 workflow 修改。
-7. 跑 smoke。
-8. 根据结果决定是否跑 30-50 或 80 case。
-9. 更新根目录 6x6工作流状态_20260506.md。
+7. 跑 smoke 或按“本次验证规模”执行。
+8. 根据结果决定是否扩大复检。
+9. 更新根目录 `6x6工作流状态_20260506.md`。
 10. 如果该 cell 或该模型线调好了：
     - git commit
     - 推到 GitHub 新分支
-    - 分支命名清晰，例如：
-      - llama_isicOK
-      - hulumed_pad20OK
-      - medgemma_fix1
-      - skinvl_round1
-      - dermatollama_pad20OK
+    - 分支名使用“本次完成后分支名”
     - 如果整条模型线 6 个数据集都调好了，就推成：
       - llamaOK
       - hulumedOK
@@ -147,12 +155,29 @@
       - dermatollamaOK
 
 输出要求：
-- 先说你选了哪个 model×dataset cell。
+- 先说本次选了哪个 model×dataset cell。
 - 说明当前 workflow 是什么。
 - 说明失败/退化在哪里。
 - 说明改了哪些 workflow 旋钮。
 - 给出 smoke/复检结果。
 - 给出实际 workflow 分布。
 - 给出是否已调好。
+- 给出更新了哪个文档。
 - 给出 commit hash 和分支名。
+```
+
+## 快速填写例子
+
+```text
+本次要调的模型：hulumed
+本次要调的数据集：isic2019
+本次目标 cell：hulumed x isic2019
+本次优化目标：top1 必须超过 baseline，同时 malignant recall 不能明显下降
+本次可接受的取舍：不接受 top1 回退；不接受 malignant recall 明显下降
+本次验证规模：smoke 5 case -> 50 case；如果 50 case 赢，再 8 卡 80 case
+本次是否使用 8 卡并行：是
+本次模型服务端口：如果已有 hulumed replica 就复用，否则启动 8000,8100,8101,8102,8103,8104,8105,8106
+本次输出目录前缀：由 Codex 命名
+本次完成后分支名：hulumed_isicOK
+其他特别要求：不要动 qwenOK 结果；不要停正在跑的其他模型实验
 ```
