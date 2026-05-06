@@ -237,6 +237,24 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("hulumed_pad20_guarded_subtype_override")
+        elif hulumed_sd198_override_label := _hulumed_sd198_consensus_override_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_differentials=agent_differentials,
+            initial_ddx=initial_ddx,
+            baseline_preview=baseline_preview,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            contradiction_count=contradiction_count,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = hulumed_sd198_override_label
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("hulumed_sd198_grouped_guarded_override")
         elif agent_label == baseline_label:
             use_agent_output = True
             reasons.append("agent_matches_baseline")
@@ -753,6 +771,23 @@ def _route_specific_fallback_reason(
             dataset_name=dataset_name,
         ):
             return "hulumed_pad20_baseline_anchor_guard"
+
+    if workflow_cell_id == "hulumed__sd198__grouped_coarse_guard_v1":
+        if baseline_label != agent_label and not _hulumed_sd198_consensus_override_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_differentials=agent_differentials,
+            initial_ddx=initial_ddx,
+            baseline_preview=baseline_preview,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            contradiction_count=contradiction_count,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            return "hulumed_sd198_baseline_anchor_guard"
 
     if model_profile == "conservative_archive_workflow" and dataset_profile == "image_archive_full_taxonomy_lesion_workflow":
         if malformed_agent_output:
@@ -1632,6 +1667,99 @@ def _hulumed_pad20_consensus_override_label(
     )
     if has_sek and any(marker in summary for marker in ("multiple", "yellowish", "waxy", "stuck")):
         return "Seborrheic Keratosis"
+
+    return ""
+
+
+def _hulumed_sd198_consensus_override_label(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_differentials: list[str],
+    initial_ddx: list[str],
+    baseline_preview: dict[str, Any],
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    contradiction_count: int,
+    label_space_id: str,
+    dataset_name: str,
+) -> str:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "hulumed__sd198__grouped_coarse_guard_v1":
+        return ""
+    if not selected_evidence_present:
+        return ""
+    if str(uncertainty_level or "").strip().lower() in {"high", "unknown"}:
+        return ""
+    if support_margin < 33.0 or subtype_support_margin < 1.5 or contradiction_count > 3:
+        return ""
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if baseline_canonical == "MALIGNANT_SKIN_CANCER":
+        return ""
+
+    initial_canonicals = [
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in initial_ddx
+    ]
+    initial_first = initial_canonicals[0] if initial_canonicals else ""
+    summary = str(baseline_preview.get("image_summary", "")).strip().lower()
+
+    has_dermatitis = _contains_canonical_label(
+        agent_differentials,
+        canonical_label="DERMATITIS_ECZEMA",
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if initial_first == "DERMATITIS_ECZEMA" and has_dermatitis:
+        if any(marker in summary for marker in ("annular", "diffuse erythema", "central clearing", "visible hair follicles")):
+            return "DERMATITIS_ECZEMA"
+
+    has_sun_damage = _contains_canonical_label(
+        agent_differentials,
+        canonical_label="SUN_DAMAGE_ACTINIC",
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if initial_first == "SUN_DAMAGE_ACTINIC" and has_sun_damage:
+        sun_signal = any(marker in summary for marker in ("sun-damaged", "sun damaged", "actinic"))
+        lower_leg_scaling = "lower legs" in summary and "scaly texture" in summary
+        if sun_signal or lower_leg_scaling:
+            return "SUN_DAMAGE_ACTINIC"
+
+    has_papulosquamous = _contains_canonical_label(
+        agent_differentials,
+        canonical_label="PAPULOSQUAMOUS_KERATOTIC",
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if initial_first == "PAPULOSQUAMOUS_KERATOTIC" and has_papulosquamous:
+        if any(marker in summary for marker in ("palms and soles", "bilateral feet", "thickened plaques")):
+            return "PAPULOSQUAMOUS_KERATOTIC"
+
+    has_acne = _contains_canonical_label(
+        agent_differentials,
+        canonical_label="ACNE_FOLLICULITIS_ROSACEA",
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if has_acne and "lower extremities" in summary and any(marker in summary for marker in ("follicular", "papules")):
+        return "ACNE_FOLLICULITIS_ROSACEA"
+
+    has_vascular = _contains_canonical_label(
+        agent_differentials,
+        canonical_label="VASCULAR_ULCER_PURPURA",
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if has_vascular and "bilateral feet" in summary and "macules" in summary and "no scaling" in summary:
+        return "VASCULAR_ULCER_PURPURA"
 
     return ""
 
