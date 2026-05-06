@@ -145,6 +145,27 @@ MODEL_DATASET_WORKFLOW_PROFILES = {
             "disable_legacy_final_path": True,
         },
     },
+    "medgemma-4b-it": {
+        "ham10000": {
+            "workflow_cell_id": "medgemma__ham10000__akiec_face_guard_v1",
+            "label_space_id": "ham10000_full",
+            "inherit_dataset_workflow": True,
+            "workflow_capabilities": ["baseline_anchored_final"],
+            "allowed_skills": [
+                "morphology_analysis_skill",
+                "color_pattern_analysis_skill",
+                "lesion_description_structuring_skill",
+                "malignancy_risk_assessment_skill",
+                "differential_compare_skill",
+                "exclusion_reasoning_skill",
+            ],
+            "skip_specialist_skills": True,
+            "skip_experience_retrieval": True,
+            "force_conservative_fusion": True,
+            "fallback_on_malformed_final": True,
+            "disable_legacy_final_path": True,
+        },
+    },
 }
 
 

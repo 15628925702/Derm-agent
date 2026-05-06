@@ -167,6 +167,23 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("dermatollama_sd198_sun_damage_consensus_override")
+        elif medgemma_ham10000_override_label := _medgemma_ham10000_consensus_override_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            initial_ddx=initial_ddx,
+            baseline_preview=baseline_preview,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = medgemma_ham10000_override_label
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("medgemma_ham10000_face_akiec_consensus_override")
         elif agent_label == baseline_label:
             use_agent_output = True
             reasons.append("agent_matches_baseline")
@@ -371,6 +388,7 @@ def decide_conservative_agent_fusion(
         baseline_confidence=baseline_confidence,
         agent_confidence=agent_confidence,
         benign_reassuring_features=benign_reassuring_features,
+        baseline_preview=baseline_preview,
     )
     if route_guard:
         use_agent_output = False
@@ -455,6 +473,7 @@ def _route_specific_fallback_reason(
     baseline_confidence: str,
     agent_confidence: str,
     benign_reassuring_features: list[str],
+    baseline_preview: dict[str, Any],
 ) -> str:
     model_profile = str(workflow_context.get("model_workflow_profile", "")).strip().lower()
     dataset_profile = str(
@@ -553,6 +572,22 @@ def _route_specific_fallback_reason(
     if workflow_cell_id == "dermatollama__sd198__grouped_guard_v1":
         if baseline_label != agent_label:
             return "dermatollama_sd198_baseline_anchor_guard"
+
+    if workflow_cell_id == "medgemma__ham10000__akiec_face_guard_v1":
+        if baseline_label != agent_label and not _medgemma_ham10000_consensus_override_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            initial_ddx=initial_ddx,
+            baseline_preview=baseline_preview,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            return "medgemma_ham10000_baseline_anchor_guard"
 
     if model_profile == "conservative_archive_workflow" and dataset_profile == "image_archive_full_taxonomy_lesion_workflow":
         if malformed_agent_output:
@@ -1024,6 +1059,82 @@ def _allow_dermatollama_ham10000_guarded_override(
         return support_margin < 40.0 and subtype_support_margin < 10.0
 
     return False
+
+
+def _medgemma_ham10000_consensus_override_label(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    initial_ddx: list[str],
+    baseline_preview: dict[str, Any],
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> str:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "medgemma__ham10000__akiec_face_guard_v1":
+        return ""
+    if not selected_evidence_present:
+        return ""
+    if str(uncertainty_level or "").strip().lower() != "low":
+        return ""
+    if support_margin < 20.0:
+        return ""
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if baseline_canonical != "BCC":
+        return ""
+
+    initial_canonicals = [
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in initial_ddx
+    ]
+    if not initial_canonicals or initial_canonicals[0] != "AKIEC":
+        return ""
+
+    summary = str(baseline_preview.get("image_summary", "")).strip().lower()
+    if not summary:
+        return ""
+    has_akiec_surface_signal = any(
+        marker in summary
+        for marker in ("mottled", "speckled", "altered pigmentation", "increased pigmentation")
+    )
+    if not has_akiec_surface_signal or "irregular" not in summary:
+        return ""
+    if _summary_mentions_face(summary):
+        if "mottled" not in summary or support_margin < 22.0:
+            return ""
+    elif "mottled" in summary and "increased pigmentation" in summary and support_margin >= 22.0:
+        pass
+    else:
+        if "mottled" not in summary or support_margin < 38.0 or subtype_support_margin < 5.0:
+            return ""
+
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if agent_canonical not in {"BCC", "AKIEC"}:
+        return ""
+
+    return "Actinic Keratosis"
+
+
+def _summary_mentions_face(summary: str) -> bool:
+    tokens = {
+        token.strip(".,;:!?()[]{}<>\"'").lower()
+        for token in str(summary or "").replace("-", " ").replace("/", " ").split()
+    }
+    return "face" in tokens or "facial" in tokens
 
 
 def _allow_dermatollama_xiangya_sft_guarded_override(
