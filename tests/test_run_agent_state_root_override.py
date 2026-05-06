@@ -49,6 +49,28 @@ class BaselineShouldNotBeCalledClient(StubClient):
         raise AssertionError("baseline_diagnosis should not be called when override is provided")
 
 
+class PhysicianSummaryClient(StubClient):
+    def __init__(self) -> None:
+        self.summary_call_count = 0
+
+    def physician_evidence_summary(self, case_input: CaseInput, evidence_package) -> dict:
+        self.summary_call_count += 1
+        return {
+            "summary_version": "physician_evidence_summary_v1",
+            "case_id": case_input.case_id,
+            "status": "ok",
+            "evidence_overview": "Clinically useful evidence summary.",
+            "key_observations": ["brown lesion on arm"],
+            "supporting_evidence": ["structured morphology was available"],
+            "opposing_or_uncertain_evidence": ["single image limits certainty"],
+            "risk_flags": [],
+            "differential_considerations": ["Nevus", "Malignant Melanoma"],
+            "information_gaps": ["duration unknown"],
+            "suggested_next_checks": ["review dermoscopy if available"],
+            "caveats": ["not a final diagnosis"],
+        }
+
+
 def test_run_agent_uses_split_state_root_override(monkeypatch, tmp_path: Path) -> None:
     custom_split_root = tmp_path / "isolated_split_states"
     custom_policy_root = tmp_path / "isolated_policy_root"
@@ -170,3 +192,50 @@ def test_run_agent_uses_baseline_diagnosis_override(monkeypatch, tmp_path: Path)
 
     assert state.baseline_diagnosis == frozen_baseline
     assert state.execution_record["baseline_qwen"] is None
+
+
+def test_run_agent_emits_physician_evidence_summary_only_when_enabled(monkeypatch, tmp_path: Path) -> None:
+    custom_split_root = tmp_path / "split_states"
+    custom_policy_root = tmp_path / "policy_root"
+    monkeypatch.setenv("DERMAGENT_SPLIT_STATE_ROOT", str(custom_split_root))
+    monkeypatch.setenv("DERMAGENT_POLICY_ROOT", str(custom_policy_root))
+    monkeypatch.delenv("DERMAGENT_ENABLE_PHYSICIAN_EVIDENCE_SUMMARY", raising=False)
+
+    image_path = tmp_path / "case.png"
+    image_path.write_bytes(b"fake-image")
+    case_input = CaseInput(
+        case_id="CASE_PHYSICIAN_SUMMARY",
+        image_path=str(image_path),
+        metadata={"site": "arm"},
+        label="Nevus",
+        dataset_name="toy_dataset",
+    )
+    client = PhysicianSummaryClient()
+
+    state, _ = run_agent(
+        case_input=case_input,
+        client=client,
+        output_dir=tmp_path / "outputs_default",
+        enable_writeback=False,
+        run_mode="toy_eval",
+        data_split="train",
+    )
+
+    assert client.summary_call_count == 0
+    assert state.physician_evidence_summary == {}
+    assert state.execution_record["physician_evidence_summary"] == {}
+
+    state, _ = run_agent(
+        case_input=case_input,
+        client=client,
+        output_dir=tmp_path / "outputs_enabled",
+        enable_writeback=False,
+        run_mode="toy_eval",
+        data_split="train",
+        execution_overrides={"enable_physician_evidence_summary": True},
+    )
+
+    assert client.summary_call_count == 1
+    assert state.physician_evidence_summary["status"] == "ok"
+    assert state.execution_record["physician_evidence_summary"]["case_id"] == "CASE_PHYSICIAN_SUMMARY"
+    assert (tmp_path / "outputs_enabled" / "CASE_PHYSICIAN_SUMMARY" / "physician_evidence_summary.json").exists()

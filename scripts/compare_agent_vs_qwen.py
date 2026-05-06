@@ -45,6 +45,10 @@ def infer_dataset_name_from_data_root(data_root: Path) -> str:
     return ""
 
 
+def _env_flag(name: str) -> bool:
+    return str(os.getenv(name, "")).strip().lower() in {"1", "true", "yes", "on"}
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Compare a direct model baseline against full DermAgent under frozen evaluation mode.")
     parser.add_argument("--data-root", type=Path, default=DEFAULT_DATA_ROOT, help="Dataset root directory.")
@@ -84,6 +88,11 @@ def parse_args() -> argparse.Namespace:
         "--disable-model-workflow-routing",
         action="store_true",
         help="Do not apply model workflow overlays; keep dataset workflow routing only.",
+    )
+    parser.add_argument(
+        "--enable-physician-evidence-summary",
+        action="store_true",
+        help="Emit an optional doctor-facing evidence package for each DermAgent case. Adds one extra model call per agent case.",
     )
     return parser.parse_args()
 
@@ -145,6 +154,8 @@ def main() -> int:
         agent_execution_overrides = execution_overrides_for_run_agent(model_workflow_overrides)
         if model_workflow_overrides.get("skip_specialist_skills"):
             policy = merge_model_workflow_policy_overrides(policy, model_workflow_overrides)
+    if args.enable_physician_evidence_summary or _env_flag("DERMAGENT_ENABLE_PHYSICIAN_EVIDENCE_SUMMARY"):
+        agent_execution_overrides["enable_physician_evidence_summary"] = True
     if model_workflow_overrides:
         print(
             json.dumps(

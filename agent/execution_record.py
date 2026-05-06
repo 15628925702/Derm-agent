@@ -32,6 +32,7 @@ class CaseExecutionRecord:
     selected_skills: list[str] = field(default_factory=list)
     skill_outputs: dict[str, Any] = field(default_factory=dict)
     evidence_bundle: dict[str, Any] = field(default_factory=dict)
+    physician_evidence_summary: dict[str, Any] = field(default_factory=dict)
     qwen_final: dict[str, Any] = field(default_factory=dict)
     ground_truth: dict[str, Any] = field(default_factory=dict)
     evaluation: dict[str, Any] = field(default_factory=dict)
@@ -113,6 +114,7 @@ def build_case_execution_record(
         selected_skills=selected_skills,
         skill_outputs=deepcopy(state.skill_outputs),
         evidence_bundle=deepcopy(evidence_bundle),
+        physician_evidence_summary=deepcopy(state.physician_evidence_summary),
         qwen_final=deepcopy(state.final_diagnosis),
         ground_truth={
             "raw_label": ground_truth_raw,

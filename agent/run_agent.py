@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+import os
 from pathlib import Path
 
 from agent.contamination_guard import (
@@ -190,6 +191,12 @@ def run_agent(
     state.notes = _build_notes(state)
 
     evidence_package = EvidencePackage.from_state(state)
+    if execution_config["enable_physician_evidence_summary"]:
+        state.physician_evidence_summary = _build_physician_evidence_summary(
+            client=qwen_client,
+            case_input=case_input,
+            evidence_package=evidence_package,
+        )
     raw_final_diagnosis = qwen_client.final_diagnosis(case_input, evidence_package)
     workflow_context = case_input.workflow_context or {}
     if uses_legacy_agent_final_path(workflow_context):
@@ -398,6 +405,10 @@ def _write_debug_artifacts(state: CaseState, evidence_package: EvidencePackage, 
     with (target_dir / "reflection.json").open("w", encoding="utf-8") as handle:
         json.dump(state.reflection, handle, ensure_ascii=False, indent=2)
 
+    if state.physician_evidence_summary:
+        with (target_dir / "physician_evidence_summary.json").open("w", encoding="utf-8") as handle:
+            json.dump(state.physician_evidence_summary, handle, ensure_ascii=False, indent=2)
+
     if state.execution_record:
         save_case_execution_record(state.execution_record, output_dir)
 
@@ -408,6 +419,44 @@ def _normalize_execution_overrides(overrides: dict | None) -> dict[str, bool]:
         "enable_experience_retrieval": bool(source.get("enable_experience_retrieval", True)),
         "enable_skill_retrieval": bool(source.get("enable_skill_retrieval", True)),
         "enable_image_read_audit": bool(source.get("enable_image_read_audit", False)),
+        "enable_physician_evidence_summary": bool(
+            source.get("enable_physician_evidence_summary", _env_flag("DERMAGENT_ENABLE_PHYSICIAN_EVIDENCE_SUMMARY"))
+        ),
+    }
+
+
+def _env_flag(name: str) -> bool:
+    return str(os.getenv(name, "")).strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _build_physician_evidence_summary(
+    *,
+    client: DermOpenAIClient,
+    case_input: CaseInput,
+    evidence_package: EvidencePackage,
+) -> dict[str, object]:
+    try:
+        summary = client.physician_evidence_summary(case_input, evidence_package)
+    except Exception as exc:  # pragma: no cover - defensive optional-output guard
+        return {
+            "summary_version": "physician_evidence_summary_v1",
+            "case_id": case_input.case_id,
+            "status": "failed",
+            "error": f"{exc.__class__.__name__}: {exc}",
+            "intended_use": "doctor_support_only_not_final_diagnosis",
+        }
+    if isinstance(summary, dict):
+        summary.setdefault("summary_version", "physician_evidence_summary_v1")
+        summary.setdefault("case_id", case_input.case_id)
+        summary.setdefault("status", "ok")
+        summary.setdefault("intended_use", "doctor_support_only_not_final_diagnosis")
+        return summary
+    return {
+        "summary_version": "physician_evidence_summary_v1",
+        "case_id": case_input.case_id,
+        "status": "malformed",
+        "raw_summary_type": type(summary).__name__,
+        "intended_use": "doctor_support_only_not_final_diagnosis",
     }
 
 
@@ -428,6 +477,7 @@ def _run_text_only_counterfactual(
 
     overrides = dict(execution_overrides or {})
     overrides["enable_image_read_audit"] = False
+    overrides["enable_physician_evidence_summary"] = False
     counterfactual_state, _ = run_agent(
         case_input=build_text_only_case_input(case_input),
         client=client,

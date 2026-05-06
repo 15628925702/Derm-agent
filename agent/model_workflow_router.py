@@ -10,6 +10,8 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any
 
+from workflow_evolution.runtime import maybe_apply_active_workflow_evolution
+
 
 SPECIALIST_SKILLS = (
     "mel_nev_specialist_skill",
@@ -238,6 +240,18 @@ MODEL_DATASET_WORKFLOW_PROFILES = {
             "disable_legacy_final_path": True,
         },
     },
+    "Hulu-Med-7B": {
+        "isic2019": {
+            "workflow_cell_id": "hulumed__isic2019__archive_guard_v1",
+            "label_space_id": "isic2019_full",
+            "workflow_profile": "hulumed_isic2019_archive_guard_workflow",
+            "workflow_capabilities": ["baseline_anchored_final", "melanocytic_guard_reasoning"],
+            "inherit_dataset_workflow": True,
+            "force_conservative_fusion": True,
+            "fallback_on_malformed_final": True,
+            "disable_legacy_final_path": True,
+        },
+    },
 }
 
 
@@ -333,7 +347,11 @@ def get_model_dataset_workflow_profile(model_name: str, dataset_name: str | None
     if not model_key or not dataset_key:
         return {}
     model_cells = MODEL_DATASET_WORKFLOW_PROFILES.get(model_key, {})
-    cell_config = model_cells.get(dataset_key, {})
+    cell_config = maybe_apply_active_workflow_evolution(
+        model_key=model_key,
+        dataset_key=dataset_key,
+        static_cell_config=model_cells.get(dataset_key, {}),
+    )
     if not cell_config:
         return {}
     cell = _copy_config(cell_config)
@@ -581,6 +599,8 @@ def execution_overrides_for_run_agent(overrides: dict[str, Any] | None) -> dict[
         execution_overrides["enable_skill_retrieval"] = bool(source["enable_skill_retrieval"])
     if "enable_image_read_audit" in source:
         execution_overrides["enable_image_read_audit"] = bool(source["enable_image_read_audit"])
+    if "enable_physician_evidence_summary" in source:
+        execution_overrides["enable_physician_evidence_summary"] = bool(source["enable_physician_evidence_summary"])
     return execution_overrides
 
 

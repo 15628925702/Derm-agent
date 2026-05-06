@@ -91,6 +91,7 @@ class CaseState:
     risk_flags: list[str] = field(default_factory=list)
     uncertainty: dict[str, Any] = field(default_factory=dict)
     notes: list[str] = field(default_factory=list)
+    physician_evidence_summary: dict[str, Any] = field(default_factory=dict)
     final_diagnosis: dict[str, Any] = field(default_factory=dict)
     reflection: dict[str, Any] = field(default_factory=dict)
     execution_record: dict[str, Any] = field(default_factory=dict)

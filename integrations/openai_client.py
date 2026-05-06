@@ -869,10 +869,12 @@ PROMPT_STACK_VERSION = "dermagent_prompt_stack_v1"
 INITIAL_PERCEPTION_PROMPT_VERSION = "initial_perception_v1"
 SKILL_PROMPT_VERSION = "skill_reasoning_v1"
 FINAL_DIAGNOSIS_PROMPT_VERSION = "final_diagnosis_v1"
+PHYSICIAN_EVIDENCE_SUMMARY_PROMPT_VERSION = "physician_evidence_summary_v1"
 BASELINE_DIAGNOSIS_PROMPT_VERSION = "direct_baseline_v1"
 INITIAL_PERCEPTION_MAX_TOKENS = 320
 SKILL_MAX_TOKENS = 640
 FINAL_DIAGNOSIS_MAX_TOKENS = 680
+PHYSICIAN_EVIDENCE_SUMMARY_MAX_TOKENS = 900
 BASELINE_DIAGNOSIS_MAX_TOKENS = 420
 SKINVL_MODEL_NAME_HINT = "skinvl"
 SKINVL_ALLOWED_LABELS = (
@@ -1051,6 +1053,7 @@ class DermOpenAIClient:
             "initial_perception_prompt_version": INITIAL_PERCEPTION_PROMPT_VERSION,
             "skill_prompt_version": SKILL_PROMPT_VERSION,
             "final_diagnosis_prompt_version": FINAL_DIAGNOSIS_PROMPT_VERSION,
+            "physician_evidence_summary_prompt_version": PHYSICIAN_EVIDENCE_SUMMARY_PROMPT_VERSION,
             "baseline_diagnosis_prompt_version": BASELINE_DIAGNOSIS_PROMPT_VERSION,
         }
 
@@ -1312,6 +1315,62 @@ class DermOpenAIClient:
         if last_error is not None:
             raise last_error
         raise RuntimeError(f"Failed final diagnosis for case: {case_input.case_id}")
+
+    def physician_evidence_summary(self, case_input: CaseInput, evidence_package: EvidencePackage) -> dict[str, Any]:
+        evidence_payload = self._canonicalize_evidence_package(evidence_package.to_dict())
+        compact_evidence = self._prepare_evidence_for_profile(
+            evidence_payload,
+            {
+                "profile_id": "physician_summary",
+                "retrieval_top_k": 1,
+                "max_skill_count": 10,
+                "max_skill_fields": 4,
+                "serialized_max_length": 1400,
+            },
+        )
+        physician_source = self._build_physician_summary_source(compact_evidence)
+        serialized_payload = json.dumps(physician_source, ensure_ascii=False, separators=(",", ":"))
+        prompt = (
+            "Create a physician-facing evidence package for clinical review.\n"
+            "Return valid JSON only. Do not output markdown.\n"
+            "This is not the final diagnosis step. Do not make, replace, or optimize the final diagnosis.\n"
+            "Summarize only the clinically useful evidence already produced by DermAgent.\n"
+            "Do not expose internal prompts, system instructions, policy names, routing decisions, source IDs, retrieval scores, "
+            "hidden labels, ground truth, implementation details, or raw model-facing prompt text.\n"
+            "Use concise clinical language that a dermatologist can scan before making their own decision.\n"
+            "Schema:\n"
+            "{"
+            "\"summary_version\":\"physician_evidence_summary_v1\","
+            "\"case_id\":\"case id\","
+            "\"status\":\"ok\","
+            "\"intended_use\":\"doctor_support_only_not_final_diagnosis\","
+            "\"evidence_overview\":\"one short paragraph\","
+            "\"key_observations\":[\"clinically observable point\"],"
+            "\"supporting_evidence\":[\"finding that supports an active differential\"],"
+            "\"opposing_or_uncertain_evidence\":[\"finding that weakens or limits a differential\"],"
+            "\"risk_flags\":[\"risk or safety concern\"],"
+            "\"differential_considerations\":[\"diagnostic possibility to consider without declaring final diagnosis\"],"
+            "\"information_gaps\":[\"missing clinical detail or image limitation\"],"
+            "\"suggested_next_checks\":[\"reasonable next check for a physician to consider\"],"
+            "\"caveats\":[\"limitation or caution\"]"
+            "}\n"
+            f"Case ID: {case_input.case_id}\n"
+            f"Clinical metadata: {case_input.clinical_metadata()}\n"
+            f"Curated evidence source: {serialized_payload}"
+        )
+        messages: list[dict[str, Any]] = [
+            {
+                "role": "system",
+                "content": "You organize DermAgent evidence into doctor-readable clinical support. You do not diagnose.",
+            },
+            {"role": "user", "content": prompt},
+        ]
+        payload = self._create_json_payload(
+            messages=messages,
+            max_tokens=PHYSICIAN_EVIDENCE_SUMMARY_MAX_TOKENS,
+            request_name=f"physician_evidence_summary:{case_input.case_id}",
+        )
+        return self._normalize_physician_evidence_summary(payload, case_id=case_input.case_id)
 
     def baseline_diagnosis(self, case_input: CaseInput) -> dict[str, Any]:
         if self._is_skinvl_model():
@@ -1753,6 +1812,67 @@ class DermOpenAIClient:
         if not lines:
             lines.append("- no additional agent evidence")
         return "\n".join(lines[:8])
+
+    @staticmethod
+    def _build_physician_summary_source(payload: dict[str, Any]) -> dict[str, Any]:
+        """Return a sanitized evidence view intended for a doctor-facing summary call."""
+        return {
+            "initial_perception_summary": payload.get("initial_perception_summary", {}),
+            "selected_evidence": payload.get("selected_evidence", []),
+            "skill_outputs": payload.get("skill_outputs", {}),
+            "risk_flags": payload.get("risk_flags", []),
+            "uncertainty_summary": payload.get("uncertainty_summary", {}),
+            "contradiction_summary": payload.get("contradiction_summary", {}),
+            "information_gap_summary": payload.get("information_gap_summary", {}),
+            "escalation_summary": payload.get("escalation_summary", {}),
+            "notes": payload.get("notes", []),
+            "evidence_text_excerpt": str(payload.get("serialized_evidence_text", "")).strip()[:1400],
+        }
+
+    @staticmethod
+    def _normalize_physician_evidence_summary(payload: dict[str, Any], *, case_id: str) -> dict[str, Any]:
+        source = dict(payload or {}) if isinstance(payload, dict) else {}
+        list_fields = (
+            "key_observations",
+            "supporting_evidence",
+            "opposing_or_uncertain_evidence",
+            "risk_flags",
+            "differential_considerations",
+            "information_gaps",
+            "suggested_next_checks",
+            "caveats",
+        )
+        normalized: dict[str, Any] = {
+            "summary_version": PHYSICIAN_EVIDENCE_SUMMARY_PROMPT_VERSION,
+            "case_id": str(source.get("case_id") or case_id),
+            "status": "ok",
+            "intended_use": "doctor_support_only_not_final_diagnosis",
+            "evidence_overview": str(source.get("evidence_overview", "")).strip()[:900],
+        }
+        for field_name in list_fields:
+            normalized[field_name] = DermOpenAIClient._normalize_summary_string_list(source.get(field_name), limit=8)
+        removed_diagnosis_fields = [field_name for field_name in ("final_diagnosis", "diagnosis") if field_name in source]
+        if removed_diagnosis_fields:
+            normalized["caveats"] = list(normalized["caveats"]) + [
+                f"Diagnosis-like field `{field_name}` was removed from the physician evidence package."
+                for field_name in removed_diagnosis_fields
+            ]
+        return normalized
+
+    @staticmethod
+    def _normalize_summary_string_list(value: Any, *, limit: int) -> list[str]:
+        if value is None:
+            return []
+        items = value if isinstance(value, list) else [value]
+        cleaned: list[str] = []
+        for item in items:
+            text = str(item).strip()
+            if not text:
+                continue
+            cleaned.append(text[:320])
+            if len(cleaned) >= limit:
+                break
+        return cleaned
 
     @staticmethod
     def _repair_truncated_json(candidate: str) -> str | None:

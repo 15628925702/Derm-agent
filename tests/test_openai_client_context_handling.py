@@ -108,6 +108,45 @@ def test_canonicalize_evidence_package_keeps_clinical_structure_and_drops_refere
     assert list(skill_output.keys())[:3] == ["primary_lesion_morphology", "color", "border"]
 
 
+def test_physician_summary_source_omits_internal_policy_and_retrieval_ids() -> None:
+    canonical = DermOpenAIClient._canonicalize_evidence_package(_mock_payload())
+    compact = DermOpenAIClient._prepare_evidence_for_profile(
+        canonical,
+        {
+            "profile_id": "physician_summary",
+            "retrieval_top_k": 1,
+            "max_skill_count": 4,
+            "max_skill_fields": 3,
+            "serialized_max_length": 300,
+        },
+    )
+    source = DermOpenAIClient._build_physician_summary_source(compact)
+    serialized = json.dumps(source, ensure_ascii=False)
+
+    assert "evidence_decision_policy" not in source
+    assert "planner_rationale" not in source
+    assert "source_id" not in serialized
+    assert "retrieval_score" not in serialized
+
+
+def test_normalize_physician_summary_removes_diagnosis_like_fields() -> None:
+    normalized = DermOpenAIClient._normalize_physician_evidence_summary(
+        {
+            "case_id": "CASE_A",
+            "evidence_overview": "short overview",
+            "key_observations": "single point",
+            "final_diagnosis": "Melanoma",
+            "diagnosis": "Melanoma",
+        },
+        case_id="CASE_A",
+    )
+
+    assert normalized["summary_version"] == "physician_evidence_summary_v1"
+    assert normalized["key_observations"] == ["single point"]
+    assert "final_diagnosis" not in normalized
+    assert len(normalized["caveats"]) == 2
+
+
 def test_compact_skill_output_uses_clinical_priority_order() -> None:
     compact = DermOpenAIClient._compact_skill_output(
         "exclusion_reasoning_skill",
