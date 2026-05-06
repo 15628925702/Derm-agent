@@ -138,6 +138,66 @@ def test_qwen_scin_cell_declares_grouped_label_space_and_environment() -> None:
     }
 
 
+def test_medgemma_scin_cell_declares_grouped_label_space_and_light_core() -> None:
+    cell = get_model_dataset_workflow_profile("medgemma-4b-it", "scin")
+
+    assert cell["workflow_cell_id"] == "medgemma__scin__grouped_core_v1"
+    assert cell["label_space_id"] == "scin_grouped"
+    assert dataset_environment_overrides_for_model_dataset("medgemma-4b-it", "scin") == {
+        "DERMAGENT_SCIN_LABEL_SPACE_ID": "scin_grouped"
+    }
+    assert "metadata_consistency_skill" in cell["force_disable_skills"]
+    assert "ack_scc_specialist_skill" in cell["force_disable_skills"]
+    assert "graded_conservative_fusion" in cell["workflow_capabilities"]
+    assert cell["force_conservative_fusion"] is True
+    assert cell["disable_legacy_final_path"] is True
+
+
+def test_medgemma_sd198_cell_declares_grouped_label_space_and_coarse_core() -> None:
+    cell = get_model_dataset_workflow_profile("medgemma-4b-it", "sd198")
+
+    assert cell["workflow_cell_id"] == "medgemma__sd198__grouped_coarse_v1"
+    assert cell["label_space_id"] == "sd198_grouped"
+    assert cell["workflow_profile"] == "coarse_taxonomy_workflow"
+    assert cell["workflow_profile_mode"] == "replace"
+    assert dataset_environment_overrides_for_model_dataset("medgemma-4b-it", "sd198") == {
+        "DERMAGENT_SD198_LABEL_SPACE_ID": "sd198_grouped"
+    }
+    assert "metadata_consistency_skill" in cell["force_disable_skills"]
+    assert "ack_scc_specialist_skill" in cell["force_disable_skills"]
+    assert "coarse_taxonomy_reasoning" in cell["workflow_capabilities"]
+    assert "graded_conservative_fusion" in cell["workflow_capabilities"]
+    assert cell["replace_workflow_capabilities"] is True
+    assert cell["force_conservative_fusion"] is True
+    assert cell["disable_legacy_final_path"] is True
+    assert "fallback_on_malformed_final" not in cell
+
+
+def test_medgemma_sd198_cell_replaces_full_taxonomy_workflow_with_coarse_grouped() -> None:
+    case_input = CaseInput(
+        case_id="case_sd198",
+        image_path="/tmp/missing.jpg",
+        metadata={"label_space_id": "sd198_full", "case_source": "sd198"},
+        dataset_name="sd198",
+        label_space_id="sd198_full",
+        workflow_context={
+            "workflow_profile": "full_taxonomy_lesion_workflow",
+            "workflow_capabilities": ["full_taxonomy_reasoning", "focal_lesion_reasoning"],
+        },
+    )
+
+    overrides = apply_model_workflow_to_case(case_input, "medgemma-4b-it", dataset_name="sd198")
+
+    assert case_input.label_space_id == "sd198_grouped"
+    assert case_input.workflow_context is not None
+    assert case_input.workflow_context["workflow_profile"] == "coarse_taxonomy_workflow"
+    assert case_input.workflow_context["dataset_workflow_profile"] == "coarse_taxonomy_workflow"
+    assert case_input.workflow_context["workflow_cell_id"] == "medgemma__sd198__grouped_coarse_v1"
+    assert "coarse_taxonomy_reasoning" in case_input.workflow_context["workflow_capabilities"]
+    assert "full_taxonomy_reasoning" not in case_input.workflow_context["workflow_capabilities"]
+    assert overrides["replace_workflow_capabilities"] is True
+
+
 def test_model_dataset_label_space_override_is_applied_to_case() -> None:
     case_input = CaseInput(
         case_id="case_scin",

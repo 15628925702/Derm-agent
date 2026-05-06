@@ -58,6 +58,209 @@ def test_soft_fusion_allows_scin_grouped_family_override() -> None:
     assert "family_override_allowed" in decision["reasons"]
 
 
+def test_medgemma_scin_grouped_uses_moderate_conservative_override() -> None:
+    baseline_output = {
+        "final_diagnosis": "Contact Dermatitis",
+        "differential_diagnoses": ["Contact Dermatitis"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "VASCULAR_PURPURIC",
+        "differential_diagnoses": ["VASCULAR_PURPURIC", "DERMATITIS_ECZEMA"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "evidence_decision_policy": {
+            "risk_layer": {"baseline_preview": {"early_ddx_candidates": ["Contact Dermatitis"]}},
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "medgemma__scin__grouped_core_v1",
+                    "workflow_profile": "family_routing_workflow",
+                    "label_space_id": "scin_grouped",
+                    "dataset_name": "scin",
+                },
+                "selected_evidence_present": True,
+                "support_margin": 52.0,
+                "subtype_support_margin": 7.0,
+                "uncertainty_level": "low",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "VASCULAR_PURPURIC"
+    assert "medgemma_scin_grouped_moderate_override" in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_scin_grouped_allows_same_canonical_family_without_baseline_anchor() -> None:
+    baseline_output = {
+        "final_diagnosis": "Contact Dermatitis",
+        "differential_diagnoses": ["Contact Dermatitis"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "DERMATITIS_ECZEMA",
+        "differential_diagnoses": ["DERMATITIS_ECZEMA"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "evidence_decision_policy": {
+            "risk_layer": {"baseline_preview": {"early_ddx_candidates": ["Contact Dermatitis"]}},
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "medgemma__scin__grouped_core_v1",
+                    "workflow_profile": "family_routing_workflow",
+                    "label_space_id": "scin_grouped",
+                    "dataset_name": "scin",
+                },
+                "selected_evidence_present": True,
+                "support_margin": 52.0,
+                "subtype_support_margin": 7.0,
+                "uncertainty_level": "low",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "DERMATITIS_ECZEMA"
+    assert "fallback_to_baseline" not in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_sd198_grouped_uses_moderate_benign_override() -> None:
+    baseline_output = {
+        "final_diagnosis": "Seborrheic Keratosis",
+        "differential_diagnoses": ["Seborrheic Keratosis"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "SUN_DAMAGE_ACTINIC",
+        "differential_diagnoses": ["SUN_DAMAGE_ACTINIC", "PIGMENTARY_NEVUS_KERATOSIS"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "evidence_decision_policy": {
+            "risk_layer": {"baseline_preview": {"early_ddx_candidates": ["Actinic Keratosis"]}},
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "medgemma__sd198__grouped_coarse_v1",
+                    "workflow_profile": "coarse_taxonomy_workflow",
+                    "label_space_id": "sd198_grouped",
+                    "dataset_name": "sd198",
+                },
+                "selected_evidence_present": True,
+                "support_margin": 52.0,
+                "subtype_support_margin": 9.0,
+                "uncertainty_level": "low",
+                "contradiction_count": 0,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "SUN_DAMAGE_ACTINIC"
+    assert "medgemma_sd198_grouped_moderate_override" in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_sd198_grouped_blocks_malignant_demotion() -> None:
+    baseline_output = {
+        "final_diagnosis": "Basal Cell Carcinoma",
+        "differential_diagnoses": ["Basal Cell Carcinoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "PIGMENTARY_NEVUS_KERATOSIS",
+        "differential_diagnoses": ["PIGMENTARY_NEVUS_KERATOSIS"],
+        "confidence": "High",
+    }
+    evidence_bundle = {
+        "evidence_decision_policy": {
+            "risk_layer": {"baseline_preview": {"early_ddx_candidates": ["Basal Cell Carcinoma"]}},
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "medgemma__sd198__grouped_coarse_v1",
+                    "workflow_profile": "coarse_taxonomy_workflow",
+                    "label_space_id": "sd198_grouped",
+                    "dataset_name": "sd198",
+                },
+                "selected_evidence_present": True,
+                "support_margin": 70.0,
+                "subtype_support_margin": 30.0,
+                "uncertainty_level": "low",
+                "contradiction_count": 0,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "medgemma_sd198_grouped_conservative_guard" in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_sd198_grouped_allows_cheilitis_mucosal_override() -> None:
+    baseline_output = {
+        "final_diagnosis": "Actinic Keratosis",
+        "differential_diagnoses": ["Actinic Keratosis"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Actinic Cheilitis",
+        "differential_diagnoses": ["Actinic Cheilitis", "Actinic Keratosis"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "evidence_decision_policy": {
+            "risk_layer": {"baseline_preview": {"early_ddx_candidates": ["Actinic Keratosis"]}},
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "medgemma__sd198__grouped_coarse_v1",
+                    "workflow_profile": "coarse_taxonomy_workflow",
+                    "label_space_id": "sd198_grouped",
+                    "dataset_name": "sd198",
+                },
+                "selected_evidence_present": True,
+                "support_margin": 45.5,
+                "subtype_support_margin": 7.0,
+                "uncertainty_level": "low",
+                "contradiction_count": 1,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Actinic Cheilitis"
+    assert "medgemma_sd198_grouped_moderate_override" in result["fusion_decision"]["reasons"]
+
+
 def test_soft_fusion_allows_keratinocyte_subtype_override() -> None:
     baseline_output = {
         "final_diagnosis": "Basal Cell Carcinoma",

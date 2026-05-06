@@ -609,7 +609,9 @@ def _refine_scin_grouped_agent_payload(
     evidence_package: dict[str, Any],
 ) -> dict[str, Any]:
     label_space_id = str(getattr(case_input, "label_space_id", "") or "").strip().lower()
-    if not is_family_routing_case(workflow_context=_case_workflow_context(case_input), label_space_id=label_space_id):
+    workflow_context = _case_workflow_context(case_input)
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if not is_family_routing_case(workflow_context=workflow_context, label_space_id=label_space_id):
         return payload
 
     metadata = dict(getattr(case_input, "metadata", {}) or {})
@@ -691,6 +693,35 @@ def _refine_scin_grouped_agent_payload(
         boost("ACNE_ROSACEA_FOLLICULAR", 4.0)
     if related_category == "GROWTH_OR_MOLE":
         boost("PIGMENT_KERATOSIS_NEVUS", 3.0)
+
+    if workflow_cell_id == "medgemma__scin__grouped_core_v1":
+        dermatitis_score = scores.get("DERMATITIS_ECZEMA", 0.0)
+        if dermatitis_score > 0 and related_category == "RASH":
+            if "scaling" in normalized and (
+                "no_relevant_experience" in symptoms or "raised_or_bumpy" in textures
+            ):
+                boost("DERMATITIS_ECZEMA", 20.0)
+            if (
+                "flat" in textures
+                and {"arm", "leg"}.intersection(body_sites)
+                and "itching" not in symptoms
+                and "bothersome_appearance" in symptoms
+            ):
+                boost("VASCULAR_PURPURIC", 4.0)
+            if (
+                "raised_or_bumpy" in textures
+                and duration in {"ONE_DAY", "LESS_THAN_ONE_WEEK"}
+                and ("upper back" in normalized or " back " in f" {normalized} ")
+                and "itching" in symptoms
+            ):
+                boost("INFECTION_VIRAL_FUNGAL", 10.0)
+            if (
+                "raised_or_bumpy" in textures
+                and duration in {"ONE_DAY", "LESS_THAN_ONE_WEEK"}
+                and "head_or_neck" in body_sites
+                and "itching" not in symptoms
+            ):
+                boost("ACNE_ROSACEA_FOLLICULAR", 10.0)
 
     best_label = max(scores, key=lambda key: scores[key])
     if scores.get(best_label, 0.0) <= 0:
@@ -1085,7 +1116,11 @@ class DermOpenAIClient:
 
         workflow_context = _case_workflow_context(case_input)
         workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
-        compact_final_output = workflow_cell_id == "medgemma__pad20__clinical_core_v2"
+        compact_final_output = workflow_cell_id in {
+            "medgemma__pad20__clinical_core_v2",
+            "medgemma__scin__grouped_core_v1",
+            "medgemma__sd198__grouped_coarse_v1",
+        }
         final_max_tokens = 900 if compact_final_output else FINAL_DIAGNOSIS_MAX_TOKENS
         compact_final_line = (
             "Return compact JSON: final_diagnosis must be one short label; rationale must be at most two short sentences; "

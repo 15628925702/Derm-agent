@@ -298,6 +298,35 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("dermatollama_scin_guarded_override")
+        elif _allow_medgemma_scin_grouped_override(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("medgemma_scin_grouped_moderate_override")
+        elif _allow_medgemma_sd198_grouped_override(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            contradiction_count=contradiction_count,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("medgemma_sd198_grouped_moderate_override")
         elif not selected_evidence_present:
             use_agent_output = False
             reasons.append("no_selected_evidence")
@@ -397,6 +426,7 @@ def decide_conservative_agent_fusion(
         subtype_support_margin=subtype_support_margin,
         support_margin=support_margin,
         uncertainty_level=uncertainty_level,
+        contradiction_count=contradiction_count,
         malformed_agent_output=malformed_agent_output,
         label_space_id=label_space_id,
         dataset_name=dataset_name,
@@ -482,6 +512,7 @@ def _route_specific_fallback_reason(
     subtype_support_margin: float,
     support_margin: float,
     uncertainty_level: str,
+    contradiction_count: int,
     malformed_agent_output: bool,
     label_space_id: str,
     dataset_name: str,
@@ -583,6 +614,35 @@ def _route_specific_fallback_reason(
             dataset_name=dataset_name,
         ):
             return "dermatollama_scin_baseline_anchor_guard"
+
+    if workflow_cell_id == "medgemma__scin__grouped_core_v1":
+        if baseline_label != agent_label and not _allow_medgemma_scin_grouped_override(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            return "medgemma_scin_grouped_conservative_guard"
+
+    if workflow_cell_id == "medgemma__sd198__grouped_coarse_v1":
+        if baseline_label != agent_label and not _allow_medgemma_sd198_grouped_override(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            contradiction_count=contradiction_count,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            return "medgemma_sd198_grouped_conservative_guard"
 
     if workflow_cell_id == "dermatollama__sd198__grouped_guard_v1":
         if baseline_label != agent_label:
@@ -1355,6 +1415,113 @@ def _allow_dermatollama_scin_guarded_override(
         return baseline_conf == "medium" and agent_conf in {"unknown", "medium"} and 40.0 <= support_margin <= 46.5
 
     return False
+
+
+def _allow_medgemma_scin_grouped_override(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> bool:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "medgemma__scin__grouped_core_v1":
+        return False
+    if not selected_evidence_present:
+        return False
+    if str(uncertainty_level or "").strip().lower() not in {"low", "medium"}:
+        return False
+    if support_margin < 48.0 or subtype_support_margin < 5.0:
+        return False
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if baseline_canonical != "DERMATITIS_ECZEMA":
+        return False
+    if agent_canonical == baseline_canonical:
+        return support_margin >= 20.0
+    return agent_canonical in {
+        "VASCULAR_PURPURIC",
+        "INFECTION_VIRAL_FUNGAL",
+        "ACNE_ROSACEA_FOLLICULAR",
+    }
+
+
+def _allow_medgemma_sd198_grouped_override(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    contradiction_count: int,
+    label_space_id: str,
+    dataset_name: str,
+) -> bool:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "medgemma__sd198__grouped_coarse_v1":
+        return False
+    if not selected_evidence_present:
+        return False
+    if str(uncertainty_level or "").strip().lower() not in {"low", "medium"}:
+        return False
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if agent_canonical == baseline_canonical:
+        return support_margin >= 20.0
+
+    agent_raw = str(agent_label or "").strip().lower()
+    if (
+        baseline_canonical == "SUN_DAMAGE_ACTINIC"
+        and agent_canonical == "MUCOSAL_GENITAL_ORAL"
+        and "cheilitis" in agent_raw
+        and support_margin >= 45.0
+        and subtype_support_margin >= 7.0
+        and contradiction_count <= 1
+    ):
+        return True
+
+    if support_margin < 48.0 or subtype_support_margin < 5.0:
+        return False
+
+    if baseline_canonical == "MALIGNANT_SKIN_CANCER" or agent_canonical == "MALIGNANT_SKIN_CANCER":
+        return False
+    if agent_canonical in {"", "OTHER"}:
+        return False
+    if contradiction_count > 1:
+        return False
+
+    if baseline_canonical == "PIGMENTARY_NEVUS_KERATOSIS" and agent_canonical == "SUN_DAMAGE_ACTINIC":
+        return support_margin >= 50.0 and subtype_support_margin >= 8.0
+    if baseline_canonical == "SUN_DAMAGE_ACTINIC" and agent_canonical == "DERMATITIS_ECZEMA":
+        return contradiction_count == 0 and support_margin >= 50.0 and subtype_support_margin >= 5.0
+    if baseline_canonical == "PIGMENTARY_NEVUS_KERATOSIS" and agent_canonical == "BENIGN_TUMOR_CYST":
+        return support_margin >= 58.0 and subtype_support_margin >= 12.0
+
+    return support_margin >= 62.0 and subtype_support_margin >= 18.0 and contradiction_count == 0
 
 
 def _allow_sparse_lesion_safe_override(

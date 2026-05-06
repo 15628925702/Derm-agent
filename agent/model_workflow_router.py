@@ -146,6 +146,54 @@ MODEL_DATASET_WORKFLOW_PROFILES = {
         },
     },
     "medgemma-4b-it": {
+        "scin": {
+            "workflow_cell_id": "medgemma__scin__grouped_core_v1",
+            "label_space_id": "scin_grouped",
+            "environment": {"DERMAGENT_SCIN_LABEL_SPACE_ID": "scin_grouped"},
+            "workflow_profile": "medgemma_scin_grouped_core_workflow",
+            "workflow_capabilities": ["graded_conservative_fusion"],
+            "inherit_dataset_workflow": True,
+            "force_conservative_fusion": True,
+            "disable_legacy_final_path": True,
+            "force_disable_skills": [
+                "metadata_consistency_skill",
+                "uncertainty_assessment_skill",
+                "information_gap_detection_skill",
+                "contradiction_check_skill",
+                "escalation_recommendation_skill",
+                "ack_scc_specialist_skill",
+                "benign_mimic_specialist_skill",
+                "mel_nev_specialist_skill",
+                "exclusion_reasoning_skill",
+            ],
+        },
+        "sd198": {
+            "workflow_cell_id": "medgemma__sd198__grouped_coarse_v1",
+            "label_space_id": "sd198_grouped",
+            "environment": {"DERMAGENT_SD198_LABEL_SPACE_ID": "sd198_grouped"},
+            "workflow_profile": "coarse_taxonomy_workflow",
+            "workflow_profile_mode": "replace",
+            "workflow_capabilities": [
+                "coarse_taxonomy_reasoning",
+                "grouped_label_reasoning",
+                "focal_lesion_reasoning",
+                "graded_conservative_fusion",
+            ],
+            "replace_workflow_capabilities": True,
+            "force_conservative_fusion": True,
+            "disable_legacy_final_path": True,
+            "force_disable_skills": [
+                "metadata_consistency_skill",
+                "uncertainty_assessment_skill",
+                "information_gap_detection_skill",
+                "contradiction_check_skill",
+                "escalation_recommendation_skill",
+                "ack_scc_specialist_skill",
+                "benign_mimic_specialist_skill",
+                "mel_nev_specialist_skill",
+                "exclusion_reasoning_skill",
+            ],
+        },
         "pad20": {
             "workflow_cell_id": "medgemma__pad20__clinical_core_v2",
             "label_space_id": "derm_six",
@@ -372,6 +420,8 @@ def _build_workflow_overrides(config: dict[str, Any], *, model_name: str) -> dic
         overrides["workflow_profile"] = source["workflow_profile"]
     if "workflow_profile_mode" in source:
         overrides["workflow_profile_mode"] = source["workflow_profile_mode"]
+    if source.get("replace_workflow_capabilities"):
+        overrides["replace_workflow_capabilities"] = True
     if source.get("inherit_dataset_workflow"):
         overrides["inherit_dataset_workflow"] = True
     if source.get("block_model_workflow_profile"):
@@ -465,7 +515,7 @@ def apply_model_workflow_to_case(
     if requested_workflow_profile and workflow_profile_mode in {"dataset", "dataset_override", "replace"}:
         workflow_context["workflow_profile"] = requested_workflow_profile
         dataset_workflow_profile = requested_workflow_profile
-        model_workflow_profile = ""
+        model_workflow_profile = str(overrides.get("model_workflow_profile", "")).strip()
     elif overrides.get("block_model_workflow_profile"):
         model_workflow_profile = ""
     else:
@@ -479,19 +529,22 @@ def apply_model_workflow_to_case(
     if overrides.get("workflow_routing_priority"):
         workflow_context["workflow_routing_priority"] = str(overrides.get("workflow_routing_priority", "")).strip()
     if overrides.get("workflow_capabilities"):
-        existing_capabilities = [
-            str(item).strip()
-            for item in workflow_context.get("workflow_capabilities", [])
-            if str(item).strip()
-        ]
         model_capabilities = [
             str(item).strip()
             for item in overrides.get("workflow_capabilities", [])
             if str(item).strip()
         ]
-        workflow_context["workflow_capabilities"] = list(
-            dict.fromkeys(existing_capabilities + model_capabilities)
-        )
+        if overrides.get("replace_workflow_capabilities"):
+            workflow_context["workflow_capabilities"] = list(dict.fromkeys(model_capabilities))
+        else:
+            existing_capabilities = [
+                str(item).strip()
+                for item in workflow_context.get("workflow_capabilities", [])
+                if str(item).strip()
+            ]
+            workflow_context["workflow_capabilities"] = list(
+                dict.fromkeys(existing_capabilities + model_capabilities)
+            )
     workflow_context["model_workflow_routing"] = {
         "model_name": str(model_name or "").strip(),
         "model_profile": str(overrides.get("model_workflow_profile", "")).strip(),

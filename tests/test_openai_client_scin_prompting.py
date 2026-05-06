@@ -217,6 +217,120 @@ def test_refine_scin_payload_for_runtime_can_group_baseline_when_requested() -> 
     assert baseline_refined["final_diagnosis"] == "VASCULAR_PURPURIC"
 
 
+def test_medgemma_scin_grouped_refinement_overrides_dermatitis_prior_for_flat_extremity_rash() -> None:
+    case = CaseInput(
+        case_id="scin_case",
+        image_path="/tmp/missing.png",
+        metadata={
+            "label_space_id": "scin_grouped",
+            "related_category": "RASH",
+            "condition_duration": "ONE_DAY",
+            "body_sites": ["arm"],
+            "textures_present": ["flat"],
+            "symptoms_present": ["bothersome_appearance"],
+        },
+        dataset_name="scin",
+        label_space_id="scin_grouped",
+        workflow_context={
+            "workflow_profile": "family_routing_workflow",
+            "workflow_capabilities": ["family_routing", "grouped_label_reasoning"],
+            "workflow_cell_id": "medgemma__scin__grouped_core_v1",
+        },
+    )
+    payload = {
+        "final_diagnosis": "Contact Dermatitis",
+        "differential_diagnoses": ["Contact Dermatitis", "Urticaria"],
+        "rationale": "Flat red rash on the arm.",
+        "confidence": "Moderate",
+        "follow_up_considerations": [],
+    }
+
+    refined = _refine_scin_payload_for_runtime(
+        case_input=case,
+        payload=payload,
+        evidence_package={"serialized_evidence_text": "flat red macular rash on arm"},
+        baseline_mode=False,
+    )
+
+    assert refined["final_diagnosis"] == "VASCULAR_PURPURIC"
+
+
+def test_medgemma_scin_grouped_refinement_preserves_dermatitis_when_flat_leg_has_no_symptoms() -> None:
+    case = CaseInput(
+        case_id="scin_case",
+        image_path="/tmp/missing.png",
+        metadata={
+            "label_space_id": "scin_grouped",
+            "related_category": "RASH",
+            "condition_duration": "ONE_DAY",
+            "body_sites": ["leg"],
+            "textures_present": ["flat"],
+            "symptoms_present": ["no_relevant_experience"],
+        },
+        dataset_name="scin",
+        label_space_id="scin_grouped",
+        workflow_context={
+            "workflow_profile": "family_routing_workflow",
+            "workflow_capabilities": ["family_routing", "grouped_label_reasoning"],
+            "workflow_cell_id": "medgemma__scin__grouped_core_v1",
+        },
+    )
+    payload = {
+        "final_diagnosis": "Contact Dermatitis",
+        "differential_diagnoses": ["Contact Dermatitis", "Urticaria"],
+        "rationale": "Red rash with some scaling on the leg.",
+        "confidence": "Moderate",
+        "follow_up_considerations": [],
+    }
+
+    refined = _refine_scin_payload_for_runtime(
+        case_input=case,
+        payload=payload,
+        evidence_package={"serialized_evidence_text": "red rash with scaling on leg"},
+        baseline_mode=False,
+    )
+
+    assert refined["final_diagnosis"] == "DERMATITIS_ECZEMA"
+
+
+def test_medgemma_scin_grouped_refinement_preserves_scaling_raised_arm_dermatitis() -> None:
+    case = CaseInput(
+        case_id="scin_case",
+        image_path="/tmp/missing.png",
+        metadata={
+            "label_space_id": "scin_grouped",
+            "related_category": "RASH",
+            "condition_duration": "ONE_DAY",
+            "body_sites": ["arm", "back_of_hand"],
+            "textures_present": ["raised_or_bumpy", "flat"],
+            "symptoms_present": ["bothersome_appearance"],
+        },
+        dataset_name="scin",
+        label_space_id="scin_grouped",
+        workflow_context={
+            "workflow_profile": "family_routing_workflow",
+            "workflow_capabilities": ["family_routing", "grouped_label_reasoning"],
+            "workflow_cell_id": "medgemma__scin__grouped_core_v1",
+        },
+    )
+    payload = {
+        "final_diagnosis": "Contact Dermatitis",
+        "differential_diagnoses": ["Contact Dermatitis", "Urticaria"],
+        "rationale": "Raised bumpy rash with scaling on the arm.",
+        "confidence": "Moderate",
+        "follow_up_considerations": [],
+    }
+
+    refined = _refine_scin_payload_for_runtime(
+        case_input=case,
+        payload=payload,
+        evidence_package={"serialized_evidence_text": "raised bumpy rash with scaling on arm"},
+        baseline_mode=False,
+    )
+
+    assert refined["final_diagnosis"] == "DERMATITIS_ECZEMA"
+
+
 def test_xiangya_label_hint_mentions_grouped_eczematous_family_distinctions() -> None:
     case = CaseInput(
         case_id="xiangya_case",
