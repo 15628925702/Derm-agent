@@ -251,6 +251,16 @@ MODEL_DATASET_WORKFLOW_PROFILES = {
             "fallback_on_malformed_final": True,
             "disable_legacy_final_path": True,
         },
+        "pad20": {
+            "workflow_cell_id": "hulumed__pad20__clinical_guard_v1",
+            "label_space_id": "derm_six",
+            "workflow_profile": "hulumed_pad20_clinical_guard_workflow",
+            "workflow_capabilities": ["baseline_anchored_final", "clinical_subtype_guard_reasoning"],
+            "inherit_dataset_workflow": True,
+            "force_conservative_fusion": True,
+            "fallback_on_malformed_final": True,
+            "disable_legacy_final_path": True,
+        },
     },
 }
 
