@@ -430,6 +430,21 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("medgemma_sd198_grouped_moderate_override")
+        elif llama_sd198_override_label := _llama_sd198_consensus_override_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = llama_sd198_override_label
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("llama_sd198_grouped_malformed_rescue_override")
         elif not selected_evidence_present:
             use_agent_output = False
             reasons.append("no_selected_evidence")
@@ -632,7 +647,22 @@ def _route_specific_fallback_reason(
     ).strip().lower()
     workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
 
-    if bool(workflow_context.get("fallback_on_malformed_final", False)) and malformed_agent_output:
+    llama_sd198_malformed_rescue_label = _llama_sd198_consensus_override_label(
+        workflow_context=workflow_context,
+        baseline_label=baseline_label,
+        agent_label=agent_label,
+        selected_evidence_present=selected_evidence_present,
+        support_margin=support_margin,
+        subtype_support_margin=subtype_support_margin,
+        uncertainty_level=uncertainty_level,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if (
+        bool(workflow_context.get("fallback_on_malformed_final", False))
+        and malformed_agent_output
+        and not llama_sd198_malformed_rescue_label
+    ):
         return "model_route_malformed_final_fallback"
 
     if model_profile == "direct_baseline_workflow":
@@ -762,6 +792,20 @@ def _route_specific_fallback_reason(
             dataset_name=dataset_name,
         ):
             return "medgemma_sd198_grouped_conservative_guard"
+
+    if workflow_cell_id == "llama__sd198__grouped_coarse_guard_v1":
+        if baseline_label != agent_label and not _llama_sd198_consensus_override_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            return "llama_sd198_grouped_baseline_anchor_guard"
 
     if workflow_cell_id == "dermatollama__sd198__grouped_guard_v1":
         if baseline_label != agent_label:
@@ -2303,6 +2347,58 @@ def _allow_medgemma_sd198_grouped_override(
         return support_margin >= 58.0 and subtype_support_margin >= 12.0
 
     return support_margin >= 62.0 and subtype_support_margin >= 18.0 and contradiction_count == 0
+
+
+def _llama_sd198_consensus_override_label(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> str:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "llama__sd198__grouped_coarse_guard_v1":
+        return ""
+    if not selected_evidence_present:
+        return ""
+    if str(uncertainty_level or "").strip().lower() != "low":
+        return ""
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_text = str(agent_label or "").strip().lower()
+    if not agent_canonical:
+        if any(token in agent_text for token in ("beau", "nail", "alopecia", "hair", "clubbing")):
+            agent_canonical = "HAIR_NAIL_APPENDAGE"
+        elif any(token in agent_text for token in ("seborrheic", "keratosis", "crowe", "nevus")):
+            agent_canonical = "PIGMENTARY_NEVUS_KERATOSIS"
+        elif any(token in agent_text for token in ("acne", "follicular", "folliculitis", "rosacea")):
+            agent_canonical = "ACNE_FOLLICULITIS_ROSACEA"
+    baseline_is_malformed = _is_malformed_final_label(baseline_label) or baseline_canonical in {None, "", "None"}
+    if not baseline_is_malformed:
+        return ""
+    if support_margin < 34.0 or subtype_support_margin < 3.8:
+        return ""
+    if agent_canonical in {
+        "HAIR_NAIL_APPENDAGE",
+        "PIGMENTARY_NEVUS_KERATOSIS",
+        "ACNE_FOLLICULITIS_ROSACEA",
+    }:
+        return agent_canonical
+    return ""
 
 
 def _allow_sparse_lesion_safe_override(

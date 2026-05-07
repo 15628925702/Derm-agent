@@ -82,8 +82,7 @@
 - 不要停止正在运行的大实验，除非我明确要求。
 - 调参先 smoke，再扩大，除非我在“本次验证规模”里明确要求直接 8 卡完整复检：
   1. 先跑 3-5 case smoke。
-  2. smoke 没有格式错误/timeout/明显退化后，跑 30-50 case。
-  3. 如果效果好，再跑完整 80 或该数据集可用完整 case。
+  2. smoke 没有格式错误/timeout/明显退化后，跑 30-50 case；默认不要跑 80 case，除非我明确要求。
 - 判定“调好”的主标准：同批 case agent top1 > direct baseline top1。
 - 同时记录 topk、malignant recall、regression/improvement case 数。
 - 如果 top1 赢但 malignant recall 明显掉，要在文档里标注风险，并说明是否符合“本次可接受的取舍”。
