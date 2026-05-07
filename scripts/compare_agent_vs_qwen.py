@@ -18,6 +18,7 @@ from agent.model_workflow_router import (
     get_model_workflow_overrides,
     merge_model_workflow_policy_overrides,
 )
+from agent.paper_exports import DEFAULT_CASE_LEVEL_EXPORT_ROOT, export_compare_case_data
 from agent.policy_config import load_policy, load_stable_policy
 from dataio.case_loader import resolve_registered_dataset_loader
 from integrations.openai_client import DermOpenAIClient
@@ -47,6 +48,17 @@ def infer_dataset_name_from_data_root(data_root: Path) -> str:
 
 def _env_flag(name: str) -> bool:
     return str(os.getenv(name, "")).strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _redact_execution_overrides(overrides: dict[str, object]) -> dict[str, object]:
+    redacted: dict[str, object] = {}
+    for key, value in dict(overrides or {}).items():
+        lowered = str(key).lower()
+        if "api_key" in lowered or "token" in lowered or "secret" in lowered:
+            redacted[key] = "<redacted>" if str(value or "").strip() else ""
+        else:
+            redacted[key] = value
+    return redacted
 
 
 def parse_args() -> argparse.Namespace:
@@ -92,7 +104,55 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--enable-physician-evidence-summary",
         action="store_true",
-        help="Emit an optional doctor-facing evidence package for each DermAgent case. Adds one extra model call per agent case.",
+        help="Emit an optional doctor-facing evidence package for each DermAgent case via the separate Qwen summary service.",
+    )
+    parser.add_argument(
+        "--physician-evidence-summary-base-url",
+        type=str,
+        default=None,
+        help="OpenAI-compatible base URL for the separate Qwen physician-summary service. Defaults to http://127.0.0.1:8200/v1.",
+    )
+    parser.add_argument(
+        "--physician-evidence-summary-api-key",
+        type=str,
+        default=None,
+        help="API key for the separate Qwen physician-summary service. Defaults to EMPTY via runtime config.",
+    )
+    parser.add_argument(
+        "--physician-evidence-summary-model",
+        type=str,
+        default=None,
+        help="Model name served by the separate Qwen physician-summary service. Defaults to Qwen2.5-VL-7B-Instruct.",
+    )
+    parser.add_argument(
+        "--physician-evidence-summary-detail",
+        type=str,
+        default=None,
+        choices=("brief", "detailed"),
+        help="Physician evidence package detail level. `brief` is compact; `detailed` preserves more intermediate evidence.",
+    )
+    parser.add_argument(
+        "--physician-evidence-summary-timeout",
+        type=float,
+        default=None,
+        help="Optional per-request timeout in seconds for the separate Qwen physician-summary service.",
+    )
+    parser.add_argument(
+        "--physician-evidence-summary-max-retries",
+        type=int,
+        default=None,
+        help="Optional retry count for the separate Qwen physician-summary service.",
+    )
+    parser.add_argument(
+        "--export-paper-case-data",
+        action="store_true",
+        help="Also export this compare run as paper-ready workflow-free case-level CSV/JSON/XLSX rows.",
+    )
+    parser.add_argument(
+        "--paper-case-data-dir",
+        type=Path,
+        default=DEFAULT_CASE_LEVEL_EXPORT_ROOT / "compare_runs",
+        help="Directory for --export-paper-case-data outputs.",
     )
     return parser.parse_args()
 
@@ -156,6 +216,18 @@ def main() -> int:
             policy = merge_model_workflow_policy_overrides(policy, model_workflow_overrides)
     if args.enable_physician_evidence_summary or _env_flag("DERMAGENT_ENABLE_PHYSICIAN_EVIDENCE_SUMMARY"):
         agent_execution_overrides["enable_physician_evidence_summary"] = True
+        if args.physician_evidence_summary_base_url:
+            agent_execution_overrides["physician_evidence_summary_base_url"] = args.physician_evidence_summary_base_url
+        if args.physician_evidence_summary_api_key:
+            agent_execution_overrides["physician_evidence_summary_api_key"] = args.physician_evidence_summary_api_key
+        if args.physician_evidence_summary_model:
+            agent_execution_overrides["physician_evidence_summary_model"] = args.physician_evidence_summary_model
+        if args.physician_evidence_summary_detail:
+            agent_execution_overrides["physician_evidence_summary_detail"] = args.physician_evidence_summary_detail
+        if args.physician_evidence_summary_timeout is not None:
+            agent_execution_overrides["physician_evidence_summary_timeout"] = args.physician_evidence_summary_timeout
+        if args.physician_evidence_summary_max_retries is not None:
+            agent_execution_overrides["physician_evidence_summary_max_retries"] = args.physician_evidence_summary_max_retries
     if model_workflow_overrides:
         print(
             json.dumps(
@@ -163,7 +235,7 @@ def main() -> int:
                     "model_workflow_routing": {
                         "model": agent_model_name,
                         "model_workflow_profile": model_workflow_overrides.get("workflow_profile", ""),
-                        "execution_overrides": agent_execution_overrides,
+                        "execution_overrides": _redact_execution_overrides(agent_execution_overrides),
                         "skip_specialist_skills": bool(model_workflow_overrides.get("skip_specialist_skills", False)),
                         "skip_experience_retrieval": bool(model_workflow_overrides.get("skip_experience_retrieval", False)),
                     }
@@ -252,7 +324,7 @@ def main() -> int:
             "inferred_dataset_name": inferred_dataset_name,
             "disable_model_workflow_routing": disable_model_workflow_routing,
             "model_workflow_overrides": model_workflow_overrides,
-            "agent_execution_overrides": agent_execution_overrides,
+            "agent_execution_overrides": _redact_execution_overrides(agent_execution_overrides),
         },
         "summary": {
             "baseline": baseline_summary,
@@ -268,6 +340,16 @@ def main() -> int:
     }
     output_path = args.output_dir / f"compare_agent_vs_qwen_{suite['eval_id'].split('_')[-1]}.json"
     output_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+    paper_case_export_manifest = None
+    if args.export_paper_case_data or _env_flag("DERMAGENT_EXPORT_PAPER_CASE_DATA"):
+        export_stem = f"case_level_compare_export_{suite['eval_id'].split('_')[-1]}"
+        paper_case_export_manifest = export_compare_case_data(
+            compare_report_paths=[output_path],
+            output_dir=args.paper_case_data_dir,
+            export_stem=export_stem,
+        )
+        report["artifacts"]["paper_case_export_manifest_path"] = paper_case_export_manifest.get("manifest_path", "")
+        output_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
 
     print(
         json.dumps(
@@ -276,6 +358,7 @@ def main() -> int:
                 "report_path": str(output_path),
                 "evaluation_manifest_path": suite["evaluation_manifest_path"],
                 "result_manifest_path": suite["result_manifest_path"],
+                "paper_case_export_manifest_path": (paper_case_export_manifest or {}).get("manifest_path", ""),
             },
             ensure_ascii=False,
             indent=2,

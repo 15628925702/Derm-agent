@@ -2,15 +2,19 @@ from __future__ import annotations
 
 import csv
 import json
+import zipfile
 from collections import Counter
 from pathlib import Path
 from typing import Any
+from xml.sax.saxutils import escape
 
-from project_paths import outputs_root
+from project_paths import repo_root, outputs_root
 
 
 DEFAULT_OUTPUTS_ROOT = outputs_root()
 DEFAULT_PAPER_EXPORT_ROOT = DEFAULT_OUTPUTS_ROOT / "paper_exports"
+DEFAULT_PAPER_DATA_ROOT = repo_root() / "paper_data"
+DEFAULT_CASE_LEVEL_EXPORT_ROOT = DEFAULT_PAPER_DATA_ROOT / "case_level_exports"
 TABLE_FILE_ORDER = (
     "main_comparison_table",
     "ablation_table",
@@ -28,6 +32,59 @@ FIG_FILE_ORDER = (
     "fig_skill_helpfulness_long",
     "fig_learning_curve_long",
     "fig_hard_case_long",
+)
+CASE_LEVEL_EXPORT_STEM = "case_level_compare_export"
+CASE_LEVEL_EXPORT_COLUMNS = (
+    "source_report_path",
+    "run_root",
+    "evaluation_manifest_path",
+    "result_manifest_path",
+    "data_split",
+    "split_json",
+    "strict_frozen_eval",
+    "model_name",
+    "agent_model",
+    "baseline_model",
+    "dataset_name",
+    "case_offset",
+    "case_index",
+    "case_id",
+    "image_path",
+    "image_exists",
+    "metadata_path",
+    "clinical_metadata",
+    "ground_truth_raw_label",
+    "ground_truth_canonical_label",
+    "ground_truth_malignant_flag",
+    "baseline_final_diagnosis",
+    "baseline_differential_diagnoses",
+    "baseline_confidence",
+    "baseline_rationale",
+    "agent_final_diagnosis",
+    "agent_differential_diagnoses",
+    "agent_confidence",
+    "agent_rationale",
+    "agent_follow_up_considerations",
+    "agent_final_empty",
+    "agent_final_malformed",
+    "agent_case_status",
+    "agent_error_type",
+    "agent_timeout",
+    "baseline_correct",
+    "agent_correct",
+    "baseline_topk_hit",
+    "agent_topk_hit",
+    "baseline_malignant_recall_hit",
+    "agent_malignant_recall_hit",
+    "agent_vs_baseline_outcome",
+    "correct_delta",
+    "topk_hit_delta",
+    "malignant_recall_delta",
+    "writeback_enabled",
+    "persisted_writeback_bundle",
+    "actual_writeback",
+    "summary_baseline",
+    "summary_agent",
 )
 
 
@@ -56,16 +113,134 @@ def write_json(path: str | Path, payload: Any) -> Path:
     return target
 
 
-def write_csv(path: str | Path, rows: list[dict[str, Any]]) -> Path:
+def write_csv(path: str | Path, rows: list[dict[str, Any]], *, columns: tuple[str, ...] | None = None) -> Path:
     target = Path(path)
     target.parent.mkdir(parents=True, exist_ok=True)
-    columns = sorted({key for row in rows for key in row.keys()})
+    column_names = list(columns or sorted({key for row in rows for key in row.keys()}))
     with target.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=columns)
+        writer = csv.DictWriter(handle, fieldnames=column_names)
         writer.writeheader()
         for row in rows:
-            writer.writerow({key: _csv_cell(row.get(key)) for key in columns})
+            writer.writerow({key: _csv_cell(row.get(key)) for key in column_names})
     return target
+
+
+def write_jsonl(path: str | Path, rows: list[dict[str, Any]]) -> Path:
+    target = Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with target.open("w", encoding="utf-8") as handle:
+        for row in rows:
+            handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+    return target
+
+
+def write_xlsx(
+    path: str | Path,
+    rows: list[dict[str, Any]],
+    *,
+    sheet_name: str = "cases",
+    columns: tuple[str, ...] | None = None,
+) -> Path:
+    target = Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    column_names = list(columns or sorted({key for row in rows for key in row.keys()}))
+    sheet_xml = _build_xlsx_sheet_xml(columns=column_names, rows=rows)
+    workbook_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" '
+        'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+        f'<sheets><sheet name="{_xml_attr(sheet_name[:31] or "cases")}" sheetId="1" r:id="rId1"/></sheets>'
+        "</workbook>"
+    )
+    rels_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+        '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>'
+        "</Relationships>"
+    )
+    workbook_rels_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+        '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>'
+        "</Relationships>"
+    )
+    content_types_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+        '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+        '<Default Extension="xml" ContentType="application/xml"/>'
+        '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'
+        '<Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'
+        "</Types>"
+    )
+    with zipfile.ZipFile(target, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr("[Content_Types].xml", content_types_xml)
+        archive.writestr("_rels/.rels", rels_xml)
+        archive.writestr("xl/workbook.xml", workbook_xml)
+        archive.writestr("xl/_rels/workbook.xml.rels", workbook_rels_xml)
+        archive.writestr("xl/worksheets/sheet1.xml", sheet_xml)
+    return target
+
+
+def export_compare_case_data(
+    *,
+    compare_report_paths: list[str | Path],
+    output_dir: str | Path = DEFAULT_CASE_LEVEL_EXPORT_ROOT,
+    export_stem: str = CASE_LEVEL_EXPORT_STEM,
+) -> dict[str, Any]:
+    reports = _load_compare_reports(compare_report_paths)
+    rows = collect_compare_case_rows(reports)
+    output_root = Path(output_dir)
+    output_root.mkdir(parents=True, exist_ok=True)
+
+    csv_path = write_csv(output_root / f"{export_stem}.csv", rows, columns=CASE_LEVEL_EXPORT_COLUMNS)
+    jsonl_path = write_jsonl(output_root / f"{export_stem}.jsonl", rows)
+    json_path = write_json(output_root / f"{export_stem}.json", rows)
+    xlsx_path = write_xlsx(output_root / f"{export_stem}.xlsx", rows, columns=CASE_LEVEL_EXPORT_COLUMNS)
+
+    manifest = {
+        "case_level_export_dir": str(output_root),
+        "export_stem": export_stem,
+        "row_count": len(rows),
+        "compare_report_count": len(reports),
+        "source_reports": [str(path) for path, _payload in reports],
+        "files": {
+            "csv_path": str(csv_path),
+            "jsonl_path": str(jsonl_path),
+            "json_path": str(json_path),
+            "xlsx_path": str(xlsx_path),
+        },
+        "columns": list(CASE_LEVEL_EXPORT_COLUMNS),
+    }
+    manifest_path = write_json(output_root / f"{export_stem}_manifest.json", manifest)
+    manifest["manifest_path"] = str(manifest_path)
+    return manifest
+
+
+def collect_compare_case_rows(reports: list[tuple[Path, dict[str, Any]]]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for report_path, payload in reports:
+        run_config = dict(payload.get("run_config", {}) or {})
+        summary = dict(payload.get("summary", {}) or {})
+        artifacts = dict(payload.get("artifacts", {}) or {})
+        model_name = str(run_config.get("agent_model_name") or run_config.get("agent_model") or run_config.get("model") or "").strip()
+        dataset_name = str(run_config.get("inferred_dataset_name") or "").strip()
+        for case_index, case in enumerate(payload.get("cases", []) or []):
+            if not isinstance(case, dict):
+                continue
+            rows.append(
+                _case_row_from_compare_case(
+                    report_path=report_path,
+                    run_config=run_config,
+                    summary=summary,
+                    artifacts=artifacts,
+                    model_name=model_name,
+                    dataset_name=dataset_name,
+                    case_index=case_index,
+                    case=case,
+                )
+            )
+    return _sort_rows(rows, keys=("model_name", "dataset_name", "case_offset", "case_index", "case_id"))
 
 
 def export_paper_tables(
@@ -772,6 +947,177 @@ def _extract_confusion_pair(record: dict[str, Any]) -> str:
         return value
     retrieval_confusion = str(record.get("skill_retrieval", {}).get("query_summary", {}).get("confusion_pair", "")).strip().lower()
     return retrieval_confusion
+
+
+def _load_compare_reports(compare_report_paths: list[str | Path]) -> list[tuple[Path, dict[str, Any]]]:
+    reports: list[tuple[Path, dict[str, Any]]] = []
+    seen: set[Path] = set()
+    for raw_path in compare_report_paths:
+        path = Path(raw_path)
+        if not path.exists() or path in seen:
+            continue
+        seen.add(path)
+        try:
+            payload = read_json(path)
+        except Exception:
+            continue
+        if _is_compare_case_report(payload):
+            reports.append((path, payload))
+    return reports
+
+
+def _is_compare_case_report(payload: Any) -> bool:
+    if not isinstance(payload, dict):
+        return False
+    return isinstance(payload.get("run_config"), dict) and isinstance(payload.get("cases"), list)
+
+
+def _case_row_from_compare_case(
+    *,
+    report_path: Path,
+    run_config: dict[str, Any],
+    summary: dict[str, Any],
+    artifacts: dict[str, Any],
+    model_name: str,
+    dataset_name: str,
+    case_index: int,
+    case: dict[str, Any],
+) -> dict[str, Any]:
+    input_summary = dict(case.get("input_summary", {}) or {})
+    clinical_metadata = dict(input_summary.get("clinical_metadata", {}) or {})
+    baseline = dict(case.get("baseline_qwen", {}) or {})
+    agent = dict(case.get("qwen_final", {}) or {})
+    fusion_decision = dict(agent.get("fusion_decision", {}) or {})
+    reflection = dict(case.get("reflection_summary", {}) or {})
+    case_outcome = dict(reflection.get("case_outcome", {}) or {})
+    ground_truth = dict(case.get("ground_truth", {}) or {})
+    evaluation = dict(case.get("evaluation", {}) or {})
+    writeback = dict(case.get("writeback_ops", {}) or {})
+    delta = dict(evaluation.get("agent_vs_baseline_delta", {}) or {})
+
+    baseline_correct = evaluation.get("baseline_correct")
+    agent_correct = evaluation.get("correct")
+    outcome = "unchanged"
+    if baseline_correct is False and agent_correct is True:
+        outcome = "helped"
+    elif baseline_correct is True and agent_correct is False:
+        outcome = "hurt"
+
+    persisted_writeback = bool(writeback.get("persisted_writeback_bundle"))
+    actual_writeback = bool(writeback.get("writeback_enabled")) and (
+        persisted_writeback
+        or bool(writeback.get("raw_case_memory_written"))
+        or int(writeback.get("tactical_experience_count") or 0) > 0
+        or int(writeback.get("abstract_experience_count") or 0) > 0
+    )
+    agent_final_diagnosis = agent.get("final_diagnosis", "")
+    agent_error_type = case_outcome.get("error_type", "")
+    agent_case_status = case_outcome.get("status", "")
+    agent_timeout = "timeout" in str(agent_error_type).lower() or "timeout" in str(agent_case_status).lower()
+
+    return {
+        "source_report_path": str(report_path),
+        "run_root": artifacts.get("run_root", ""),
+        "evaluation_manifest_path": artifacts.get("evaluation_manifest_path", ""),
+        "result_manifest_path": artifacts.get("result_manifest_path", ""),
+        "data_split": run_config.get("data_split", ""),
+        "split_json": run_config.get("split_json", ""),
+        "strict_frozen_eval": run_config.get("strict_frozen_eval", ""),
+        "model_name": model_name,
+        "agent_model": run_config.get("agent_model", ""),
+        "baseline_model": run_config.get("baseline_model", ""),
+        "dataset_name": dataset_name or str(case.get("dataset_name", "")).strip(),
+        "case_offset": run_config.get("case_offset", ""),
+        "case_index": case_index,
+        "case_id": case.get("case_id", ""),
+        "image_path": input_summary.get("image_path", ""),
+        "image_exists": input_summary.get("image_exists", ""),
+        "metadata_path": input_summary.get("metadata_path", ""),
+        "clinical_metadata": clinical_metadata,
+        "ground_truth_raw_label": ground_truth.get("raw_label", ""),
+        "ground_truth_canonical_label": ground_truth.get("canonical_label", ""),
+        "ground_truth_malignant_flag": ground_truth.get("malignant_flag", ""),
+        "baseline_final_diagnosis": baseline.get("final_diagnosis", ""),
+        "baseline_differential_diagnoses": baseline.get("differential_diagnoses", []),
+        "baseline_confidence": baseline.get("confidence", ""),
+        "baseline_rationale": baseline.get("rationale", ""),
+        "agent_final_diagnosis": agent_final_diagnosis,
+        "agent_differential_diagnoses": agent.get("differential_diagnoses", []),
+        "agent_confidence": agent.get("confidence", ""),
+        "agent_rationale": agent.get("rationale", ""),
+        "agent_follow_up_considerations": agent.get("follow_up_considerations", []),
+        "agent_final_empty": not bool(str(agent_final_diagnosis).strip()),
+        "agent_final_malformed": fusion_decision.get("malformed_agent_output", ""),
+        "agent_case_status": agent_case_status,
+        "agent_error_type": agent_error_type,
+        "agent_timeout": agent_timeout,
+        "baseline_correct": baseline_correct,
+        "agent_correct": agent_correct,
+        "baseline_topk_hit": evaluation.get("baseline_topk_hit", ""),
+        "agent_topk_hit": evaluation.get("topk_hit", ""),
+        "baseline_malignant_recall_hit": evaluation.get("baseline_malignant_recall_hit", ""),
+        "agent_malignant_recall_hit": evaluation.get("malignant_recall_hit", ""),
+        "agent_vs_baseline_outcome": outcome,
+        "correct_delta": delta.get("correct_delta", ""),
+        "topk_hit_delta": delta.get("topk_hit_delta", ""),
+        "malignant_recall_delta": delta.get("malignant_recall_delta", ""),
+        "writeback_enabled": writeback.get("writeback_enabled", ""),
+        "persisted_writeback_bundle": persisted_writeback,
+        "actual_writeback": actual_writeback,
+        "summary_baseline": summary.get("baseline", {}),
+        "summary_agent": summary.get("agent", {}),
+    }
+
+
+def _build_xlsx_sheet_xml(*, columns: list[str], rows: list[dict[str, Any]]) -> str:
+    sheet_rows: list[str] = []
+    header_cells = [
+        _xlsx_cell(row_index=1, column_index=column_index + 1, value=column)
+        for column_index, column in enumerate(columns)
+    ]
+    sheet_rows.append(f'<row r="1">{"".join(header_cells)}</row>')
+    for row_index, row in enumerate(rows, start=2):
+        cells = [
+            _xlsx_cell(row_index=row_index, column_index=column_index + 1, value=row.get(column))
+            for column_index, column in enumerate(columns)
+        ]
+        sheet_rows.append(f'<row r="{row_index}">{"".join(cells)}</row>')
+    return (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+        f'<sheetData>{"".join(sheet_rows)}</sheetData>'
+        "</worksheet>"
+    )
+
+
+def _xlsx_cell(*, row_index: int, column_index: int, value: Any) -> str:
+    cell_ref = f"{_xlsx_column_name(column_index)}{row_index}"
+    if value is None:
+        return f'<c r="{cell_ref}"/>'
+    if isinstance(value, bool):
+        return f'<c r="{cell_ref}" t="b"><v>{1 if value else 0}</v></c>'
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        return f'<c r="{cell_ref}"><v>{value}</v></c>'
+    text = _xlsx_text(value)
+    return f'<c r="{cell_ref}" t="inlineStr"><is><t>{escape(text)}</t></is></c>'
+
+
+def _xlsx_text(value: Any) -> str:
+    text = _csv_cell(value)
+    text = "" if text is None else str(text)
+    return text[:32767]
+
+
+def _xlsx_column_name(index: int) -> str:
+    name = ""
+    while index:
+        index, remainder = divmod(index - 1, 26)
+        name = chr(65 + remainder) + name
+    return name
+
+
+def _xml_attr(value: str) -> str:
+    return escape(value, {'"': "&quot;"})
 
 
 def _rate(block: Any) -> float | None:

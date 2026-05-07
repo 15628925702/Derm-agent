@@ -869,12 +869,13 @@ PROMPT_STACK_VERSION = "dermagent_prompt_stack_v1"
 INITIAL_PERCEPTION_PROMPT_VERSION = "initial_perception_v1"
 SKILL_PROMPT_VERSION = "skill_reasoning_v1"
 FINAL_DIAGNOSIS_PROMPT_VERSION = "final_diagnosis_v1"
-PHYSICIAN_EVIDENCE_SUMMARY_PROMPT_VERSION = "physician_evidence_summary_v1"
+PHYSICIAN_EVIDENCE_SUMMARY_PROMPT_VERSION = "physician_evidence_summary_v2_detailed"
 BASELINE_DIAGNOSIS_PROMPT_VERSION = "direct_baseline_v1"
 INITIAL_PERCEPTION_MAX_TOKENS = 320
 SKILL_MAX_TOKENS = 640
 FINAL_DIAGNOSIS_MAX_TOKENS = 680
-PHYSICIAN_EVIDENCE_SUMMARY_MAX_TOKENS = 900
+PHYSICIAN_EVIDENCE_SUMMARY_BRIEF_MAX_TOKENS = 2200
+PHYSICIAN_EVIDENCE_SUMMARY_DETAILED_MAX_TOKENS = 5200
 BASELINE_DIAGNOSIS_MAX_TOKENS = 420
 SKINVL_MODEL_NAME_HINT = "skinvl"
 SKINVL_ALLOWED_LABELS = (
@@ -1316,46 +1317,87 @@ class DermOpenAIClient:
             raise last_error
         raise RuntimeError(f"Failed final diagnosis for case: {case_input.case_id}")
 
-    def physician_evidence_summary(self, case_input: CaseInput, evidence_package: EvidencePackage) -> dict[str, Any]:
+    def physician_evidence_summary(
+        self,
+        case_input: CaseInput,
+        evidence_package: EvidencePackage,
+        *,
+        detail_level: str = "brief",
+    ) -> dict[str, Any]:
+        summary_detail = self._normalize_physician_summary_detail(detail_level)
+        if summary_detail == "detailed":
+            summary_profile = {
+                "profile_id": "physician_summary_detailed",
+                "retrieval_top_k": 5,
+                "max_skill_count": 24,
+                "max_skill_fields": 16,
+                "serialized_max_length": 14000,
+            }
+            max_tokens = PHYSICIAN_EVIDENCE_SUMMARY_DETAILED_MAX_TOKENS
+            style_instruction = (
+                "This is the detailed physician evidence package mode. Do not compress into a short abstract. "
+                "When the source supports it, include 5-12 concrete items in major sections and preserve the reasoning chain "
+                "across observation, skill evidence, uncertainty, contradiction, risk, and next checks."
+            )
+        else:
+            summary_profile = {
+                "profile_id": "physician_summary_brief",
+                "retrieval_top_k": 3,
+                "max_skill_count": 18,
+                "max_skill_fields": 10,
+                "serialized_max_length": 5500,
+            }
+            max_tokens = PHYSICIAN_EVIDENCE_SUMMARY_BRIEF_MAX_TOKENS
+            style_instruction = (
+                "This is the brief physician evidence package mode. Keep it compact but still clinically useful; "
+                "avoid one-line summaries and preserve the main evidence domains."
+            )
         evidence_payload = self._canonicalize_evidence_package(evidence_package.to_dict())
         compact_evidence = self._prepare_evidence_for_profile(
             evidence_payload,
-            {
-                "profile_id": "physician_summary",
-                "retrieval_top_k": 1,
-                "max_skill_count": 10,
-                "max_skill_fields": 4,
-                "serialized_max_length": 1400,
-            },
+            summary_profile,
         )
-        physician_source = self._build_physician_summary_source(compact_evidence)
+        physician_source = self._build_physician_summary_source(compact_evidence, detail_level=summary_detail)
         serialized_payload = json.dumps(physician_source, ensure_ascii=False, separators=(",", ":"))
         prompt = (
-            "Create a physician-facing evidence package for clinical review.\n"
+            "Create a detailed physician-facing evidence package for clinical review.\n"
             "Return valid JSON only. Do not output markdown.\n"
             "This is not the final diagnosis step. Do not make, replace, or optimize the final diagnosis.\n"
-            "Summarize only the clinically useful evidence already produced by DermAgent.\n"
+            "Organize only the clinically useful evidence already produced by DermAgent.\n"
+            f"{style_instruction}\n"
             "Do not expose internal prompts, system instructions, policy names, routing decisions, source IDs, retrieval scores, "
             "hidden labels, ground truth, implementation details, or raw model-facing prompt text.\n"
-            "Use concise clinical language that a dermatologist can scan before making their own decision.\n"
+            "This is a clinical evidence package, not a brief abstract. Do not over-compress. Preserve concrete morphology, "
+            "distribution, color/pattern, uncertainty, contradiction, risk, and next-check details that would help a dermatologist.\n"
+            "Use complete but readable clinical bullet sentences. Prefer 3-8 detailed items per evidence section when the source supports them.\n"
+            "For evidence_by_domain, include separate domain bullets when available, such as Morphology, Color/pigment pattern, "
+            "Distribution/location, Risk/safety, Uncertainty/conflict, and Information gaps.\n"
+            "Convert machine-style flags and labels into plain clinical wording, e.g. use `Medium concern for malignancy based on irregular border and color variation` "
+            "instead of `malignancy_risk:medium`. Do not repeat schema placeholder phrases such as `domain: concrete finding`.\n"
+            "Do not include a final diagnosis field. Differential considerations are allowed only as considerations with supporting/opposing evidence.\n"
             "Schema:\n"
             "{"
-            "\"summary_version\":\"physician_evidence_summary_v1\","
+            "\"summary_version\":\"physician_evidence_summary_v2_detailed\","
             "\"case_id\":\"case id\","
             "\"status\":\"ok\","
             "\"intended_use\":\"doctor_support_only_not_final_diagnosis\","
-            "\"evidence_overview\":\"one short paragraph\","
-            "\"key_observations\":[\"clinically observable point\"],"
-            "\"supporting_evidence\":[\"finding that supports an active differential\"],"
-            "\"opposing_or_uncertain_evidence\":[\"finding that weakens or limits a differential\"],"
+            "\"detail_level\":\"brief|detailed\","
+            "\"evidence_overview\":\"one detailed paragraph with clinical context and overall evidence strength\","
+            "\"clinical_context\":[\"available patient/location/context detail and its relevance\"],"
+            "\"lesion_description\":[\"specific morphology, border, surface, size/count, distribution, and color-pattern observations\"],"
+            "\"evidence_by_domain\":[\"Morphology: concrete finding and why it matters clinically\"],"
+            "\"key_observations\":[\"clinically observable point with enough detail to be useful\"],"
+            "\"supporting_evidence\":[\"finding that supports an active differential or risk assessment\"],"
+            "\"opposing_or_uncertain_evidence\":[\"finding that weakens, limits, or creates uncertainty for a differential\"],"
+            "\"differential_reasoning\":[\"consideration: supporting evidence; opposing evidence; uncertainty or missing discriminator\"],"
             "\"risk_flags\":[\"risk or safety concern\"],"
-            "\"differential_considerations\":[\"diagnostic possibility to consider without declaring final diagnosis\"],"
-            "\"information_gaps\":[\"missing clinical detail or image limitation\"],"
-            "\"suggested_next_checks\":[\"reasonable next check for a physician to consider\"],"
+            "\"contradictions_or_tensions\":[\"evidence conflict, ambiguity, or reasoning tension and its impact\"],"
+            "\"information_gaps\":[\"missing clinical detail or image limitation and why it matters\"],"
+            "\"suggested_next_checks\":[\"reasonable next check for a physician to consider and what it would clarify\"],"
             "\"caveats\":[\"limitation or caution\"]"
             "}\n"
             f"Case ID: {case_input.case_id}\n"
-            f"Clinical metadata: {case_input.clinical_metadata()}\n"
+            f"Clinical metadata: {self._sanitize_physician_clinical_metadata(case_input.clinical_metadata())}\n"
             f"Curated evidence source: {serialized_payload}"
         )
         messages: list[dict[str, Any]] = [
@@ -1367,10 +1409,17 @@ class DermOpenAIClient:
         ]
         payload = self._create_json_payload(
             messages=messages,
-            max_tokens=PHYSICIAN_EVIDENCE_SUMMARY_MAX_TOKENS,
-            request_name=f"physician_evidence_summary:{case_input.case_id}",
+            max_tokens=max_tokens,
+            request_name=f"physician_evidence_summary:{summary_detail}:{case_input.case_id}",
         )
-        return self._normalize_physician_evidence_summary(payload, case_id=case_input.case_id)
+        normalized = self._normalize_physician_evidence_summary(
+            payload,
+            case_id=case_input.case_id,
+            detail_level=summary_detail,
+        )
+        if summary_detail == "detailed":
+            normalized["structured_evidence_appendix"] = self._build_physician_structured_appendix(physician_source)
+        return normalized
 
     def baseline_diagnosis(self, case_input: CaseInput) -> dict[str, Any]:
         if self._is_skinvl_model():
@@ -1814,30 +1863,46 @@ class DermOpenAIClient:
         return "\n".join(lines[:8])
 
     @staticmethod
-    def _build_physician_summary_source(payload: dict[str, Any]) -> dict[str, Any]:
+    def _build_physician_summary_source(payload: dict[str, Any], *, detail_level: str) -> dict[str, Any]:
         """Return a sanitized evidence view intended for a doctor-facing summary call."""
+        detailed = DermOpenAIClient._normalize_physician_summary_detail(detail_level) == "detailed"
         return {
             "initial_perception_summary": payload.get("initial_perception_summary", {}),
-            "selected_evidence": payload.get("selected_evidence", []),
+            "selected_evidence": DermOpenAIClient._sanitize_physician_selected_evidence(
+                payload.get("selected_evidence", []),
+                limit=20 if detailed else 12,
+            ),
             "skill_outputs": payload.get("skill_outputs", {}),
             "risk_flags": payload.get("risk_flags", []),
             "uncertainty_summary": payload.get("uncertainty_summary", {}),
             "contradiction_summary": payload.get("contradiction_summary", {}),
             "information_gap_summary": payload.get("information_gap_summary", {}),
             "escalation_summary": payload.get("escalation_summary", {}),
-            "notes": payload.get("notes", []),
-            "evidence_text_excerpt": str(payload.get("serialized_evidence_text", "")).strip()[:1400],
+            "evidence_text_excerpt": DermOpenAIClient._sanitize_physician_evidence_text(
+                str(payload.get("serialized_evidence_text", "")).strip()
+            )[:12000 if detailed else 5000],
         }
 
     @staticmethod
-    def _normalize_physician_evidence_summary(payload: dict[str, Any], *, case_id: str) -> dict[str, Any]:
+    def _normalize_physician_evidence_summary(
+        payload: dict[str, Any],
+        *,
+        case_id: str,
+        detail_level: str = "brief",
+    ) -> dict[str, Any]:
+        summary_detail = DermOpenAIClient._normalize_physician_summary_detail(detail_level)
         source = dict(payload or {}) if isinstance(payload, dict) else {}
         list_fields = (
+            "clinical_context",
+            "lesion_description",
+            "evidence_by_domain",
             "key_observations",
             "supporting_evidence",
             "opposing_or_uncertain_evidence",
+            "differential_reasoning",
             "risk_flags",
             "differential_considerations",
+            "contradictions_or_tensions",
             "information_gaps",
             "suggested_next_checks",
             "caveats",
@@ -1847,29 +1912,502 @@ class DermOpenAIClient:
             "case_id": str(source.get("case_id") or case_id),
             "status": "ok",
             "intended_use": "doctor_support_only_not_final_diagnosis",
-            "evidence_overview": str(source.get("evidence_overview", "")).strip()[:900],
+            "detail_level": summary_detail,
+            "evidence_overview": str(source.get("evidence_overview", "")).strip()[:3200 if summary_detail == "detailed" else 1800],
         }
         for field_name in list_fields:
-            normalized[field_name] = DermOpenAIClient._normalize_summary_string_list(source.get(field_name), limit=8)
+            if field_name == "evidence_by_domain":
+                continue
+            normalized[field_name] = DermOpenAIClient._normalize_summary_string_list(
+                source.get(field_name),
+                limit=24 if summary_detail == "detailed" else 14,
+                item_max_chars=1200 if summary_detail == "detailed" else 700,
+            )
+        normalized["evidence_by_domain"] = DermOpenAIClient._split_physician_domain_evidence(
+            source.get("evidence_by_domain", []),
+            item_max_chars=1400 if summary_detail == "detailed" else 1000,
+            limit=24 if summary_detail == "detailed" else 14,
+        )
+        normalized["risk_flags"] = DermOpenAIClient._normalize_physician_risk_flags(normalized.get("risk_flags", []))
         removed_diagnosis_fields = [field_name for field_name in ("final_diagnosis", "diagnosis") if field_name in source]
         if removed_diagnosis_fields:
             normalized["caveats"] = list(normalized["caveats"]) + [
                 f"Diagnosis-like field `{field_name}` was removed from the physician evidence package."
                 for field_name in removed_diagnosis_fields
             ]
+        if not DermOpenAIClient._physician_evidence_summary_has_content(normalized):
+            normalized["status"] = "empty_model_output"
+            normalized["caveats"] = [
+                "The physician evidence summary model returned no usable doctor-facing content."
+            ]
         return normalized
 
     @staticmethod
-    def _normalize_summary_string_list(value: Any, *, limit: int) -> list[str]:
+    def _physician_evidence_summary_has_content(summary: dict[str, Any]) -> bool:
+        if str(summary.get("evidence_overview", "")).strip():
+            return True
+        for field_name in (
+            "clinical_context",
+            "lesion_description",
+            "evidence_by_domain",
+            "key_observations",
+            "supporting_evidence",
+            "opposing_or_uncertain_evidence",
+            "differential_reasoning",
+            "risk_flags",
+            "differential_considerations",
+            "contradictions_or_tensions",
+            "information_gaps",
+            "suggested_next_checks",
+            "caveats",
+        ):
+            if summary.get(field_name):
+                return True
+        return False
+
+    @staticmethod
+    def _sanitize_physician_selected_evidence(value: Any, *, limit: int = 12) -> list[dict[str, Any]]:
+        if not isinstance(value, list):
+            return []
+        blocked_patterns = (
+            "raw case reference",
+            "tactical experience",
+            "abstract experience",
+            "final decision",
+            "correctness",
+            "source_id",
+            "retrieval score",
+        )
+        sanitized: list[dict[str, Any]] = []
+        for item in value[: max(1, int(limit))]:
+            if not isinstance(item, dict):
+                text = DermOpenAIClient._clean_physician_surface_text(str(item).strip())
+                if text and not any(pattern in text.lower() for pattern in blocked_patterns):
+                    sanitized.append({"summary": text[:700]})
+                continue
+            raw_category = str(item.get("category", "")).strip()
+            if raw_category == "experience_hint":
+                continue
+            sanitized_item: dict[str, Any] = {}
+            for key in ("section", "category", "summary", "keep_reason"):
+                text = DermOpenAIClient._clean_physician_surface_text(str(item.get(key, "")).strip())
+                if key == "category" and text == "experience_hint":
+                    text = ""
+                if any(pattern in text.lower() for pattern in blocked_patterns):
+                    text = ""
+                if text:
+                    sanitized_item[key] = text[:700]
+            if sanitized_item:
+                sanitized.append(sanitized_item)
+        return sanitized
+
+    @staticmethod
+    def _sanitize_physician_clinical_metadata(metadata: dict[str, Any]) -> dict[str, Any]:
+        blocked = {
+            "diagnosis",
+            "diagnosis_confidence",
+            "dx",
+            "dx_type",
+            "ground_truth",
+            "has_histopathology",
+            "histopathology",
+            "label",
+            "label_space_id",
+            "reference_label",
+        }
+        sanitized: dict[str, Any] = {}
+        for key, value in dict(metadata or {}).items():
+            normalized_key = str(key).strip()
+            if not normalized_key or normalized_key.lower() in blocked:
+                continue
+            if value in (None, "", [], {}):
+                continue
+            sanitized[normalized_key] = value
+        return sanitized
+
+    @staticmethod
+    def _sanitize_physician_evidence_text(text: str) -> str:
+        if not text:
+            return ""
+        blocked_patterns = (
+            "raw case reference",
+            "tactical experience",
+            "abstract experience",
+            "planner rationale",
+            "selected skills",
+            "policy in use",
+            "source_id",
+            "retrieval score",
+            "final decision",
+            "correctness",
+            "ground truth",
+            "writeback",
+        )
+        kept_lines: list[str] = []
+        for line in text.splitlines():
+            stripped = line.strip()
+            if not stripped:
+                kept_lines.append("")
+                continue
+            lowered = stripped.lower()
+            if any(pattern in lowered for pattern in blocked_patterns):
+                continue
+            kept_lines.append(stripped[:900])
+        sanitized = "\n".join(kept_lines)
+        sanitized = DermOpenAIClient._clean_physician_surface_text(sanitized)
+        return sanitized
+
+    @staticmethod
+    def _clean_physician_surface_text(text: str) -> str:
+        if not text:
+            return ""
+        cleaned = str(text)
+        cleaned = re.sub(r"\b[a-z0-9_]+_skill:\s*", "", cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(r"\b[a-z0-9_]+_skill\b", "clinical evidence", cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(r"\b([A-Za-z][A-Za-z /-]{2,80}?)\s+analysis skill\b", r"\1 analysis", cleaned)
+        cleaned = re.sub(r"\b(?:PAT|tac_PAT|abs_confusion)_[A-Za-z0-9_]+\b", "[prior_case]", cleaned)
+        cleaned = re.sub(r"\s*\|\s*evidence_strength\s*=\s*[^|;}\n]+", "", cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(r"\s*\|\s*recommendation_type\s*=\s*[^|;}\n]+", "", cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(r"['\"]?evidence_sources?['\"]?\s*:\s*\[[^\]]*\],?\s*", "", cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(r"['\"]?(?:source|target)['\"]?\s*:\s*['\"][^'\"]*['\"],?\s*", "", cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(r",?\s*['\"]?evidence_sources?['\"]?\s*:\s*.*$", "", cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(r",?\s*['\"]?(?:source|target)['\"]?\s*:\s*.*$", "", cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(r"\bevidence strength\s*:\s*[^;}\n]+;?\s*", "", cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(r"\brecommendation type\s*:\s*[^;}\n]+;?\s*", "", cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(r"\bdiagnosis_confidence\s*[:=]\s*[^,;|}\n]+[,;|]?\s*", "", cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(r"\bhas_histopathology\s*[:=]\s*[^,;|}\n]+[,;|]?\s*", "", cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(r"\blabel_space(?:_id)?\s*[:=]\s*[^,;|}\n]+[,;|]?\s*", "", cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(r"\breferenced_experiences\s*[:=]\s*[^|}\n]+", "", cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(r"\b(?:consistency_score|risk_score)\s*=\s*[^|;}\n]+[|;]?\s*", "", cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(r"['\"]?(?:summary|description|details)['\"]?\s*:\s*", "", cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(r"\b(?:summary|description|details|suspicious_points|supportive_points)\s*=\s*", "", cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(r"\s{2,}", " ", cleaned)
+        cleaned = re.sub(r"\s+([,;|}])", r"\1", cleaned)
+        cleaned = cleaned.strip(" ;,|{}")
+        return cleaned
+
+    @staticmethod
+    def _normalize_physician_summary_detail(value: object) -> str:
+        text = str(value or "").strip().lower()
+        if text in {"full", "verbose", "long", "expanded", "detail"}:
+            return "detailed"
+        if text == "detailed":
+            return "detailed"
+        return "brief"
+
+    @staticmethod
+    def _normalize_physician_risk_flags(value: Any) -> list[str]:
+        items = value if isinstance(value, list) else [value]
+        normalized: list[str] = []
+        for item in items:
+            text = str(item).strip()
+            lowered = text.lower()
+            if not text:
+                continue
+            if lowered in {"malignancy_risk:low", "malignancy risk:low"}:
+                text = "Low clinical concern for malignancy based on the available agent evidence."
+            elif lowered in {"malignancy_risk:medium", "malignancy risk:medium"}:
+                text = (
+                    "Medium clinical concern for malignancy; review irregular border, color variation, "
+                    "and missing dermoscopic/evolution details before deciding."
+                )
+            elif lowered in {"malignancy_risk:high", "malignancy risk:high"}:
+                text = "High clinical concern for malignancy; dermatologist review and escalation should be considered."
+            else:
+                text = text.replace("malignancy_risk:", "Malignancy risk: ").replace("_", " ")
+            normalized.append(text[:700])
+            if len(normalized) >= 14:
+                break
+        return normalized
+
+    @staticmethod
+    def _build_physician_structured_appendix(source: dict[str, Any]) -> dict[str, Any]:
+        appendix: dict[str, Any] = {
+            "appendix_version": "structured_evidence_appendix_v1",
+            "purpose": "source_derived_clinical_evidence_not_final_diagnosis",
+            "initial_observation": {},
+            "domain_findings": [],
+            "selected_clinical_evidence": [],
+            "uncertainty_and_gaps": {},
+            "risk_and_escalation": {},
+        }
+
+        initial = source.get("initial_perception_summary", {})
+        if isinstance(initial, dict):
+            appendix["initial_observation"] = {
+                "image_summary": DermOpenAIClient._clean_physician_surface_text(
+                    str(initial.get("image_summary", "")).strip()
+                )[:1200],
+                "early_considerations": [
+                    DermOpenAIClient._clean_physician_surface_text(str(item).strip())[:220]
+                    for item in list(initial.get("ddx_candidates", []) or [])[:8]
+                    if DermOpenAIClient._clean_physician_surface_text(str(item).strip())
+                ],
+                "uncertainty_level": DermOpenAIClient._clean_physician_surface_text(
+                    str(initial.get("uncertainty_level", "")).strip()
+                )[:120],
+                "uncertainty_reasons": [
+                    DermOpenAIClient._clean_physician_surface_text(str(item).strip())[:500]
+                    for item in list(initial.get("uncertainty_reasons", []) or [])[:8]
+                    if DermOpenAIClient._clean_physician_surface_text(str(item).strip())
+                ],
+                "observation_notes": [
+                    DermOpenAIClient._clean_physician_surface_text(str(item).strip())[:500]
+                    for item in list(initial.get("observation_notes", []) or [])[:8]
+                    if DermOpenAIClient._clean_physician_surface_text(str(item).strip())
+                ],
+            }
+
+        skill_outputs = source.get("skill_outputs", {})
+        if isinstance(skill_outputs, dict):
+            for skill_name, output in skill_outputs.items():
+                if not isinstance(output, dict):
+                    continue
+                findings = DermOpenAIClient._appendix_findings_from_skill_output(output)
+                if not findings:
+                    continue
+                appendix["domain_findings"].append(
+                    {
+                        "domain": DermOpenAIClient._physician_skill_domain_label(str(skill_name)),
+                        "findings": findings,
+                    }
+                )
+
+        selected_evidence = source.get("selected_evidence", [])
+        if isinstance(selected_evidence, list):
+            for item in selected_evidence[:20]:
+                if not isinstance(item, dict):
+                    continue
+                summary = DermOpenAIClient._clean_physician_surface_text(str(item.get("summary", "")).strip())
+                if not summary:
+                    continue
+                appendix["selected_clinical_evidence"].append(
+                    {
+                        "section": DermOpenAIClient._clean_physician_surface_text(
+                            str(item.get("section", "")).strip()
+                        )[:120],
+                        "category": DermOpenAIClient._clean_physician_surface_text(
+                            str(item.get("category", "")).strip()
+                        )[:120],
+                        "summary": summary[:1000],
+                    }
+                )
+
+        uncertainty = source.get("uncertainty_summary", {})
+        gaps = source.get("information_gap_summary", {})
+        contradictions = source.get("contradiction_summary", {})
+        if isinstance(uncertainty, dict) or isinstance(gaps, dict) or isinstance(contradictions, dict):
+            appendix["uncertainty_and_gaps"] = {
+                "uncertainty": DermOpenAIClient._appendix_sanitize_dict(uncertainty, item_limit=10),
+                "information_gaps": DermOpenAIClient._appendix_sanitize_dict(gaps, item_limit=10),
+                "contradictions_or_tensions": DermOpenAIClient._appendix_sanitize_dict(contradictions, item_limit=10),
+            }
+
+        appendix["risk_and_escalation"] = {
+            "risk_flags": DermOpenAIClient._normalize_physician_risk_flags(source.get("risk_flags", [])),
+            "escalation": DermOpenAIClient._appendix_sanitize_dict(source.get("escalation_summary", {}), item_limit=10),
+        }
+        return appendix
+
+    @staticmethod
+    def _appendix_findings_from_skill_output(output: dict[str, Any]) -> list[str]:
+        findings: list[str] = []
+        blocked_fields = {
+            "associated_context",
+            "diagnosis_confidence",
+            "evidence_source",
+            "evidence_sources",
+            "evidence_strength",
+            "has_histopathology",
+            "label_space",
+            "label_space_id",
+            "recommendation_type",
+            "referenced_experiences",
+            "retrieval_score",
+            "retrieval_type",
+            "source",
+            "source_id",
+            "source_name",
+            "target",
+        }
+        for key, value in output.items():
+            normalized_key = str(key).strip().lower()
+            if normalized_key in blocked_fields or normalized_key.endswith("_skill"):
+                continue
+            if value in (None, "", [], {}, "unknown"):
+                continue
+            label = str(key).strip().replace("_", " ")
+            if isinstance(value, list):
+                cleaned_items: list[str] = []
+                for item in value[:8]:
+                    if isinstance(item, dict):
+                        nested = DermOpenAIClient._appendix_sanitize_dict(item, item_limit=8)
+                        nested_text = "; ".join(
+                            f"{str(nested_key).replace('_', ' ')}: {str(nested_value)}"
+                            for nested_key, nested_value in nested.items()
+                            if str(nested_value).strip()
+                        )
+                        if nested_text:
+                            cleaned_items.append(nested_text)
+                        continue
+                    text = DermOpenAIClient._clean_physician_surface_text(str(item).strip())
+                    if text:
+                        cleaned_items.append(text)
+                text_value = "; ".join(cleaned_items)
+            elif isinstance(value, dict):
+                nested_items: list[str] = []
+                for inner_key, inner_value in list(value.items())[:8]:
+                    inner_key_text = str(inner_key).strip()
+                    if inner_key_text.lower() in blocked_fields or inner_key_text.lower().endswith("_skill"):
+                        continue
+                    inner_text = DermOpenAIClient._clean_physician_surface_text(str(inner_value).strip())
+                    if inner_text:
+                        nested_items.append(f"{inner_key_text.replace('_', ' ')}: {inner_text}")
+                text_value = "; ".join(nested_items)
+            else:
+                text_value = DermOpenAIClient._clean_physician_surface_text(str(value).strip())
+            if text_value:
+                finding = DermOpenAIClient._clean_physician_surface_text(f"{label}: {text_value}")
+                if finding:
+                    findings.append(finding[:900])
+            if len(findings) >= 16:
+                break
+        return findings
+
+    @staticmethod
+    def _physician_skill_domain_label(skill_name: str) -> str:
+        lowered = skill_name.lower()
+        if "morphology" in lowered or "lesion_description" in lowered:
+            return "Morphology and lesion structure"
+        if "color" in lowered or "pigment" in lowered:
+            return "Color and pigment pattern"
+        if "distribution" in lowered:
+            return "Distribution and location"
+        if "metadata" in lowered:
+            return "Clinical context consistency"
+        if "risk" in lowered or "malignancy" in lowered:
+            return "Risk and safety"
+        if "differential" in lowered or "compare" in lowered or "specialist" in lowered:
+            return "Differential reasoning"
+        if "uncertainty" in lowered:
+            return "Uncertainty"
+        if "contradiction" in lowered:
+            return "Contradictions and tensions"
+        if "gap" in lowered:
+            return "Information gaps"
+        if "escalation" in lowered:
+            return "Suggested next checks"
+        return skill_name.replace("_", " ").strip().title()
+
+    @staticmethod
+    def _appendix_sanitize_dict(value: Any, *, item_limit: int) -> dict[str, Any]:
+        if not isinstance(value, dict):
+            return {}
+        sanitized: dict[str, Any] = {}
+        blocked_fields = {
+            "associated_context",
+            "diagnosis_confidence",
+            "evidence_source",
+            "evidence_sources",
+            "evidence_strength",
+            "has_histopathology",
+            "label_space",
+            "label_space_id",
+            "recommendation_type",
+            "referenced_experiences",
+            "retrieval_score",
+            "retrieval_type",
+            "source",
+            "source_id",
+            "source_name",
+            "target",
+        }
+        for key, item in value.items():
+            normalized_key = str(key).strip()
+            if normalized_key.lower() in blocked_fields or normalized_key.lower().endswith("_skill"):
+                continue
+            if isinstance(item, list):
+                cleaned_items: list[Any] = []
+                for entry in item[:item_limit]:
+                    if isinstance(entry, dict):
+                        nested = DermOpenAIClient._appendix_sanitize_dict(entry, item_limit=item_limit)
+                        if nested:
+                            cleaned_items.append(nested)
+                        continue
+                    text = DermOpenAIClient._clean_physician_surface_text(str(entry).strip())
+                    if text:
+                        cleaned_items.append(text[:700])
+                if cleaned_items:
+                    sanitized[normalized_key] = cleaned_items
+            elif isinstance(item, dict):
+                nested = DermOpenAIClient._appendix_sanitize_dict(item, item_limit=item_limit)
+                if nested:
+                    sanitized[normalized_key] = nested
+            else:
+                text = DermOpenAIClient._clean_physician_surface_text(str(item).strip())
+                if text:
+                    sanitized[normalized_key] = text[:900]
+        return sanitized
+
+    @staticmethod
+    def _split_physician_domain_evidence(
+        value: Any,
+        *,
+        item_max_chars: int = 1000,
+        limit: int = 14,
+    ) -> list[str]:
+        items = value if isinstance(value, list) else [value]
+        domain_pattern = re.compile(
+            r"(?=(?:Morphology|Color(?:/pigment pattern)?|Distribution(?:/location)?|Risk(?:/safety)?|"
+            r"Uncertainty(?:/conflict)?|Information gaps?|Metadata|Context):)",
+            flags=re.IGNORECASE,
+        )
+        split_items: list[str] = []
+        max_items = max(1, int(limit))
+        max_chars = max(160, int(item_max_chars))
+        for item in items:
+            if isinstance(item, dict):
+                for key, part in item.items():
+                    text = f"{key}: {part}".strip()
+                    text = re.sub(r"\['([^']+)'\]", r"\1", text)
+                    text = re.sub(r'\["([^"]+)"\]', r"\1", text)
+                    if text:
+                        split_items.append(text[:max_chars])
+                        if len(split_items) >= max_items:
+                            return split_items
+                continue
+            text = str(item).strip()
+            if not text:
+                continue
+            text = re.sub(r"\['([^']+)'\]", r"\1", text)
+            text = re.sub(r'\["([^"]+)"\]', r"\1", text)
+            parts = [part.strip(" ;") for part in domain_pattern.split(text) if part.strip(" ;")]
+            for part in parts:
+                split_items.append(part[:max_chars])
+                if len(split_items) >= max_items:
+                    return split_items
+        return split_items
+
+    @staticmethod
+    def _normalize_summary_string_list(value: Any, *, limit: int, item_max_chars: int = 700) -> list[str]:
         if value is None:
             return []
         items = value if isinstance(value, list) else [value]
         cleaned: list[str] = []
+        max_chars = max(160, int(item_max_chars))
         for item in items:
-            text = str(item).strip()
+            if isinstance(item, dict):
+                parts = []
+                for key, part in item.items():
+                    part_text = str(part).strip()
+                    if part_text:
+                        parts.append(f"{key}: {part_text}")
+                text = "; ".join(parts).strip()
+            else:
+                text = str(item).strip()
             if not text:
                 continue
-            cleaned.append(text[:320])
+            cleaned.append(text[:max_chars])
             if len(cleaned) >= limit:
                 break
         return cleaned

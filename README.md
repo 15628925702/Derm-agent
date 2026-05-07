@@ -1,237 +1,289 @@
 # DermAgent
 
-DermAgent 是一个面向皮肤科图像诊断的结构化智能体推理框架。它不替代底层视觉语言模型，而是在冻结 backbone 的前提下，把最终诊断前的临床推理过程组织为可审计的 workflow、技能库、经验库、认知状态和证据包。
+DermAgent 是一个面向皮肤科图像诊断的结构化智能体推理框架。它不替代底层视觉语言模型，而是在冻结 backbone 的前提下，把最终诊断前的临床推理组织成可审计的 workflow、技能库、经验库、认知状态、保守融合策略和论文级 case 导出。
 
-当前项目主问题是：
+当前主问题是：
 
-> 在固定同一个皮肤科视觉语言模型骨干的条件下，结构化、经验驱动的 agent reasoning，是否能优于 direct prompting？
+> 在同一个视觉语言模型 backbone 固定不变、同一批 case frozen evaluation 的条件下，结构化、经验驱动的 agent reasoning 是否能优于 direct baseline prompting？
 
-当前默认 backbone 为本地 OpenAI-compatible Qwen 服务，主比较为：
+## 当前状态
 
-- `direct Qwen`
-- `DermAgent + Qwen`
+截至 2026-05-07，项目已经从早期的单一 Qwen 路线更新为 `6 models x 6 datasets` 的 workflow cell 路线：
 
-## 核心定位
+- 模型：`qwen`、`dermatollama`、`medgemma`、`hulumed`、`llama`、`skinvl`
+- 数据集：`ham10000`、`isic2019`、`pad20`、`scin`、`sd198`、`xiangya_sft`
+- 自动调参和最终大实验默认跳过 `xiangya_sft`，除非用户明确点名
+- 非 Xiangya 的 5 个数据集是当前论文最终实验的主范围
+- 运行时优先使用 `model x dataset` 显式 workflow cell，其次才是 model overlay、dataset workflow 和 default workflow
+- 已调好的 cell 默认不要再改；新实验应该复用现有 workflow，不重新调参
 
-DermAgent 采用三段式流程：
+详细工作流地图见 [`docs/6x6工作流状态_20260506.md`](docs/6x6工作流状态_20260506.md)。
 
-1. backbone 做初始感知，生成图像概述、初始鉴别诊断和不确定性线索
-2. agent 执行技能选择、经验检索、证据组织、风险审计、矛盾审计和信息缺口分析
-3. backbone 读取结构化证据包后输出最终诊断
+## 核心边界
 
-两个边界必须保持清楚：
+DermAgent 的边界必须保持清楚：
 
-- DermAgent 不直接替代 backbone 输出疾病标签
-- 最终诊断责任始终保留给 backbone
+- Direct baseline 和 DermAgent 使用同一个底层模型服务。
+- Agent 只组织证据、检索经验、执行技能、审计风险和矛盾，并生成结构化证据包。
+- 最终诊断责任仍保留给 backbone，不把 agent 中间结论无条件当作最终答案。
+- 大多数 tuned cell 使用 conservative fusion、baseline anchor、narrow override 或 malformed fallback，防止 agent final 直接污染结果。
+- Frozen evaluation 阶段禁止 test writeback；经验建库必须和 frozen evaluation case 互斥。
 
-因此它不是分类器集合，也不是多模型投票，而是最终诊断前的 structured reasoning scaffold。
+因此 DermAgent 不是分类器集合，也不是多模型投票，而是最终诊断前的 structured reasoning scaffold。
 
-## 当前 6 条 workflow
+## 推理链路
 
-当前工作区使用统一 DermAgent core，并按 workflow 分流：
+典型一次 DermAgent case 执行包含：
 
-1. `PAD-UFES-20`
-   - `clinical_full_taxonomy_lesion_workflow`
+1. Backbone 生成 direct baseline 或初始视觉诊断信息。
+2. Workflow router 根据 `model x dataset` cell 选择 workflow profile、label space、技能开关和融合策略。
+3. Agent 执行技能选择、经验检索、证据组织、风险审计、矛盾审计和信息缺口分析。
+4. Backbone 读取结构化证据包后生成 agent-side final diagnosis。
+5. Conservative fusion 根据当前 cell 的规则决定是否接受 agent 输出、回退 baseline、或执行非常窄的 guarded override。
+6. Compare runner 在同一批 frozen case 上计算 direct baseline 与 agent 指标，并可导出 paper-facing CSV/JSON/JSONL/XLSX。
 
-2. `ISIC2019`
-   - `image_archive_full_taxonomy_lesion_workflow`
+核心实现位置：
 
-3. `HAM10000`
-   - `sparse_lesion_workflow`
+- [`agent/model_workflow_router.py`](agent/model_workflow_router.py): `MODEL_DATASET_WORKFLOW_PROFILES` 和模型 overlay
+- [`agent/workflow_profiles.py`](agent/workflow_profiles.py): dataset workflow routing
+- [`agent/conservative_fusion.py`](agent/conservative_fusion.py): baseline anchor、narrow override、malformed fallback
+- [`agent/evaluation_protocol.py`](agent/evaluation_protocol.py): split/writeback contamination guard
+- [`scripts/compare_agent_vs_qwen.py`](scripts/compare_agent_vs_qwen.py): frozen baseline-vs-agent compare 入口
+- [`agent/paper_exports.py`](agent/paper_exports.py): paper-facing case-level 导出
 
-4. `SCIN grouped`
-   - `family_routing_workflow`
+`compare_agent_vs_qwen.py` 的文件名是历史名称；当前它通过 OpenAI-compatible endpoint 和 `OPENAI_MODEL` 支持 Qwen、DermatoLlama、MedGemma、Hulu-Med、Llama、SkinVL 等模型。
 
-5. `SD-198 grouped`
-   - `coarse_taxonomy_workflow`
+## 数据集与默认 Label Space
 
-6. `Xiangya SFT`
-   - `eczematous_family_routing_workflow`
+| 数据集 | 当前 label space | 默认 dataset workflow | 当前用途 |
+|---|---|---|---|
+| `ham10000` | `ham10000_full` | `sparse_lesion_workflow` | 非 Xiangya 最终实验候选 |
+| `isic2019` | `isic2019_full` | `image_archive_full_taxonomy_lesion_workflow` | 非 Xiangya 最终实验候选 |
+| `pad20` | `derm_six` | `clinical_full_taxonomy_lesion_workflow` | 非 Xiangya 最终实验候选 |
+| `scin` | `scin_grouped` | `family_routing_workflow` / `coarse_taxonomy_workflow` | 非 Xiangya 最终实验候选 |
+| `sd198` | `sd198_grouped` | `coarse_taxonomy_workflow` | 非 Xiangya 最终实验候选 |
+| `xiangya_sft` | `xiangya_sft_grouped` | `eczematous_family_routing_workflow` | 默认跳过，除非明确要求 |
 
-系统不推荐表述为“按 dataset name 开 special switch”。数据集名称仍用于 loader、label space、experiment root，但运行时行为优先由 `workflow_profile / workflow_capabilities` 决定。
+本地数据通常位于 [`data/`](data/) 下；loader 和 schema 对齐代码位于 [`dataio/`](dataio/)。
 
-## 当前 final-round 结果
+## 环境
 
-最终轮结果位于：
+当前推荐环境是已经配置好的 conda 环境：
 
-- `/root/DermAgent/outputs/final_round`
+```bash
+cd /data/gh/DermAgent
+conda activate dermagent-6x6
+```
 
-| Workflow | Cases | Direct top1 | Agent top1 | Direct topk | Agent topk | Direct err | Agent err | 判断 |
-|---|---:|---:|---:|---:|---:|---:|---:|---|
-| PAD-UFES-20 | 80 | 28.75% | 35.00% | 55.00% | 61.25% | 71.25% | 65.00% | 总体正向，malignant recall 回落 |
-| ISIC2019 | 80 | 32.50% | 33.75% | 62.50% | 58.75% | 67.50% | 66.25% | 轻微正向，topk 回落 |
-| SCIN grouped | 80 | 47.92% | 50.00% | 47.92% | 54.17% | 52.08% | 50.00% | 正向 |
-| SD-198 grouped | 80 | 47.50% | 50.00% | 61.25% | 63.75% | 52.50% | 50.00% | 正向 |
-| Xiangya SFT | 13 | 38.46% | 69.23% | 38.46% | 76.92% | 61.54% | 30.77% | 明确强正向 |
-| HAM10000 | 100 | 17.00% | 17.00% | 25.00% | 37.00% | 83.00% | 83.00% | topk 正向，top1/error 持平 |
+在自动化脚本和长跑实验中，优先使用绝对 Python：
 
-更完整的版本判断见：
+```bash
+/home/zhongnan/miniconda3/envs/dermagent-6x6/bin/python
+```
 
-- [`当前最佳版本说明.md`](/root/DermAgent/当前最佳版本说明.md)
-- [`使用规范.md`](/root/DermAgent/使用规范.md)
+旧文档中的 `/root/DermAgent`、`derm-qwen`、单 Qwen final round 口径已经过时。当前工作目录以 `/data/gh/DermAgent` 为准。
+
+## 模型服务
+
+模型服务都走 OpenAI-compatible API。常用启动脚本：
+
+```bash
+cd /data/gh/DermAgent
+bash scripts/start_qwen_server.sh
+bash scripts/start_dermatollama_server.sh
+bash scripts/start_medgemma_server.sh
+bash scripts/start_hulumed_server.sh
+bash scripts/start_llama_server.sh
+bash scripts/start_skinvl_server.sh
+```
+
+启动或重启服务前必须先检查端口和 GPU 占用，避免误停正在运行的大实验：
+
+```bash
+ss -ltnp | grep -E ':(8000|8100|8101|8102|8103|8104|8105|8106|8107|8108|8200)\b' || true
+nvidia-smi
+ps -eo pid,ppid,stat,etime,cmd | grep -E 'vllm|serve_skinvl|serve_transformers|start_.*server' | grep -v grep
+```
+
+如果确实需要停服务，先明确列出将停的 PID，再执行 `kill`。不要用会清空整机任务的粗暴命令。
+
+## Frozen Compare
+
+标准 compare 入口：
+
+```bash
+cd /data/gh/DermAgent
+
+DERMAGENT_POLICY_ROOT=paper_data/<run>/state/<model>/<dataset>/policy \
+DERMAGENT_SPLIT_STATE_ROOT=paper_data/<run>/state/<model>/<dataset>/split_states \
+OPENAI_BASE_URL=http://127.0.0.1:<port>/v1 \
+OPENAI_API_KEY=EMPTY \
+OPENAI_MODEL=<served_model_name> \
+OPENAI_TIMEOUT=120 \
+/home/zhongnan/miniconda3/envs/dermagent-6x6/bin/python scripts/compare_agent_vs_qwen.py \
+  --data-root data/<dataset_root> \
+  --limit <eval_case_count> \
+  --case-offset 0 \
+  --data-split test \
+  --split-json paper_data/<run>/splits/<dataset>_<run>_split.json \
+  --output-dir paper_data/<run>/compare_reports/<model>/<dataset> \
+  --policy-label "<run> frozen eval" \
+  --export-paper-case-data \
+  --paper-case-data-dir paper_data/case_level_exports/<run>__<model>__<dataset> \
+  --client-timeout 120 \
+  --client-max-retries 1
+```
+
+Frozen evaluation 的默认规则：
+
+- 使用固定 `--split-json`
+- evaluation 用 `--data-split test`
+- 不打开 `--enable-writeback`
+- 不在 test split 写经验、技能或认知状态
+- case-level paper export 必须打开
+- physician evidence summary 默认不打开，除非实验目的明确需要医生可读证据包
+
+## Memory Building
+
+经验建库必须只在 memory-building split 上进行，不能和 frozen eval case 重叠。现有 bootstrap 脚本包括：
+
+```bash
+bash scripts/bootstrap_ham10000_train_cases.sh
+bash scripts/bootstrap_isic2019_train_cases.sh
+bash scripts/bootstrap_pad20_train_cases.sh
+bash scripts/bootstrap_scin_train_cases.sh
+bash scripts/bootstrap_sd198_train_cases.sh
+bash scripts/bootstrap_xiangya_sft_train_cases.sh
+```
+
+典型流程是：
+
+1. 用固定 split JSON 选择 train/memory-building cases。
+2. Bootstrap 阶段允许 train split writeback 到本次实验隔离的 `policy_root` 和 `split_state_root`。
+3. 用 [`scripts/manage_dataset_experiment_assets.py`](scripts/manage_dataset_experiment_assets.py) 将 train 状态 promote 到 val/test 的只读起点。
+4. Frozen compare 阶段关闭 writeback，只读使用已 promoted 的 state。
+
+## Paper Data
+
+论文数据统一放在 [`paper_data/`](paper_data/) 下：
+
+- `paper_data/case_level_exports/`: compare 时导出的 paper-facing case-level CSV/JSON/JSONL/XLSX
+- `paper_data/final_3x3_delta_pilot_20260507/`: 当前 3 model x 3 dataset delta pilot 的 manifest、split、state、compare reports、logs
+- `paper_data/final_6x5_experiment_YYYYMMDD/`: 未来完整 6 model x 5 non-Xiangya 实验建议目录格式
+
+导出说明见 [`paper_data/README.md`](paper_data/README.md)。从已有 compare report 回填导出：
+
+```bash
+/home/zhongnan/miniconda3/envs/dermagent-6x6/bin/python scripts/export_paper_case_data.py \
+  --compare-report-glob 'outputs/<run_dir>/**/compare_agent_vs_qwen_*.json' \
+  --output-dir paper_data/case_level_exports/<run_name> \
+  --export-stem <run_name>_case_level
+```
+
+## 当前 3x3 Delta Pilot
+
+为论文最终实验预跑，当前采用“agent 相对 direct baseline 差值大”的组合：
+
+- 模型：`llama`、`medgemma`、`skinvl`
+- 数据集：`scin`、`pad20`、`isic2019`
+- Eval cases：每个组合 300
+- Memory-building cases：`scin=100`、`pad20=100`、`isic2019=120`
+- 输出根目录：`paper_data/final_3x3_delta_pilot_20260507/`
+- Case export 根目录：`paper_data/case_level_exports/`
+
+监控命令：
+
+```bash
+tail -f paper_data/final_3x3_delta_pilot_20260507/run_logs/nohup_runner_20260507T085218Z.log
+cat paper_data/final_3x3_delta_pilot_20260507/run_summary.tsv
+watch -n 30 nvidia-smi
+```
+
+这只是当前实验实例，不应被当作唯一固定实验入口。后续完整 6x5 仍应建立新的 dated run folder 和 manifest。
+
+## Doctor Evidence Package
+
+DermAgent 可以额外生成 doctor-facing evidence package，把 agent 中间证据整理成医生可读摘要。该功能默认关闭，不改变 direct baseline、agent final diagnosis 或 compare 评估逻辑。
+
+医生摘要使用单独 Qwen physician-summary 服务，默认监听 `http://127.0.0.1:8200/v1`：
+
+```bash
+cd /data/gh/DermAgent
+bash scripts/start_qwen_physician_summary_server.sh
+```
+
+单次 compare 开启：
+
+```bash
+/home/zhongnan/miniconda3/envs/dermagent-6x6/bin/python scripts/compare_agent_vs_qwen.py \
+  --data-root /path/to/dataset \
+  --limit 8 \
+  --enable-physician-evidence-summary \
+  --physician-evidence-summary-base-url http://127.0.0.1:8200/v1 \
+  --physician-evidence-summary-model Qwen2.5-VL-7B-Instruct \
+  --physician-evidence-summary-detail detailed
+```
+
+完整说明见 [`doctor_evidence_package/README.md`](doctor_evidence_package/README.md)。
+
+## Workflow Evolution 与 Skill 审核
+
+DermAgent 支持离线 workflow evolution 和 skill refinement，但这些机制是 proposal-first，不会自动上线：
+
+- workflow proposal 默认写入 `proposals/workflow_evolution/`，状态为 pending review
+- approved proposal 只会复制到 `state/workflow_evolution/approved/`
+- runtime 必须显式设置 `DERMAGENT_ENABLE_WORKFLOW_EVOLUTION=1` 才会读取 approved proposal
+- 自动生成的新 skill 先写入 `skills/pending/`
+- 只有人工运行 `scripts/approve_skill.py` 后，pending skill 才会进入正式 `skills/` 并注册
+
+完整说明见 [`workflow_evolution/自进化Workflow说明.md`](workflow_evolution/自进化Workflow说明.md)。
 
 ## 仓库结构
 
-- [`agent`](/root/DermAgent/agent)
-  - 主推理链路、planner/controller、evaluation、reflection、evidence package、训练与评测协议
-- [`skills`](/root/DermAgent/skills)
-  - 原子化临床推理技能，如 morphology、color pattern、differential compare、uncertainty、malignancy risk
-- [`memory`](/root/DermAgent/memory)
-  - 分层经验系统，包括 raw case memory、tactical experience、abstract experience
-- [`cognition`](/root/DermAgent/cognition)
-  - 跨病例认知状态
-- [`dataio`](/root/DermAgent/dataio)
-  - 数据读取与 schema 对齐
-- [`scripts`](/root/DermAgent/scripts)
-  - 开发与实验脚本，包括服务启动、bootstrap、compare、导出、训练和最终轮管线
-- [`final-script`](/root/DermAgent/final-script)
-  - 旧主线最终实验入口
-- [`paper`](/root/DermAgent/paper)
-  - 论文源码、表格、图和草稿材料
-- [`tests`](/root/DermAgent/tests)
-  - 单测与协议测试
+| 路径 | 用途 |
+|---|---|
+| [`agent/`](agent/) | 主推理链路、workflow routing、fusion、evaluation、paper export |
+| [`skills/`](skills/) | 原子化临床推理技能和 pending skill 草稿 |
+| [`memory/`](memory/) | raw case memory、tactical experience、abstract experience |
+| [`cognition/`](cognition/) | 跨病例认知状态 |
+| [`dataio/`](dataio/) | 数据集 loader 和 schema 对齐 |
+| [`scripts/`](scripts/) | 当前活跃实验脚本、服务启动、bootstrap、compare、导出 |
+| [`paper_data/`](paper_data/) | 论文级 case 导出、manifest、final experiment 数据 |
+| [`doctor_evidence_package/`](doctor_evidence_package/) | 医生可读证据包说明和示例规范 |
+| [`workflow_evolution/`](workflow_evolution/) | 离线 workflow proposal 和 skill refinement |
+| [`docs/`](docs/) | 项目索引、6x6 workflow 状态、架构和历史文档 |
+| [`tests/`](tests/) | 单测与协议测试 |
+| [`final-script/`](final-script/) | 旧 final round 包装入口，保留用于复现旧实验线 |
+| [`final-score/`](final-score/) | 旧 final round 分数和导出区 |
 
-## 环境准备
-
-推荐 conda：
-
-```bash
-cd /root/DermAgent
-conda env create -f environment.yml
-conda activate derm-qwen
-```
-
-或者使用已有 Python 3.10 环境：
-
-```bash
-cd /root/DermAgent
-pip install -r requirements.txt
-```
-
-核心依赖包括：
-
-- `openai`
-- `vllm`
-- `pandas`
-- `pillow`
-- `pydantic`
-- `pytest`
-
-## 启动 Qwen 服务
-
-推荐使用：
-
-```bash
-cd /root/DermAgent
-bash final-script/servers/start_qwen_final.sh
-```
-
-也可以直接使用：
-
-```bash
-cd /root/DermAgent
-bash scripts/start_qwen_server.sh
-```
-
-服务检查：
-
-```bash
-cd /root/DermAgent
-python scripts/check_qwen_server.py --timeout 120
-```
-
-## 运行最终轮
-
-推荐一条命令串行运行 6 条线：
-
-```bash
-cd /root/DermAgent
-CLEAN_FINAL_ROUND=1 \
-SERVER_CHECK_TIMEOUT=180 \
-SERVER_WAIT_RETRIES=120 \
-SERVER_WAIT_INTERVAL_SECONDS=10 \
-SERVER_CHAT_CHECK_RETRIES=20 \
-SERVER_CHAT_CHECK_INTERVAL_SECONDS=30 \
-bash scripts/run_all_final_rounds.sh
-```
-
-中断后续跑：
-
-```bash
-cd /root/DermAgent
-CLEAN_FINAL_ROUND=0 \
-SERVER_CHECK_TIMEOUT=180 \
-SERVER_WAIT_RETRIES=120 \
-SERVER_WAIT_INTERVAL_SECONDS=10 \
-SERVER_CHAT_CHECK_RETRIES=20 \
-SERVER_CHAT_CHECK_INTERVAL_SECONDS=30 \
-bash scripts/run_all_final_rounds.sh
-```
-
-单线运行：
-
-```bash
-cd /root/DermAgent
-bash scripts/run_pad20_final_round.sh
-bash scripts/run_isic2019_final_round.sh
-bash scripts/run_scin_final_round.sh
-bash scripts/run_sd198_final_round.sh
-bash scripts/run_xiangya_sft_final_round.sh
-bash scripts/run_ham10000_final_round.sh
-```
-
-dry-run 检查：
-
-```bash
-cd /root/DermAgent
-DRY_RUN=1 CLEAN_FINAL_ROUND=1 bash scripts/run_all_final_rounds.sh
-```
-
-## 进度与中断恢复
-
-运行时会打印：
-
-- bootstrap 阶段：`case x/N`
-- compare baseline 阶段：`baseline x/N`
-- compare agent 阶段：`agent x/N`
-
-阶段 marker 位于：
-
-- `/root/DermAgent/outputs/final_round/<dataset>/markers`
-
-当前是阶段级 resume：
-
-- 已完成的 `bootstrap / promote / compare` 会跳过
-- 未完成阶段会重新执行
-- 如果 bootstrap 中途断开，该数据集的 bootstrap 阶段会从头跑
-
-## 当前推荐口径
-
-推荐表述：
-
-- DermAgent 是统一 core + 6 条可审计 workflow
-- 6 条 workflow 中 5 条在 final-round 中表现为总体正向或轻微正向
-- `HAM10000` 仍未明确正向，但 top-k 明显改善且 top-1/error 不回退
-- 默认稳定路线是 heuristic workflow，不依赖 learned / parameterized plugin
-
-不推荐表述：
-
-- 所有线路都强正向
-- 运行时按 dataset name 直接开特殊开关
-- 当前默认必须依赖 learned components 才能工作
+项目导航见 [`docs/项目索引.md`](docs/项目索引.md)。
 
 ## 测试
 
 常用测试：
 
 ```bash
-cd /root/DermAgent
-pytest -q tests/test_final_round_scripts.py
-pytest -q tests/test_xiangya_sft_loader.py tests/test_openai_client_scin_prompting.py
+cd /data/gh/DermAgent
+/home/zhongnan/miniconda3/envs/dermagent-6x6/bin/python -m pytest -q tests/test_final_round_scripts.py
+/home/zhongnan/miniconda3/envs/dermagent-6x6/bin/python -m pytest -q tests/test_xiangya_sft_loader.py tests/test_openai_client_scin_prompting.py
 ```
 
-最终轮脚本已经覆盖：
+修改 workflow routing、fusion、export 或 split/writeback guard 后，应优先补跑相关测试或做小规模 dry-run。
 
-- bash syntax 检查
-- dry-run 检查
-- 总控脚本 case 数和阶段输出检查
+## 当前推荐口径
+
+推荐表述：
+
+- DermAgent 是统一 core + model x dataset workflow cells 的结构化推理框架。
+- 当前论文最终实验重点是 5 个非 Xiangya 数据集上的 frozen evaluation。
+- 已调好的 cell 复用既有 workflow，不在最终实验里重新调参。
+- Case-level CSV/JSON/JSONL/XLSX 导出是论文数据准备的默认要求。
+- Doctor evidence package 是额外医生可读出口，默认不参与诊断大实验。
+
+不推荐表述：
+
+- 当前默认 backbone 只有 Qwen。
+- 运行时只是按 dataset name 开 special switch。
+- 所有模型/数据集都强正向。
+- Test split 可以用于经验建库或 writeback。
+- Agent final 可以绕过 conservative fusion 直接生效。

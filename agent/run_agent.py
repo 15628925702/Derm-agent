@@ -192,10 +192,12 @@ def run_agent(
 
     evidence_package = EvidencePackage.from_state(state)
     if execution_config["enable_physician_evidence_summary"]:
+        physician_summary_client = _build_physician_summary_client(execution_config)
         state.physician_evidence_summary = _build_physician_evidence_summary(
-            client=qwen_client,
+            client=physician_summary_client,
             case_input=case_input,
             evidence_package=evidence_package,
+            detail_level=str(execution_config.get("physician_evidence_summary_detail") or "brief"),
         )
     raw_final_diagnosis = qwen_client.final_diagnosis(case_input, evidence_package)
     workflow_context = case_input.workflow_context or {}
@@ -413,7 +415,7 @@ def _write_debug_artifacts(state: CaseState, evidence_package: EvidencePackage, 
         save_case_execution_record(state.execution_record, output_dir)
 
 
-def _normalize_execution_overrides(overrides: dict | None) -> dict[str, bool]:
+def _normalize_execution_overrides(overrides: dict | None) -> dict:
     source = dict(overrides or {})
     return {
         "enable_experience_retrieval": bool(source.get("enable_experience_retrieval", True)),
@@ -422,6 +424,34 @@ def _normalize_execution_overrides(overrides: dict | None) -> dict[str, bool]:
         "enable_physician_evidence_summary": bool(
             source.get("enable_physician_evidence_summary", _env_flag("DERMAGENT_ENABLE_PHYSICIAN_EVIDENCE_SUMMARY"))
         ),
+        "physician_evidence_summary_base_url": _first_nonempty(
+            source.get("physician_evidence_summary_base_url"),
+            os.getenv("DERMAGENT_PHYSICIAN_EVIDENCE_BASE_URL"),
+            os.getenv("DERMAGENT_QWEN_SUMMARY_BASE_URL"),
+            "http://127.0.0.1:8200/v1",
+        ),
+        "physician_evidence_summary_api_key": _first_nonempty(
+            source.get("physician_evidence_summary_api_key"),
+            os.getenv("DERMAGENT_PHYSICIAN_EVIDENCE_API_KEY"),
+            os.getenv("DERMAGENT_QWEN_SUMMARY_API_KEY"),
+            "EMPTY",
+        ),
+        "physician_evidence_summary_model": _first_nonempty(
+            source.get("physician_evidence_summary_model"),
+            os.getenv("DERMAGENT_PHYSICIAN_EVIDENCE_MODEL"),
+            os.getenv("DERMAGENT_QWEN_SUMMARY_MODEL"),
+            "Qwen2.5-VL-7B-Instruct",
+        ),
+        "physician_evidence_summary_detail": _normalize_physician_summary_detail(
+            _first_nonempty(
+                source.get("physician_evidence_summary_detail"),
+                os.getenv("DERMAGENT_PHYSICIAN_EVIDENCE_DETAIL"),
+                os.getenv("DERMAGENT_QWEN_SUMMARY_DETAIL"),
+                "brief",
+            )
+        ),
+        "physician_evidence_summary_timeout": source.get("physician_evidence_summary_timeout"),
+        "physician_evidence_summary_max_retries": source.get("physician_evidence_summary_max_retries"),
     }
 
 
@@ -429,33 +459,66 @@ def _env_flag(name: str) -> bool:
     return str(os.getenv(name, "")).strip().lower() in {"1", "true", "yes", "on"}
 
 
+def _first_nonempty(*values: object) -> str:
+    for value in values:
+        text = str(value or "").strip()
+        if text:
+            return text
+    return ""
+
+
+def _normalize_physician_summary_detail(value: object) -> str:
+    text = str(value or "").strip().lower()
+    if text in {"detailed", "full", "verbose", "long", "expanded", "detail"}:
+        return "detailed"
+    return "brief"
+
+
+def _build_physician_summary_client(execution_config: dict) -> DermOpenAIClient:
+    return DermOpenAIClient(
+        base_url=str(execution_config.get("physician_evidence_summary_base_url") or "").strip(),
+        api_key=str(execution_config.get("physician_evidence_summary_api_key") or "").strip(),
+        model=str(execution_config.get("physician_evidence_summary_model") or "").strip(),
+        timeout=execution_config.get("physician_evidence_summary_timeout"),
+        max_retries=execution_config.get("physician_evidence_summary_max_retries"),
+    )
+
+
 def _build_physician_evidence_summary(
     *,
     client: DermOpenAIClient,
     case_input: CaseInput,
     evidence_package: EvidencePackage,
+    detail_level: str = "brief",
 ) -> dict[str, object]:
     try:
-        summary = client.physician_evidence_summary(case_input, evidence_package)
+        summary = client.physician_evidence_summary(
+            case_input,
+            evidence_package,
+            detail_level=detail_level,
+        )
     except Exception as exc:  # pragma: no cover - defensive optional-output guard
         return {
-            "summary_version": "physician_evidence_summary_v1",
+            "summary_version": "physician_evidence_summary_v2_detailed",
             "case_id": case_input.case_id,
             "status": "failed",
             "error": f"{exc.__class__.__name__}: {exc}",
+            "detail_level": _normalize_physician_summary_detail(detail_level),
             "intended_use": "doctor_support_only_not_final_diagnosis",
         }
     if isinstance(summary, dict):
-        summary.setdefault("summary_version", "physician_evidence_summary_v1")
+        summary.setdefault("summary_version", "physician_evidence_summary_v2_detailed")
         summary.setdefault("case_id", case_input.case_id)
         summary.setdefault("status", "ok")
+        summary.setdefault("detail_level", _normalize_physician_summary_detail(detail_level))
         summary.setdefault("intended_use", "doctor_support_only_not_final_diagnosis")
         return summary
     return {
-        "summary_version": "physician_evidence_summary_v1",
+        "summary_version": "physician_evidence_summary_v2_detailed",
         "case_id": case_input.case_id,
         "status": "malformed",
         "raw_summary_type": type(summary).__name__,
+        "detail_level": _normalize_physician_summary_detail(detail_level),
         "intended_use": "doctor_support_only_not_final_diagnosis",
     }
 

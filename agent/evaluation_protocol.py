@@ -95,6 +95,21 @@ def compact_timestamp() -> str:
     return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
 
+def _redact_sensitive_config(value: Any) -> Any:
+    if isinstance(value, dict):
+        redacted: dict[str, Any] = {}
+        for key, item in value.items():
+            lowered = str(key).lower()
+            if "api_key" in lowered or "token" in lowered or "secret" in lowered or "password" in lowered:
+                redacted[key] = "<redacted>" if str(item or "").strip() else ""
+            else:
+                redacted[key] = _redact_sensitive_config(item)
+        return redacted
+    if isinstance(value, list):
+        return [_redact_sensitive_config(item) for item in value]
+    return value
+
+
 @dataclass
 class EvaluationTargetSpec:
     target_id: str
@@ -110,7 +125,9 @@ class EvaluationTargetSpec:
     notes: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
+        payload = asdict(self)
+        payload["execution_overrides"] = _redact_sensitive_config(payload.get("execution_overrides", {}))
+        return payload
 
 
 def default_ablation_target_specs(dataset_name: str | None = None) -> list[EvaluationTargetSpec]:
@@ -831,7 +848,7 @@ def run_agent_target(
             "data_split": normalized_split,
             "experience_variant": target_spec.experience_variant,
             "cognition_variant": target_spec.cognition_variant,
-            "execution_overrides": dict(merged_execution_overrides),
+            "execution_overrides": _redact_sensitive_config(dict(merged_execution_overrides)),
             "policy_overrides": deepcopy(target_spec.policy_overrides),
         }
         save_case_execution_record(enriched_record, records_dir)
@@ -944,7 +961,7 @@ def build_contamination_check(
                 "mode": spec.mode,
                 "experience_variant": spec.experience_variant,
                 "cognition_variant": spec.cognition_variant,
-                "execution_overrides": dict(spec.execution_overrides),
+                "execution_overrides": _redact_sensitive_config(dict(spec.execution_overrides)),
             }
             for spec in target_specs
         },
