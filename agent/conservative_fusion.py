@@ -401,6 +401,20 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("medgemma_scin_grouped_moderate_override")
+        elif _allow_llama_scin_grouped_override(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("llama_scin_grouped_guarded_override")
         elif _allow_medgemma_sd198_grouped_override(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
@@ -719,6 +733,20 @@ def _route_specific_fallback_reason(
             dataset_name=dataset_name,
         ):
             return "medgemma_scin_grouped_conservative_guard"
+
+    if workflow_cell_id == "llama__scin__grouped_guard_v1":
+        if baseline_label != agent_label and not _allow_llama_scin_grouped_override(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            return "llama_scin_grouped_baseline_anchor_guard"
 
     if workflow_cell_id == "medgemma__sd198__grouped_coarse_v1":
         if baseline_label != agent_label and not _allow_medgemma_sd198_grouped_override(
@@ -2120,6 +2148,57 @@ def _allow_medgemma_scin_grouped_override(
         "INFECTION_VIRAL_FUNGAL",
         "ACNE_ROSACEA_FOLLICULAR",
     }
+
+
+def _allow_llama_scin_grouped_override(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> bool:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "llama__scin__grouped_guard_v1":
+        return False
+    if not selected_evidence_present:
+        return False
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    uncertainty = str(uncertainty_level or "").strip().lower()
+    if baseline_canonical != "PIGMENT_KERATOSIS_NEVUS":
+        return False
+
+    if (
+        agent_canonical == "DERMATITIS_ECZEMA"
+        and support_margin >= 50.0
+        and subtype_support_margin >= 5.0
+        and uncertainty in {"low", "medium", "unknown", "high"}
+    ):
+        return True
+
+    if (
+        agent_canonical == "INFECTION_VIRAL_FUNGAL"
+        and support_margin >= 64.0
+        and subtype_support_margin >= 15.0
+        and uncertainty == "low"
+    ):
+        return True
+
+    return False
 
 
 def _allow_medgemma_sd198_grouped_override(

@@ -293,6 +293,18 @@ MODEL_DATASET_WORKFLOW_PROFILES = {
             "disable_legacy_final_path": True,
         },
     },
+    "Llama-3.2-11B-Vision-Instruct": {
+        "scin": {
+            "workflow_cell_id": "llama__scin__grouped_guard_v1",
+            "label_space_id": "scin_grouped",
+            "environment": {"DERMAGENT_SCIN_LABEL_SPACE_ID": "scin_grouped"},
+            "inherit_dataset_workflow": True,
+            "workflow_capabilities": ["baseline_anchored_final", "grouped_label_reasoning"],
+            "force_conservative_fusion": True,
+            "fallback_on_malformed_final": True,
+            "disable_legacy_final_path": True,
+        },
+    },
 }
 
 
