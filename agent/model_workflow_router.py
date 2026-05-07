@@ -41,6 +41,37 @@ DATASET_ALIASES = {
 # the other model rows intentionally fall back to model + dataset routing until
 # each cell is tuned from 6x6 results.
 MODEL_DATASET_WORKFLOW_PROFILES = {
+    "SkinVL-MM": {
+        "pad20": {
+            "workflow_cell_id": "skinvl__pad20__clinical_guard_v1",
+            "label_space_id": "derm_six",
+            "inherit_dataset_workflow": True,
+            "workflow_capabilities": ["baseline_anchored_final", "clinical_subtype_guard_reasoning"],
+            "skip_specialist_skills": True,
+            "skip_experience_retrieval": True,
+            "enable_skill_retrieval": False,
+            "allowed_skills": [
+                "morphology_analysis_skill",
+                "color_pattern_analysis_skill",
+                "border_surface_analysis_skill",
+                "lesion_description_structuring_skill",
+                "metadata_consistency_skill",
+                "temporal_evolution_skill",
+                "malignancy_risk_assessment_skill",
+            ],
+            "force_disable_skills": [
+                "distribution_analysis_skill",
+                "uncertainty_assessment_skill",
+                "information_gap_detection_skill",
+                "contradiction_check_skill",
+                "escalation_recommendation_skill",
+                "exclusion_reasoning_skill",
+            ],
+            "force_conservative_fusion": True,
+            "fallback_on_malformed_final": True,
+            "disable_legacy_final_path": True,
+        },
+    },
     "Qwen2.5-VL-7B-Instruct": {
         "pad20": {
             "workflow_cell_id": "qwen__pad20__dataset_best",
@@ -423,6 +454,29 @@ def _copy_config(config: dict[str, Any]) -> dict[str, Any]:
     return deepcopy(config)
 
 
+def _workflow_metadata_subset(metadata: dict[str, Any]) -> dict[str, Any]:
+    keep_keys = (
+        "region",
+        "age",
+        "itch",
+        "grew",
+        "changed",
+        "bleed",
+        "hurt",
+        "elevation",
+        "diameter_1",
+        "diameter_2",
+        "skin_cancer_history",
+        "cancer_history",
+    )
+    subset: dict[str, Any] = {}
+    for key in keep_keys:
+        value = metadata.get(key)
+        if isinstance(value, (str, int, float, bool)) or value is None:
+            subset[key] = value
+    return subset
+
+
 def _resolve_model_config(model_name: str) -> tuple[str, dict[str, Any]]:
     model_key = _normalize_model_key(model_name)
     model_config = dict(MODEL_WORKFLOW_PROFILES.get(model_key, {}))
@@ -619,6 +673,9 @@ def apply_model_workflow_to_case(
         workflow_context.setdefault("dataset_name", dataset_key)
     if label_space_id:
         workflow_context["label_space_id"] = label_space_id
+    metadata_subset = _workflow_metadata_subset(dict(getattr(case_input, "metadata", None) or {}))
+    if metadata_subset:
+        workflow_context["clinical_metadata"] = metadata_subset
     dataset_workflow_profile = str(workflow_context.get("workflow_profile", "")).strip()
     requested_workflow_profile = str(overrides.get("workflow_profile", "")).strip()
     workflow_profile_mode = str(overrides.get("workflow_profile_mode", "model_overlay")).strip().lower()

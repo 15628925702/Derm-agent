@@ -148,7 +148,7 @@ def main() -> int:
     else:
         model_workflow_overrides = get_model_workflow_overrides(
             agent_model_name,
-            dataset_name=None,
+            dataset_name=inferred_dataset_name,
             base_workflow_context=None,
         )
         agent_execution_overrides = execution_overrides_for_run_agent(model_workflow_overrides)

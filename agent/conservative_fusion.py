@@ -322,6 +322,19 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("llama_pad20_guarded_subtype_override")
+        elif skinvl_pad20_override_label := _skinvl_pad20_consensus_override_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = skinvl_pad20_override_label
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("skinvl_pad20_forearm_ack_guarded_override")
         elif llama_isic_override_label := _llama_isic_consensus_override_label(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
@@ -709,10 +722,20 @@ def _route_specific_fallback_reason(
         label_space_id=label_space_id,
         dataset_name=dataset_name,
     )
+    skinvl_pad20_malformed_rescue_label = _skinvl_pad20_consensus_override_label(
+        workflow_context=workflow_context,
+        baseline_label=baseline_label,
+        selected_evidence_present=selected_evidence_present,
+        support_margin=support_margin,
+        subtype_support_margin=subtype_support_margin,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
     if (
         bool(workflow_context.get("fallback_on_malformed_final", False))
         and malformed_agent_output
         and not llama_sd198_malformed_rescue_label
+        and not skinvl_pad20_malformed_rescue_label
     ):
         return "model_route_malformed_final_fallback"
 
@@ -1007,6 +1030,20 @@ def _route_specific_fallback_reason(
             dataset_name=dataset_name,
         ):
             return "llama_pad20_baseline_anchor_guard"
+
+    if workflow_cell_id == "skinvl__pad20__clinical_guard_v1":
+        if _skinvl_pad20_consensus_override_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            return ""
+        if baseline_label != agent_label or malformed_agent_output:
+            return "skinvl_pad20_baseline_anchor_guard"
 
     if workflow_cell_id == "llama__isic2019__archive_guard_v1":
         if baseline_label != agent_label and not _llama_isic_consensus_override_label(
@@ -2177,6 +2214,39 @@ def _llama_pad20_consensus_override_label(
     ):
         return "Actinic Keratosis"
 
+    return ""
+
+
+def _skinvl_pad20_consensus_override_label(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    label_space_id: str,
+    dataset_name: str,
+) -> str:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "skinvl__pad20__clinical_guard_v1":
+        return ""
+    if not selected_evidence_present:
+        return ""
+    if support_margin < 25.0 or not (5.0 <= subtype_support_margin <= 8.0):
+        return ""
+
+    metadata = dict(workflow_context.get("clinical_metadata", {}) or {})
+    region = str(metadata.get("region", "")).strip().upper()
+    if region not in {"ARM", "FOREARM", "THIGH"}:
+        return ""
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if baseline_canonical in {"SCC", "MEL"}:
+        return "Actinic Keratosis"
     return ""
 
 
