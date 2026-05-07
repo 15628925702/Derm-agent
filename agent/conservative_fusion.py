@@ -305,6 +305,23 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("llama_ham10000_akiec_guarded_override")
+        elif llama_pad20_override_label := _llama_pad20_consensus_override_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_differentials=agent_differentials,
+            initial_ddx=initial_ddx,
+            baseline_preview=baseline_preview,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = llama_pad20_override_label
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("llama_pad20_guarded_subtype_override")
         elif agent_label == baseline_label:
             use_agent_output = True
             reasons.append("agent_matches_baseline")
@@ -957,6 +974,22 @@ def _route_specific_fallback_reason(
             dataset_name=dataset_name,
         ):
             return "llama_ham10000_baseline_anchor_guard"
+
+    if workflow_cell_id == "llama__pad20__clinical_guard_v1":
+        if baseline_label != agent_label and not _llama_pad20_consensus_override_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_differentials=agent_differentials,
+            initial_ddx=initial_ddx,
+            baseline_preview=baseline_preview,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            return "llama_pad20_baseline_anchor_guard"
 
     if model_profile == "conservative_archive_workflow" and dataset_profile == "image_archive_full_taxonomy_lesion_workflow":
         if malformed_agent_output:
@@ -2045,6 +2078,70 @@ def _llama_ham10000_consensus_override_label(
             return "Actinic Keratosis"
 
     if not summary and support_margin >= 49.0 and subtype_support_margin >= 24.0:
+        return "Actinic Keratosis"
+
+    return ""
+
+
+def _llama_pad20_consensus_override_label(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_differentials: list[str],
+    initial_ddx: list[str],
+    baseline_preview: dict[str, Any],
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> str:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "llama__pad20__clinical_guard_v1":
+        return ""
+    if not selected_evidence_present:
+        return ""
+    if str(uncertainty_level or "").strip().lower() == "high":
+        return ""
+    if support_margin < 44.0 or subtype_support_margin < 5.5:
+        return ""
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    initial_canonicals = [
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in initial_ddx
+    ]
+    summary = str(baseline_preview.get("image_summary", "")).strip().lower()
+
+    if (
+        baseline_canonical == "SCC"
+        and initial_canonicals[:1] == ["BCC"]
+        and _contains_canonical_label(
+            agent_differentials,
+            canonical_label="BCC",
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+        and 45.0 <= support_margin <= 50.0
+        and (
+            "central depression" in summary
+            or "history of skin cancer" in summary
+        )
+    ):
+        return "Basal Cell Carcinoma"
+
+    ack_surface_signal = "scaly" in summary and any(marker in summary for marker in ("forearm", "plaque"))
+    if (
+        baseline_canonical == "BCC"
+        and "ACK" in initial_canonicals[:2]
+        and ack_surface_signal
+        and support_margin <= 50.0
+    ):
         return "Actinic Keratosis"
 
     return ""

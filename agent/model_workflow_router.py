@@ -303,6 +303,15 @@ MODEL_DATASET_WORKFLOW_PROFILES = {
             "fallback_on_malformed_final": True,
             "disable_legacy_final_path": True,
         },
+        "pad20": {
+            "workflow_cell_id": "llama__pad20__clinical_guard_v1",
+            "label_space_id": "derm_six",
+            "inherit_dataset_workflow": True,
+            "workflow_capabilities": ["baseline_anchored_final", "clinical_metadata_reasoning"],
+            "force_conservative_fusion": True,
+            "fallback_on_malformed_final": True,
+            "disable_legacy_final_path": True,
+        },
         "scin": {
             "workflow_cell_id": "llama__scin__grouped_guard_v1",
             "label_space_id": "scin_grouped",
