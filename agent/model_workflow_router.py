@@ -294,6 +294,15 @@ MODEL_DATASET_WORKFLOW_PROFILES = {
         },
     },
     "Llama-3.2-11B-Vision-Instruct": {
+        "isic2019": {
+            "workflow_cell_id": "llama__isic2019__archive_guard_v1",
+            "label_space_id": "isic2019_full",
+            "inherit_dataset_workflow": True,
+            "workflow_capabilities": ["baseline_anchored_final", "image_archive_reasoning"],
+            "force_conservative_fusion": True,
+            "fallback_on_malformed_final": True,
+            "disable_legacy_final_path": True,
+        },
         "ham10000": {
             "workflow_cell_id": "llama__ham10000__akiec_guard_v1",
             "label_space_id": "ham10000_full",
