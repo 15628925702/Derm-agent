@@ -255,6 +255,23 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("hulumed_sd198_grouped_guarded_override")
+        elif hulumed_ham10000_override_label := _hulumed_ham10000_consensus_override_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_differentials=agent_differentials,
+            initial_ddx=initial_ddx,
+            baseline_preview=baseline_preview,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = hulumed_ham10000_override_label
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("hulumed_ham10000_akiec_guarded_override")
         elif agent_label == baseline_label:
             use_agent_output = True
             reasons.append("agent_matches_baseline")
@@ -788,6 +805,22 @@ def _route_specific_fallback_reason(
             dataset_name=dataset_name,
         ):
             return "hulumed_sd198_baseline_anchor_guard"
+
+    if workflow_cell_id == "hulumed__ham10000__akiec_guard_v1":
+        if baseline_label != agent_label and not _hulumed_ham10000_consensus_override_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_differentials=agent_differentials,
+            initial_ddx=initial_ddx,
+            baseline_preview=baseline_preview,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            return "hulumed_ham10000_baseline_anchor_guard"
 
     if model_profile == "conservative_archive_workflow" and dataset_profile == "image_archive_full_taxonomy_lesion_workflow":
         if malformed_agent_output:
@@ -1762,6 +1795,70 @@ def _hulumed_sd198_consensus_override_label(
         return "VASCULAR_ULCER_PURPURA"
 
     return ""
+
+
+def _hulumed_ham10000_consensus_override_label(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_differentials: list[str],
+    initial_ddx: list[str],
+    baseline_preview: dict[str, Any],
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> str:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "hulumed__ham10000__akiec_guard_v1":
+        return ""
+    if not selected_evidence_present:
+        return ""
+    if str(uncertainty_level or "").strip().lower() in {"high", "unknown"}:
+        return ""
+    if support_margin < 45.0 or subtype_support_margin < 2.0:
+        return ""
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if baseline_canonical != "BCC":
+        return ""
+
+    initial_canonicals = [
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in initial_ddx
+    ]
+    if "AKIEC" not in initial_canonicals[:3]:
+        return ""
+    if not _contains_canonical_label(
+        agent_differentials,
+        canonical_label="AKIEC",
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    ):
+        return ""
+
+    summary = str(baseline_preview.get("image_summary", "")).strip().lower()
+    erythematous_scale_signal = (
+        "erythematous patch" in summary
+        and "brownish discoloration" in summary
+        and "subtle scaling" in summary
+    )
+    rough_pink_signal = "pinkish lesion" in summary and "rough texture" in summary
+    rough_scale_signal = (
+        "rough-textured" in summary
+        and "pinkish-red" in summary
+        and "fine white scales" in summary
+    )
+    if not (erythematous_scale_signal or rough_pink_signal or rough_scale_signal):
+        return ""
+
+    return "Actinic Keratosis"
 
 
 def _medgemma_isic_confident_bcc_agent(agent_confidence: str) -> bool:

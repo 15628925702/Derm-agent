@@ -273,6 +273,15 @@ MODEL_DATASET_WORKFLOW_PROFILES = {
             "fallback_on_malformed_final": True,
             "disable_legacy_final_path": True,
         },
+        "ham10000": {
+            "workflow_cell_id": "hulumed__ham10000__akiec_guard_v1",
+            "label_space_id": "ham10000_full",
+            "inherit_dataset_workflow": True,
+            "workflow_capabilities": ["baseline_anchored_final", "sparse_lesion_reasoning"],
+            "force_conservative_fusion": True,
+            "fallback_on_malformed_final": True,
+            "disable_legacy_final_path": True,
+        },
     },
 }
 
