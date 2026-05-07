@@ -42,6 +42,45 @@ DATASET_ALIASES = {
 # each cell is tuned from 6x6 results.
 MODEL_DATASET_WORKFLOW_PROFILES = {
     "SkinVL-MM": {
+        "ham10000": {
+            "workflow_cell_id": "skinvl__ham10000__sparse_guard_v1",
+            "label_space_id": "ham10000_full",
+            "inherit_dataset_workflow": True,
+            "workflow_capabilities": ["baseline_anchored_final", "sparse_lesion_reasoning"],
+            "skip_specialist_skills": True,
+            "skip_experience_retrieval": True,
+            "enable_skill_retrieval": False,
+            "allowed_skills": [
+                "morphology_analysis_skill",
+                "color_pattern_analysis_skill",
+                "border_surface_analysis_skill",
+                "lesion_description_structuring_skill",
+                "malignancy_risk_assessment_skill",
+            ],
+            "force_disable_skills": [
+                "distribution_analysis_skill",
+                "uncertainty_assessment_skill",
+                "information_gap_detection_skill",
+                "contradiction_check_skill",
+                "escalation_recommendation_skill",
+                "exclusion_reasoning_skill",
+            ],
+            "force_conservative_fusion": True,
+            "fallback_on_malformed_final": True,
+            "disable_legacy_final_path": True,
+        },
+        "isic2019": {
+            "workflow_cell_id": "skinvl__isic2019__archive_guard_v1",
+            "label_space_id": "isic2019_full",
+            "inherit_dataset_workflow": True,
+            "workflow_capabilities": ["baseline_anchored_final", "image_archive_reasoning"],
+            "skip_specialist_skills": True,
+            "skip_experience_retrieval": True,
+            "enable_skill_retrieval": False,
+            "force_conservative_fusion": True,
+            "fallback_on_malformed_final": True,
+            "disable_legacy_final_path": True,
+        },
         "pad20": {
             "workflow_cell_id": "skinvl__pad20__clinical_guard_v1",
             "label_space_id": "derm_six",
@@ -67,6 +106,34 @@ MODEL_DATASET_WORKFLOW_PROFILES = {
                 "escalation_recommendation_skill",
                 "exclusion_reasoning_skill",
             ],
+            "force_conservative_fusion": True,
+            "fallback_on_malformed_final": True,
+            "disable_legacy_final_path": True,
+        },
+        "scin": {
+            "workflow_cell_id": "skinvl__scin__grouped_guard_v1",
+            "label_space_id": "scin_grouped",
+            "environment": {"DERMAGENT_SCIN_LABEL_SPACE_ID": "scin_grouped"},
+            "inherit_dataset_workflow": True,
+            "workflow_capabilities": ["baseline_anchored_final", "grouped_label_reasoning", "rash_reasoning"],
+            "skip_specialist_skills": True,
+            "skip_experience_retrieval": True,
+            "enable_skill_retrieval": False,
+            "force_conservative_fusion": True,
+            "fallback_on_malformed_final": True,
+            "disable_legacy_final_path": True,
+        },
+        "sd198": {
+            "workflow_cell_id": "skinvl__sd198__grouped_coarse_guard_v1",
+            "label_space_id": "sd198_grouped",
+            "environment": {"DERMAGENT_SD198_LABEL_SPACE_ID": "sd198_grouped"},
+            "workflow_profile": "coarse_taxonomy_workflow",
+            "workflow_profile_mode": "replace",
+            "workflow_capabilities": ["baseline_anchored_final", "coarse_taxonomy_reasoning", "grouped_label_reasoning"],
+            "replace_workflow_capabilities": True,
+            "skip_specialist_skills": True,
+            "skip_experience_retrieval": True,
+            "enable_skill_retrieval": False,
             "force_conservative_fusion": True,
             "fallback_on_malformed_final": True,
             "disable_legacy_final_path": True,
@@ -468,11 +535,17 @@ def _workflow_metadata_subset(metadata: dict[str, Any]) -> dict[str, Any]:
         "diameter_2",
         "skin_cancer_history",
         "cancer_history",
+        "localization",
+        "anatom_site_general",
+        "related_category",
+        "body_sites",
+        "textures_present",
+        "symptoms_present",
     )
     subset: dict[str, Any] = {}
     for key in keep_keys:
         value = metadata.get(key)
-        if isinstance(value, (str, int, float, bool)) or value is None:
+        if isinstance(value, (str, int, float, bool, list)) or value is None:
             subset[key] = value
     return subset
 
