@@ -175,3 +175,31 @@
 - Top-k 已涨但 Top-1 不涨
 
 这三类吃掉，整体大规模结果会涨得最快。
+
+## Tuning Log: `llama / isic2019` v2 (2026-05-08)
+
+### Diagnosis
+
+- 大规模 `eval300` 原始结果：Baseline Top-1 `0.3367` vs Agent Top-1 `0.3300`，Top-1 delta `-0.0067`; Baseline Top-k `0.4767` vs Agent Top-k `0.5033`，Top-k delta `+0.0267`.
+- Case-level 追溯显示：`helped=0`, `hurt=2`, `unchanged=298`; Top-k gain `+8`、Top-k hurt `0`.
+- Top-1 下降根因不是 retrieval/evidence 全局变差，而是 `llama_isic2019_guarded_archive_override` 的 BCC promotion 门过低：4 个 `NV/BKL -> BCC` override 中 0 个 Top-1 helped，2 个把原本正确的 `NV` baseline 推成 `BCC`.
+- Top-k 上升来自 final differential 变好：正确项被放进 agent differential（主要 `NV`，另有 `BKL`），但 final diagnosis 仍停在 baseline label，说明 evidence 已改善候选集，final/fusion 尚未把收益转成 Top-1.
+- Label 层面：原始 Top-1 掉点集中在 `NV`（Baseline TP `71` -> Agent TP `69`）；其他 label Top-1 持平。Top-k gain 主要也是 `NV`.
+
+### Change
+
+- 修改 `agent/conservative_fusion.py`：移除 llama/isic2019 中 `baseline in {BKL,NV}` + `agent=BCC` + `unknown uncertainty` + `support_margin 36-39` + `subtype_support_margin 6-7.5` 的 BCC consensus override.
+- 新增 `tests/test_conservative_fusion.py` 覆盖：llama/isic2019 对 `Nevus -> Basal Cell Carcinoma` 的 unknown/low-margin 改写应被 `llama_isic2019_baseline_anchor_guard` 拦截.
+
+### Validation
+
+- 单元验证：环境缺少 `pytest` 包，`pytest tests/test_conservative_fusion.py -q` 未能运行；改用 `runpy` 调用新增目标测试，断言通过。
+- 8 卡验证方式：启动 8 个 Llama replica，GPU `0-7`，ports `8130-8137`; 每轮 compare 按 shard 并发跑满 8 卡。
+- `small8`, offset `95..102`: Top-1 `0.6250 -> 0.6250` (`+0.0000`), Top-k `0.6250 -> 0.6250` (`+0.0000`), helped `0`, hurt `0`. 原 hurt case `ISIC_0030450` 被 baseline anchor 保住。
+- `medium20`, offset `95..114`: Top-1 `0.6500 -> 0.6500` (`+0.0000`), Top-k `0.6500 -> 0.7000` (`+0.0500`), helped `0`, hurt `0`, Top-k gain `1`.
+- `medium40`, offset `75..114`: Top-1 `0.4000 -> 0.4000` (`+0.0000`), Top-k `0.4250 -> 0.5000` (`+0.0750`), helped `0`, hurt `0`, Top-k gain `3`.
+
+### Next Round
+
+- 本轮已满足 small/medium Top-1 非负且 Top-k 不下降，建议进入下一轮前先做更聚焦的 final promotion 设计。
+- 下一轮候选方向：针对 `agent final == baseline final` 且 correct label 已进入 differential 的 `NV/BKL` case，设计更严格的 baseline-vs-evidence 对比决策；重点避免把 `SCC/VASC/DF` 误 promotion 成 `NV`.

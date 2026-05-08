@@ -2664,16 +2664,6 @@ def _llama_isic_consensus_override_label(
     ]
     summary = str(baseline_preview.get("image_summary", "")).strip().lower()
 
-    if (
-        baseline_canonical in {"BKL", "NV"}
-        and agent_canonical == "BCC"
-        and not summary
-        and str(uncertainty_level or "").strip().lower() == "unknown"
-        and 36.0 <= support_margin <= 39.0
-        and 6.0 <= subtype_support_margin <= 7.5
-    ):
-        return "Basal Cell Carcinoma"
-
     nevus_surface_signal = all(
         marker in summary
         for marker in ("brown", "central", "periphery")
