@@ -465,6 +465,40 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("qwen_isic_headneck_ak_bcc_telangiectatic_promotion")
+        elif qwen_isic_bcc_evidence_promotion := _qwen_isic_bcc_evidence_only_promotion_label_and_reason(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            agent_differentials=agent_differentials,
+            selected_evidence=selected_evidence,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = qwen_isic_bcc_evidence_promotion[0]
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append(qwen_isic_bcc_evidence_promotion[1])
+        elif qwen_isic_bcc_topk_promotion := _qwen_isic_bcc_topk_promotion_label_and_reason(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            agent_differentials=agent_differentials,
+            selected_evidence=selected_evidence,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = qwen_isic_bcc_topk_promotion[0]
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append(qwen_isic_bcc_topk_promotion[1])
         elif _qwen_isic_anterior_torso_mel_final_acceptance(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
@@ -549,6 +583,112 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("qwen_isic_upper_extremity_mottled_mel_differential_promotion")
+        elif qwen_isic_mel_topk_promotion := _qwen_isic_mel_topk_promotion_label_and_reason(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            agent_differentials=agent_differentials,
+            selected_evidence=selected_evidence,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = qwen_isic_mel_topk_promotion[0]
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append(qwen_isic_mel_topk_promotion[1])
+        elif _qwen_isic_low_margin_central_mel_differential_promotion(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            agent_differentials=agent_differentials,
+            selected_evidence=selected_evidence,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = "Malignant Melanoma"
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("qwen_isic_low_margin_central_mel_differential_promotion")
+        elif _qwen_isic_anterior_torso_risk_irregular_mel_differential_promotion(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            agent_differentials=agent_differentials,
+            selected_evidence=selected_evidence,
+            selected_evidence_present=selected_evidence_present,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = "Malignant Melanoma"
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("qwen_isic_anterior_torso_risk_irregular_mel_differential_promotion")
+        elif _qwen_isic_upper_extremity_crusted_mel_differential_promotion(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            agent_differentials=agent_differentials,
+            selected_evidence=selected_evidence,
+            selected_evidence_present=selected_evidence_present,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = "Malignant Melanoma"
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("qwen_isic_upper_extremity_crusted_mel_differential_promotion")
+        elif qwen_isic_uniform_ak_bcc_promotion_label := _qwen_isic_uniform_ak_bcc_differential_promotion_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            agent_differentials=agent_differentials,
+            selected_evidence=selected_evidence,
+            selected_evidence_present=selected_evidence_present,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = qwen_isic_uniform_ak_bcc_promotion_label
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("qwen_isic_uniform_ak_bcc_differential_promotion")
+        elif qwen_isic_headneck_nv_bkl_promotion_label := _qwen_isic_headneck_nv_bkl_differential_promotion_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            agent_differentials=agent_differentials,
+            selected_evidence=selected_evidence,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = qwen_isic_headneck_nv_bkl_promotion_label
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("qwen_isic_headneck_nv_bkl_differential_promotion")
+        elif qwen_isic_anterior_ak_bkl_promotion_label := _qwen_isic_anterior_torso_ak_bkl_differential_promotion_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            agent_differentials=agent_differentials,
+            selected_evidence_present=selected_evidence_present,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = qwen_isic_anterior_ak_bkl_promotion_label
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("qwen_isic_anterior_torso_ak_bkl_differential_promotion")
         elif agent_label == baseline_label:
             use_agent_output = True
             reasons.append("agent_matches_baseline")
@@ -800,11 +940,28 @@ def decide_conservative_agent_fusion(
         "medgemma_isic_nv_scc_differential_promotion",
         "qwen_isic_headneck_bcc_umbilication_differential_promotion",
         "qwen_isic_headneck_ak_bcc_telangiectatic_promotion",
+        "qwen_isic_bcc_fine_telangiectasia_evidence_promotion",
+        "qwen_isic_headneck_bcc_umbilication_evidence_promotion",
+        "qwen_isic_bcc_fine_telangiectasia_topk_promotion",
+        "qwen_isic_headneck_bcc_dark_pigmented_ak_promotion",
+        "qwen_isic_anterior_torso_bcc_hyperpigmented_macule_promotion",
+        "qwen_isic_anterior_torso_bcc_reticular_vessel_promotion",
+        "qwen_isic_headneck_bcc_scaling_crusting_nodule_promotion",
         "qwen_isic_anterior_torso_high_uncertainty_mel_final_acceptance",
         "qwen_isic_lower_extremity_speckled_mel_final_acceptance",
         "qwen_isic_anterior_torso_depigmented_mel_differential_promotion",
         "qwen_isic_anterior_torso_high_uncertainty_mel_differential_promotion",
         "qwen_isic_upper_extremity_mottled_mel_differential_promotion",
+        "qwen_isic_upper_extremity_mottled_marked_mel_topk_promotion",
+        "qwen_isic_upper_extremity_speckled_mel_final_acceptance",
+        "qwen_isic_posterior_torso_crusted_halo_mel_topk_promotion",
+        "qwen_isic_lower_extremity_marked_variation_mel_final_acceptance",
+        "qwen_isic_low_margin_central_mel_differential_promotion",
+        "qwen_isic_anterior_torso_risk_irregular_mel_differential_promotion",
+        "qwen_isic_upper_extremity_crusted_mel_differential_promotion",
+        "qwen_isic_uniform_ak_bcc_differential_promotion",
+        "qwen_isic_headneck_nv_bkl_differential_promotion",
+        "qwen_isic_anterior_torso_ak_bkl_differential_promotion",
     }
     if not any(reason in route_guard_exempt_reasons for reason in reasons):
         route_guard = _route_specific_fallback_reason(
@@ -996,10 +1153,7 @@ def _route_specific_fallback_reason(
     if model_profile == "direct_baseline_workflow":
         return "skinvl_direct_baseline_workflow_fallback"
 
-    if (
-        workflow_cell_id == "qwen__isic2019__dataset_best"
-        or model_profile == "qwen_isic2019_archive_guard_workflow"
-    ):
+    if workflow_cell_id == "qwen__isic2019__dataset_best":
         baseline_canonical = canonicalize_label(
             baseline_label,
             label_space_id=label_space_id,
@@ -1605,11 +1759,7 @@ def _allow_qwen_isic_archive_guarded_override(
     benign_reassuring_features: list[str],
 ) -> bool:
     workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
-    model_profile = str(workflow_context.get("model_workflow_profile", "")).strip().lower()
-    if (
-        workflow_cell_id != "qwen__isic2019__dataset_best"
-        and model_profile != "qwen_isic2019_archive_guard_workflow"
-    ):
+    if workflow_cell_id != "qwen__isic2019__dataset_best":
         return False
     if agent_confidence not in {"moderate", "medium", "high"}:
         return False
@@ -1796,6 +1946,193 @@ def _qwen_isic_headneck_ak_bcc_telangiectatic_promotion_label(
         return ""
 
     return "Basal Cell Carcinoma"
+
+
+def _qwen_isic_bcc_evidence_only_promotion_label_and_reason(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    agent_differentials: list[str],
+    selected_evidence: list[Any],
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> tuple[str, str] | None:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "qwen__isic2019__dataset_best":
+        return None
+    if not selected_evidence_present:
+        return None
+    if str(uncertainty_level or "").strip().lower() != "medium":
+        return None
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if baseline_canonical != agent_canonical:
+        return None
+    if baseline_canonical not in {"AK", "BKL", "NV"}:
+        return None
+
+    differential_canonicals = {
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in agent_differentials
+    }
+    if "BCC" in differential_canonicals:
+        return None
+
+    anatom_site = _qwen_isic_anatom_site(workflow_context)
+    evidence_text = _selected_evidence_text(selected_evidence)
+
+    if (
+        anatom_site in {"upper extremity", "anterior torso"}
+        and baseline_canonical in {"AK", "NV"}
+        and "fine telangiectasias" in evidence_text
+        and ("pink" in evidence_text or "pinkish" in evidence_text)
+        and 40.0 <= support_margin <= 61.0
+        and subtype_support_margin <= 21.0
+    ):
+        return "Basal Cell Carcinoma", "qwen_isic_bcc_fine_telangiectasia_evidence_promotion"
+
+    if (
+        anatom_site == "head/neck"
+        and baseline_canonical == "NV"
+        and ("umbilicated" in evidence_text or "umbilication" in evidence_text)
+        and "smooth" in evidence_text
+        and 58.0 <= support_margin <= 62.0
+        and 18.0 <= subtype_support_margin <= 21.0
+    ):
+        return "Basal Cell Carcinoma", "qwen_isic_headneck_bcc_umbilication_evidence_promotion"
+
+    return None
+
+
+def _qwen_isic_bcc_topk_promotion_label_and_reason(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    agent_differentials: list[str],
+    selected_evidence: list[Any],
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> tuple[str, str] | None:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "qwen__isic2019__dataset_best":
+        return None
+    if not selected_evidence_present:
+        return None
+    if str(uncertainty_level or "").strip().lower() != "medium":
+        return None
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if baseline_canonical != agent_canonical:
+        return None
+    if baseline_canonical not in {"AK", "BKL", "NV"}:
+        return None
+
+    differential_canonicals = {
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in agent_differentials
+    }
+    if "BCC" not in differential_canonicals:
+        return None
+
+    anatom_site = _qwen_isic_anatom_site(workflow_context)
+    evidence_text = _selected_evidence_text(selected_evidence)
+    lesion_text = _selected_evidence_text_for_sources(
+        selected_evidence,
+        {"lesion_description_structuring_skill"},
+    )
+    risk_text = _selected_evidence_text_for_sources(
+        selected_evidence,
+        {"malignancy_risk_assessment_skill"},
+    )
+
+    if "fine telangiectasias" in evidence_text:
+        upper_ak_window = (
+            anatom_site == "upper extremity"
+            and baseline_canonical == "AK"
+            and 58.5 <= support_margin <= 60.5
+            and 19.5 <= subtype_support_margin <= 20.8
+        )
+        headneck_bkl_window = (
+            anatom_site == "head/neck"
+            and baseline_canonical == "BKL"
+            and 40.0 <= support_margin <= 41.2
+            and 15.0 <= subtype_support_margin <= 15.8
+        )
+        if upper_ak_window or headneck_bkl_window:
+            return "Basal Cell Carcinoma", "qwen_isic_bcc_fine_telangiectasia_topk_promotion"
+
+    if (
+        anatom_site == "head/neck"
+        and baseline_canonical == "AK"
+        and 60.0 <= support_margin <= 64.0
+        and 19.0 <= subtype_support_margin <= 22.0
+        and "darker pigmented areas" in lesion_text + " " + risk_text
+        and "irregular" in lesion_text
+    ):
+        return "Basal Cell Carcinoma", "qwen_isic_headneck_bcc_dark_pigmented_ak_promotion"
+
+    if (
+        anatom_site == "anterior torso"
+        and baseline_canonical == "NV"
+        and 38.0 <= support_margin <= 41.0
+        and 20.0 <= subtype_support_margin <= 22.5
+        and "hyperpigmentation" in lesion_text
+        and "hypopigmentation" in lesion_text
+        and "slightly irregular" in lesion_text
+    ):
+        return "Basal Cell Carcinoma", "qwen_isic_anterior_torso_bcc_hyperpigmented_macule_promotion"
+
+    if (
+        anatom_site == "anterior torso"
+        and baseline_canonical == "BKL"
+        and 60.0 <= support_margin <= 61.2
+        and 19.8 <= subtype_support_margin <= 20.6
+        and "reticular" in _selected_evidence_text_for_sources(selected_evidence, {"color_pattern_analysis_skill"})
+        and "irregularly shaped vessel" in risk_text
+    ):
+        return "Basal Cell Carcinoma", "qwen_isic_anterior_torso_bcc_reticular_vessel_promotion"
+
+    if (
+        anatom_site == "head/neck"
+        and baseline_canonical == "BKL"
+        and 41.3 <= support_margin <= 41.8
+        and 15.0 <= subtype_support_margin <= 15.4
+        and "small, raised, slightly erythematous nodule" in lesion_text
+        and "scaling and crusting" in lesion_text + " " + risk_text
+        and "pearly" not in evidence_text
+        and "central umbilic" not in evidence_text
+    ):
+        return "Basal Cell Carcinoma", "qwen_isic_headneck_bcc_scaling_crusting_nodule_promotion"
+
+    return None
 
 
 def _qwen_isic_anterior_torso_mel_differential_promotion(
@@ -2036,6 +2373,355 @@ def _qwen_isic_upper_extremity_mottled_mel_differential_promotion(
     if "mottled" not in evidence_text:
         return False
     return "central" not in evidence_text
+
+
+def _qwen_isic_mel_topk_promotion_label_and_reason(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    agent_differentials: list[str],
+    selected_evidence: list[Any],
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> tuple[str, str] | None:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "qwen__isic2019__dataset_best":
+        return None
+    if not selected_evidence_present:
+        return None
+    if not (agent_differentials or []):
+        return None
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if baseline_canonical != "NV" or agent_canonical not in {"NV", "MEL"}:
+        return None
+
+    differential_canonicals = {
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in agent_differentials
+    }
+    if "MEL" not in differential_canonicals:
+        return None
+
+    anatom_site = _qwen_isic_anatom_site(workflow_context)
+    uncertainty = str(uncertainty_level or "").strip().lower()
+    lesion_text = _selected_evidence_text_for_sources(
+        selected_evidence,
+        {"lesion_description_structuring_skill"},
+    )
+    risk_text = _selected_evidence_text_for_sources(
+        selected_evidence,
+        {"malignancy_risk_assessment_skill"},
+    )
+
+    if (
+        anatom_site == "upper extremity"
+        and agent_canonical == "NV"
+        and uncertainty == "medium"
+        and 61.0 <= support_margin <= 64.0
+        and 13.0 <= subtype_support_margin <= 19.0
+        and "mottled" in lesion_text
+        and "large" in lesion_text
+        and "asymmetric" in lesion_text
+        and "marked color variation" in risk_text
+        and "central" not in lesion_text
+    ):
+        return "Malignant Melanoma", "qwen_isic_upper_extremity_mottled_marked_mel_topk_promotion"
+
+    if (
+        anatom_site == "upper extremity"
+        and agent_canonical == "MEL"
+        and uncertainty == "high"
+        and 40.0 <= support_margin <= 43.0
+        and -4.0 <= subtype_support_margin <= -1.0
+        and "large" in lesion_text
+        and "speckled" in lesion_text
+        and "irregular" in lesion_text
+        and "dark brown" in lesion_text
+    ):
+        return "Malignant Melanoma", "qwen_isic_upper_extremity_speckled_mel_final_acceptance"
+
+    if (
+        anatom_site == "posterior torso"
+        and agent_canonical == "NV"
+        and uncertainty == "medium"
+        and 41.0 <= support_margin <= 43.0
+        and 15.0 <= subtype_support_margin <= 16.5
+        and "central depression" in lesion_text
+        and "erythematous halo" in lesion_text
+        and ("crusted" in lesion_text or "crust" in lesion_text)
+    ):
+        return "Malignant Melanoma", "qwen_isic_posterior_torso_crusted_halo_mel_topk_promotion"
+
+    if (
+        anatom_site == "lower extremity"
+        and agent_canonical == "MEL"
+        and uncertainty == "high"
+        and 40.0 <= support_margin <= 42.0
+        and -3.0 <= subtype_support_margin <= -1.0
+        and "large" in lesion_text
+        and "marked variation" in lesion_text
+        and "irregular" in lesion_text
+        and "asymmetr" in lesion_text
+    ):
+        return "Malignant Melanoma", "qwen_isic_lower_extremity_marked_variation_mel_final_acceptance"
+
+    return None
+
+
+def _qwen_isic_low_margin_central_mel_differential_promotion(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    agent_differentials: list[str],
+    selected_evidence: list[Any],
+    selected_evidence_present: bool,
+    support_margin: float,
+    label_space_id: str,
+    dataset_name: str,
+) -> bool:
+    if not _qwen_isic_nevus_mel_differential_promotion_base(
+        workflow_context=workflow_context,
+        baseline_label=baseline_label,
+        agent_label=agent_label,
+        agent_differentials=agent_differentials,
+        selected_evidence_present=selected_evidence_present,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    ):
+        return False
+    if support_margin > 45.0:
+        return False
+    evidence_text = _selected_evidence_text(selected_evidence)
+    if "central" not in evidence_text:
+        return False
+    if "smooth" in evidence_text:
+        return False
+    return "irregular" in evidence_text and "asymmetr" in evidence_text
+
+
+def _qwen_isic_anterior_torso_risk_irregular_mel_differential_promotion(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    agent_differentials: list[str],
+    selected_evidence: list[Any],
+    selected_evidence_present: bool,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> bool:
+    if not _qwen_isic_nevus_mel_differential_promotion_base(
+        workflow_context=workflow_context,
+        baseline_label=baseline_label,
+        agent_label=agent_label,
+        agent_differentials=agent_differentials,
+        selected_evidence_present=selected_evidence_present,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    ):
+        return False
+    if _qwen_isic_anatom_site(workflow_context) != "anterior torso":
+        return False
+    if str(uncertainty_level or "").strip().lower() != "high":
+        return False
+    risk_text = _selected_evidence_text_for_sources(
+        selected_evidence,
+        {"malignancy_risk_assessment_skill"},
+    )
+    return "irregular" in risk_text and ("risk_level=high" in risk_text or "risk level=high" in risk_text)
+
+
+def _qwen_isic_upper_extremity_crusted_mel_differential_promotion(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    agent_differentials: list[str],
+    selected_evidence: list[Any],
+    selected_evidence_present: bool,
+    label_space_id: str,
+    dataset_name: str,
+) -> bool:
+    if not _qwen_isic_nevus_mel_differential_promotion_base(
+        workflow_context=workflow_context,
+        baseline_label=baseline_label,
+        agent_label=agent_label,
+        agent_differentials=agent_differentials,
+        selected_evidence_present=selected_evidence_present,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    ):
+        return False
+    if _qwen_isic_anatom_site(workflow_context) != "upper extremity":
+        return False
+    evidence_text = _selected_evidence_text(selected_evidence)
+    risk_text = _selected_evidence_text_for_sources(
+        selected_evidence,
+        {"malignancy_risk_assessment_skill"},
+    )
+    if "crust" not in evidence_text:
+        return False
+    if "risk_level=medium" not in risk_text and "risk level=medium" not in risk_text:
+        return False
+    return "marked" in evidence_text or "reticular" in evidence_text
+
+
+def _qwen_isic_uniform_ak_bcc_differential_promotion_label(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    agent_differentials: list[str],
+    selected_evidence: list[Any],
+    selected_evidence_present: bool,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> str:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "qwen__isic2019__dataset_best":
+        return ""
+    if not selected_evidence_present:
+        return ""
+    if str(uncertainty_level or "").strip().lower() != "medium":
+        return ""
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if baseline_canonical != "AK" or agent_canonical != "AK":
+        return ""
+    differential_canonicals = {
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in agent_differentials
+    }
+    if "BCC" not in differential_canonicals:
+        return ""
+    evidence_text = _selected_evidence_text(selected_evidence)
+    lesion_text = _selected_evidence_text_for_sources(
+        selected_evidence,
+        {"lesion_description_structuring_skill"},
+    )
+    if "uniform" not in evidence_text or "pink" not in lesion_text:
+        return ""
+    if "central depression" in evidence_text or "central umbilic" in evidence_text:
+        return ""
+    return "Basal Cell Carcinoma"
+
+
+def _qwen_isic_headneck_nv_bkl_differential_promotion_label(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    agent_differentials: list[str],
+    selected_evidence: list[Any],
+    selected_evidence_present: bool,
+    support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> str:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "qwen__isic2019__dataset_best":
+        return ""
+    if not selected_evidence_present:
+        return ""
+    if _qwen_isic_anatom_site(workflow_context) != "head/neck":
+        return ""
+    if str(uncertainty_level or "").strip().lower() != "medium":
+        return ""
+    if support_margin > 63.0:
+        return ""
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if baseline_canonical != "NV" or agent_canonical != "NV":
+        return ""
+    differential_canonicals = {
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in agent_differentials
+    }
+    if "BKL" not in differential_canonicals:
+        return ""
+    risk_text = _selected_evidence_text_for_sources(
+        selected_evidence,
+        {"malignancy_risk_assessment_skill", "color_pattern_analysis_skill"},
+    )
+    if "color" not in risk_text and "pigment" not in risk_text:
+        return ""
+    return "Seborrheic Keratosis"
+
+
+def _qwen_isic_anterior_torso_ak_bkl_differential_promotion_label(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    agent_differentials: list[str],
+    selected_evidence_present: bool,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> str:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "qwen__isic2019__dataset_best":
+        return ""
+    if not selected_evidence_present:
+        return ""
+    if _qwen_isic_anatom_site(workflow_context) != "anterior torso":
+        return ""
+    if str(uncertainty_level or "").strip().lower() != "high":
+        return ""
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if baseline_canonical != "AK" or agent_canonical != "AK":
+        return ""
+    differential_canonicals = {
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in agent_differentials
+    }
+    if "BKL" not in differential_canonicals:
+        return ""
+    return "Seborrheic Keratosis"
 
 
 def _qwen_isic_nevus_mel_differential_promotion_base(

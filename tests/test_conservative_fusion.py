@@ -3,12 +3,46 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+import pytest
+
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from agent.conservative_fusion import apply_conservative_agent_fusion, decide_conservative_agent_fusion
+
+
+def _qwen_isic_evidence_bundle(
+    *,
+    site: str,
+    selected_evidence: list[dict[str, str]],
+    support_margin: float = 42.0,
+    subtype_support_margin: float = 16.0,
+    uncertainty_level: str = "medium",
+    contradiction_count: int = 0,
+    workflow_cell_id: str = "qwen__isic2019__dataset_best",
+) -> dict:
+    return {
+        "selected_evidence": selected_evidence,
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": workflow_cell_id,
+                    "model_workflow_profile": "qwen_isic2019_archive_guard_workflow",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": site},
+                },
+                "selected_evidence_present": True,
+                "support_margin": support_margin,
+                "subtype_support_margin": subtype_support_margin,
+                "uncertainty_level": uncertainty_level,
+                "contradiction_count": contradiction_count,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
 
 
 def test_soft_fusion_allows_scin_grouped_family_override() -> None:
@@ -1470,6 +1504,52 @@ def test_qwen_isic_archive_guard_allows_melanoma_upgrade_without_benign_reassura
     assert "qwen_isic_guarded_archive_override" in result["fusion_decision"]["reasons"]
 
 
+def test_qwen_isic_archive_guard_requires_target_workflow_cell() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Malignant Melanoma",
+        "differential_diagnoses": ["Malignant Melanoma", "Nevus"],
+        "confidence": "High",
+    }
+    evidence_bundle = {
+        "skill_outputs": {
+            "malignancy_risk_assessment_skill": {
+                "benign_reassuring_features": [],
+            }
+        },
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "dataset_workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "model_workflow_profile": "qwen_isic2019_archive_guard_workflow",
+                    "workflow_cell_id": "qwen__isic2019__alternate_cell",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                },
+                "selected_evidence_present": False,
+                "support_margin": 0.0,
+                "subtype_support_margin": 0.0,
+                "uncertainty_level": "high",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "qwen_isic_guarded_archive_override" not in result["fusion_decision"]["reasons"]
+
+
 def test_qwen_isic_archive_guard_preserves_nevus_when_benign_reassurance_is_present() -> None:
     baseline_output = {
         "final_diagnosis": "Nevus",
@@ -2407,6 +2487,595 @@ def test_qwen_isic_upper_extremity_mottled_promotion_blocks_central_pattern() ->
 
     assert result["final_diagnosis"] == "Nevus"
     assert "qwen_isic_upper_extremity_mottled_mel_differential_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_low_margin_central_pattern_promotes_melanoma_from_differential() -> None:
+    baseline_output = {"final_diagnosis": "Nevus", "differential_diagnoses": ["Nevus"], "confidence": "Moderate"}
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _qwen_isic_evidence_bundle(
+        site="upper extremity",
+        support_margin=41.8,
+        selected_evidence=[{"summary": "asymmetry with irregular border and central dark crusted change"}],
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Malignant Melanoma"
+    assert "qwen_isic_low_margin_central_mel_differential_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_low_margin_central_pattern_blocks_smooth_nevus_pattern() -> None:
+    baseline_output = {"final_diagnosis": "Nevus", "differential_diagnoses": ["Nevus"], "confidence": "Moderate"}
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _qwen_isic_evidence_bundle(
+        site="upper extremity",
+        support_margin=41.8,
+        selected_evidence=[{"summary": "asymmetry with irregular border and central dark area but smooth surface"}],
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "qwen_isic_low_margin_central_mel_differential_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_anterior_torso_risk_irregular_promotes_melanoma_from_differential() -> None:
+    baseline_output = {"final_diagnosis": "Nevus", "differential_diagnoses": ["Nevus"], "confidence": "Moderate"}
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _qwen_isic_evidence_bundle(
+        site="anterior torso",
+        uncertainty_level="high",
+        selected_evidence=[
+            {
+                "source_name": "malignancy_risk_assessment_skill",
+                "summary": "malignancy_risk_assessment_skill: risk_level=high | risk_evidence=irregular border and asymmetric color",
+            }
+        ],
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Malignant Melanoma"
+    assert "qwen_isic_anterior_torso_risk_irregular_mel_differential_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_anterior_torso_risk_irregular_requires_high_uncertainty() -> None:
+    baseline_output = {"final_diagnosis": "Nevus", "differential_diagnoses": ["Nevus"], "confidence": "Moderate"}
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _qwen_isic_evidence_bundle(
+        site="anterior torso",
+        uncertainty_level="medium",
+        selected_evidence=[
+            {
+                "source_name": "malignancy_risk_assessment_skill",
+                "summary": "malignancy_risk_assessment_skill: risk_level=high | risk_evidence=irregular border and asymmetric color",
+            }
+        ],
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "qwen_isic_anterior_torso_risk_irregular_mel_differential_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_upper_extremity_crusted_pattern_promotes_melanoma_from_differential() -> None:
+    baseline_output = {"final_diagnosis": "Nevus", "differential_diagnoses": ["Nevus"], "confidence": "Moderate"}
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _qwen_isic_evidence_bundle(
+        site="upper extremity",
+        selected_evidence=[
+            {"summary": "marked reticular pigmentation with focal crust"},
+            {
+                "source_name": "malignancy_risk_assessment_skill",
+                "summary": "malignancy_risk_assessment_skill: risk_level=medium | risk_evidence=marked color variation",
+            },
+        ],
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Malignant Melanoma"
+    assert "qwen_isic_upper_extremity_crusted_mel_differential_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_upper_extremity_crusted_pattern_requires_crust_marker() -> None:
+    baseline_output = {"final_diagnosis": "Nevus", "differential_diagnoses": ["Nevus"], "confidence": "Moderate"}
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _qwen_isic_evidence_bundle(
+        site="upper extremity",
+        selected_evidence=[
+            {"summary": "marked reticular pigmentation without surface breakdown"},
+            {
+                "source_name": "malignancy_risk_assessment_skill",
+                "summary": "malignancy_risk_assessment_skill: risk_level=medium | risk_evidence=marked color variation",
+            },
+        ],
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "qwen_isic_upper_extremity_crusted_mel_differential_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_uniform_ak_bcc_promotes_bcc_from_differential() -> None:
+    baseline_output = {"final_diagnosis": "Actinic Keratosis", "differential_diagnoses": ["Actinic Keratosis"], "confidence": "Moderate"}
+    agent_output = {
+        "final_diagnosis": "Actinic Keratosis",
+        "differential_diagnoses": ["Actinic Keratosis", "Basal Cell Carcinoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _qwen_isic_evidence_bundle(
+        site="upper extremity",
+        selected_evidence=[
+            {
+                "source_name": "lesion_description_structuring_skill",
+                "summary": "lesion_description_structuring_skill: slightly elevated pink plaque with uniform color and smooth border",
+            }
+        ],
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "qwen_isic_uniform_ak_bcc_differential_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_uniform_ak_bcc_requires_bcc_in_differential() -> None:
+    baseline_output = {"final_diagnosis": "Actinic Keratosis", "differential_diagnoses": ["Actinic Keratosis"], "confidence": "Moderate"}
+    agent_output = {
+        "final_diagnosis": "Actinic Keratosis",
+        "differential_diagnoses": ["Actinic Keratosis", "Seborrheic Keratosis"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _qwen_isic_evidence_bundle(
+        site="upper extremity",
+        selected_evidence=[
+            {
+                "source_name": "lesion_description_structuring_skill",
+                "summary": "lesion_description_structuring_skill: slightly elevated pink plaque with uniform color and smooth border",
+            }
+        ],
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Actinic Keratosis"
+    assert "qwen_isic_uniform_ak_bcc_differential_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_headneck_nv_bkl_promotes_bkl_from_differential() -> None:
+    baseline_output = {"final_diagnosis": "Nevus", "differential_diagnoses": ["Nevus"], "confidence": "Moderate"}
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Seborrheic Keratosis"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _qwen_isic_evidence_bundle(
+        site="head/neck",
+        support_margin=62.0,
+        selected_evidence=[
+            {
+                "source_name": "color_pattern_analysis_skill",
+                "summary": "color_pattern_analysis_skill: marked color variation and reticular pigmentation",
+            }
+        ],
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Seborrheic Keratosis"
+    assert "qwen_isic_headneck_nv_bkl_differential_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_headneck_nv_bkl_respects_support_margin_gate() -> None:
+    baseline_output = {"final_diagnosis": "Nevus", "differential_diagnoses": ["Nevus"], "confidence": "Moderate"}
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Seborrheic Keratosis"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _qwen_isic_evidence_bundle(
+        site="head/neck",
+        support_margin=64.0,
+        selected_evidence=[
+            {
+                "source_name": "color_pattern_analysis_skill",
+                "summary": "color_pattern_analysis_skill: marked color variation and reticular pigmentation",
+            }
+        ],
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "qwen_isic_headneck_nv_bkl_differential_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_anterior_torso_ak_bkl_promotes_bkl_from_differential() -> None:
+    baseline_output = {"final_diagnosis": "Actinic Keratosis", "differential_diagnoses": ["Actinic Keratosis"], "confidence": "Moderate"}
+    agent_output = {
+        "final_diagnosis": "Actinic Keratosis",
+        "differential_diagnoses": ["Actinic Keratosis", "Seborrheic Keratosis"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _qwen_isic_evidence_bundle(
+        site="anterior torso",
+        uncertainty_level="high",
+        selected_evidence=[{"summary": "rough stuck-on waxy plaque with marked color variation"}],
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Seborrheic Keratosis"
+    assert "qwen_isic_anterior_torso_ak_bkl_differential_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_anterior_torso_ak_bkl_requires_high_uncertainty() -> None:
+    baseline_output = {"final_diagnosis": "Actinic Keratosis", "differential_diagnoses": ["Actinic Keratosis"], "confidence": "Moderate"}
+    agent_output = {
+        "final_diagnosis": "Actinic Keratosis",
+        "differential_diagnoses": ["Actinic Keratosis", "Seborrheic Keratosis"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _qwen_isic_evidence_bundle(
+        site="anterior torso",
+        uncertainty_level="medium",
+        selected_evidence=[{"summary": "rough stuck-on waxy plaque with marked color variation"}],
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Actinic Keratosis"
+    assert "qwen_isic_anterior_torso_ak_bkl_differential_promotion" not in result["fusion_decision"]["reasons"]
+
+
+@pytest.mark.parametrize(
+    "case",
+    [
+        {
+            "id": "bcc_fine_telangiectasia_evidence_only",
+            "baseline": "Nevus",
+            "agent": "Nevus",
+            "ddx": ["Nevus", "Actinic Keratosis", "Seborrheic Keratosis"],
+            "site": "upper extremity",
+            "support": 42.458,
+            "subtype": 16.056,
+            "uncertainty": "medium",
+            "evidence": [
+                {
+                    "source_name": "ack_scc_specialist_skill",
+                    "summary": "ack_scc_specialist_skill: differentiation_features=Central depression; Fine telangiectasias; Pinkish color",
+                },
+                {
+                    "source_name": "lesion_description_structuring_skill",
+                    "summary": "lesion_description_structuring_skill: slightly elevated plaque | color=pinkish | border=irregular | surface=rough",
+                },
+            ],
+            "expected_label": "Basal Cell Carcinoma",
+            "expected_reason": "qwen_isic_bcc_fine_telangiectasia_evidence_promotion",
+        },
+        {
+            "id": "bcc_headneck_umbilication_evidence_only",
+            "baseline": "Nevus",
+            "agent": "Nevus",
+            "ddx": ["Nevus", "Actinic Keratosis"],
+            "site": "head/neck",
+            "support": 60.5,
+            "subtype": 19.7,
+            "uncertainty": "medium",
+            "evidence": [
+                {
+                    "source_name": "lesion_description_structuring_skill",
+                    "summary": "lesion_description_structuring_skill: papule | color=hyperpigmented | border=umbilicated | surface=smooth",
+                },
+                {
+                    "source_name": "malignancy_risk_assessment_skill",
+                    "summary": "malignancy_risk_assessment_skill: alarm_signals=central umbilication; asymmetric border",
+                },
+            ],
+            "expected_label": "Basal Cell Carcinoma",
+            "expected_reason": "qwen_isic_headneck_bcc_umbilication_evidence_promotion",
+        },
+        {
+            "id": "bcc_fine_telangiectasia",
+            "baseline": "Actinic Keratosis",
+            "agent": "Actinic Keratosis",
+            "ddx": ["Actinic Keratosis", "Seborrheic Keratosis", "Basal Cell Carcinoma"],
+            "site": "upper extremity",
+            "support": 59.82,
+            "subtype": 20.18,
+            "uncertainty": "medium",
+            "evidence": [
+                {
+                    "source_name": "ack_scc_specialist_skill",
+                    "summary": "ack_scc_specialist_skill: differentiation_features=Presence of fine telangiectasias",
+                }
+            ],
+            "expected_label": "Basal Cell Carcinoma",
+            "expected_reason": "qwen_isic_bcc_fine_telangiectasia_topk_promotion",
+        },
+        {
+            "id": "bcc_dark_pigmented_ak",
+            "baseline": "Actinic Keratosis",
+            "agent": "Actinic Keratosis",
+            "ddx": ["Actinic Keratosis", "Seborrheic Keratosis", "Basal Cell Carcinoma"],
+            "site": "head/neck",
+            "support": 62.68,
+            "subtype": 20.9,
+            "uncertainty": "medium",
+            "evidence": [
+                {
+                    "source_name": "lesion_description_structuring_skill",
+                    "summary": "lesion_description_structuring_skill: irregular plaque | color=pink with darker pigmented areas | border=irregular",
+                }
+            ],
+            "expected_label": "Basal Cell Carcinoma",
+            "expected_reason": "qwen_isic_headneck_bcc_dark_pigmented_ak_promotion",
+        },
+        {
+            "id": "bcc_hyperpigmented_macule",
+            "baseline": "Nevus",
+            "agent": "Nevus",
+            "ddx": ["Nevus", "Actinic Keratosis", "Basal Cell Carcinoma"],
+            "site": "anterior torso",
+            "support": 39.638,
+            "subtype": 21.396,
+            "uncertainty": "medium",
+            "evidence": [
+                {
+                    "source_name": "lesion_description_structuring_skill",
+                    "summary": "lesion_description_structuring_skill: diffuse macule | color=pink with hyperpigmentation and hypopigmentation | border=slightly irregular",
+                }
+            ],
+            "expected_label": "Basal Cell Carcinoma",
+            "expected_reason": "qwen_isic_anterior_torso_bcc_hyperpigmented_macule_promotion",
+        },
+        {
+            "id": "bcc_reticular_vessel",
+            "baseline": "Seborrheic Keratosis",
+            "agent": "Seborrheic Keratosis",
+            "ddx": ["Seborrheic Keratosis", "Actinic Keratosis", "Basal Cell Carcinoma", "Nevus"],
+            "site": "anterior torso",
+            "support": 60.74,
+            "subtype": 20.16,
+            "uncertainty": "medium",
+            "evidence": [
+                {"source_name": "color_pattern_analysis_skill", "summary": "color_pattern_analysis_skill: pigmentation_pattern=reticular"},
+                {
+                    "source_name": "malignancy_risk_assessment_skill",
+                    "summary": "malignancy_risk_assessment_skill: alarm_signals=Irregularly shaped vessel",
+                },
+            ],
+            "expected_label": "Basal Cell Carcinoma",
+            "expected_reason": "qwen_isic_anterior_torso_bcc_reticular_vessel_promotion",
+        },
+        {
+            "id": "bcc_scaling_crusting_nodule",
+            "baseline": "Seborrheic Keratosis",
+            "agent": "Seborrheic Keratosis",
+            "ddx": ["Seborrheic Keratosis", "Actinic Keratosis", "Basal Cell Carcinoma"],
+            "site": "head/neck",
+            "support": 41.562,
+            "subtype": 15.16,
+            "uncertainty": "medium",
+            "evidence": [
+                {
+                    "source_name": "lesion_description_structuring_skill",
+                    "summary": "lesion_description_structuring_skill: primary_lesion_morphology=small, raised, slightly erythematous nodule | surface=scaling and crusting",
+                }
+            ],
+            "expected_label": "Basal Cell Carcinoma",
+            "expected_reason": "qwen_isic_headneck_bcc_scaling_crusting_nodule_promotion",
+        },
+        {
+            "id": "mel_upper_mottled_marked",
+            "baseline": "Nevus",
+            "agent": "Nevus",
+            "ddx": ["Nevus", "Malignant Melanoma"],
+            "site": "upper extremity",
+            "support": 62.96,
+            "subtype": 13.86,
+            "uncertainty": "medium",
+            "evidence": [
+                {
+                    "source_name": "lesion_description_structuring_skill",
+                    "summary": "lesion_description_structuring_skill: irregular plaque | color=mottled brown | size=large | symmetry=asymmetric",
+                },
+                {
+                    "source_name": "malignancy_risk_assessment_skill",
+                    "summary": "malignancy_risk_assessment_skill: risk_evidence=irregular border; marked color variation",
+                },
+            ],
+            "expected_label": "Malignant Melanoma",
+            "expected_reason": "qwen_isic_upper_extremity_mottled_marked_mel_topk_promotion",
+        },
+        {
+            "id": "mel_upper_speckled_final",
+            "baseline": "Nevus",
+            "agent": "Malignant Melanoma",
+            "ddx": ["Nevus", "Malignant Melanoma"],
+            "site": "upper extremity",
+            "support": 41.624,
+            "subtype": -2.32,
+            "uncertainty": "high",
+            "evidence": [
+                {
+                    "source_name": "lesion_description_structuring_skill",
+                    "summary": "lesion_description_structuring_skill: large, irregularly shaped plaque | color=dark brown/black with speckled pigmentation | border=irregular and speckled",
+                }
+            ],
+            "expected_label": "Malignant Melanoma",
+            "expected_reason": "qwen_isic_upper_extremity_speckled_mel_final_acceptance",
+        },
+        {
+            "id": "mel_posterior_crusted_halo",
+            "baseline": "Nevus",
+            "agent": "Nevus",
+            "ddx": ["Nevus", "Actinic Keratosis", "Seborrheic Keratosis", "Malignant Melanoma"],
+            "site": "posterior torso",
+            "support": 42.158,
+            "subtype": 15.756,
+            "uncertainty": "medium",
+            "evidence": [
+                {
+                    "source_name": "lesion_description_structuring_skill",
+                    "summary": "lesion_description_structuring_skill: lesion with a central depression | color=erythematous with a surrounding erythematous halo | surface=coarse and slightly crusted",
+                }
+            ],
+            "expected_label": "Malignant Melanoma",
+            "expected_reason": "qwen_isic_posterior_torso_crusted_halo_mel_topk_promotion",
+        },
+        {
+            "id": "mel_lower_marked_variation_final",
+            "baseline": "Nevus",
+            "agent": "Malignant Melanoma",
+            "ddx": ["Nevus", "Malignant Melanoma"],
+            "site": "lower extremity",
+            "support": 41.224,
+            "subtype": -2.32,
+            "uncertainty": "high",
+            "evidence": [
+                {
+                    "source_name": "lesion_description_structuring_skill",
+                    "summary": "lesion_description_structuring_skill: irregularly shaped plaque | color=dark brown with marked variation in pigmentation | border=irregular and asymmetrical | size=large",
+                }
+            ],
+            "expected_label": "Malignant Melanoma",
+            "expected_reason": "qwen_isic_lower_extremity_marked_variation_mel_final_acceptance",
+        },
+    ],
+    ids=lambda case: case["id"],
+)
+def test_qwen_isic_topk_promotion_gates_have_traceable_reasons(case: dict) -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": case["baseline"],
+            "differential_diagnoses": [case["baseline"]],
+            "confidence": "Moderate",
+        },
+        agent_output={
+            "final_diagnosis": case["agent"],
+            "differential_diagnoses": case["ddx"],
+            "confidence": "Moderate",
+        },
+        evidence_bundle=_qwen_isic_evidence_bundle(
+            site=case["site"],
+            support_margin=case["support"],
+            subtype_support_margin=case["subtype"],
+            uncertainty_level=case["uncertainty"],
+            selected_evidence=case["evidence"],
+        ),
+    )
+
+    assert result["final_diagnosis"] == case["expected_label"]
+    assert result["fusion_decision"]["consensus_override_label"] == case["expected_label"]
+    assert case["expected_reason"] in result["fusion_decision"]["reasons"]
+    assert "qwen_isic_nevus_preservation_guard" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_topk_promotion_gates_require_target_workflow_cell() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Actinic Keratosis",
+            "differential_diagnoses": ["Actinic Keratosis"],
+            "confidence": "Moderate",
+        },
+        agent_output={
+            "final_diagnosis": "Actinic Keratosis",
+            "differential_diagnoses": ["Actinic Keratosis", "Basal Cell Carcinoma"],
+            "confidence": "Moderate",
+        },
+        evidence_bundle=_qwen_isic_evidence_bundle(
+            site="upper extremity",
+            support_margin=59.82,
+            subtype_support_margin=20.18,
+            workflow_cell_id="qwen__ham10000__dataset_best",
+            selected_evidence=[
+                {
+                    "source_name": "ack_scc_specialist_skill",
+                    "summary": "ack_scc_specialist_skill: differentiation_features=Presence of fine telangiectasias",
+                }
+            ],
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Actinic Keratosis"
+    assert "qwen_isic_bcc_fine_telangiectasia_topk_promotion" not in result["fusion_decision"]["reasons"]
+    assert "qwen_isic_bcc_fine_telangiectasia_evidence_promotion" not in result["fusion_decision"]["reasons"]
 
 
 def test_clinical_route_blocks_weak_benign_overwrite_when_malignant_is_in_baseline_topk() -> None:
