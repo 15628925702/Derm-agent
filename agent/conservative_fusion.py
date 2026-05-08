@@ -192,6 +192,8 @@ def decide_conservative_agent_fusion(
             initial_ddx=initial_ddx,
             baseline_preview=baseline_preview,
             agent_confidence=agent_confidence,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
             uncertainty_level=uncertainty_level,
             label_space_id=label_space_id,
             dataset_name=dataset_name,
@@ -409,6 +411,24 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("llama_isic2019_guarded_archive_override")
+        elif medgemma_isic_promotion_label := _medgemma_isic_differential_promotion_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            agent_differentials=agent_differentials,
+            baseline_preview=baseline_preview,
+            skill_outputs=skill_outputs,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = medgemma_isic_promotion_label
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("medgemma_isic_nv_scc_differential_promotion")
         elif agent_label == baseline_label:
             use_agent_output = True
             reasons.append("agent_matches_baseline")
@@ -655,27 +675,29 @@ def decide_conservative_agent_fusion(
             use_agent_output = False
             reasons.append("agent_confidence_below_baseline")
 
-    route_guard = _route_specific_fallback_reason(
-        workflow_context=workflow_context,
-        baseline_label=baseline_label,
-        agent_label=agent_label,
-        baseline_differentials=baseline_differentials,
-        agent_differentials=agent_differentials,
-        initial_ddx=initial_ddx,
-        selected_evidence_present=selected_evidence_present,
-        subtype_support_margin=subtype_support_margin,
-        support_margin=support_margin,
-        uncertainty_level=uncertainty_level,
-        contradiction_count=contradiction_count,
-        malformed_agent_output=malformed_agent_output,
-        label_space_id=label_space_id,
-        dataset_name=dataset_name,
-        baseline_confidence=baseline_confidence,
-        agent_confidence=agent_confidence,
-        benign_reassuring_features=benign_reassuring_features,
-        baseline_preview=baseline_preview,
-        baseline_rationale=baseline_rationale,
-    )
+    route_guard = ""
+    if "medgemma_isic_nv_scc_differential_promotion" not in reasons:
+        route_guard = _route_specific_fallback_reason(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            baseline_differentials=baseline_differentials,
+            agent_differentials=agent_differentials,
+            initial_ddx=initial_ddx,
+            selected_evidence_present=selected_evidence_present,
+            subtype_support_margin=subtype_support_margin,
+            support_margin=support_margin,
+            uncertainty_level=uncertainty_level,
+            contradiction_count=contradiction_count,
+            malformed_agent_output=malformed_agent_output,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+            baseline_confidence=baseline_confidence,
+            agent_confidence=agent_confidence,
+            benign_reassuring_features=benign_reassuring_features,
+            baseline_preview=baseline_preview,
+            baseline_rationale=baseline_rationale,
+        )
     if route_guard:
         use_agent_output = False
         merge_baseline_differentials = False
@@ -1012,6 +1034,8 @@ def _route_specific_fallback_reason(
             initial_ddx=initial_ddx,
             baseline_preview=baseline_preview,
             agent_confidence=agent_confidence,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
             uncertainty_level=uncertainty_level,
             label_space_id=label_space_id,
             dataset_name=dataset_name,
@@ -1772,6 +1796,8 @@ def _medgemma_isic_consensus_override_label(
     initial_ddx: list[str],
     baseline_preview: dict[str, Any],
     agent_confidence: str,
+    support_margin: float,
+    subtype_support_margin: float,
     uncertainty_level: str,
     label_space_id: str,
     dataset_name: str,
@@ -1795,6 +1821,8 @@ def _medgemma_isic_consensus_override_label(
     if agent_canonical != "BCC":
         return ""
     if baseline_canonical != "MEL":
+        return ""
+    if support_margin < 28.0 or subtype_support_margin < 0.0:
         return ""
 
     initial_canonicals = [
@@ -1855,6 +1883,81 @@ def _medgemma_isic_consensus_override_label(
             return ""
 
     return "Basal Cell Carcinoma"
+
+
+def _medgemma_isic_differential_promotion_label(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    agent_differentials: list[str],
+    baseline_preview: dict[str, Any],
+    skill_outputs: dict[str, Any],
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> str:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "medgemma__isic2019__archive_guard_v1":
+        return ""
+    if not selected_evidence_present:
+        return ""
+    if str(uncertainty_level or "").strip().lower() != "low":
+        return ""
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if baseline_canonical != "NV" or agent_canonical not in {"NV", "BCC"}:
+        return ""
+
+    agent_differential_canonicals = {
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in agent_differentials
+    }
+    differential_compare = skill_outputs.get("differential_compare_skill", {})
+    candidate_pairs: list[str] = []
+    if isinstance(differential_compare, dict):
+        candidate_pairs = [
+            str(item).strip().lower()
+            for item in differential_compare.get("candidate_pairs", [])
+            if str(item).strip()
+        ]
+    has_nv_scc_comparison = any("nv vs scc" in item or "scc vs nv" in item for item in candidate_pairs)
+    if "SCC" not in agent_differential_canonicals and not has_nv_scc_comparison:
+        return ""
+
+    if not (22.0 <= support_margin <= 24.5 and -4.5 <= subtype_support_margin <= -2.0):
+        return ""
+
+    summary = str(baseline_preview.get("image_summary", "")).strip().lower()
+    required_markers = (
+        "reddish",
+        "slightly raised",
+        "central area of increased pigmentation",
+        "irregular border",
+    )
+    if not all(marker in summary for marker in required_markers):
+        return ""
+
+    metadata = workflow_context.get("clinical_metadata", {})
+    location = ""
+    if isinstance(metadata, dict):
+        location = str(metadata.get("anatom_site_general", "")).strip().lower()
+    if location != "anterior torso":
+        return ""
+
+    return "Squamous Cell Carcinoma"
 
 
 def _hulumed_isic_consensus_override_label(

@@ -786,6 +786,267 @@ def test_llama_archive_route_preserves_malignant_baseline_against_benign_drift()
     assert "llama_archive_malignant_recall_guard" in result["fusion_decision"]["reasons"]
 
 
+def test_medgemma_isic_route_anchors_melanoma_when_bcc_subtype_support_is_weak() -> None:
+    baseline_output = {
+        "final_diagnosis": "Malignant Melanoma",
+        "differential_diagnoses": ["Malignant Melanoma"],
+        "confidence": "0.95",
+    }
+    agent_output = {
+        "final_diagnosis": "Basal Cell Carcinoma",
+        "differential_diagnoses": [
+            "Basal Cell Carcinoma",
+            "Squamous Cell Carcinoma",
+            "Nevus",
+            "Malignant Melanoma",
+        ],
+        "confidence": "Medium",
+    }
+    evidence_bundle = {
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": ["BCC", "SCC", "NV"],
+                    "image_summary": "Dermoscopic image with central necrosis and surrounding inflammatory infiltrate.",
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "dataset_workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "model_workflow_profile": "medgemma_isic2019_archive_guard_workflow",
+                    "workflow_cell_id": "medgemma__isic2019__archive_guard_v1",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                },
+                "selected_evidence_present": True,
+                "override_allowed": False,
+                "malignancy_override_allowed": False,
+                "subtype_override_allowed": False,
+                "family_override_allowed": False,
+                "support_margin": 19.144,
+                "subtype_support_margin": -8.26,
+                "uncertainty_level": "low",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Malignant Melanoma"
+    assert "medgemma_isic2019_baseline_anchor_guard" in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_isic_route_allows_strong_bcc_override_of_melanoma_baseline() -> None:
+    baseline_output = {
+        "final_diagnosis": "Malignant Melanoma",
+        "differential_diagnoses": ["Malignant Melanoma", "Nevus"],
+        "confidence": "High",
+    }
+    agent_output = {
+        "final_diagnosis": "Basal Cell Carcinoma",
+        "differential_diagnoses": ["Basal Cell Carcinoma", "Malignant Melanoma"],
+        "confidence": "High",
+    }
+    evidence_bundle = {
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": ["BCC", "MEL"],
+                    "image_summary": "Dermoscopic image with pearly rolled border and telangiectatic structures.",
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "dataset_workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "model_workflow_profile": "medgemma_isic2019_archive_guard_workflow",
+                    "workflow_cell_id": "medgemma__isic2019__archive_guard_v1",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                },
+                "selected_evidence_present": True,
+                "support_margin": 31.0,
+                "subtype_support_margin": 4.0,
+                "uncertainty_level": "low",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "medgemma_isic_bcc_consensus_override" in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_isic_route_promotes_anterior_torso_nevus_scc_differential() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus"],
+        "confidence": "Medium",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Squamous Cell Carcinoma"],
+        "confidence": "Medium",
+    }
+    evidence_bundle = {
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": ["NV", "BKL", "DF", "SCC"],
+                    "image_summary": (
+                        "Reddish, slightly raised lesion with a central area of increased "
+                        "pigmentation and some irregular borders."
+                    ),
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "dataset_workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "model_workflow_profile": "medgemma_isic2019_archive_guard_workflow",
+                    "workflow_cell_id": "medgemma__isic2019__archive_guard_v1",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "anterior torso"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 23.38,
+                "subtype_support_margin": -3.22,
+                "uncertainty_level": "low",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Squamous Cell Carcinoma"
+    assert "medgemma_isic_nv_scc_differential_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_isic_route_promotes_nevus_scc_comparison_when_agent_says_bcc() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus"],
+        "confidence": "0.95",
+    }
+    agent_output = {
+        "final_diagnosis": "Basal Cell Carcinoma",
+        "differential_diagnoses": ["Basal Cell Carcinoma"],
+        "confidence": "Medium",
+    }
+    evidence_bundle = {
+        "skill_outputs": {
+            "differential_compare_skill": {
+                "candidate_pairs": ["NV vs BKL", "NV vs DF", "NV vs SCC"],
+            }
+        },
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": ["NV", "BKL", "DF"],
+                    "image_summary": (
+                        "Reddish, slightly raised lesion with a central area of increased "
+                        "pigmentation and some irregular borders."
+                    ),
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "dataset_workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "model_workflow_profile": "medgemma_isic2019_archive_guard_workflow",
+                    "workflow_cell_id": "medgemma__isic2019__archive_guard_v1",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "anterior torso"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 23.38,
+                "subtype_support_margin": -3.22,
+                "uncertainty_level": "low",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Squamous Cell Carcinoma"
+    assert "medgemma_isic_nv_scc_differential_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_isic_route_does_not_promote_head_neck_nevus_scc_differential() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus"],
+        "confidence": "Medium",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Squamous Cell Carcinoma"],
+        "confidence": "Medium",
+    }
+    evidence_bundle = {
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": ["NV", "BKL", "DF", "SCC"],
+                    "image_summary": (
+                        "Reddish, slightly raised lesion with a central area of increased "
+                        "pigmentation and some irregular borders."
+                    ),
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "dataset_workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "model_workflow_profile": "medgemma_isic2019_archive_guard_workflow",
+                    "workflow_cell_id": "medgemma__isic2019__archive_guard_v1",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "head/neck"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 23.38,
+                "subtype_support_margin": -3.22,
+                "uncertainty_level": "low",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "agent_matches_baseline" in result["fusion_decision"]["reasons"]
+
+
 def test_llama_isic_route_blocks_unknown_low_margin_bcc_overwrite_of_nevus() -> None:
     baseline_output = {
         "final_diagnosis": "Nevus",

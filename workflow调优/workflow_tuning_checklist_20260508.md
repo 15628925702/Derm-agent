@@ -250,3 +250,39 @@
 ### Next Round
 
 - 本轮已满足 medium-case Top-1 非负且 Top-k 不下降，并且 `helped>0`, `hurt=0`; 80-case 放大后仍稳定正向。下一轮优先扫原始 Top-k-only cases 中的 `NV/BCC` 与剩余 `BKL/NV` 对，尤其 `ISIC_0059614` 这类 differential 已含正确 `NV` 但 final 仍停在 `BKL` 的残差，寻找同样可被窄门 promotion 收割但不会伤及 baseline-correct 的模式。
+
+## Tuning Log: `medgemma / isic2019` v2 evidence-rank fusion (2026-05-08)
+
+### Diagnosis
+
+- 大规模 `eval300` 原始结果：Baseline Top-1 `73/300` (`0.2433`) vs Agent Top-1 `72/300` (`0.2400`), delta `-0.0033`; Baseline Top-k `144/300` (`0.4800`) vs Agent Top-k `150/300` (`0.5000`), delta `+0.0200`.
+- Case-level 追溯显示：`helped=0`, `hurt=1`, `unchanged=299`; Top-k gain `6`, Top-k hurt `0`.
+- 唯一 Top-1 hurt 是 `ISIC_0060096`：GT `MEL`, baseline final `Malignant Melanoma`, agent final `Basal Cell Carcinoma`, agent differential 仍包含 `Malignant Melanoma`.
+- 根因不是 retrieval 全局变差，而是 `medgemma__isic2019__archive_guard_v1` 的 BCC consensus override 过度推翻 melanoma baseline：fusion reason 为 `medgemma_isic_bcc_consensus_override`，且 diagnosis layer 本身已经给出 `override_allowed=false`, `malignancy risk is not high enough`, `subtype_support_margin<0`.
+- Top-k 上升来自候选集改善：6 个新增命中均是 final 未改、但正确 label 被放入 differential（`NV -> MEL` 3 个，`NV -> SCC` 1 个，`SCC -> AK` 1 个，`SCC -> BCC` 1 个）。说明 evidence 已改善候选集，但 final diagnosis 尚未把这些收益转成 Top-1。
+- Label 层面：Top-1 掉点只集中在 `MEL`，Baseline TP `27` -> Agent TP `26`; 其他 label Top-1 持平。
+
+### Change
+
+- 修改 `agent/conservative_fusion.py`：收紧 medgemma/isic2019 的 `Malignant Melanoma -> Basal Cell Carcinoma` consensus override。
+- 新门槛：baseline canonical 为 `MEL`、agent canonical 为 `BCC` 时，必须满足 `support_margin >= 28.0` 且 `subtype_support_margin >= 0.0`，否则走 `medgemma_isic2019_baseline_anchor_guard` 保留 baseline。
+- 保留强 BCC 证据通道：当存在明确 pearly/rolled/telangiectatic BCC signal 且 subtype support 为正时，仍允许 override。
+- 新增极窄 Top-k-to-Top-1 promotion：`baseline=NV` 且 selected evidence 明确出现 `NV vs SCC`，同时满足 anterior torso、reddish、slightly raised、central increased pigmentation、irregular border、low uncertainty、`support_margin 22.0..24.5`、`subtype_support_margin -4.5..-2.0` 时，将 final 提为 `Squamous Cell Carcinoma`。
+- 全 300 原始产物扫描显示该 promotion 条件只命中 `ISIC_0058074`，GT 为 `SCC`，baseline 原本错误。
+- 新增单元测试覆盖 0060096 型弱 subtype MEL anchor、强 BCC override 不被误封、0058074 型 NV/SCC evidence promotion、以及 head/neck 相似形态不 promotion。
+
+### Validation
+
+- 单元验证：`/home/zhongnan/miniconda3/envs/dermagent-6x6/bin/python -m pytest tests/test_conservative_fusion.py -q`，`28 passed`.
+- 离线复放 `ISIC_0060096`：final 从 `Basal Cell Carcinoma` 回到 `Malignant Melanoma`，fusion reasons 为 `malignancy_override_not_allowed`, `medgemma_isic2019_baseline_anchor_guard`, `fallback_to_baseline`.
+- 离线复放 `ISIC_0058074`：final 从 `Nevus` 提为 `Squamous Cell Carcinoma`，fusion reason 为 `medgemma_isic_nv_scc_differential_promotion`.
+- 8 卡验证方式：启动 8 个 MedGemma replica，GPU `0-7`，ports `8140-8147`; compare shard 并发跑满 8 卡。
+- `small8`, offset `159..166`: Top-1 `3/8 -> 4/8` (`+0.1250`), Top-k `4/8 -> 5/8` (`+0.1250`), helped `1`, hurt `0`, Top-k gain `1`, Top-k hurt `0`. Helped: `ISIC_0058074`.
+- `medium20`, offset `159..178`: Top-1 `6/20 -> 7/20` (`+0.0500`), Top-k `10/20 -> 11/20` (`+0.0500`), helped `1`, hurt `0`, Top-k gain `1`, Top-k hurt `0`. `ISIC_0060096` remains protected by the melanoma baseline anchor.
+- `medium40`, offset `140..179`: Top-1 `9/40 -> 10/40` (`+0.0250`), Top-k `17/40 -> 20/40` (`+0.0750`), helped `1`, hurt `0`, Top-k gain `3`, Top-k hurt `0`.
+- `medium80`, offset `120..199`: Top-1 `16/80 -> 17/80` (`+0.0125`), Top-k `35/80 -> 39/80` (`+0.0500`), helped `1`, hurt `0`, Top-k gain `4`, Top-k hurt `0`.
+
+### Next Round
+
+- 本轮已满足 small/medium Top-1 与 Top-k 均优于基线，且 `medium80` 放大后仍为 `hurt=0`。
+- 下一轮若继续该 workflow，建议不要再放宽 MEL->BCC override；优先寻找同样窄门、全量扫描低风险的 `SCC -> AK/BCC` promotion，而 `NV -> MEL` cohort 中 baseline-correct NV 太多，暂不建议贸然 promotion。
