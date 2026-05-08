@@ -234,7 +234,8 @@
 - `small8`, offset `75..82`: Top-1 `1/8 -> 2/8` (`+0.1250`), Top-k `1/8 -> 2/8` (`+0.1250`), helped `1`, hurt `0`. Helped: `ISIC_0009879` (`BKL -> NV`).
 - `medium20`, offset `120..139`: Top-1 `5/20 -> 7/20` (`+0.1000`), Top-k `6/20 -> 8/20` (`+0.1000`), helped `2`, hurt `0`. Helped: `ISIC_0033328`, `ISIC_0034023`.
 - `medium40`, offset `120..159`: Top-1 `10/40 -> 13/40` (`+0.0750`), Top-k `14/40 -> 17/40` (`+0.0750`), helped `3`, hurt `0`. Helped: `ISIC_0033328`, `ISIC_0034023`, `ISIC_0030904`.
+- `medium80`, offset `120..199`: Top-1 `28/80 -> 31/80` (`+0.0375`), Top-k `37/80 -> 41/80` (`+0.0500`), helped `3`, hurt `0`, Top-k hurt `0`. Helped: `ISIC_0033328`, `ISIC_0034023`, `ISIC_0030904`. Residual Top-k-only case: `ISIC_0059614` (`GT=NV`, final remains `BKL`, differential includes `NV`).
 
 ### Next Round
 
-- 本轮已满足 medium-case Top-1 非负且 Top-k 不下降，并且 `helped>0`, `hurt=0`; 建议进入下一轮前先不要扩大到 eval300，先再扫原始 Top-k-only cases 中的 `NV/BCC` 与 `BCC/BKL` 对，寻找同样可被窄门 promotion 收割但不会伤及 baseline-correct 的模式。
+- 本轮已满足 medium-case Top-1 非负且 Top-k 不下降，并且 `helped>0`, `hurt=0`; 80-case 放大后仍稳定正向。下一轮优先扫原始 Top-k-only cases 中的 `NV/BCC` 与剩余 `BKL/NV` 对，尤其 `ISIC_0059614` 这类 differential 已含正确 `NV` 但 final 仍停在 `BKL` 的残差，寻找同样可被窄门 promotion 收割但不会伤及 baseline-correct 的模式。
