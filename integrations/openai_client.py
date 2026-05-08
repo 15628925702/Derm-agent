@@ -1544,6 +1544,17 @@ class DermOpenAIClient:
             try:
                 payload = self._parse_json_response(content)
             except json.JSONDecodeError:
+                if parse_attempt >= max_parse_attempts - 1 and (
+                    request_name.startswith("baseline_diagnosis:") or request_name.startswith("final_diagnosis:")
+                ):
+                    payload = {"raw_text": str(content or "").strip()}
+                    payload = self._normalize_diagnosis_payload(payload, request_name=request_name)
+                    if payload:
+                        LOGGER.warning(
+                            "Falling back to raw_text diagnosis payload for %s after repeated JSON parse failures.",
+                            request_name,
+                        )
+                        return payload
                 if parse_attempt >= max_parse_attempts - 1:
                     raise
                 token_budget += max(160, max_tokens // 2, token_budget // 3)
