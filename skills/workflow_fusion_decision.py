@@ -50,6 +50,12 @@ def apply_conservative_agent_fusion(
             baseline=list(baseline_output.get("differential_diagnoses", []) or []),
             final_label=str(chosen.get("final_diagnosis", "")).strip(),
         )
+    if decision.get("differential_promotions"):
+        chosen["differential_diagnoses"] = _merge_differentials(
+            primary=list(chosen.get("differential_diagnoses", []) or []),
+            baseline=list(decision.get("differential_promotions", []) or []),
+            final_label=str(chosen.get("final_diagnosis", "")).strip(),
+        )
     rationale = str(chosen.get("rationale", "")).strip()
     note = _build_fusion_note(decision)
     if note:
@@ -788,6 +794,60 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("dermatollama_scin_guarded_override")
+        elif _allow_medgemma_scin_headneck_skin_cancer_promotion(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            initial_ddx=initial_ddx,
+            selected_evidence_present=selected_evidence_present,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("medgemma_scin_headneck_skin_cancer_promotion")
+        elif _allow_medgemma_scin_pigment_bcc_symptom_promotion(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            selected_evidence_present=selected_evidence_present,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("medgemma_scin_pigment_bcc_symptom_promotion")
+        elif _allow_medgemma_scin_genital_herpes_promotion(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            initial_ddx=initial_ddx,
+            selected_evidence_present=selected_evidence_present,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("medgemma_scin_genital_herpes_promotion")
+        elif _allow_medgemma_scin_lower_body_vascular_promotion(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            selected_evidence_present=selected_evidence_present,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("medgemma_scin_lower_body_vascular_promotion")
         elif _allow_medgemma_scin_grouped_override(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
@@ -802,6 +862,20 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("medgemma_scin_grouped_moderate_override")
+        elif _allow_medgemma_scin_acne_follicular_promotion(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            initial_ddx=initial_ddx,
+            selected_evidence_present=selected_evidence_present,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("medgemma_scin_acne_follicular_promotion")
         elif _allow_llama_scin_grouped_override(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
@@ -962,6 +1036,11 @@ def decide_conservative_agent_fusion(
         "qwen_isic_uniform_ak_bcc_differential_promotion",
         "qwen_isic_headneck_nv_bkl_differential_promotion",
         "qwen_isic_anterior_torso_ak_bkl_differential_promotion",
+        "medgemma_scin_acne_follicular_promotion",
+        "medgemma_scin_headneck_skin_cancer_promotion",
+        "medgemma_scin_pigment_bcc_symptom_promotion",
+        "medgemma_scin_genital_herpes_promotion",
+        "medgemma_scin_lower_body_vascular_promotion",
     }
     if not any(reason in route_guard_exempt_reasons for reason in reasons):
         route_guard = _route_specific_fallback_reason(
@@ -996,10 +1075,24 @@ def decide_conservative_agent_fusion(
     else:
         reasons.append("fallback_to_baseline")
 
+    differential_promotions = _medgemma_scin_initial_grouped_differential_promotions(
+        workflow_context=workflow_context,
+        baseline_label=baseline_label,
+        baseline_differentials=baseline_differentials,
+        agent_differentials=agent_differentials,
+        initial_ddx=initial_ddx,
+        selected_evidence_present=selected_evidence_present,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if differential_promotions:
+        reasons.append("medgemma_scin_initial_grouped_differential_expansion")
+
     return {
         "use_agent_output": bool(use_agent_output),
         "fusion_mode": fusion_mode,
         "merge_baseline_differentials": bool(merge_baseline_differentials),
+        "differential_promotions": list(differential_promotions),
         "consensus_override_label": consensus_override_label,
         "consensus_candidates": list(consensus_candidates),
         "baseline_label": baseline_label,
@@ -1049,6 +1142,58 @@ def _merge_differentials(*, primary: list[Any], baseline: list[Any], final_label
         seen.add(text)
         merged.append(text)
     return merged[:5]
+
+
+def _medgemma_scin_initial_grouped_differential_promotions(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    baseline_differentials: list[str],
+    agent_differentials: list[str],
+    initial_ddx: list[str],
+    selected_evidence_present: bool,
+    label_space_id: str,
+    dataset_name: str,
+) -> list[str]:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "medgemma__scin__grouped_core_v1":
+        return []
+    if not selected_evidence_present or not initial_ddx:
+        return []
+    existing: set[str] = set()
+    for label in [baseline_label, *baseline_differentials, *agent_differentials]:
+        canonical = canonicalize_label(
+            label,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+        if canonical:
+            existing.add(canonical)
+
+    promotions: list[str] = []
+    for label in initial_ddx:
+        canonical = canonicalize_label(
+            label,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+        if not canonical or canonical in existing or canonical in promotions:
+            continue
+        if canonical not in {
+            "DERMATITIS_ECZEMA",
+            "URTICARIA_BITE_FOLLICULITIS",
+            "INFECTION_VIRAL_FUNGAL",
+            "VASCULAR_PURPURIC",
+            "ACNE_ROSACEA_FOLLICULAR",
+            "PIGMENT_KERATOSIS_NEVUS",
+            "MALIGNANT_PREMALIGNANT",
+            "OTHER",
+        }:
+            continue
+        promotions.append(canonical)
+        if len(existing) + len(promotions) >= 5:
+            break
+    return promotions
 
 
 def _route_specific_fallback_reason(
@@ -1244,7 +1389,7 @@ def _route_specific_fallback_reason(
             return "dermatollama_scin_baseline_anchor_guard"
 
     if workflow_cell_id == "medgemma__scin__grouped_core_v1":
-        if baseline_label != agent_label and not _allow_medgemma_scin_grouped_override(
+        medgemma_scin_override_allowed = _allow_medgemma_scin_grouped_override(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
             agent_label=agent_label,
@@ -1254,7 +1399,56 @@ def _route_specific_fallback_reason(
             uncertainty_level=uncertainty_level,
             label_space_id=label_space_id,
             dataset_name=dataset_name,
-        ):
+        ) or _allow_medgemma_scin_headneck_skin_cancer_promotion(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            initial_ddx=initial_ddx,
+            selected_evidence_present=selected_evidence_present,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ) or _allow_medgemma_scin_pigment_bcc_symptom_promotion(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            selected_evidence_present=selected_evidence_present,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ) or _allow_medgemma_scin_genital_herpes_promotion(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            initial_ddx=initial_ddx,
+            selected_evidence_present=selected_evidence_present,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ) or _allow_medgemma_scin_lower_body_vascular_promotion(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            selected_evidence_present=selected_evidence_present,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ) or _allow_medgemma_scin_acne_follicular_promotion(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            initial_ddx=initial_ddx,
+            selected_evidence_present=selected_evidence_present,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+        if baseline_label != agent_label and not medgemma_scin_override_allowed:
             return "medgemma_scin_grouped_conservative_guard"
 
     if workflow_cell_id == "llama__scin__grouped_guard_v1":
@@ -4346,11 +4540,186 @@ def _allow_medgemma_scin_grouped_override(
         return False
     if agent_canonical == baseline_canonical:
         return support_margin >= 20.0
-    return agent_canonical in {
-        "VASCULAR_PURPURIC",
-        "INFECTION_VIRAL_FUNGAL",
-        "ACNE_ROSACEA_FOLLICULAR",
+    return False
+
+
+def _allow_medgemma_scin_acne_follicular_promotion(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    initial_ddx: list[str],
+    selected_evidence_present: bool,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> bool:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "medgemma__scin__grouped_core_v1":
+        return False
+    if not selected_evidence_present:
+        return False
+    if str(uncertainty_level or "").strip().lower() not in {"low", "medium"}:
+        return False
+    if subtype_support_margin < 6.5:
+        return False
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if baseline_canonical != "DERMATITIS_ECZEMA" or agent_canonical != "ACNE_ROSACEA_FOLLICULAR":
+        return False
+    initial_canonicals = {
+        canonicalize_label(
+            label,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+        for label in initial_ddx
     }
+    return "ACNE_ROSACEA_FOLLICULAR" in initial_canonicals
+
+
+def _allow_medgemma_scin_headneck_skin_cancer_promotion(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    initial_ddx: list[str],
+    selected_evidence_present: bool,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> bool:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "medgemma__scin__grouped_core_v1":
+        return False
+    if not selected_evidence_present or subtype_support_margin < 7.0:
+        return False
+    if str(uncertainty_level or "").strip().lower() not in {"low", "medium"}:
+        return False
+    if canonicalize_label(baseline_label, label_space_id=label_space_id, dataset_name=dataset_name) != "DERMATITIS_ECZEMA":
+        return False
+    if canonicalize_label(agent_label, label_space_id=label_space_id, dataset_name=dataset_name) != "MALIGNANT_PREMALIGNANT":
+        return False
+    metadata = _workflow_clinical_metadata(workflow_context)
+    textures = {str(item).strip().lower() for item in metadata.get("textures_present", []) or []}
+    return (
+        str(metadata.get("region", "")).strip().lower() == "head_or_neck"
+        and "rough_or_flaky" in textures
+    )
+
+
+def _allow_medgemma_scin_pigment_bcc_symptom_promotion(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    selected_evidence_present: bool,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> bool:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "medgemma__scin__grouped_core_v1":
+        return False
+    if not selected_evidence_present or subtype_support_margin < 6.9:
+        return False
+    if str(uncertainty_level or "").strip().lower() not in {"low", "medium"}:
+        return False
+    if canonicalize_label(baseline_label, label_space_id=label_space_id, dataset_name=dataset_name) != "PIGMENT_KERATOSIS_NEVUS":
+        return False
+    if canonicalize_label(agent_label, label_space_id=label_space_id, dataset_name=dataset_name) != "MALIGNANT_PREMALIGNANT":
+        return False
+    metadata = _workflow_clinical_metadata(workflow_context)
+    symptoms = {str(item).strip().lower() for item in metadata.get("symptoms_present", []) or []}
+    return (
+        str(metadata.get("related_category", "")).strip().upper() == "PIGMENTARY_PROBLEM"
+        and "increasing_size" in symptoms
+        and bool({"pain", "burning"}.intersection(symptoms))
+    )
+
+
+def _allow_medgemma_scin_genital_herpes_promotion(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    initial_ddx: list[str],
+    selected_evidence_present: bool,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> bool:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "medgemma__scin__grouped_core_v1":
+        return False
+    if not selected_evidence_present or subtype_support_margin < 6.9:
+        return False
+    if str(uncertainty_level or "").strip().lower() not in {"low", "medium"}:
+        return False
+    if canonicalize_label(baseline_label, label_space_id=label_space_id, dataset_name=dataset_name) != "DERMATITIS_ECZEMA":
+        return False
+    if canonicalize_label(agent_label, label_space_id=label_space_id, dataset_name=dataset_name) != "INFECTION_VIRAL_FUNGAL":
+        return False
+    metadata = _workflow_clinical_metadata(workflow_context)
+    textures = {str(item).strip().lower() for item in metadata.get("textures_present", []) or []}
+    initial_text = " ".join(str(item).strip().lower() for item in initial_ddx)
+    return (
+        "herpes simplex" in initial_text
+        and str(metadata.get("region", "")).strip().lower() == "genitalia_or_groin"
+        and "fluid_filled" in textures
+    )
+
+
+def _allow_medgemma_scin_lower_body_vascular_promotion(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    selected_evidence_present: bool,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> bool:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "medgemma__scin__grouped_core_v1":
+        return False
+    if not selected_evidence_present or subtype_support_margin < 6.9:
+        return False
+    if str(uncertainty_level or "").strip().lower() not in {"low", "medium"}:
+        return False
+    if canonicalize_label(baseline_label, label_space_id=label_space_id, dataset_name=dataset_name) != "DERMATITIS_ECZEMA":
+        return False
+    if canonicalize_label(agent_label, label_space_id=label_space_id, dataset_name=dataset_name) != "VASCULAR_PURPURIC":
+        return False
+    metadata = _workflow_clinical_metadata(workflow_context)
+    textures = {str(item).strip().lower() for item in metadata.get("textures_present", []) or []}
+    symptoms = {str(item).strip().lower() for item in metadata.get("symptoms_present", []) or []}
+    body_sites = {str(item).strip().lower() for item in metadata.get("body_sites", []) or []}
+    return (
+        str(metadata.get("region", "")).strip().lower() == "buttocks"
+        and {"leg", "foot_top_or_side"}.issubset(body_sites)
+        and "flat" in textures
+        and "increasing_size" in symptoms
+        and bool({"burning", "pain"}.intersection(symptoms))
+    )
+
+
+def _workflow_clinical_metadata(workflow_context: dict[str, Any]) -> dict[str, Any]:
+    metadata = workflow_context.get("clinical_metadata", {})
+    return dict(metadata) if isinstance(metadata, dict) else {}
 
 
 def _allow_llama_scin_grouped_override(
