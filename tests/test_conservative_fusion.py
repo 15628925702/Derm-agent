@@ -1516,6 +1516,899 @@ def test_qwen_isic_archive_guard_preserves_nevus_when_benign_reassurance_is_pres
     assert "qwen_isic_nevus_preservation_guard" in result["fusion_decision"]["reasons"]
 
 
+def test_qwen_isic_high_uncertainty_melanoma_override_preserves_nevus_anchor() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Malignant Melanoma",
+        "differential_diagnoses": ["Malignant Melanoma", "Nevus"],
+        "confidence": "High",
+    }
+    evidence_bundle = {
+        "selected_evidence": [
+            {
+                "summary": "mel_nev_specialist_skill: asymmetry and pigment complexity remain active, but dermoscopy and evolution history are missing."
+            }
+        ],
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": ["Malignant Melanoma", "Atypical Nevus", "Dermal Nevus"],
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "dataset_workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "model_workflow_profile": "qwen_isic2019_archive_guard_workflow",
+                    "workflow_cell_id": "qwen__isic2019__dataset_best",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                },
+                "selected_evidence_present": True,
+                "support_margin": 39.964,
+                "subtype_support_margin": 5.36,
+                "uncertainty_level": "high",
+                "contradiction_count": 5,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "qwen_isic_high_uncertainty_mel_nevus_anchor_guard" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_high_uncertainty_melanoma_guard_requires_target_workflow_cell() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Malignant Melanoma",
+        "differential_diagnoses": ["Malignant Melanoma", "Nevus"],
+        "confidence": "High",
+    }
+    evidence_bundle = {
+        "selected_evidence": [{"summary": "Selected evidence remains melanoma-leaning."}],
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": ["Malignant Melanoma", "Atypical Nevus", "Dermal Nevus"],
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "dataset_workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "model_workflow_profile": "qwen_isic2019_archive_guard_workflow",
+                    "workflow_cell_id": "qwen__ham10000__dataset_best",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                },
+                "selected_evidence_present": True,
+                "support_margin": 39.964,
+                "subtype_support_margin": 5.36,
+                "uncertainty_level": "high",
+                "contradiction_count": 5,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Malignant Melanoma"
+    assert "qwen_isic_high_uncertainty_mel_nevus_anchor_guard" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_high_uncertainty_guard_allows_anterior_torso_melanoma_pattern() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Malignant Melanoma",
+        "differential_diagnoses": ["Malignant Melanoma", "Nevus"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "selected_evidence": [
+            {
+                "summary": "mel_nev_specialist_skill: irregular borders and asymmetry with a bluish hue and mixed pigment."
+            }
+        ],
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": ["Malignant Melanoma", "Atypical Nevus"],
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "qwen__isic2019__dataset_best",
+                    "model_workflow_profile": "qwen_isic2019_archive_guard_workflow",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "anterior torso"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 40.924,
+                "subtype_support_margin": 6.04,
+                "uncertainty_level": "high",
+                "contradiction_count": 6,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Malignant Melanoma"
+    assert "qwen_isic_high_uncertainty_mel_nevus_anchor_guard" not in result["fusion_decision"]["reasons"]
+    assert "qwen_isic_anterior_torso_high_uncertainty_mel_final_acceptance" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_anterior_torso_high_risk_bluish_pattern_accepts_negative_subtype_window() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Malignant Melanoma",
+        "differential_diagnoses": ["Malignant Melanoma", "Nevus"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "selected_evidence": [
+            {
+                "source_name": "mel_nev_specialist_skill",
+                "summary": "mel_nev_specialist_skill: irregular borders and asymmetry; bluish hue is concerning.",
+            },
+            {
+                "source_name": "malignancy_risk_assessment_skill",
+                "summary": "malignancy_risk_assessment_skill: risk_level=high | alarm_signals=Irregular borders; Asymmetry; Bluish hue | evidence_strength=high",
+            },
+        ],
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "qwen__isic2019__dataset_best",
+                    "model_workflow_profile": "qwen_isic2019_archive_guard_workflow",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "anterior torso"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 42.624,
+                "subtype_support_margin": -10.56,
+                "uncertainty_level": "high",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Malignant Melanoma"
+    assert "qwen_isic_anterior_torso_high_uncertainty_mel_final_acceptance" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_anterior_torso_high_risk_bluish_pattern_blocks_central_depigmentation() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Malignant Melanoma",
+        "differential_diagnoses": ["Malignant Melanoma", "Nevus"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "selected_evidence": [
+            {
+                "source_name": "mel_nev_specialist_skill",
+                "summary": "mel_nev_specialist_skill: irregular borders and asymmetry; bluish hue and central depigmentation.",
+            },
+            {
+                "source_name": "malignancy_risk_assessment_skill",
+                "summary": "malignancy_risk_assessment_skill: risk_level=high | alarm_signals=Irregular borders; Asymmetry; Bluish hue | evidence_strength=high",
+            },
+        ],
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "qwen__isic2019__dataset_best",
+                    "model_workflow_profile": "qwen_isic2019_archive_guard_workflow",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "anterior torso"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 43.524,
+                "subtype_support_margin": -10.56,
+                "uncertainty_level": "high",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "qwen_isic_anterior_torso_high_uncertainty_mel_final_acceptance" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_lower_extremity_speckled_pattern_accepts_melanoma_final() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Malignant Melanoma",
+        "differential_diagnoses": ["Malignant Melanoma", "Nevus"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "selected_evidence": [
+            {
+                "summary": "mel_nev_specialist_skill: speckled pattern with irregular border and asymmetry on the lower extremity."
+            }
+        ],
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "qwen__isic2019__dataset_best",
+                    "model_workflow_profile": "qwen_isic2019_archive_guard_workflow",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "lower extremity"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 39.5,
+                "subtype_support_margin": 4.06,
+                "uncertainty_level": "high",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Malignant Melanoma"
+    assert "qwen_isic_lower_extremity_speckled_mel_final_acceptance" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_lower_extremity_speckled_pattern_accepts_negative_subtype_window() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Malignant Melanoma",
+        "differential_diagnoses": ["Malignant Melanoma", "Nevus"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "selected_evidence": [
+            {
+                "summary": "mel_nev_specialist_skill: speckled pattern with irregular border and asymmetry on the lower extremity."
+            }
+        ],
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "qwen__isic2019__dataset_best",
+                    "model_workflow_profile": "qwen_isic2019_archive_guard_workflow",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "lower extremity"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 40.384,
+                "subtype_support_margin": -3.42,
+                "uncertainty_level": "high",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Malignant Melanoma"
+    assert "qwen_isic_lower_extremity_speckled_mel_final_acceptance" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_lower_extremity_speckled_promotion_bypasses_nevus_preservation_guard() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Malignant Melanoma",
+        "differential_diagnoses": ["Malignant Melanoma", "Nevus"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "skill_outputs": {
+            "malignancy_risk_assessment_skill": {
+                "benign_reassuring_features": ["small size", "stable history"],
+            }
+        },
+        "selected_evidence": [
+            {
+                "summary": "mel_nev_specialist_skill: speckled pattern with irregular border and asymmetry on the lower extremity."
+            }
+        ],
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "qwen__isic2019__dataset_best",
+                    "model_workflow_profile": "qwen_isic2019_archive_guard_workflow",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "lower extremity"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 40.384,
+                "subtype_support_margin": -3.42,
+                "uncertainty_level": "high",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Malignant Melanoma"
+    assert "qwen_isic_lower_extremity_speckled_mel_final_acceptance" in result["fusion_decision"]["reasons"]
+    assert "qwen_isic_nevus_preservation_guard" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_lower_extremity_speckled_pattern_blocks_central_depression() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Malignant Melanoma",
+        "differential_diagnoses": ["Malignant Melanoma", "Nevus"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "selected_evidence": [
+            {
+                "summary": "mel_nev_specialist_skill: speckled pattern with irregular border, asymmetry, and central depression."
+            }
+        ],
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "qwen__isic2019__dataset_best",
+                    "model_workflow_profile": "qwen_isic2019_archive_guard_workflow",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "lower extremity"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 39.5,
+                "subtype_support_margin": 4.06,
+                "uncertainty_level": "high",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "qwen_isic_lower_extremity_speckled_mel_final_acceptance" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_headneck_umbilication_promotes_bcc_from_differential() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Actinic Keratosis"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Actinic Keratosis", "Basal Cell Carcinoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "selected_evidence": [
+            {
+                "summary": "malignancy_risk_assessment_skill: risk_level=medium | risk_evidence=central umbilication on a small head/neck papule with pigment variation"
+            }
+        ],
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "dataset_workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "model_workflow_profile": "qwen_isic2019_archive_guard_workflow",
+                    "workflow_cell_id": "qwen__isic2019__dataset_best",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "head/neck"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 64.0,
+                "subtype_support_margin": 7.6,
+                "uncertainty_level": "medium",
+                "contradiction_count": 7,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert result["fusion_decision"]["consensus_override_label"] == "Basal Cell Carcinoma"
+    assert "qwen_isic_headneck_bcc_umbilication_differential_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_bcc_differential_promotion_requires_umbilication_evidence() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Actinic Keratosis"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Actinic Keratosis", "Basal Cell Carcinoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "selected_evidence": [{"summary": "malignancy_risk_assessment_skill: risk_level=medium | risk_evidence=irregular border only"}],
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "dataset_workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "model_workflow_profile": "qwen_isic2019_archive_guard_workflow",
+                    "workflow_cell_id": "qwen__isic2019__dataset_best",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "head/neck"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 64.0,
+                "subtype_support_margin": 7.6,
+                "uncertainty_level": "medium",
+                "contradiction_count": 7,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "qwen_isic_headneck_bcc_umbilication_differential_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_headneck_ak_bcc_telangiectatic_pattern_promotes_bcc() -> None:
+    baseline_output = {
+        "final_diagnosis": "Actinic Keratosis",
+        "differential_diagnoses": ["Actinic Keratosis", "Seborrheic Keratosis"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Actinic Keratosis",
+        "differential_diagnoses": ["Actinic Keratosis", "Seborrheic Keratosis", "Basal Cell Carcinoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "selected_evidence": [
+            {
+                "source_name": "lesion_description_structuring_skill",
+                "summary": "lesion_description_structuring_skill: color=Pink with darker pigmented areas | border=Irregular | surface=Elevated with fine telangiectasias | distribution=Head/neck",
+            },
+            {
+                "source_name": "malignancy_risk_assessment_skill",
+                "summary": "malignancy_risk_assessment_skill: alarm_signals=Irregular border; Color variation with darker pigmented areas; Elevated surface with fine telangiectasias",
+            },
+        ],
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "qwen__isic2019__dataset_best",
+                    "model_workflow_profile": "qwen_isic2019_archive_guard_workflow",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "head/neck"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 44.592,
+                "subtype_support_margin": 18.03,
+                "uncertainty_level": "medium",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "qwen_isic_headneck_ak_bcc_telangiectatic_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_headneck_ak_bcc_telangiectatic_pattern_blocks_central_depression() -> None:
+    baseline_output = {
+        "final_diagnosis": "Actinic Keratosis",
+        "differential_diagnoses": ["Actinic Keratosis", "Seborrheic Keratosis"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Actinic Keratosis",
+        "differential_diagnoses": ["Actinic Keratosis", "Seborrheic Keratosis", "Basal Cell Carcinoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "selected_evidence": [
+            {
+                "source_name": "lesion_description_structuring_skill",
+                "summary": "lesion_description_structuring_skill: color=Pink with darker pigmented areas | surface=Elevated with fine telangiectasias and central depression",
+            },
+        ],
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "qwen__isic2019__dataset_best",
+                    "model_workflow_profile": "qwen_isic2019_archive_guard_workflow",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "head/neck"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 44.592,
+                "subtype_support_margin": 18.03,
+                "uncertainty_level": "medium",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Actinic Keratosis"
+    assert "qwen_isic_headneck_ak_bcc_telangiectatic_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_anterior_torso_high_uncertainty_promotes_melanoma_from_differential() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "selected_evidence": [
+            {
+                "summary": "mel_nev_specialist_skill: irregular border, asymmetry, and bluish pigment complexity remain active."
+            }
+        ],
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "qwen__isic2019__dataset_best",
+                    "model_workflow_profile": "qwen_isic2019_archive_guard_workflow",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "anterior torso"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 40.9,
+                "subtype_support_margin": 6.04,
+                "uncertainty_level": "high",
+                "contradiction_count": 6,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Malignant Melanoma"
+    assert "qwen_isic_anterior_torso_high_uncertainty_mel_differential_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_anterior_torso_depigmented_pattern_promotes_melanoma_from_differential() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "selected_evidence": [
+            {
+                "summary": "lesion_description_structuring_skill: central depigmentation with an erythematous halo and marked color variation on the anterior torso."
+            }
+        ],
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "qwen__isic2019__dataset_best",
+                    "model_workflow_profile": "qwen_isic2019_archive_guard_workflow",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "anterior torso"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 63.36,
+                "subtype_support_margin": 13.56,
+                "uncertainty_level": "medium",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Malignant Melanoma"
+    assert "qwen_isic_anterior_torso_depigmented_mel_differential_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_anterior_torso_depigmented_pattern_requires_halo() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "selected_evidence": [
+            {
+                "summary": "lesion_description_structuring_skill: central depigmentation with marked color variation but no halo descriptor."
+            }
+        ],
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "qwen__isic2019__dataset_best",
+                    "model_workflow_profile": "qwen_isic2019_archive_guard_workflow",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "anterior torso"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 63.36,
+                "subtype_support_margin": 13.56,
+                "uncertainty_level": "medium",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "qwen_isic_anterior_torso_depigmented_mel_differential_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_anterior_torso_melanoma_promotion_requires_high_uncertainty() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "selected_evidence": [{"summary": "irregular pigment pattern and color variation"}],
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "qwen__isic2019__dataset_best",
+                    "model_workflow_profile": "qwen_isic2019_archive_guard_workflow",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "anterior torso"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 40.9,
+                "subtype_support_margin": 5.7,
+                "uncertainty_level": "medium",
+                "contradiction_count": 6,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "qwen_isic_anterior_torso_high_uncertainty_mel_differential_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_upper_extremity_mottled_promotes_melanoma_from_differential() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "selected_evidence": [
+            {
+                "summary": "color_pattern_analysis_skill: mottled pigmentation with irregular border and marked color variation on the upper extremity."
+            }
+        ],
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "qwen__isic2019__dataset_best",
+                    "model_workflow_profile": "qwen_isic2019_archive_guard_workflow",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "upper extremity"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 63.0,
+                "subtype_support_margin": 21.5,
+                "uncertainty_level": "medium",
+                "contradiction_count": 5,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Malignant Melanoma"
+    assert "qwen_isic_upper_extremity_mottled_mel_differential_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_isic_upper_extremity_mottled_promotion_blocks_central_pattern() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = {
+        "selected_evidence": [{"summary": "mottled pigmentation with a central dark area"}],
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "qwen__isic2019__dataset_best",
+                    "model_workflow_profile": "qwen_isic2019_archive_guard_workflow",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "upper extremity"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 63.0,
+                "subtype_support_margin": 21.5,
+                "uncertainty_level": "medium",
+                "contradiction_count": 5,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "qwen_isic_upper_extremity_mottled_mel_differential_promotion" not in result["fusion_decision"]["reasons"]
+
+
 def test_clinical_route_blocks_weak_benign_overwrite_when_malignant_is_in_baseline_topk() -> None:
     baseline_output = {
         "final_diagnosis": "Basal Cell Carcinoma",
