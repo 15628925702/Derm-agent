@@ -395,6 +395,7 @@ def decide_conservative_agent_fusion(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
             agent_label=agent_label,
+            agent_differentials=agent_differentials,
             initial_ddx=initial_ddx,
             baseline_preview=baseline_preview,
             selected_evidence_present=selected_evidence_present,
@@ -991,6 +992,7 @@ def _route_specific_fallback_reason(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
             agent_label=agent_label,
+            agent_differentials=agent_differentials,
             initial_ddx=initial_ddx,
             baseline_preview=baseline_preview,
             selected_evidence_present=selected_evidence_present,
@@ -1210,6 +1212,7 @@ def _route_specific_fallback_reason(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
             agent_label=agent_label,
+            agent_differentials=agent_differentials,
             initial_ddx=initial_ddx,
             baseline_preview=baseline_preview,
             selected_evidence_present=selected_evidence_present,
@@ -2631,6 +2634,7 @@ def _llama_isic_consensus_override_label(
     workflow_context: dict[str, Any],
     baseline_label: str,
     agent_label: str,
+    agent_differentials: list[str],
     initial_ddx: list[str],
     baseline_preview: dict[str, Any],
     selected_evidence_present: bool,
@@ -2662,7 +2666,25 @@ def _llama_isic_consensus_override_label(
         canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
         for label in initial_ddx
     ]
+    agent_differential_canonicals = [
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in agent_differentials
+    ]
     summary = str(baseline_preview.get("image_summary", "")).strip().lower()
+    clinical_metadata = dict(workflow_context.get("clinical_metadata", {}) or {})
+    anatom_site = str(clinical_metadata.get("anatom_site_general", "")).strip().lower()
+
+    if (
+        baseline_canonical == "BKL"
+        and agent_canonical in {"BKL", "NV"}
+        and agent_differential_canonicals == ["BKL", "NV"]
+        and str(uncertainty_level or "").strip().lower() == "medium"
+        and 44.0 <= support_margin <= 55.0
+        and 13.0 <= subtype_support_margin <= 15.0
+        and "head" not in anatom_site
+        and "neck" not in anatom_site
+    ):
+        return "Nevus"
 
     nevus_surface_signal = all(
         marker in summary

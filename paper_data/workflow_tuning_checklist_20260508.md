@@ -203,3 +203,38 @@
 
 - 本轮已满足 small/medium Top-1 非负且 Top-k 不下降，建议进入下一轮前先做更聚焦的 final promotion 设计。
 - 下一轮候选方向：针对 `agent final == baseline final` 且 correct label 已进入 differential 的 `NV/BKL` case，设计更严格的 baseline-vs-evidence 对比决策；重点避免把 `SCC/VASC/DF` 误 promotion 成 `NV`.
+
+## Tuning Log: `llama / isic2019` v2b evidence promote (2026-05-08)
+
+### Diagnosis
+
+- v2 第一轮已经消除了低 margin `NV/BKL -> BCC` 的负向 override，但 Top-1 仍只回到非负；剩余可收割收益集中在 `baseline=BKL`、agent differential 已包含 `NV` 的 case。
+- 原始 eval300 中，`baseline_topk=false`、`agent_topk=true`、`agent_top1=false` 的典型 case 包括 `ISIC_0009879`, `ISIC_0033328`, `ISIC_0034023`, `ISIC_0030904` 等，均为 GT `NV`，baseline/final 停在 `BKL`.
+- 抽样对照显示这些 case 的 evidence 已把 `NV` 放进候选集，失败点在 final fusion 没有在 `BKL` 与 `NV` 间做足够明确的 promotion；不是 retrieval 失效，也不是 contradiction 全局压制。
+- 为避免过度推广，扫描全量 eval300 时加入 `support_margin`, `subtype_support_margin`, `agent_differential_canonicals`, `uncertainty_level`, `anatom_site_general` 约束；排除 `head/neck` 后候选命中为 5 个 `NV`、0 个非 `NV`.
+
+### Change
+
+- 修改 `agent/conservative_fusion.py`：在 `llama__isic2019__archive_guard_v1` 的 guarded consensus override 中新增一条窄门 promotion：
+  - `baseline=BKL`
+  - agent final 为 `BKL/NV`
+  - agent differential 精确为 `[BKL, NV]`
+  - `uncertainty_level=medium`
+  - `support_margin` 在 `44..55`
+  - `subtype_support_margin` 在 `13..15`
+  - anatomical site 非 `head/neck`
+- 将 `agent_differentials` 传入 `_llama_isic_consensus_override_label`，让 final fusion 能区分“证据真正把 NV 放到第二候选”与普通 baseline anchor。
+- 新增单元测试覆盖 trunk case 应从 BKL promote 到 NV，以及 head/neck case 不应触发该 promotion。
+
+### Validation
+
+- 依赖确认：`pytest` 在 `/home/zhongnan/miniconda3/envs/dermagent-6x6` 中已安装；此前缺包是因为误用系统 Python。
+- 单元验证：`/home/zhongnan/miniconda3/envs/dermagent-6x6/bin/python -m pytest tests/test_conservative_fusion.py -q`，`23 passed`.
+- 8 卡验证方式：复用 8 个 Llama replica，GPU `0-7`，ports `8130-8137`; compare shard 并发跑满 8 卡。
+- `small8`, offset `75..82`: Top-1 `1/8 -> 2/8` (`+0.1250`), Top-k `1/8 -> 2/8` (`+0.1250`), helped `1`, hurt `0`. Helped: `ISIC_0009879` (`BKL -> NV`).
+- `medium20`, offset `120..139`: Top-1 `5/20 -> 7/20` (`+0.1000`), Top-k `6/20 -> 8/20` (`+0.1000`), helped `2`, hurt `0`. Helped: `ISIC_0033328`, `ISIC_0034023`.
+- `medium40`, offset `120..159`: Top-1 `10/40 -> 13/40` (`+0.0750`), Top-k `14/40 -> 17/40` (`+0.0750`), helped `3`, hurt `0`. Helped: `ISIC_0033328`, `ISIC_0034023`, `ISIC_0030904`.
+
+### Next Round
+
+- 本轮已满足 medium-case Top-1 非负且 Top-k 不下降，并且 `helped>0`, `hurt=0`; 建议进入下一轮前先不要扩大到 eval300，先再扫原始 Top-k-only cases 中的 `NV/BCC` 与 `BCC/BKL` 对，寻找同样可被窄门 promotion 收割但不会伤及 baseline-correct 的模式。

@@ -837,6 +837,101 @@ def test_llama_isic_route_blocks_unknown_low_margin_bcc_overwrite_of_nevus() -> 
     assert "llama_isic2019_baseline_anchor_guard" in result["fusion_decision"]["reasons"]
 
 
+def test_llama_isic_route_promotes_trunk_bkl_nevus_differential_to_nevus() -> None:
+    baseline_output = {
+        "final_diagnosis": "Seborrheic Keratosis",
+        "differential_diagnoses": ["Seborrheic Keratosis"],
+        "confidence": "Unknown",
+    }
+    agent_output = {
+        "final_diagnosis": "Seborrheic Keratosis",
+        "differential_diagnoses": ["Seborrheic Keratosis", "Nevus"],
+        "confidence": "Unknown",
+    }
+    evidence_bundle = {
+        "evidence_decision_policy": {
+            "risk_layer": {"baseline_preview": {"early_ddx_candidates": [], "image_summary": ""}},
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "dataset_workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "workflow_cell_id": "llama__isic2019__archive_guard_v1",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "anterior torso"},
+                },
+                "selected_evidence_present": True,
+                "override_allowed": False,
+                "malignancy_override_allowed": False,
+                "subtype_override_allowed": False,
+                "family_override_allowed": False,
+                "override_mode": "risk_only",
+                "support_margin": 44.44,
+                "subtype_support_margin": 13.42,
+                "uncertainty_level": "medium",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "llama_isic2019_guarded_archive_override" in result["fusion_decision"]["reasons"]
+    assert "Seborrheic Keratosis" in result["differential_diagnoses"]
+
+
+def test_llama_isic_route_does_not_promote_head_neck_bkl_nevus_pair() -> None:
+    baseline_output = {
+        "final_diagnosis": "Seborrheic Keratosis",
+        "differential_diagnoses": ["Seborrheic Keratosis"],
+        "confidence": "Unknown",
+    }
+    agent_output = {
+        "final_diagnosis": "Seborrheic Keratosis",
+        "differential_diagnoses": ["Seborrheic Keratosis", "Nevus"],
+        "confidence": "Unknown",
+    }
+    evidence_bundle = {
+        "evidence_decision_policy": {
+            "risk_layer": {"baseline_preview": {"early_ddx_candidates": [], "image_summary": ""}},
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "dataset_workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "workflow_cell_id": "llama__isic2019__archive_guard_v1",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "head/neck"},
+                },
+                "selected_evidence_present": True,
+                "override_allowed": False,
+                "malignancy_override_allowed": False,
+                "subtype_override_allowed": False,
+                "family_override_allowed": False,
+                "override_mode": "risk_only",
+                "support_margin": 45.46,
+                "subtype_support_margin": 14.3,
+                "uncertainty_level": "medium",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Seborrheic Keratosis"
+    assert result["fusion_decision"]["consensus_override_label"] == ""
+
+
 def test_qwen_isic_archive_guard_allows_melanoma_upgrade_without_benign_reassurance() -> None:
     baseline_output = {
         "final_diagnosis": "Nevus",
