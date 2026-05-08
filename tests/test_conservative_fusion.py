@@ -1047,6 +1047,237 @@ def test_medgemma_isic_route_does_not_promote_head_neck_nevus_scc_differential()
     assert "agent_matches_baseline" in result["fusion_decision"]["reasons"]
 
 
+def test_medgemma_isic_route_promotes_lower_extremity_bcc_scc_residual() -> None:
+    baseline_output = {
+        "final_diagnosis": "Basal Cell Carcinoma",
+        "differential_diagnoses": ["Basal Cell Carcinoma"],
+        "confidence": "Medium",
+    }
+    agent_output = {
+        "final_diagnosis": "Basal Cell Carcinoma",
+        "differential_diagnoses": ["Basal Cell Carcinoma", "Nevus", "Squamous Cell Carcinoma"],
+        "confidence": "Medium",
+    }
+    evidence_bundle = {
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": ["NV", "BKL", "DF", "SCC"],
+                    "image_summary": (
+                        "Lesion with irregular borders, red and brown pigmentation, "
+                        "and a central area of increased pigmentation."
+                    ),
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "medgemma__isic2019__archive_guard_v1",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "lower extremity"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 23.08,
+                "subtype_support_margin": -3.22,
+                "uncertainty_level": "low",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Squamous Cell Carcinoma"
+    assert "medgemma_isic_nv_scc_differential_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_isic_route_promotes_lower_extremity_nevus_scc_residual() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus"],
+        "confidence": "Medium",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus"],
+        "confidence": "Medium",
+    }
+    evidence_bundle = {
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": ["NV", "BKL", "DF", "SCC"],
+                    "image_summary": (
+                        "Lesion with irregular borders, red and brown pigmentation, "
+                        "and a central area of increased pigmentation."
+                    ),
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "medgemma__isic2019__archive_guard_v1",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "lower extremity"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 23.08,
+                "subtype_support_margin": -3.22,
+                "uncertainty_level": "low",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Squamous Cell Carcinoma"
+    assert "medgemma_isic_nv_scc_differential_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_isic_route_promotes_circular_lower_extremity_melanoma_to_scc() -> None:
+    baseline_output = {
+        "final_diagnosis": "Malignant Melanoma",
+        "differential_diagnoses": ["Malignant Melanoma", "Nevus"],
+        "confidence": "0.95",
+    }
+    agent_output = {
+        "final_diagnosis": "Basal Cell Carcinoma",
+        "differential_diagnoses": ["Basal Cell Carcinoma", "Nevus"],
+        "confidence": "Medium",
+    }
+    evidence_bundle = {
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": ["NV", "BKL", "DF", "SCC"],
+                    "image_summary": "Circular lesion with irregular borders and areas of pigmentation variation.",
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "medgemma__isic2019__archive_guard_v1",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "lower extremity"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 23.04,
+                "subtype_support_margin": -3.22,
+                "uncertainty_level": "low",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Squamous Cell Carcinoma"
+    assert "medgemma_isic_nv_scc_differential_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_isic_route_promotes_lower_extremity_scc_bcc_residual() -> None:
+    baseline_output = {
+        "final_diagnosis": "Squamous Cell Carcinoma",
+        "differential_diagnoses": ["Squamous Cell Carcinoma", "Nevus"],
+        "confidence": "Medium",
+    }
+    agent_output = {
+        "final_diagnosis": "Squamous Cell Carcinoma",
+        "differential_diagnoses": ["Squamous Cell Carcinoma", "Basal Cell Carcinoma", "Actinic Keratosis"],
+        "confidence": "Medium",
+    }
+    evidence_bundle = {
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": ["Basal Cell Carcinoma", "Squamous Cell Carcinoma"],
+                    "image_summary": "Lesion with irregular borders, red color, and some areas of crusting.",
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "medgemma__isic2019__archive_guard_v1",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "lower extremity"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 17.964,
+                "subtype_support_margin": -7.9,
+                "uncertainty_level": "low",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "medgemma_isic_nv_scc_differential_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_isic_route_promotes_lower_extremity_scc_bcc_crusty_vessels_residual() -> None:
+    baseline_output = {
+        "final_diagnosis": "Squamous Cell Carcinoma",
+        "differential_diagnoses": ["Squamous Cell Carcinoma", "Nevus"],
+        "confidence": "Medium",
+    }
+    agent_output = {
+        "final_diagnosis": "Squamous Cell Carcinoma",
+        "differential_diagnoses": ["Squamous Cell Carcinoma", "Nevus"],
+        "confidence": "Medium",
+    }
+    evidence_bundle = {
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": ["Basal Cell Carcinoma", "Squamous Cell Carcinoma"],
+                    "image_summary": "Reddish, irregular lesion with visible blood vessels and a crusty surface.",
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "medgemma__isic2019__archive_guard_v1",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": "lower extremity"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": 17.964,
+                "subtype_support_margin": -7.9,
+                "uncertainty_level": "low",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "medgemma_isic_nv_scc_differential_promotion" in result["fusion_decision"]["reasons"]
+
+
 def test_llama_isic_route_blocks_unknown_low_margin_bcc_overwrite_of_nevus() -> None:
     baseline_output = {
         "final_diagnosis": "Nevus",

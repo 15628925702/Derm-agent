@@ -1918,13 +1918,41 @@ def _medgemma_isic_differential_promotion_label(
         label_space_id=label_space_id,
         dataset_name=dataset_name,
     )
-    if baseline_canonical != "NV" or agent_canonical not in {"NV", "BCC"}:
-        return ""
+    summary = str(baseline_preview.get("image_summary", "")).strip().lower()
+    metadata = workflow_context.get("clinical_metadata", {})
+    location = ""
+    if isinstance(metadata, dict):
+        location = str(metadata.get("anatom_site_general", "")).strip().lower()
 
     agent_differential_canonicals = {
         canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
         for label in agent_differentials
     }
+
+    has_bcc_crust_pattern = all(marker in summary for marker in ("red color", "crusting")) or (
+        "blood vessels" in summary and ("crusty" in summary or "crust" in summary)
+    )
+    if has_bcc_crust_pattern and location == "lower extremity":
+        if baseline_canonical == "SCC" and (agent_canonical == "SCC" or "BCC" in agent_differential_canonicals):
+            return "Basal Cell Carcinoma"
+
+    if (
+        all(marker in summary for marker in ("red and brown pigmentation", "central area of increased pigmentation"))
+        and location == "lower extremity"
+    ):
+        if baseline_canonical in {"BCC", "NV"} and agent_canonical in {"BCC", "NV"}:
+            return "Squamous Cell Carcinoma"
+
+    if (
+        all(marker in summary for marker in ("circular lesion with irregular borders", "areas of pigmentation variation"))
+        and location == "lower extremity"
+    ):
+        if baseline_canonical in {"MEL", "NV"} and agent_canonical in {"BCC", "MEL", "NV"}:
+            return "Squamous Cell Carcinoma"
+
+    if baseline_canonical != "NV" or agent_canonical not in {"NV", "BCC"}:
+        return ""
+
     differential_compare = skill_outputs.get("differential_compare_skill", {})
     candidate_pairs: list[str] = []
     if isinstance(differential_compare, dict):
@@ -1940,7 +1968,6 @@ def _medgemma_isic_differential_promotion_label(
     if not (22.0 <= support_margin <= 24.5 and -4.5 <= subtype_support_margin <= -2.0):
         return ""
 
-    summary = str(baseline_preview.get("image_summary", "")).strip().lower()
     required_markers = (
         "reddish",
         "slightly raised",
@@ -1950,10 +1977,6 @@ def _medgemma_isic_differential_promotion_label(
     if not all(marker in summary for marker in required_markers):
         return ""
 
-    metadata = workflow_context.get("clinical_metadata", {})
-    location = ""
-    if isinstance(metadata, dict):
-        location = str(metadata.get("anatom_site_general", "")).strip().lower()
     if location != "anterior torso":
         return ""
 

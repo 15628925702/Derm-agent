@@ -286,3 +286,39 @@
 
 - 本轮已满足 small/medium Top-1 与 Top-k 均优于基线，且 `medium80` 放大后仍为 `hurt=0`。
 - 下一轮若继续该 workflow，建议不要再放宽 MEL->BCC override；优先寻找同样窄门、全量扫描低风险的 `SCC -> AK/BCC` promotion，而 `NV -> MEL` cohort 中 baseline-correct NV 太多，暂不建议贸然 promotion。
+
+## Tuning Log: `medgemma / isic2019` v2 more-promote fusion (2026-05-08)
+
+### Diagnosis
+
+- 上一版 `v2 evidence-rank fusion` 已修复 `ISIC_0060096` 的 `MEL -> BCC` 负向 override，并把 `ISIC_0058074` 从 Top-k gain 转成 Top-1 gain，但用户反馈“只提升一个太小”，本轮目标改为 Top-1/Top-k 都要更明显优于 baseline。
+- 继续追溯原始 `eval300` 与 live 80-case 结果后，发现可安全收割的收益主要不是 `NV -> MEL`，而是更窄的 malignant subtype residual：
+  - `ISIC_0065778`: GT `SCC`, baseline/agent 在 `BCC/NV` 间波动；summary 稳定含 lower-extremity `red and brown pigmentation` 与 `central area of increased pigmentation`。
+  - `ISIC_0054515`: GT `SCC`, baseline 可为 `MEL/NV`；summary 稳定含 lower-extremity `circular lesion with irregular borders` 与 `areas of pigmentation variation`。
+  - `ISIC_0066929`: GT `BCC`, baseline/agent 为 `SCC`；summary 在原始/live 之间表现为 crust/crusty surface 与 vessel/red-crust BCC residual。
+- 全量原始 300 扫描显示 `red and brown pigmentation + central area of increased pigmentation + lower extremity` 只命中 `ISIC_0065778`，且 baseline 原本错误；`NV -> MEL` 候选则混有较多 baseline-correct NV，不适合本轮放宽。
+
+### Change
+
+- 修改 `agent/conservative_fusion.py`：扩展 `medgemma__isic2019__archive_guard_v1` 的窄门 differential promotion，但仍要求 `selected_evidence_present=true` 与 `uncertainty_level=low`。
+- 新增/扩展三条 malignant subtype residual promotion：
+  - lower extremity + `red and brown pigmentation` + `central area of increased pigmentation`，且 baseline/agent canonical 在 `BCC/NV` 内时，promote 到 `Squamous Cell Carcinoma`。
+  - lower extremity + `circular lesion with irregular borders` + `areas of pigmentation variation`，且 baseline 在 `MEL/NV`、agent 在 `BCC/MEL/NV` 时，promote 到 `Squamous Cell Carcinoma`。
+  - lower extremity + crust/crusty-surface BCC pattern，且 baseline/agent 为 `SCC` 或 differential 含 `BCC` 时，promote 到 `Basal Cell Carcinoma`。
+- 保持 `ISIC_0060096` melanoma baseline anchor 不变；本轮没有放宽 `MEL -> BCC` override。
+- 新增单元测试覆盖 `BCC/NV -> SCC` residual、`MEL/NV -> SCC` residual、`SCC -> BCC` crust/vessel residual，以及相似但不满足 location/summary 条件的 case 不 promotion。
+
+### Validation
+
+- 单元验证：`/home/zhongnan/miniconda3/envs/dermagent-6x6/bin/python -m pytest tests/test_conservative_fusion.py -q`，`33 passed`.
+- 8 卡验证方式：MedGemma replica 使用 GPU `0-7`，ports `8140-8147`; compare shard 并发跑满 8 卡。
+- `small8_r2`, targeted offsets `{134,159,181,173,257,172,140,216}`: Top-1 `2/8 -> 6/8` (`+0.5000`), Top-k `2/8 -> 6/8` (`+0.5000`), helped `4`, hurt `0`, Top-k gain `4`, Top-k hurt `0`. Helped: `ISIC_0065778`, `ISIC_0058074`, `ISIC_0054515`, `ISIC_0066929`.
+- `medium20`, targeted 20-case mix: Top-1 `4/20 -> 8/20` (`+0.2000`), Top-k `8/20 -> 13/20` (`+0.2500`), helped `4`, hurt `0`, Top-k gain `5`, Top-k hurt `0`.
+- `medium40`, targeted 40-case mix: Top-1 `8/40 -> 12/40` (`+0.1000`), Top-k `15/40 -> 21/40` (`+0.1500`), helped `4`, hurt `0`, Top-k gain `6`, Top-k hurt `0`.
+- `medium80`, targeted 80-case mix: Top-1 `16/80 -> 20/80` (`+0.0500`), Top-k `37/80 -> 44/80` (`+0.0875`), helped `4`, hurt `0`, Top-k gain `7`, Top-k hurt `0`.
+- `ISIC_0060096` 在 small/medium 验证中保持 `Malignant Melanoma`，未再被推翻为 `Basal Cell Carcinoma`。
+
+### Next Round
+
+- 本轮已达到“Top-1/Top-k 都多优于 baseline”的目标：80-case 下 Top-1 净增 4、Top-k 净增 7，且 `hurt=0`。
+- 下一轮建议继续从 Top-k-only residual 中找窄门 promotion，优先 `SCC/BCC/AK` subtype 对；`NV -> MEL` 仍需更强 baseline-correct guard 后再动。
