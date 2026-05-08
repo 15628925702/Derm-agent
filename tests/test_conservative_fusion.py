@@ -49,6 +49,7 @@ def _medgemma_scin_evidence_bundle(
     *,
     early_ddx_candidates: list[str],
     clinical_metadata: dict | None = None,
+    skill_outputs: dict | None = None,
     support_margin: float = 39.0,
     subtype_support_margin: float = 6.92,
     uncertainty_level: str = "low",
@@ -75,6 +76,7 @@ def _medgemma_scin_evidence_bundle(
                 "uncertainty_level": uncertainty_level,
             },
         },
+        "skill_outputs": dict(skill_outputs or {}),
         "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
     }
 
@@ -385,6 +387,203 @@ def test_medgemma_scin_acne_follicular_promotion_requires_initial_acne_signal() 
 
     assert result["final_diagnosis"] == "Contact Dermatitis"
     assert "medgemma_scin_acne_follicular_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_scin_face_acne_evidence_promotes_from_topk() -> None:
+    baseline_output = {
+        "final_diagnosis": "Contact Dermatitis",
+        "differential_diagnoses": ["Contact Dermatitis"],
+        "confidence": "High",
+    }
+    agent_output = {
+        "final_diagnosis": "Contact Dermatitis",
+        "differential_diagnoses": ["Contact Dermatitis", "ACNE_ROSACEA_FOLLICULAR"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _medgemma_scin_evidence_bundle(
+        early_ddx_candidates=["Acne", "Eczema", "Rosacea"],
+        clinical_metadata={"region": "head_or_neck", "body_sites": ["head_or_neck"]},
+        skill_outputs={
+            "morphology_analysis_skill": {"lesion_type": "papule", "count": "multiple"},
+            "distribution_analysis_skill": {"body_location": "face", "clustering_pattern": "clustered"},
+            "lesion_description_structuring_skill": {
+                "associated_context": ["face", "small red dots", "papules/pustules"],
+            },
+            "differential_compare_skill": {
+                "supporting_evidence": ["The small papules are consistent with acne."],
+            },
+        },
+        subtype_support_margin=6.96,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "ACNE_ROSACEA_FOLLICULAR"
+    assert "medgemma_scin_face_acne_evidence_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_scin_face_acne_evidence_requires_workflow_cell() -> None:
+    baseline_output = {
+        "final_diagnosis": "Contact Dermatitis",
+        "differential_diagnoses": ["Contact Dermatitis"],
+        "confidence": "High",
+    }
+    agent_output = {
+        "final_diagnosis": "Contact Dermatitis",
+        "differential_diagnoses": ["Contact Dermatitis", "ACNE_ROSACEA_FOLLICULAR"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _medgemma_scin_evidence_bundle(
+        early_ddx_candidates=["Acne", "Eczema", "Rosacea"],
+        skill_outputs={
+            "morphology_analysis_skill": {"lesion_type": "papule"},
+            "distribution_analysis_skill": {"body_location": "face"},
+            "differential_compare_skill": {"supporting_evidence": ["consistent with acne"]},
+        },
+        workflow_cell_id="medgemma__scin__other_cell",
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Contact Dermatitis"
+    assert "medgemma_scin_face_acne_evidence_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_scin_leg_fluid_urticaria_promotes_from_topk() -> None:
+    baseline_output = {
+        "final_diagnosis": "Contact Dermatitis",
+        "differential_diagnoses": ["Contact Dermatitis"],
+        "confidence": "High",
+    }
+    agent_output = {
+        "final_diagnosis": "DERMATITIS_ECZEMA",
+        "differential_diagnoses": ["DERMATITIS_ECZEMA", "URTICARIA_BITE_FOLLICULITIS"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _medgemma_scin_evidence_bundle(
+        early_ddx_candidates=["Urticaria/Bite Follliculitis", "Eczema", "Contact Dermatitis"],
+        clinical_metadata={
+            "region": "leg",
+            "body_sites": ["leg"],
+            "textures_present": ["raised_or_bumpy", "fluid_filled"],
+        },
+        skill_outputs={
+            "distribution_analysis_skill": {"clustering_pattern": "clustered"},
+            "lesion_description_structuring_skill": {"associated_context": ["raised borders"]},
+            "differential_compare_skill": {"supporting_evidence": ["consistent with urticaria"]},
+        },
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "URTICARIA_BITE_FOLLICULITIS"
+    assert "medgemma_scin_leg_fluid_urticaria_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_scin_leg_fluid_urticaria_blocks_hand_pattern() -> None:
+    baseline_output = {
+        "final_diagnosis": "Contact Dermatitis",
+        "differential_diagnoses": ["Contact Dermatitis"],
+        "confidence": "High",
+    }
+    agent_output = {
+        "final_diagnosis": "DERMATITIS_ECZEMA",
+        "differential_diagnoses": ["DERMATITIS_ECZEMA", "URTICARIA_BITE_FOLLICULITIS"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _medgemma_scin_evidence_bundle(
+        early_ddx_candidates=["Urticaria/Bite Reaction", "Eczema", "Contact Dermatitis"],
+        clinical_metadata={
+            "region": "leg",
+            "body_sites": ["leg", "palm", "back_of_hand"],
+            "textures_present": ["raised_or_bumpy", "fluid_filled"],
+        },
+        skill_outputs={
+            "distribution_analysis_skill": {"clustering_pattern": "clustered"},
+            "differential_compare_skill": {"supporting_evidence": ["consistent with urticaria"]},
+        },
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Contact Dermatitis"
+    assert "medgemma_scin_leg_fluid_urticaria_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_scin_arm_ulcer_herpes_promotes_from_topk() -> None:
+    baseline_output = {
+        "final_diagnosis": "Contact Dermatitis",
+        "differential_diagnoses": ["Contact Dermatitis"],
+        "confidence": "High",
+    }
+    agent_output = {
+        "final_diagnosis": "DERMATITIS_ECZEMA",
+        "differential_diagnoses": ["DERMATITIS_ECZEMA", "INFECTION_VIRAL_FUNGAL"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _medgemma_scin_evidence_bundle(
+        early_ddx_candidates=["Herpes simplex", "Warts", "Contact dermatitis"],
+        clinical_metadata={"region": "arm", "body_sites": ["arm"], "other_symptoms_present": ["mouth_sores"]},
+        skill_outputs={
+            "lesion_description_structuring_skill": {"surface": ["ulcerated"]},
+            "temporal_evolution_skill": {"onset_type": "acute", "progression_speed": "rapid"},
+        },
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "INFECTION_VIRAL_FUNGAL"
+    assert "medgemma_scin_arm_ulcer_herpes_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_scin_arm_ulcer_herpes_requires_ulcer_signal() -> None:
+    baseline_output = {
+        "final_diagnosis": "Contact Dermatitis",
+        "differential_diagnoses": ["Contact Dermatitis"],
+        "confidence": "High",
+    }
+    agent_output = {
+        "final_diagnosis": "DERMATITIS_ECZEMA",
+        "differential_diagnoses": ["DERMATITIS_ECZEMA", "INFECTION_VIRAL_FUNGAL"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _medgemma_scin_evidence_bundle(
+        early_ddx_candidates=["Herpes simplex", "Warts", "Contact dermatitis"],
+        clinical_metadata={"region": "arm", "body_sites": ["arm"], "other_symptoms_present": ["mouth_sores"]},
+        skill_outputs={
+            "lesion_description_structuring_skill": {"surface": ["raised_or_bumpy"]},
+            "temporal_evolution_skill": {"onset_type": "acute"},
+        },
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Contact Dermatitis"
+    assert "medgemma_scin_arm_ulcer_herpes_promotion" not in result["fusion_decision"]["reasons"]
 
 
 def test_medgemma_scin_headneck_skin_cancer_promotion() -> None:

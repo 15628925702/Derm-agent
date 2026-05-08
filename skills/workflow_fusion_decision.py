@@ -695,6 +695,51 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("qwen_isic_anterior_torso_ak_bkl_differential_promotion")
+        elif _allow_medgemma_scin_face_acne_evidence_promotion(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            initial_ddx=initial_ddx,
+            skill_outputs=skill_outputs,
+            selected_evidence_present=selected_evidence_present,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = "ACNE_ROSACEA_FOLLICULAR"
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("medgemma_scin_face_acne_evidence_promotion")
+        elif _allow_medgemma_scin_leg_fluid_urticaria_promotion(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            initial_ddx=initial_ddx,
+            skill_outputs=skill_outputs,
+            selected_evidence_present=selected_evidence_present,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = "URTICARIA_BITE_FOLLICULITIS"
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("medgemma_scin_leg_fluid_urticaria_promotion")
+        elif _allow_medgemma_scin_arm_ulcer_herpes_promotion(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            initial_ddx=initial_ddx,
+            skill_outputs=skill_outputs,
+            selected_evidence_present=selected_evidence_present,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = "INFECTION_VIRAL_FUNGAL"
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("medgemma_scin_arm_ulcer_herpes_promotion")
         elif agent_label == baseline_label:
             use_agent_output = True
             reasons.append("agent_matches_baseline")
@@ -808,6 +853,51 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("medgemma_scin_headneck_skin_cancer_promotion")
+        elif _allow_medgemma_scin_face_acne_evidence_promotion(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            initial_ddx=initial_ddx,
+            skill_outputs=skill_outputs,
+            selected_evidence_present=selected_evidence_present,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = "ACNE_ROSACEA_FOLLICULAR"
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("medgemma_scin_face_acne_evidence_promotion")
+        elif _allow_medgemma_scin_leg_fluid_urticaria_promotion(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            initial_ddx=initial_ddx,
+            skill_outputs=skill_outputs,
+            selected_evidence_present=selected_evidence_present,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = "URTICARIA_BITE_FOLLICULITIS"
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("medgemma_scin_leg_fluid_urticaria_promotion")
+        elif _allow_medgemma_scin_arm_ulcer_herpes_promotion(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            initial_ddx=initial_ddx,
+            skill_outputs=skill_outputs,
+            selected_evidence_present=selected_evidence_present,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = "INFECTION_VIRAL_FUNGAL"
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("medgemma_scin_arm_ulcer_herpes_promotion")
         elif _allow_medgemma_scin_pigment_bcc_symptom_promotion(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
@@ -1038,6 +1128,9 @@ def decide_conservative_agent_fusion(
         "qwen_isic_anterior_torso_ak_bkl_differential_promotion",
         "medgemma_scin_acne_follicular_promotion",
         "medgemma_scin_headneck_skin_cancer_promotion",
+        "medgemma_scin_face_acne_evidence_promotion",
+        "medgemma_scin_leg_fluid_urticaria_promotion",
+        "medgemma_scin_arm_ulcer_herpes_promotion",
         "medgemma_scin_pigment_bcc_symptom_promotion",
         "medgemma_scin_genital_herpes_promotion",
         "medgemma_scin_lower_body_vascular_promotion",
@@ -4618,6 +4711,163 @@ def _allow_medgemma_scin_headneck_skin_cancer_promotion(
     )
 
 
+def _allow_medgemma_scin_face_acne_evidence_promotion(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    initial_ddx: list[str],
+    skill_outputs: dict[str, Any],
+    selected_evidence_present: bool,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> bool:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "medgemma__scin__grouped_core_v1":
+        return False
+    if not selected_evidence_present or subtype_support_margin < 6.9:
+        return False
+    if str(uncertainty_level or "").strip().lower() not in {"low", "medium"}:
+        return False
+    if canonicalize_label(baseline_label, label_space_id=label_space_id, dataset_name=dataset_name) != "DERMATITIS_ECZEMA":
+        return False
+    initial_canonicals = {
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in initial_ddx
+    }
+    initial_text = " ".join(str(item).strip().lower() for item in initial_ddx)
+    if "ACNE_ROSACEA_FOLLICULAR" not in initial_canonicals and not any(
+        marker in initial_text for marker in ("acne", "rosacea")
+    ):
+        return False
+    text = _medgemma_scin_skill_text(
+        skill_outputs,
+        "morphology_analysis_skill",
+        "distribution_analysis_skill",
+        "lesion_description_structuring_skill",
+        "differential_compare_skill",
+    )
+    first_initial = str(initial_ddx[0] if initial_ddx else "").strip().lower()
+    has_face_site = any(marker in text for marker in ("face", "head_or_neck", "mouth", "cheek"))
+    has_follicular_morphology = any(marker in text for marker in ("papule", "papular", "pustule", "bumps"))
+    has_multiple_lesions = "multiple" in text
+    has_focal_distribution = "localized" in text or "clustered" in text
+    lesion_description = skill_outputs.get("lesion_description_structuring_skill", {})
+    surface_text = ""
+    if isinstance(lesion_description, dict):
+        surface_text = " ".join(str(item).strip().lower() for item in lesion_description.get("surface", []) or [])
+    if "mask" in text or "scaling" in surface_text:
+        return False
+    has_acne_evidence = any(
+        marker in text
+        for marker in (
+            "consistent with acne",
+            "likely acne",
+            "papules/pustules",
+            "small red dots",
+            "around the mouth",
+            "cheeks",
+        )
+    ) or any(marker in first_initial for marker in ("acne", "rosacea"))
+    return (
+        has_face_site
+        and has_follicular_morphology
+        and has_multiple_lesions
+        and has_focal_distribution
+        and has_acne_evidence
+    )
+
+
+def _allow_medgemma_scin_leg_fluid_urticaria_promotion(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    initial_ddx: list[str],
+    skill_outputs: dict[str, Any],
+    selected_evidence_present: bool,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> bool:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "medgemma__scin__grouped_core_v1":
+        return False
+    if not selected_evidence_present or subtype_support_margin < 6.9:
+        return False
+    if str(uncertainty_level or "").strip().lower() not in {"low", "medium"}:
+        return False
+    if canonicalize_label(baseline_label, label_space_id=label_space_id, dataset_name=dataset_name) != "DERMATITIS_ECZEMA":
+        return False
+    first_initial = canonicalize_label(
+        initial_ddx[0] if initial_ddx else "",
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if first_initial != "URTICARIA_BITE_FOLLICULITIS":
+        return False
+    metadata = _workflow_clinical_metadata(workflow_context)
+    region = str(metadata.get("region", "")).strip().lower()
+    body_sites = {str(item).strip().lower() for item in metadata.get("body_sites", []) or []}
+    textures = {str(item).strip().lower() for item in metadata.get("textures_present", []) or []}
+    if region != "leg" or "leg" not in body_sites:
+        return False
+    if body_sites.intersection({"palm", "back_of_hand", "hand"}):
+        return False
+    if not {"raised_or_bumpy", "fluid_filled"}.issubset(textures):
+        return False
+    text = _medgemma_scin_skill_text(
+        skill_outputs,
+        "distribution_analysis_skill",
+        "lesion_description_structuring_skill",
+        "differential_compare_skill",
+    )
+    return any(marker in text for marker in ("clustered", "itch", "raised borders", "consistent with urticaria"))
+
+
+def _allow_medgemma_scin_arm_ulcer_herpes_promotion(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    initial_ddx: list[str],
+    skill_outputs: dict[str, Any],
+    selected_evidence_present: bool,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> bool:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "medgemma__scin__grouped_core_v1":
+        return False
+    if not selected_evidence_present or subtype_support_margin < 6.9:
+        return False
+    if str(uncertainty_level or "").strip().lower() not in {"low", "medium"}:
+        return False
+    if canonicalize_label(baseline_label, label_space_id=label_space_id, dataset_name=dataset_name) != "DERMATITIS_ECZEMA":
+        return False
+    initial_text = " ".join(str(item).strip().lower() for item in initial_ddx)
+    if "herpes simplex" not in initial_text:
+        return False
+    metadata = _workflow_clinical_metadata(workflow_context)
+    body_sites = {str(item).strip().lower() for item in metadata.get("body_sites", []) or []}
+    if str(metadata.get("region", "")).strip().lower() != "arm" or "arm" not in body_sites:
+        return False
+    symptoms = {str(item).strip().lower() for item in metadata.get("other_symptoms_present", []) or []}
+    text = _medgemma_scin_skill_text(
+        skill_outputs,
+        "lesion_description_structuring_skill",
+        "temporal_evolution_skill",
+        "differential_compare_skill",
+    )
+    has_ulcer_signal = "ulcerated" in text or "ulceration" in text
+    has_viral_context = bool({"mouth_sores", "mouth sores"}.intersection(symptoms)) or any(
+        marker in text for marker in ("acute", "rapid", "mouth sores")
+    )
+    return has_ulcer_signal and has_viral_context
+
+
 def _allow_medgemma_scin_pigment_bcc_symptom_promotion(
     *,
     workflow_context: dict[str, Any],
@@ -4720,6 +4970,24 @@ def _allow_medgemma_scin_lower_body_vascular_promotion(
 def _workflow_clinical_metadata(workflow_context: dict[str, Any]) -> dict[str, Any]:
     metadata = workflow_context.get("clinical_metadata", {})
     return dict(metadata) if isinstance(metadata, dict) else {}
+
+
+def _medgemma_scin_skill_text(skill_outputs: dict[str, Any], *skill_names: str) -> str:
+    chunks: list[str] = []
+
+    def collect(value: Any) -> None:
+        if isinstance(value, dict):
+            for item in value.values():
+                collect(item)
+        elif isinstance(value, (list, tuple, set)):
+            for item in value:
+                collect(item)
+        elif value is not None:
+            chunks.append(str(value))
+
+    for skill_name in skill_names:
+        collect(skill_outputs.get(skill_name, {}))
+    return " ".join(chunks).lower()
 
 
 def _allow_llama_scin_grouped_override(
