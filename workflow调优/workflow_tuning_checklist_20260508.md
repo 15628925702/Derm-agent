@@ -19,6 +19,17 @@
 - 持平：`1`
 - 负向：`3`
 
+## 调参进展快照
+
+- 已完成本轮调参：`llama / isic2019`
+  - 原始 eval300：Top-1 `-0.0067`, Top-k `+0.0267`
+  - v2/v2b small-medium 验证：`small8`, `medium20`, `medium40`, `medium80` 均 Top-1 非负且 Top-k 不下降
+  - 最大放大验证：`medium80`, offset `120..199`, Top-1 `28/80 -> 31/80` (`+0.0375`), Top-k `37/80 -> 41/80` (`+0.0500`), hurt `0`
+  - 当前建议：暂不直接上 eval300；下一轮如继续该线，优先吃 `ISIC_0059614` 这类 BKL/NV Top-k-only 残差
+- 下一条建议调参线：`medgemma / isic2019`
+  - 原始 eval300：Top-1 `-0.0033`, Top-k `+0.0200`
+  - 追溯预判：Top-k 已新增 6 个命中且 Top-k hurt 为 0，Top-1 负向主要来自 1 个 MEL hurt case；优先检查 final fusion / malignant protection / override gate
+
 ## 调参优先级总表
 
 排序原则：
@@ -30,8 +41,8 @@
 
 | Priority | Workflow | Current | Why first | Main tuning goal |
 |---|---|---|---|---|
-| 1 | `llama / isic2019` | Top-1 `-0.0067`, Top-k `+0.0267` | 负向里跌幅最大，但 Top-k 已有帮助 | 先把 Top-1 拉回非负 |
-| 2 | `medgemma / isic2019` | Top-1 `-0.0033`, Top-k `+0.0200` | evidence 有用，final 转化不足 | 修 final selection / fusion |
+| 1 | `llama / isic2019` | 原始 Top-1 `-0.0067`, Top-k `+0.0267`; v2b `medium80` Top-1 `+0.0375`, Top-k `+0.0500`, hurt `0` | 本轮已把 Top-1 拉回非负，小中样本稳定 | 暂停，等后续再决定是否 eval300 |
+| 2 | `medgemma / isic2019` | Top-1 `-0.0033`, Top-k `+0.0200` | evidence 有用，final 转化不足；当前最高优先级未调负向线 | 修 final selection / malignant protection / fusion |
 | 3 | `qwen / isic2019` | Top-1 `-0.0033`, Top-k `+0.0033` | 负向较轻，但仍需转正 | 先保 Top-1 不负 |
 | 4 | `medgemma / scin` | Top-1 `0.0000`, Top-k `0.0000` | 唯一真正双持平 | 先做出可见增益 |
 | 5 | `medgemma / ham10000` | Top-1 `0.0000`, Top-k `+0.0567` | 典型“Top-k 涨但没转成 Top-1” | 提高 final 决策转化 |
@@ -65,8 +76,8 @@
 
 ### Batch 1: 先救负向
 
-1. `llama / isic2019`
-2. `medgemma / isic2019`
+1. `llama / isic2019` - 本轮 v2/v2b 已完成 small-medium 正向验证
+2. `medgemma / isic2019` - 下一条建议调参线
 3. `qwen / isic2019`
 
 ### Batch 2: 把 Top-k 收益转成 Top-1
@@ -95,16 +106,16 @@
 
 ## 前 10 个最值得先调的 Workflow
 
-1. `llama / isic2019`
-2. `medgemma / isic2019`
-3. `qwen / isic2019`
-4. `medgemma / scin`
-5. `medgemma / ham10000`
-6. `qwen / ham10000`
-7. `hulumed / isic2019`
-8. `dermatollama / isic2019`
-9. `dermatollama / ham10000`
-10. `qwen / scin`
+1. `medgemma / isic2019`
+2. `qwen / isic2019`
+3. `medgemma / scin`
+4. `medgemma / ham10000`
+5. `qwen / ham10000`
+6. `hulumed / isic2019`
+7. `dermatollama / isic2019`
+8. `dermatollama / ham10000`
+9. `qwen / scin`
+10. `dermatollama / sd198`
 
 ## 每个组合当前结果清单
 
