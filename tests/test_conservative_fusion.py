@@ -45,6 +45,39 @@ def _qwen_isic_evidence_bundle(
     }
 
 
+def _qwen_ham10000_evidence_bundle(
+    *,
+    selected_evidence_text: str,
+    support_margin: float = 42.0,
+    subtype_support_margin: float = 18.0,
+    workflow_cell_id: str = "qwen__ham10000__dataset_best",
+) -> dict:
+    return {
+        "selected_evidence": [
+            {
+                "source_name": "lesion_description_structuring_skill",
+                "summary": f"lesion_description_structuring_skill: {selected_evidence_text}",
+            }
+        ],
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": workflow_cell_id,
+                    "workflow_profile": "sparse_lesion_workflow",
+                    "label_space_id": "ham10000_full",
+                    "dataset_name": "ham10000",
+                    "clinical_metadata": {"localization": "back"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": support_margin,
+                "subtype_support_margin": subtype_support_margin,
+                "uncertainty_level": "medium",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+
 def _medgemma_scin_evidence_bundle(
     *,
     early_ddx_candidates: list[str],
@@ -3709,3 +3742,281 @@ def test_clinical_route_blocks_weak_benign_overwrite_when_malignant_is_in_baseli
 
     assert result["final_diagnosis"] == "Basal Cell Carcinoma"
     assert "clinical_malignant_recall_guard" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_ham10000_promotes_pigmented_plaque_mel_from_topk() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma", "Malignant Melanoma", "Nevus"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_qwen_ham10000_evidence_bundle(
+            selected_evidence_text="Irregular pigmented plaque with mottled brown and blue areas.",
+            support_margin=41.8,
+            subtype_support_margin=29.2,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Malignant Melanoma"
+    assert "qwen_ham10000_pigmented_plaque_mel_topk_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_ham10000_mel_promotion_requires_workflow_cell() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma", "Malignant Melanoma", "Nevus"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_qwen_ham10000_evidence_bundle(
+            selected_evidence_text="Irregular pigmented plaque with mottled brown and blue areas.",
+            support_margin=41.8,
+            subtype_support_margin=29.2,
+            workflow_cell_id="qwen__ham10000__alternate_cell",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "qwen_ham10000_pigmented_plaque_mel_topk_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_ham10000_mel_promotion_requires_plaque_signal() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma", "Malignant Melanoma", "Nevus"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_qwen_ham10000_evidence_bundle(
+            selected_evidence_text="Irregular pigmented papule with mottled brown and blue areas.",
+            support_margin=41.8,
+            subtype_support_margin=29.2,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "qwen_ham10000_pigmented_plaque_mel_topk_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_ham10000_promotes_reddish_hyperpigmented_akiec_from_topk() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma", "Actinic Keratosis", "Seborrheic Keratosis"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_qwen_ham10000_evidence_bundle(
+            selected_evidence_text="Reddish hyperpigmented irregular keratotic plaque.",
+            support_margin=62.1,
+            subtype_support_margin=11.4,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Actinic Keratosis"
+    assert "qwen_ham10000_reddish_hyperpigmented_akiec_topk_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_ham10000_promotes_reddish_brown_nevus_before_akiec() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma", "Nevus", "Actinic Keratosis"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_qwen_ham10000_evidence_bundle(
+            selected_evidence_text="Irregular hyperpigmented brown and red macule with asymmetric color.",
+            support_margin=65.7,
+            subtype_support_margin=15.8,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "qwen_ham10000_reddish_brown_nevus_topk_promotion" in result["fusion_decision"]["reasons"]
+    assert "qwen_ham10000_reddish_hyperpigmented_akiec_topk_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_ham10000_nevus_promotion_requires_subtype_window() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma", "Nevus"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_qwen_ham10000_evidence_bundle(
+            selected_evidence_text="Irregular hyperpigmented brown and red macule with asymmetric color.",
+            support_margin=65.7,
+            subtype_support_margin=24.0,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "qwen_ham10000_reddish_brown_nevus_topk_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_ham10000_akiec_promotion_requires_akiec_topk() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma", "Nevus", "Seborrheic Keratosis"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_qwen_ham10000_evidence_bundle(
+            selected_evidence_text="Reddish hyperpigmented irregular keratotic plaque.",
+            support_margin=62.1,
+            subtype_support_margin=11.4,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "qwen_ham10000_reddish_hyperpigmented_akiec_topk_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_ham10000_promotes_central_depression_bcc_from_akiec_topk() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Actinic Keratosis",
+            "differential_diagnoses": ["Actinic Keratosis"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Actinic Keratosis",
+            "differential_diagnoses": ["Actinic Keratosis", "Basal Cell Carcinoma", "Seborrheic Keratosis"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_qwen_ham10000_evidence_bundle(
+            selected_evidence_text="Lesion has central depression with mottled pigmentation.",
+            support_margin=50.2,
+            subtype_support_margin=20.1,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "qwen_ham10000_central_depression_bcc_topk_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_ham10000_promotes_support_window_central_depression_bcc() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Actinic Keratosis",
+            "differential_diagnoses": ["Actinic Keratosis"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Actinic Keratosis",
+            "differential_diagnoses": ["Actinic Keratosis", "Basal Cell Carcinoma", "Nevus"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_qwen_ham10000_evidence_bundle(
+            selected_evidence_text="Irregular hyperpigmented nodule with central depression and pink coloration.",
+            support_margin=65.8,
+            subtype_support_margin=7.6,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "qwen_ham10000_central_depression_bcc_topk_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_ham10000_bcc_promotion_requires_central_depression() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Actinic Keratosis",
+            "differential_diagnoses": ["Actinic Keratosis"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Actinic Keratosis",
+            "differential_diagnoses": ["Actinic Keratosis", "Basal Cell Carcinoma", "Seborrheic Keratosis"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_qwen_ham10000_evidence_bundle(
+            selected_evidence_text="Lesion has mottled pigmentation and a smooth surface.",
+            support_margin=50.2,
+            subtype_support_margin=20.1,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Actinic Keratosis"
+    assert "qwen_ham10000_central_depression_bcc_topk_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_ham10000_promotes_red_asymmetric_bkl_from_akiec_topk() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Actinic Keratosis",
+            "differential_diagnoses": ["Actinic Keratosis"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Actinic Keratosis",
+            "differential_diagnoses": ["Seborrheic Keratosis", "Dermatofibroma", "Vascular Lesion"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_qwen_ham10000_evidence_bundle(
+            selected_evidence_text="Irregular hyperpigmented red-brown patch with asymmetric keratotic surface.",
+            support_margin=61.2,
+            subtype_support_margin=28.8,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Seborrheic Keratosis"
+    assert "qwen_ham10000_red_asymmetric_bkl_topk_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_ham10000_bkl_promotion_requires_red_asymmetry() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Actinic Keratosis",
+            "differential_diagnoses": ["Actinic Keratosis"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Actinic Keratosis",
+            "differential_diagnoses": ["Seborrheic Keratosis", "Dermatofibroma", "Vascular Lesion"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_qwen_ham10000_evidence_bundle(
+            selected_evidence_text="Irregular hyperpigmented brown patch with keratotic surface.",
+            support_margin=61.2,
+            subtype_support_margin=28.8,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Actinic Keratosis"
+    assert "qwen_ham10000_red_asymmetric_bkl_topk_promotion" not in result["fusion_decision"]["reasons"]

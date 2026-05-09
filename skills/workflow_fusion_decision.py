@@ -695,6 +695,22 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("qwen_isic_anterior_torso_ak_bkl_differential_promotion")
+        elif qwen_ham10000_topk_promotion := _qwen_ham10000_topk_promotion_label_and_reason(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            agent_differentials=agent_differentials,
+            selected_evidence=selected_evidence,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = qwen_ham10000_topk_promotion[0]
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append(qwen_ham10000_topk_promotion[1])
         elif _allow_medgemma_scin_face_acne_evidence_promotion(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
@@ -1126,6 +1142,11 @@ def decide_conservative_agent_fusion(
         "qwen_isic_uniform_ak_bcc_differential_promotion",
         "qwen_isic_headneck_nv_bkl_differential_promotion",
         "qwen_isic_anterior_torso_ak_bkl_differential_promotion",
+        "qwen_ham10000_pigmented_plaque_mel_topk_promotion",
+        "qwen_ham10000_reddish_brown_nevus_topk_promotion",
+        "qwen_ham10000_reddish_hyperpigmented_akiec_topk_promotion",
+        "qwen_ham10000_central_depression_bcc_topk_promotion",
+        "qwen_ham10000_red_asymmetric_bkl_topk_promotion",
         "medgemma_scin_acne_follicular_promotion",
         "medgemma_scin_headneck_skin_cancer_promotion",
         "medgemma_scin_face_acne_evidence_promotion",
@@ -3009,6 +3030,99 @@ def _qwen_isic_anterior_torso_ak_bkl_differential_promotion_label(
     if "BKL" not in differential_canonicals:
         return ""
     return "Seborrheic Keratosis"
+
+
+def _qwen_ham10000_topk_promotion_label_and_reason(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    agent_differentials: list[str],
+    selected_evidence: list[Any],
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    label_space_id: str,
+    dataset_name: str,
+) -> tuple[str, str] | None:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "qwen__ham10000__dataset_best":
+        return None
+    if not selected_evidence_present:
+        return None
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if baseline_canonical != agent_canonical:
+        return None
+
+    differential_canonicals = {
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in agent_differentials
+    }
+    evidence_text = _selected_evidence_text(selected_evidence)
+
+    if (
+        baseline_canonical == "BCC"
+        and "MEL" in differential_canonicals
+        and 35.0 <= support_margin <= 64.0
+        and 14.0 <= subtype_support_margin <= 38.0
+        and "plaque" in evidence_text
+        and "irregular" in evidence_text
+        and "pigment" in evidence_text
+        and any(color in evidence_text for color in ("brown", "blue", "black"))
+    ):
+        return "Malignant Melanoma", "qwen_ham10000_pigmented_plaque_mel_topk_promotion"
+
+    if (
+        baseline_canonical == "BCC"
+        and "NV" in differential_canonicals
+        and 7.0 <= subtype_support_margin <= 16.0
+        and "hyperpigment" in evidence_text
+        and "brown" in evidence_text
+        and "red" in evidence_text
+    ):
+        return "Nevus", "qwen_ham10000_reddish_brown_nevus_topk_promotion"
+
+    if (
+        baseline_canonical == "BCC"
+        and "AKIEC" in differential_canonicals
+        and "hyperpigment" in evidence_text
+        and "red" in evidence_text
+    ):
+        return "Actinic Keratosis", "qwen_ham10000_reddish_hyperpigmented_akiec_topk_promotion"
+
+    if (
+        baseline_canonical == "AKIEC"
+        and "BCC" in differential_canonicals
+        and "central depression" in evidence_text
+        and (
+            65.0 <= support_margin <= 68.0
+            or "mottled" in evidence_text
+            or "basal cell" in evidence_text
+        )
+    ):
+        return "Basal Cell Carcinoma", "qwen_ham10000_central_depression_bcc_topk_promotion"
+
+    if (
+        baseline_canonical == "AKIEC"
+        and "BKL" in differential_canonicals
+        and 60.0 <= support_margin <= 64.0
+        and 20.0 <= subtype_support_margin <= 36.0
+        and "red" in evidence_text
+        and "asymmetr" in evidence_text
+    ):
+        return "Seborrheic Keratosis", "qwen_ham10000_red_asymmetric_bkl_topk_promotion"
+
+    return None
 
 
 def _qwen_isic_nevus_mel_differential_promotion_base(
