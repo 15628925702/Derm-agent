@@ -14,6 +14,16 @@
 - Incomplete combos: `0`
 - Active `compare_agent_vs_qwen.py` processes at final summary time: `0`
 
+## Post-experiment Tuning Architecture
+
+后续单 workflow 调优采用 skill-side fusion 方式：
+
+- workflow-specific final fusion / promotion / override / fallback 规则写入 `skills/workflow_fusion_decision.py`
+- `agent/conservative_fusion.py` 仅保留兼容 wrapper，不再新增 workflow-specific 主逻辑
+- 每条规则必须精确绑定 `workflow_cell_id`，并补 `tests/test_conservative_fusion.py`
+
+迁移验证已在 `workflow-fusion-skill-migration` 分支完成：旧实现与新 skill 在既有 report `1876` cases 和 live 8-workflow `192` cases 上逐 case fusion decision 对比均为 `mismatch=0`。
+
 ## Late-stage Acceleration Note
 
 `llama/ham10000` and `llama/sd198` were finished on `2026-05-08` by preserving existing partial compare records, sharding the remaining cases across 8 GPUs, and then merging the shard outputs back into the canonical compare result.
