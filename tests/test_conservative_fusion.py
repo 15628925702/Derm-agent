@@ -508,6 +508,50 @@ def test_dermatollama_isic_truncal_scaly_bkl_requires_absent_asymmetry() -> None
     assert "dermatollama_isic_truncal_scaly_bkl_topk_promotion" not in result["fusion_decision"]["reasons"]
 
 
+def _dermatollama_sd198_evidence_bundle(
+    *,
+    early_ddx_candidates: list[str],
+    image_summary: str,
+    selected_evidence_text: str,
+    support_margin: float,
+    subtype_support_margin: float,
+    contradiction_count: int,
+    uncertainty_level: str = "low",
+    workflow_cell_id: str = "dermatollama__sd198__grouped_guard_v1",
+) -> dict:
+    return {
+        "selected_evidence": [
+            {
+                "source_name": "visual_summary_skill",
+                "summary": selected_evidence_text,
+            }
+        ],
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": early_ddx_candidates,
+                    "image_summary": image_summary,
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": workflow_cell_id,
+                    "workflow_profile": "coarse_taxonomy_workflow",
+                    "dataset_workflow_profile": "coarse_taxonomy_workflow",
+                    "label_space_id": "sd198_grouped",
+                    "dataset_name": "sd198",
+                },
+                "selected_evidence_present": True,
+                "support_margin": support_margin,
+                "subtype_support_margin": subtype_support_margin,
+                "uncertainty_level": uncertainty_level,
+                "contradiction_count": contradiction_count,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+
 def _hulumed_isic_evidence_bundle(
     *,
     site: str = "head/neck",
@@ -5840,3 +5884,212 @@ def test_dermatollama_ham10000_raw_agent_differential_is_cell_bound() -> None:
 
     assert "Nevus" not in result["differential_diagnoses"]
     assert "dermatollama_ham10000_raw_agent_differential_expansion" not in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_sd198_promotes_nevus_to_benign_nodule_group() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Dermatofibroma"],
+            "confidence": "High",
+        },
+        evidence_bundle=_dermatollama_sd198_evidence_bundle(
+            early_ddx_candidates=["Dermatofibroma", "Fibroma Molle", "Nevus"],
+            image_summary="Firm nodular lesion resembling a fibroma.",
+            selected_evidence_text="visual evidence mentions a nodular cyst-like fibroma.",
+            support_margin=55.0,
+            subtype_support_margin=12.0,
+            contradiction_count=5,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "BENIGN_TUMOR_CYST"
+    assert "dermatollama_sd198_nevus_benign_nodule_topk_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_sd198_nevus_benign_promotion_requires_workflow_cell() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Dermatofibroma"],
+            "confidence": "High",
+        },
+        evidence_bundle=_dermatollama_sd198_evidence_bundle(
+            early_ddx_candidates=["Dermatofibroma", "Fibroma Molle", "Nevus"],
+            image_summary="Firm nodular lesion resembling a fibroma.",
+            selected_evidence_text="visual evidence mentions a nodular cyst-like fibroma.",
+            support_margin=55.0,
+            subtype_support_margin=12.0,
+            contradiction_count=5,
+            workflow_cell_id="dermatollama__ham10000__baseline_guard_v1",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "dermatollama_sd198_nevus_benign_nodule_topk_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_sd198_nevus_benign_promotion_blocks_acne_like_anchor() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Acne"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_dermatollama_sd198_evidence_bundle(
+            early_ddx_candidates=["Nevus Comedonicus", "Acne", "Milia"],
+            image_summary="A small papular comedonal lesion.",
+            selected_evidence_text="comedonal papule with acne-like features.",
+            support_margin=55.0,
+            subtype_support_margin=12.0,
+            contradiction_count=5,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "dermatollama_sd198_nevus_benign_nodule_topk_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_sd198_promotes_actinic_scaly_papulosquamous_group() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Actinic Keratosis",
+            "differential_diagnoses": ["Actinic Keratosis"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Actinic Keratosis",
+            "differential_diagnoses": ["Actinic Keratosis", "Ichthyosis"],
+            "confidence": "High",
+        },
+        evidence_bundle=_dermatollama_sd198_evidence_bundle(
+            early_ddx_candidates=["Ichthyosis", "Xerosis", "Seborrheic keratosis"],
+            image_summary="Skin with rough dry scaly texture.",
+            selected_evidence_text="dry scaly keratotic plaques with ichthyosis signal.",
+            support_margin=56.0,
+            subtype_support_margin=12.0,
+            contradiction_count=2,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "PAPULOSQUAMOUS_KERATOTIC"
+    assert "dermatollama_sd198_actinic_scaly_papulosquamous_topk_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_sd198_actinic_scaly_promotion_requires_marker() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Actinic Keratosis",
+            "differential_diagnoses": ["Actinic Keratosis"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Actinic Keratosis",
+            "differential_diagnoses": ["Actinic Keratosis", "Psoriasis"],
+            "confidence": "High",
+        },
+        evidence_bundle=_dermatollama_sd198_evidence_bundle(
+            early_ddx_candidates=["Psoriasis", "Actinic Keratosis"],
+            image_summary="A pink papule with a smooth surface.",
+            selected_evidence_text="smooth papule without scale.",
+            support_margin=56.0,
+            subtype_support_margin=12.0,
+            contradiction_count=2,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Actinic Keratosis"
+    assert "dermatollama_sd198_actinic_scaly_papulosquamous_topk_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_sd198_actinic_scaly_promotion_allows_agent_papulosquamous_canonical() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Actinic Keratosis",
+            "differential_diagnoses": ["Actinic Keratosis"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Hyperkeratosis Palmaris Et Plantaris",
+            "differential_diagnoses": ["Hyperkeratosis Palmaris Et Plantaris", "Xerosis", "Actinic Keratosis"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_dermatollama_sd198_evidence_bundle(
+            early_ddx_candidates=["Hyperkeratosis Palmaris Et Plantaris", "Xerosis", "Tinea pedis"],
+            image_summary="A foot plaque with dry keratotic scale.",
+            selected_evidence_text="hyperkeratosis and xerosis support a papulosquamous group.",
+            support_margin=56.0,
+            subtype_support_margin=12.0,
+            contradiction_count=2,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "PAPULOSQUAMOUS_KERATOTIC"
+    assert "dermatollama_sd198_actinic_scaly_papulosquamous_topk_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_sd198_rescues_crowe_sign_to_pigmentary_group() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Crowe's Sign",
+            "differential_diagnoses": ["Crowe's Sign"],
+            "confidence": "Medium",
+        },
+        agent_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Crowe's Sign"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_dermatollama_sd198_evidence_bundle(
+            early_ddx_candidates=["Pigmented nevus", "Seborrheic keratosis", "Melanocytic nevus"],
+            image_summary="Skin with hair follicles and a small brown lesion.",
+            selected_evidence_text="brown pigmented nevus-like lesion with hair follicle signal.",
+            support_margin=36.0,
+            subtype_support_margin=2.1,
+            contradiction_count=1,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "PIGMENTARY_NEVUS_KERATOSIS"
+    assert "dermatollama_sd198_crowe_sign_pigmentary_rescue" in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_sd198_crowe_sign_rescue_requires_pigmentary_initial_candidate() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Crowe's Sign",
+            "differential_diagnoses": ["Crowe's Sign"],
+            "confidence": "Medium",
+        },
+        agent_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Crowe's Sign"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_dermatollama_sd198_evidence_bundle(
+            early_ddx_candidates=["Actinic keratosis", "Malignant skin cancer"],
+            image_summary="A pale linear scar.",
+            selected_evidence_text="linear scar without pigmentary nevus support.",
+            support_margin=36.0,
+            subtype_support_margin=2.1,
+            contradiction_count=1,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Crowe's Sign"
+    assert "dermatollama_sd198_crowe_sign_pigmentary_rescue" not in result["fusion_decision"]["reasons"]
