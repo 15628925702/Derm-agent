@@ -1,0 +1,431 @@
+{
+  "workflow": "dermatollama / isic2019",
+  "branch": "tune-dermatollama-isic2019",
+  "run_tag": "dermatollama__isic2019__20260509__D",
+  "validation_protocol": "8 / 20 / 40 / 80 / 300 current-code contiguous case validation; GPUs 0,1 only",
+  "stages": {
+    "live8": {
+      "num_cases": 8,
+      "baseline_top1_hits": 2,
+      "agent_top1_hits": 2,
+      "baseline_topk_hits": 5,
+      "agent_topk_hits": 5,
+      "helped": 0,
+      "hurt": 0,
+      "topk_gain": 0,
+      "topk_hurt": 0,
+      "helped_by_label": {},
+      "topk_gain_by_label": {}
+    },
+    "live20": {
+      "num_cases": 20,
+      "baseline_top1_hits": 10,
+      "agent_top1_hits": 11,
+      "baseline_topk_hits": 14,
+      "agent_topk_hits": 14,
+      "helped": 1,
+      "hurt": 0,
+      "topk_gain": 0,
+      "topk_hurt": 0,
+      "helped_by_label": {
+        "MEL": 1
+      },
+      "topk_gain_by_label": {}
+    },
+    "live40": {
+      "num_cases": 40,
+      "baseline_top1_hits": 19,
+      "agent_top1_hits": 20,
+      "baseline_topk_hits": 26,
+      "agent_topk_hits": 26,
+      "helped": 1,
+      "hurt": 0,
+      "topk_gain": 0,
+      "topk_hurt": 0,
+      "helped_by_label": {
+        "MEL": 1
+      },
+      "topk_gain_by_label": {}
+    },
+    "live80": {
+      "num_cases": 80,
+      "baseline_top1_hits": 40,
+      "agent_top1_hits": 42,
+      "baseline_topk_hits": 50,
+      "agent_topk_hits": 50,
+      "helped": 2,
+      "hurt": 0,
+      "topk_gain": 0,
+      "topk_hurt": 0,
+      "helped_by_label": {
+        "MEL": 1,
+        "SCC": 1
+      },
+      "topk_gain_by_label": {}
+    },
+    "live300": {
+      "num_cases": 300,
+      "baseline_top1_hits": 139,
+      "agent_top1_hits": 154,
+      "baseline_topk_hits": 183,
+      "agent_topk_hits": 188,
+      "helped": 15,
+      "hurt": 0,
+      "topk_gain": 5,
+      "topk_hurt": 0,
+      "helped_by_label": {
+        "MEL": 7,
+        "SCC": 5,
+        "AK": 2,
+        "BKL": 1
+      },
+      "topk_gain_by_label": {
+        "AK": 2,
+        "SCC": 1,
+        "BKL": 1,
+        "MEL": 1
+      }
+    }
+  },
+  "live300_changed_cases": [
+    {
+      "case_id": "ISIC_0010329",
+      "ground_truth_canonical_label": "MEL",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Malignant Melanoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "0",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live20_r3_add12/shard_008_006/case_level_compare_export_20260509T092505Z.csv"
+    },
+    {
+      "case_id": "ISIC_0033626",
+      "ground_truth_canonical_label": "DF",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Basal Cell Carcinoma",
+      "agent_vs_baseline_outcome": "unchanged",
+      "topk_hit_delta": "0",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live80_add40/shard_060_020/case_level_compare_export_20260509T094255Z.csv"
+    },
+    {
+      "case_id": "ISIC_0061263",
+      "ground_truth_canonical_label": "SCC",
+      "baseline_final_diagnosis": "Actinic Keratosis",
+      "agent_final_diagnosis": "Squamous Cell Carcinoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "0",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live80_add40/shard_060_020/case_level_compare_export_20260509T094255Z.csv"
+    },
+    {
+      "case_id": "ISIC_0070484",
+      "ground_truth_canonical_label": "AK",
+      "baseline_final_diagnosis": "Basal Cell Carcinoma",
+      "agent_final_diagnosis": "Actinic Keratosis",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "1",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_080_055/case_level_compare_export_20260509T100423Z.csv"
+    },
+    {
+      "case_id": "ISIC_0055478",
+      "ground_truth_canonical_label": "SCC",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Squamous Cell Carcinoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "1",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_080_055/case_level_compare_export_20260509T100423Z.csv"
+    },
+    {
+      "case_id": "ISIC_0065778",
+      "ground_truth_canonical_label": "SCC",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Squamous Cell Carcinoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "0",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_080_055/case_level_compare_export_20260509T100423Z.csv"
+    },
+    {
+      "case_id": "ISIC_0057655",
+      "ground_truth_canonical_label": "MEL",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Malignant Melanoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "0",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_190_055/case_level_compare_export_20260509T105712Z.csv"
+    },
+    {
+      "case_id": "ISIC_0072061",
+      "ground_truth_canonical_label": "MEL",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Malignant Melanoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "0",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_190_055/case_level_compare_export_20260509T105712Z.csv"
+    },
+    {
+      "case_id": "ISIC_0066781",
+      "ground_truth_canonical_label": "SCC",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Squamous Cell Carcinoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "0",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_190_055/case_level_compare_export_20260509T105712Z.csv"
+    },
+    {
+      "case_id": "ISIC_0068175",
+      "ground_truth_canonical_label": "AK",
+      "baseline_final_diagnosis": "Basal Cell Carcinoma",
+      "agent_final_diagnosis": "Actinic Keratosis",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "1",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_190_055/case_level_compare_export_20260509T105712Z.csv"
+    },
+    {
+      "case_id": "ISIC_0028465",
+      "ground_truth_canonical_label": "MEL",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Malignant Melanoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "0",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_190_055/case_level_compare_export_20260509T105712Z.csv"
+    },
+    {
+      "case_id": "ISIC_0013474_downsampled",
+      "ground_truth_canonical_label": "BKL",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Seborrheic Keratosis",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "0",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_135_055/case_level_compare_export_20260509T100423Z.csv"
+    },
+    {
+      "case_id": "ISIC_0054515",
+      "ground_truth_canonical_label": "SCC",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Squamous Cell Carcinoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "0",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_135_055/case_level_compare_export_20260509T100423Z.csv"
+    },
+    {
+      "case_id": "ISIC_0067025",
+      "ground_truth_canonical_label": "DF",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Basal Cell Carcinoma",
+      "agent_vs_baseline_outcome": "unchanged",
+      "topk_hit_delta": "0",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_135_055/case_level_compare_export_20260509T100423Z.csv"
+    },
+    {
+      "case_id": "ISIC_0013652_downsampled",
+      "ground_truth_canonical_label": "MEL",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Malignant Melanoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "0",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_245_055/case_level_compare_export_20260509T105712Z.csv"
+    },
+    {
+      "case_id": "ISIC_0054912",
+      "ground_truth_canonical_label": "MEL",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Malignant Melanoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "0",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_245_055/case_level_compare_export_20260509T105712Z.csv"
+    },
+    {
+      "case_id": "ISIC_0028051",
+      "ground_truth_canonical_label": "MEL",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Malignant Melanoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "1",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_245_055/case_level_compare_export_20260509T105712Z.csv"
+    }
+  ],
+  "live300_helped_cases": [
+    {
+      "case_id": "ISIC_0010329",
+      "ground_truth_canonical_label": "MEL",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Malignant Melanoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "0",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live20_r3_add12/shard_008_006/case_level_compare_export_20260509T092505Z.csv"
+    },
+    {
+      "case_id": "ISIC_0061263",
+      "ground_truth_canonical_label": "SCC",
+      "baseline_final_diagnosis": "Actinic Keratosis",
+      "agent_final_diagnosis": "Squamous Cell Carcinoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "0",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live80_add40/shard_060_020/case_level_compare_export_20260509T094255Z.csv"
+    },
+    {
+      "case_id": "ISIC_0070484",
+      "ground_truth_canonical_label": "AK",
+      "baseline_final_diagnosis": "Basal Cell Carcinoma",
+      "agent_final_diagnosis": "Actinic Keratosis",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "1",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_080_055/case_level_compare_export_20260509T100423Z.csv"
+    },
+    {
+      "case_id": "ISIC_0055478",
+      "ground_truth_canonical_label": "SCC",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Squamous Cell Carcinoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "1",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_080_055/case_level_compare_export_20260509T100423Z.csv"
+    },
+    {
+      "case_id": "ISIC_0065778",
+      "ground_truth_canonical_label": "SCC",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Squamous Cell Carcinoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "0",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_080_055/case_level_compare_export_20260509T100423Z.csv"
+    },
+    {
+      "case_id": "ISIC_0057655",
+      "ground_truth_canonical_label": "MEL",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Malignant Melanoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "0",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_190_055/case_level_compare_export_20260509T105712Z.csv"
+    },
+    {
+      "case_id": "ISIC_0072061",
+      "ground_truth_canonical_label": "MEL",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Malignant Melanoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "0",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_190_055/case_level_compare_export_20260509T105712Z.csv"
+    },
+    {
+      "case_id": "ISIC_0066781",
+      "ground_truth_canonical_label": "SCC",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Squamous Cell Carcinoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "0",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_190_055/case_level_compare_export_20260509T105712Z.csv"
+    },
+    {
+      "case_id": "ISIC_0068175",
+      "ground_truth_canonical_label": "AK",
+      "baseline_final_diagnosis": "Basal Cell Carcinoma",
+      "agent_final_diagnosis": "Actinic Keratosis",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "1",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_190_055/case_level_compare_export_20260509T105712Z.csv"
+    },
+    {
+      "case_id": "ISIC_0028465",
+      "ground_truth_canonical_label": "MEL",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Malignant Melanoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "0",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_190_055/case_level_compare_export_20260509T105712Z.csv"
+    },
+    {
+      "case_id": "ISIC_0013474_downsampled",
+      "ground_truth_canonical_label": "BKL",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Seborrheic Keratosis",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "0",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_135_055/case_level_compare_export_20260509T100423Z.csv"
+    },
+    {
+      "case_id": "ISIC_0054515",
+      "ground_truth_canonical_label": "SCC",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Squamous Cell Carcinoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "0",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_135_055/case_level_compare_export_20260509T100423Z.csv"
+    },
+    {
+      "case_id": "ISIC_0013652_downsampled",
+      "ground_truth_canonical_label": "MEL",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Malignant Melanoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "0",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_245_055/case_level_compare_export_20260509T105712Z.csv"
+    },
+    {
+      "case_id": "ISIC_0054912",
+      "ground_truth_canonical_label": "MEL",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Malignant Melanoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "0",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_245_055/case_level_compare_export_20260509T105712Z.csv"
+    },
+    {
+      "case_id": "ISIC_0028051",
+      "ground_truth_canonical_label": "MEL",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Malignant Melanoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "1",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_245_055/case_level_compare_export_20260509T105712Z.csv"
+    }
+  ],
+  "live300_hurt_cases": [],
+  "live300_topk_gain_cases": [
+    {
+      "case_id": "ISIC_0070484",
+      "ground_truth_canonical_label": "AK",
+      "baseline_final_diagnosis": "Basal Cell Carcinoma",
+      "agent_final_diagnosis": "Actinic Keratosis",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "1",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_080_055/case_level_compare_export_20260509T100423Z.csv"
+    },
+    {
+      "case_id": "ISIC_0055478",
+      "ground_truth_canonical_label": "SCC",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Squamous Cell Carcinoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "1",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_080_055/case_level_compare_export_20260509T100423Z.csv"
+    },
+    {
+      "case_id": "ISIC_0068175",
+      "ground_truth_canonical_label": "AK",
+      "baseline_final_diagnosis": "Basal Cell Carcinoma",
+      "agent_final_diagnosis": "Actinic Keratosis",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "1",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_190_055/case_level_compare_export_20260509T105712Z.csv"
+    },
+    {
+      "case_id": "ISIC_0029107",
+      "ground_truth_canonical_label": "BKL",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Nevus",
+      "agent_vs_baseline_outcome": "unchanged",
+      "topk_hit_delta": "1",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_135_055/case_level_compare_export_20260509T100423Z.csv"
+    },
+    {
+      "case_id": "ISIC_0028051",
+      "ground_truth_canonical_label": "MEL",
+      "baseline_final_diagnosis": "Nevus",
+      "agent_final_diagnosis": "Malignant Melanoma",
+      "agent_vs_baseline_outcome": "helped",
+      "topk_hit_delta": "1",
+      "source_csv": "paper_data/workflow_tuning_runs_20260509/dermatollama__isic2019__20260509__D/case_level_exports/live300_add220/shard_245_055/case_level_compare_export_20260509T105712Z.csv"
+    }
+  ],
+  "live300_topk_hurt_cases": []
+}
