@@ -192,6 +192,60 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("dermatollama_sd198_sun_damage_consensus_override")
+        elif dermatollama_ham10000_nevus_label := _dermatollama_ham10000_truncal_reticular_nevus_top1_promotion_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            baseline_preview=baseline_preview,
+            selected_evidence=selected_evidence,
+            skill_outputs=skill_outputs,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = dermatollama_ham10000_nevus_label
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("dermatollama_ham10000_truncal_reticular_nevus_top1_promotion")
+        elif dermatollama_ham10000_agent_bkl_label := _dermatollama_ham10000_agent_bkl_top1_promotion_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            agent_differentials=agent_differentials,
+            baseline_preview=baseline_preview,
+            selected_evidence=selected_evidence,
+            skill_outputs=skill_outputs,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = dermatollama_ham10000_agent_bkl_label
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("dermatollama_ham10000_agent_bkl_structured_top1_promotion")
+        elif dermatollama_ham10000_bkl_label := _dermatollama_ham10000_bkl_top1_promotion_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            agent_differentials=agent_differentials,
+            skill_outputs=skill_outputs,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = dermatollama_ham10000_bkl_label
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("dermatollama_ham10000_bkl_structure_top1_promotion")
         elif medgemma_ham10000_akiec_label := _medgemma_ham10000_face_akiec_surface_promotion_label(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
@@ -913,6 +967,7 @@ def decide_conservative_agent_fusion(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
             agent_label=agent_label,
+            agent_differentials=agent_differentials,
             selected_evidence_present=selected_evidence_present,
             support_margin=support_margin,
             subtype_support_margin=subtype_support_margin,
@@ -1235,6 +1290,9 @@ def decide_conservative_agent_fusion(
         "dermatollama_isic_headneck_actinic_topk_promotion",
         "dermatollama_isic_older_irregular_scc_topk_promotion",
         "dermatollama_isic_truncal_scaly_bkl_topk_promotion",
+        "dermatollama_ham10000_truncal_reticular_nevus_top1_promotion",
+        "dermatollama_ham10000_agent_bkl_structured_top1_promotion",
+        "dermatollama_ham10000_bkl_structure_top1_promotion",
         "medgemma_scin_acne_follicular_promotion",
         "medgemma_scin_headneck_skin_cancer_promotion",
         "medgemma_scin_face_acne_evidence_promotion",
@@ -1289,6 +1347,21 @@ def decide_conservative_agent_fusion(
     )
     if differential_promotions:
         reasons.append("medgemma_scin_initial_grouped_differential_expansion")
+    dermatollama_ham10000_promotions = _dermatollama_ham10000_raw_agent_differential_promotions(
+        workflow_context=workflow_context,
+        baseline_label=baseline_label,
+        baseline_differentials=baseline_differentials,
+        agent_label=agent_label,
+        agent_differentials=agent_differentials,
+        selected_evidence_present=selected_evidence_present,
+        use_agent_output=use_agent_output,
+        uncertainty_level=uncertainty_level,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if dermatollama_ham10000_promotions:
+        differential_promotions = list(differential_promotions) + dermatollama_ham10000_promotions
+        reasons.append("dermatollama_ham10000_raw_agent_differential_expansion")
 
     return {
         "use_agent_output": bool(use_agent_output),
@@ -1550,6 +1623,7 @@ def _route_specific_fallback_reason(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
             agent_label=agent_label,
+            agent_differentials=agent_differentials,
             selected_evidence_present=selected_evidence_present,
             support_margin=support_margin,
             subtype_support_margin=subtype_support_margin,
@@ -3587,11 +3661,302 @@ def _allow_dermatollama_pad20_guarded_override(
     return False
 
 
+def _dermatollama_ham10000_workflow_site(
+    *,
+    workflow_context: dict[str, Any],
+    skill_outputs: dict[str, Any] | None = None,
+) -> str:
+    clinical_metadata = workflow_context.get("clinical_metadata", {})
+    if isinstance(clinical_metadata, dict):
+        site = str(
+            clinical_metadata.get("localization")
+            or clinical_metadata.get("region")
+            or clinical_metadata.get("anatom_site_general")
+            or ""
+        ).strip().lower()
+        if site:
+            return site
+    if isinstance(skill_outputs, dict):
+        distribution = dict(skill_outputs.get("distribution_analysis_skill", {}) or {})
+        return str(distribution.get("body_location", "")).strip().lower()
+    return ""
+
+
+def _dermatollama_ham10000_bkl_top1_promotion_label(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    agent_differentials: list[str],
+    skill_outputs: dict[str, Any],
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> str:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "dermatollama__ham10000__baseline_guard_v1":
+        return ""
+    if not selected_evidence_present:
+        return ""
+    if str(uncertainty_level or "").strip().lower() != "low":
+        return ""
+    if support_margin < 35.0 or support_margin > 42.5 or subtype_support_margin > 2.0:
+        return ""
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if baseline_canonical != "BCC" or agent_canonical != "NV":
+        return ""
+    if not _contains_canonical_label(
+        agent_differentials,
+        canonical_label="BKL",
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    ):
+        return ""
+
+    site = _dermatollama_ham10000_workflow_site(workflow_context=workflow_context, skill_outputs=skill_outputs)
+    surface = str(
+        dict(skill_outputs.get("border_surface_analysis_skill", {}) or {}).get("surface_texture", "")
+    ).strip().lower()
+    border_clarity = str(
+        dict(skill_outputs.get("border_surface_analysis_skill", {}) or {}).get("border_clarity", "")
+    ).strip().lower()
+    border_irregularity = str(
+        dict(skill_outputs.get("border_surface_analysis_skill", {}) or {}).get("border_irregularity", "")
+    ).strip().lower()
+    distribution = dict(skill_outputs.get("distribution_analysis_skill", {}) or {})
+    clustering = str(distribution.get("clustering_pattern", "")).strip().lower()
+    lesion_description = dict(skill_outputs.get("lesion_description_structuring_skill", {}) or {})
+    color_text = " ".join(str(item).lower() for item in lesion_description.get("color", []) or [])
+    evidence_text = " ".join(
+        [
+            surface,
+            border_clarity,
+            border_irregularity,
+            clustering,
+            color_text,
+        ]
+    )
+
+    if site in {"trunk", "chest"} and ("cluster" in clustering or "smooth" in surface):
+        return "Seborrheic Keratosis"
+    if site == "face" and "pinkish-tan" in evidence_text:
+        return "Seborrheic Keratosis"
+    if site == "back" and ("cobblestone" in surface or (border_clarity == "well-defined" and border_irregularity == "regular")):
+        return "Seborrheic Keratosis"
+
+    return ""
+
+
+def _dermatollama_ham10000_agent_bkl_top1_promotion_label(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    agent_differentials: list[str],
+    baseline_preview: dict[str, Any],
+    selected_evidence: list[Any],
+    skill_outputs: dict[str, Any],
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> str:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "dermatollama__ham10000__baseline_guard_v1":
+        return ""
+    if not selected_evidence_present:
+        return ""
+    if str(uncertainty_level or "").strip().lower() != "low":
+        return ""
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if baseline_canonical != "BCC" or agent_canonical != "BKL":
+        return ""
+    if not _contains_canonical_label(
+        agent_differentials,
+        canonical_label="BKL",
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    ):
+        return ""
+
+    site = _dermatollama_ham10000_workflow_site(workflow_context=workflow_context, skill_outputs=skill_outputs)
+    evidence_text = _ham10000_evidence_text(
+        baseline_preview=baseline_preview,
+        selected_evidence=selected_evidence,
+        skill_outputs=skill_outputs,
+    )
+    if not any(marker in evidence_text for marker in ("globule", "milia", "reticular", "network")):
+        return ""
+    if "vascular" in evidence_text or "purple" in evidence_text:
+        return ""
+
+    low_margin_site_gate = (
+        40.0 <= support_margin <= 43.0
+        and subtype_support_margin <= 17.0
+        and site in {"chest", "face", "lower extremity"}
+        and any(marker in evidence_text for marker in ("rough", "raised", "plaque", "waxy", "stuck"))
+    )
+    upper_extremity_rough_gate = (
+        site == "upper extremity"
+        and 60.0 <= support_margin <= 63.0
+        and 15.0 <= subtype_support_margin <= 17.0
+        and "rough" in evidence_text
+        and any(marker in evidence_text for marker in ("cluster", "mottled", "globule"))
+    )
+    face_scaled_gate = (
+        site == "face"
+        and 60.0 <= support_margin <= 62.0
+        and 15.0 <= subtype_support_margin <= 17.0
+        and any(marker in evidence_text for marker in ("rough", "scaly", "plaque"))
+    )
+    if low_margin_site_gate or upper_extremity_rough_gate or face_scaled_gate:
+        return "Seborrheic Keratosis"
+
+    return ""
+
+
+def _dermatollama_ham10000_truncal_reticular_nevus_top1_promotion_label(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    baseline_preview: dict[str, Any],
+    selected_evidence: list[Any],
+    skill_outputs: dict[str, Any],
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> str:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "dermatollama__ham10000__baseline_guard_v1":
+        return ""
+    if not selected_evidence_present:
+        return ""
+    if str(uncertainty_level or "").strip().lower() not in {"low", "unknown"}:
+        return ""
+    if support_margin < 40.0 or support_margin > 65.0 or subtype_support_margin > 16.5:
+        return ""
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if baseline_canonical != "BCC" or agent_canonical != "NV":
+        return ""
+
+    site = _dermatollama_ham10000_workflow_site(workflow_context=workflow_context, skill_outputs=skill_outputs)
+    if site != "trunk":
+        return ""
+
+    evidence_text = _ham10000_evidence_text(
+        baseline_preview=baseline_preview,
+        selected_evidence=selected_evidence,
+        skill_outputs=skill_outputs,
+    )
+    if "reticular" not in evidence_text:
+        return ""
+    raised_markers = {"raised", "nodule", "nodular", "papule", "plaque"}
+    if any(marker in evidence_text for marker in raised_markers):
+        return ""
+
+    border_surface = dict(skill_outputs.get("border_surface_analysis_skill", {}) or {})
+    surface = str(border_surface.get("surface_texture", "")).strip().lower()
+    scaling_presence = str(border_surface.get("scaling_presence", "")).strip().lower()
+    if surface in {"scaly", "crusted", "crusting"} or scaling_presence == "present" or "crust" in evidence_text:
+        return ""
+
+    return "Nevus"
+
+
+def _dermatollama_ham10000_raw_agent_differential_promotions(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    baseline_differentials: list[str],
+    agent_label: str,
+    agent_differentials: list[str],
+    selected_evidence_present: bool,
+    use_agent_output: bool,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> list[str]:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "dermatollama__ham10000__baseline_guard_v1":
+        return []
+    if not selected_evidence_present or use_agent_output:
+        return []
+    if str(uncertainty_level or "").strip().lower() != "low":
+        return []
+
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if agent_canonical not in {"NV", "BKL", "MEL", "AKIEC"}:
+        return []
+
+    existing = {
+        canonicalize_label(
+            label,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+        for label in [baseline_label, *baseline_differentials]
+    }
+    if agent_canonical in existing:
+        return []
+
+    display_labels = {
+        "NV": "Nevus",
+        "BKL": "Seborrheic Keratosis",
+        "MEL": "Malignant Melanoma",
+        "AKIEC": "Actinic Keratosis",
+    }
+    return [display_labels[agent_canonical]]
+
+
 def _allow_dermatollama_ham10000_guarded_override(
     *,
     workflow_context: dict[str, Any],
     baseline_label: str,
     agent_label: str,
+    agent_differentials: list[str],
     selected_evidence_present: bool,
     support_margin: float,
     subtype_support_margin: float,
@@ -3619,6 +3984,15 @@ def _allow_dermatollama_ham10000_guarded_override(
     )
 
     if baseline_canonical == "BCC" and agent_canonical == "NV":
+        if _dermatollama_ham10000_workflow_site(workflow_context=workflow_context) == "back":
+            return False
+        if _contains_canonical_label(
+            agent_differentials,
+            canonical_label="AKIEC",
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            return False
         return support_margin < 40.0 and subtype_support_margin < 10.0
 
     return False

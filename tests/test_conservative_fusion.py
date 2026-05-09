@@ -136,6 +136,58 @@ def _dermatollama_isic2019_evidence_bundle(
     }
 
 
+def _dermatollama_ham10000_evidence_bundle(
+    *,
+    localization: str,
+    surface_texture: str = "smooth",
+    border_clarity: str = "poor",
+    border_irregularity: str = "irregular",
+    clustering_pattern: str = "solitary",
+    color: list[str] | None = None,
+    primary_lesion_morphology: str = "macule",
+    support_margin: float = 39.0,
+    subtype_support_margin: float = 1.0,
+    uncertainty_level: str = "low",
+    workflow_cell_id: str = "dermatollama__ham10000__baseline_guard_v1",
+) -> dict:
+    return {
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": workflow_cell_id,
+                    "workflow_profile": "sparse_lesion_workflow",
+                    "label_space_id": "ham10000_full",
+                    "dataset_name": "ham10000",
+                    "clinical_metadata": {
+                        "localization": localization,
+                        "region": localization,
+                    },
+                },
+                "selected_evidence_present": True,
+                "support_margin": support_margin,
+                "subtype_support_margin": subtype_support_margin,
+                "uncertainty_level": uncertainty_level,
+            },
+        },
+        "skill_outputs": {
+            "border_surface_analysis_skill": {
+                "border_clarity": border_clarity,
+                "border_irregularity": border_irregularity,
+                "surface_texture": surface_texture,
+            },
+            "distribution_analysis_skill": {
+                "body_location": localization,
+                "clustering_pattern": clustering_pattern,
+            },
+            "lesion_description_structuring_skill": {
+                "primary_lesion_morphology": primary_lesion_morphology,
+                "color": list(color or ["brown"]),
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+
 def test_dermatollama_isic_upper_extremity_melanoma_topk_promotion() -> None:
     baseline_output = {"final_diagnosis": "Nevus", "differential_diagnoses": ["Nevus"], "confidence": "High"}
     agent_output = {
@@ -5072,3 +5124,395 @@ def test_qwen_ham10000_bkl_promotion_requires_red_asymmetry() -> None:
 
     assert result["final_diagnosis"] == "Actinic Keratosis"
     assert "qwen_ham10000_red_asymmetric_bkl_topk_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_ham10000_promotes_trunk_bkl_structure() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "medium",
+        },
+        agent_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Seborrheic Keratosis", "Basal Cell Carcinoma"],
+            "confidence": "medium",
+        },
+        evidence_bundle=_dermatollama_ham10000_evidence_bundle(
+            localization="trunk",
+            surface_texture="smooth",
+            clustering_pattern="solitary",
+            support_margin=38.6,
+            subtype_support_margin=0.7,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Seborrheic Keratosis"
+    assert "dermatollama_ham10000_bkl_structure_top1_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_ham10000_promotes_back_cobblestone_bkl_structure() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "medium",
+        },
+        agent_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Seborrheic Keratosis", "Basal Cell Carcinoma"],
+            "confidence": "medium",
+        },
+        evidence_bundle=_dermatollama_ham10000_evidence_bundle(
+            localization="back",
+            surface_texture="cobblestone-like",
+            border_clarity="well-defined",
+            border_irregularity="regular",
+            clustering_pattern="clustered",
+            support_margin=38.2,
+            subtype_support_margin=0.5,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Seborrheic Keratosis"
+    assert "dermatollama_ham10000_bkl_structure_top1_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_ham10000_promotes_agent_bkl_low_margin_structure() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "medium",
+        },
+        agent_output={
+            "final_diagnosis": "Seborrheic Keratosis",
+            "differential_diagnoses": ["Basal Cell Carcinoma", "Seborrheic Keratosis"],
+            "confidence": "medium",
+        },
+        evidence_bundle=_dermatollama_ham10000_evidence_bundle(
+            localization="chest",
+            primary_lesion_morphology="pigmented macule with reticular globules",
+            surface_texture="rough",
+            support_margin=42.4,
+            subtype_support_margin=4.6,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Seborrheic Keratosis"
+    assert "dermatollama_ham10000_agent_bkl_structured_top1_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_ham10000_promotes_agent_bkl_upper_extremity_rough_cluster() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "medium",
+        },
+        agent_output={
+            "final_diagnosis": "Seborrheic Keratosis",
+            "differential_diagnoses": ["Basal Cell Carcinoma", "Malignant Melanoma", "Seborrheic Keratosis"],
+            "confidence": "medium",
+        },
+        evidence_bundle=_dermatollama_ham10000_evidence_bundle(
+            localization="upper extremity",
+            primary_lesion_morphology="rough reticular lesion with globules",
+            surface_texture="rough",
+            clustering_pattern="clustered",
+            support_margin=61.9,
+            subtype_support_margin=16.5,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Seborrheic Keratosis"
+    assert "dermatollama_ham10000_agent_bkl_structured_top1_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_ham10000_agent_bkl_promotion_is_cell_bound() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "medium",
+        },
+        agent_output={
+            "final_diagnosis": "Seborrheic Keratosis",
+            "differential_diagnoses": ["Basal Cell Carcinoma", "Seborrheic Keratosis"],
+            "confidence": "medium",
+        },
+        evidence_bundle=_dermatollama_ham10000_evidence_bundle(
+            localization="chest",
+            workflow_cell_id="qwen__ham10000__dataset_best",
+            primary_lesion_morphology="pigmented macule with reticular globules",
+            surface_texture="rough",
+            support_margin=42.4,
+            subtype_support_margin=4.6,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "dermatollama_ham10000_agent_bkl_structured_top1_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_ham10000_agent_bkl_promotion_blocks_back_bcc_risk_pattern() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "medium",
+        },
+        agent_output={
+            "final_diagnosis": "Seborrheic Keratosis",
+            "differential_diagnoses": ["Basal Cell Carcinoma", "Seborrheic Keratosis"],
+            "confidence": "medium",
+        },
+        evidence_bundle=_dermatollama_ham10000_evidence_bundle(
+            localization="back",
+            primary_lesion_morphology="raised plaque with reticular network and globules",
+            surface_texture="rough",
+            support_margin=61.7,
+            subtype_support_margin=22.5,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "dermatollama_ham10000_agent_bkl_structured_top1_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_ham10000_promotes_truncal_reticular_nevus() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "medium",
+        },
+        agent_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Seborrheic Keratosis", "Basal Cell Carcinoma"],
+            "confidence": "medium",
+        },
+        evidence_bundle=_dermatollama_ham10000_evidence_bundle(
+            localization="trunk",
+            primary_lesion_morphology="pigmented macule with reticular pattern",
+            color=["dark brown", "reticular pattern"],
+            surface_texture="smooth",
+            support_margin=60.6,
+            subtype_support_margin=16.2,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "dermatollama_ham10000_truncal_reticular_nevus_top1_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_ham10000_promotes_truncal_reticular_nevus_with_unknown_uncertainty() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "medium",
+        },
+        agent_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Basal Cell Carcinoma"],
+            "confidence": "medium",
+        },
+        evidence_bundle=_dermatollama_ham10000_evidence_bundle(
+            localization="trunk",
+            primary_lesion_morphology="pigmented macule with reticular pattern",
+            color=["brown", "reticular pattern"],
+            surface_texture="smooth",
+            support_margin=63.2,
+            subtype_support_margin=16.4,
+            uncertainty_level="unknown",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "dermatollama_ham10000_truncal_reticular_nevus_top1_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_ham10000_truncal_reticular_nevus_blocks_raised_counterexample() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "medium",
+        },
+        agent_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Seborrheic Keratosis", "Basal Cell Carcinoma"],
+            "confidence": "medium",
+        },
+        evidence_bundle=_dermatollama_ham10000_evidence_bundle(
+            localization="trunk",
+            primary_lesion_morphology="pigmented macule with reticular pattern and raised area",
+            color=["dark brown", "reticular pattern"],
+            surface_texture="rough",
+            support_margin=63.2,
+            subtype_support_margin=15.4,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "dermatollama_ham10000_truncal_reticular_nevus_top1_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_ham10000_truncal_reticular_nevus_is_cell_bound() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "medium",
+        },
+        agent_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Basal Cell Carcinoma"],
+            "confidence": "medium",
+        },
+        evidence_bundle=_dermatollama_ham10000_evidence_bundle(
+            localization="trunk",
+            workflow_cell_id="qwen__ham10000__dataset_best",
+            primary_lesion_morphology="pigmented macule with reticular pattern",
+            color=["dark brown", "reticular pattern"],
+            support_margin=60.6,
+            subtype_support_margin=14.2,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "dermatollama_ham10000_truncal_reticular_nevus_top1_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_ham10000_blocks_back_nevus_override_anchor() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "medium",
+        },
+        agent_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Seborrheic Keratosis", "Basal Cell Carcinoma"],
+            "confidence": "medium",
+        },
+        evidence_bundle=_dermatollama_ham10000_evidence_bundle(
+            localization="back",
+            surface_texture="smooth",
+            border_clarity="poor",
+            border_irregularity="irregular",
+            support_margin=39.9,
+            subtype_support_margin=1.4,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "dermatollama_ham10000_baseline_anchor_guard" in result["fusion_decision"]["reasons"]
+    assert "dermatollama_ham10000_guarded_override" not in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_ham10000_blocks_nevus_override_when_akiec_topk_would_drop() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma", "Actinic Keratosis"],
+            "confidence": "medium",
+        },
+        agent_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": [
+                "Nevus",
+                "Dermatofibroma",
+                "Seborrheic Keratosis",
+                "Vascular lesion",
+                "Basal Cell Carcinoma",
+                "Actinic Keratosis",
+            ],
+            "confidence": "medium",
+        },
+        evidence_bundle=_dermatollama_ham10000_evidence_bundle(
+            localization="scalp",
+            surface_texture="smooth",
+            support_margin=39.0,
+            subtype_support_margin=1.4,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "Actinic Keratosis" in result["differential_diagnoses"]
+    assert "dermatollama_ham10000_guarded_override" not in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_ham10000_preserves_non_back_nevus_override() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "medium",
+        },
+        agent_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Basal Cell Carcinoma"],
+            "confidence": "medium",
+        },
+        evidence_bundle=_dermatollama_ham10000_evidence_bundle(
+            localization="scalp",
+            surface_texture="smooth",
+            support_margin=39.0,
+            subtype_support_margin=1.4,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "dermatollama_ham10000_guarded_override" in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_ham10000_adds_low_uncertainty_raw_agent_differential() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "medium",
+        },
+        agent_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Basal Cell Carcinoma"],
+            "confidence": "medium",
+        },
+        evidence_bundle=_dermatollama_ham10000_evidence_bundle(
+            localization="upper extremity",
+            support_margin=62.0,
+            subtype_support_margin=15.0,
+            uncertainty_level="low",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "Nevus" in result["differential_diagnoses"]
+    assert "dermatollama_ham10000_raw_agent_differential_expansion" in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_ham10000_raw_agent_differential_is_cell_bound() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "medium",
+        },
+        agent_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "medium",
+        },
+        evidence_bundle=_dermatollama_ham10000_evidence_bundle(
+            localization="upper extremity",
+            workflow_cell_id="qwen__ham10000__dataset_best",
+            support_margin=62.0,
+            subtype_support_margin=15.0,
+            uncertainty_level="low",
+        ),
+    )
+
+    assert "Nevus" not in result["differential_diagnoses"]
+    assert "dermatollama_ham10000_raw_agent_differential_expansion" not in result["fusion_decision"]["reasons"]
