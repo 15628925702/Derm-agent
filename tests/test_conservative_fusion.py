@@ -143,6 +143,246 @@ def _qwen_ham10000_evidence_bundle(
     }
 
 
+def _qwen_pad20_evidence_bundle(
+    *,
+    region: str,
+    age: str = "70",
+    selected_evidence_text: str,
+    support_margin: float = 62.0,
+    subtype_support_margin: float = 8.0,
+    uncertainty_level: str = "medium",
+    risk_level: str = "medium",
+    workflow_cell_id: str = "qwen__pad20__dataset_best",
+) -> dict:
+    return {
+        "selected_evidence": [
+            {
+                "source_name": "lesion_description_structuring_skill",
+                "summary": f"lesion_description_structuring_skill: {selected_evidence_text}",
+            }
+        ],
+        "skill_outputs": {
+            "lesion_description_structuring_skill": {
+                "primary_lesion_morphology": selected_evidence_text,
+                "surface": [selected_evidence_text],
+                "color": [selected_evidence_text],
+            },
+            "malignancy_risk_assessment_skill": {
+                "risk_level": risk_level,
+                "risk_evidence": [selected_evidence_text],
+            },
+            "ack_scc_specialist_skill": {
+                "differentiation_features": [selected_evidence_text],
+            },
+        },
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": workflow_cell_id,
+                    "workflow_profile": "clinical_full_taxonomy_lesion_workflow",
+                    "dataset_workflow_profile": "clinical_full_taxonomy_lesion_workflow",
+                    "label_space_id": "derm_six",
+                    "dataset_name": "pad_ufes_20",
+                    "clinical_metadata": {"region": region, "age": age},
+                },
+                "selected_evidence_present": True,
+                "support_margin": support_margin,
+                "subtype_support_margin": subtype_support_margin,
+                "uncertainty_level": uncertainty_level,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+
+def test_qwen_pad20_sun_exposed_ack_topk_promotion() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Seborrheic Keratosis",
+            "differential_diagnoses": ["Seborrheic Keratosis", "Actinic Keratosis", "Basal Cell Carcinoma"],
+            "confidence": "Moderate",
+        },
+        agent_output={
+            "final_diagnosis": "Seborrheic Keratosis",
+            "differential_diagnoses": ["Seborrheic Keratosis", "Actinic Keratosis", "Basal Cell Carcinoma"],
+            "confidence": "Moderate",
+        },
+        evidence_bundle=_qwen_pad20_evidence_bundle(
+            region="FOREARM",
+            selected_evidence_text="rough crusted erythematous plaque with scaling",
+            subtype_support_margin=7.7,
+            risk_level="medium",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Actinic Keratosis"
+    assert "qwen_pad20_sun_exposed_ack_topk_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_pad20_sun_exposed_ack_topk_promotion_blocks_low_risk_sek_anchor() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Seborrheic Keratosis",
+            "differential_diagnoses": ["Seborrheic Keratosis", "Actinic Keratosis"],
+            "confidence": "Moderate",
+        },
+        agent_output={
+            "final_diagnosis": "Seborrheic Keratosis",
+            "differential_diagnoses": ["Seborrheic Keratosis", "Actinic Keratosis"],
+            "confidence": "Moderate",
+        },
+        evidence_bundle=_qwen_pad20_evidence_bundle(
+            region="FOREARM",
+            selected_evidence_text="brown rough papule without alarming keratinocyte risk",
+            subtype_support_margin=28.4,
+            risk_level="low",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Seborrheic Keratosis"
+    assert "qwen_pad20_sun_exposed_ack_topk_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_pad20_scc_to_bcc_central_ulcer_topk_promotion() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Squamous Cell Carcinoma",
+            "differential_diagnoses": ["Squamous Cell Carcinoma", "Basal Cell Carcinoma"],
+            "confidence": "Moderate",
+        },
+        agent_output={
+            "final_diagnosis": "Squamous Cell Carcinoma",
+            "differential_diagnoses": ["Squamous Cell Carcinoma", "Basal Cell Carcinoma"],
+            "confidence": "Moderate",
+        },
+        evidence_bundle=_qwen_pad20_evidence_bundle(
+            region="CHEST",
+            selected_evidence_text="central depression with ulcerated pearly rolled edge",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "qwen_pad20_scc_to_bcc_central_ulcer_topk_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_pad20_sek_to_bcc_central_ulcer_topk_promotion() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Seborrheic Keratosis",
+            "differential_diagnoses": ["Seborrheic Keratosis", "Basal Cell Carcinoma"],
+            "confidence": "Moderate",
+        },
+        agent_output={
+            "final_diagnosis": "Seborrheic Keratosis",
+            "differential_diagnoses": ["Seborrheic Keratosis", "Basal Cell Carcinoma"],
+            "confidence": "Moderate",
+        },
+        evidence_bundle=_qwen_pad20_evidence_bundle(
+            region="BACK",
+            selected_evidence_text="central depression with ulcerated rolled border",
+            risk_level="medium",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "qwen_pad20_sek_to_bcc_central_ulcer_topk_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_pad20_older_keratinocyte_scc_topk_promotion() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Seborrheic Keratosis",
+            "differential_diagnoses": ["Seborrheic Keratosis", "Squamous Cell Carcinoma"],
+            "confidence": "Moderate",
+        },
+        agent_output={
+            "final_diagnosis": "Seborrheic Keratosis",
+            "differential_diagnoses": ["Seborrheic Keratosis", "Squamous Cell Carcinoma"],
+            "confidence": "Moderate",
+        },
+        evidence_bundle=_qwen_pad20_evidence_bundle(
+            region="CHEST",
+            age="72",
+            selected_evidence_text="rough erythematous crusted keratinocyte plaque",
+            risk_level="medium",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Squamous Cell Carcinoma"
+    assert "qwen_pad20_older_keratinocyte_scc_topk_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_pad20_young_low_risk_nevus_topk_promotion() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "Moderate",
+        },
+        agent_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma", "Nevus"],
+            "confidence": "Moderate",
+        },
+        evidence_bundle=_qwen_pad20_evidence_bundle(
+            region="FACE",
+            age="23",
+            selected_evidence_text="smooth well-circumscribed small papule",
+            risk_level="low",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "qwen_pad20_young_low_risk_nevus_topk_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_pad20_baseline_anchor_blocks_malignant_to_benign_drift() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "Moderate",
+        },
+        agent_output={
+            "final_diagnosis": "Seborrheic Keratosis",
+            "differential_diagnoses": ["Seborrheic Keratosis", "Basal Cell Carcinoma"],
+            "confidence": "Moderate",
+        },
+        evidence_bundle=_qwen_pad20_evidence_bundle(
+            region="FACE",
+            selected_evidence_text="low support for benign drift",
+            support_margin=6.0,
+            subtype_support_margin=2.0,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "qwen_pad20_baseline_anchor_guard" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_pad20_fusion_requires_target_workflow_cell() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Seborrheic Keratosis",
+            "differential_diagnoses": ["Seborrheic Keratosis", "Actinic Keratosis"],
+            "confidence": "Moderate",
+        },
+        agent_output={
+            "final_diagnosis": "Seborrheic Keratosis",
+            "differential_diagnoses": ["Seborrheic Keratosis", "Actinic Keratosis"],
+            "confidence": "Moderate",
+        },
+        evidence_bundle=_qwen_pad20_evidence_bundle(
+            region="FOREARM",
+            selected_evidence_text="rough crusted erythematous plaque with scaling",
+            workflow_cell_id="qwen__ham10000__dataset_best",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Seborrheic Keratosis"
+    assert "qwen_pad20_sun_exposed_ack_topk_promotion" not in result["fusion_decision"]["reasons"]
+
+
 def _dermatollama_isic2019_evidence_bundle(
     *,
     site: str,

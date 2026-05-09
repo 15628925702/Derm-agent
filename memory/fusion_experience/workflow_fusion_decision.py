@@ -890,6 +890,24 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append(qwen_scin_grouped_promotion[1])
+        elif qwen_pad20_fusion := _qwen_pad20_fusion_label_and_reason(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            agent_differentials=agent_differentials,
+            selected_evidence=selected_evidence,
+            skill_outputs=skill_outputs,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = qwen_pad20_fusion[0]
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append(qwen_pad20_fusion[1])
         elif _allow_medgemma_scin_face_acne_evidence_promotion(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
@@ -1341,6 +1359,13 @@ def decide_conservative_agent_fusion(
         "qwen_scin_headneck_medium_risk_bcc_grouped_promotion",
         "qwen_scin_back_hand_malignant_grouped_promotion",
         "qwen_scin_pigment_nevus_topk_grouped_promotion",
+        "qwen_pad20_sun_exposed_ack_topk_promotion",
+        "qwen_pad20_scc_to_bcc_central_ulcer_topk_promotion",
+        "qwen_pad20_sek_to_bcc_central_ulcer_topk_promotion",
+        "qwen_pad20_older_keratinocyte_scc_topk_promotion",
+        "qwen_pad20_young_low_risk_nevus_topk_promotion",
+        "qwen_pad20_baseline_anchor_guard",
+        "qwen_pad20_agent_baseline_agreement",
         "medgemma_scin_acne_follicular_promotion",
         "medgemma_scin_headneck_skin_cancer_promotion",
         "medgemma_scin_face_acne_evidence_promotion",
@@ -3334,6 +3359,126 @@ def _qwen_ham10000_topk_promotion_label_and_reason(
         return "Seborrheic Keratosis", "qwen_ham10000_red_asymmetric_bkl_topk_promotion"
 
     return None
+
+
+def _qwen_pad20_fusion_label_and_reason(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    agent_differentials: list[str],
+    selected_evidence: list[Any],
+    skill_outputs: dict[str, Any],
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> tuple[str, str] | None:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "qwen__pad20__dataset_best":
+        return None
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    differential_canonicals = {
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in agent_differentials
+    }
+    metadata = _workflow_clinical_metadata(workflow_context)
+    region = str(metadata.get("region", "")).strip().upper()
+    age = _safe_float(metadata.get("age"))
+    evidence_text = " ".join(
+        [
+            _selected_evidence_text(selected_evidence),
+            _medgemma_scin_skill_text(
+                skill_outputs,
+                "lesion_description_structuring_skill",
+                "morphology_analysis_skill",
+                "color_pattern_analysis_skill",
+                "malignancy_risk_assessment_skill",
+                "ack_scc_specialist_skill",
+                "differential_compare_skill",
+                "exclusion_reasoning_skill",
+            ),
+        ]
+    ).lower()
+    risk_output = skill_outputs.get("malignancy_risk_assessment_skill", {})
+    risk_level = str(risk_output.get("risk_level", "")).strip().lower() if isinstance(risk_output, dict) else ""
+    uncertainty = str(uncertainty_level or "").strip().lower()
+
+    if selected_evidence_present:
+        if (
+            baseline_canonical == "SEK"
+            and agent_canonical == "SEK"
+            and "ACK" in differential_canonicals
+            and region in {"FOREARM", "ARM", "HAND", "LIP", "NOSE", "FACE"}
+            and risk_level in {"medium", "high"}
+            and subtype_support_margin < 24.0
+            and uncertainty == "medium"
+            and _qwen_pad20_has_any(evidence_text, ("rough", "crust", "scal", "erythemat"))
+        ):
+            return "Actinic Keratosis", "qwen_pad20_sun_exposed_ack_topk_promotion"
+
+        if (
+            baseline_canonical == "SCC"
+            and agent_canonical == "SCC"
+            and "BCC" in differential_canonicals
+            and region in {"FACE", "CHEST", "NOSE", "NECK"}
+            and _qwen_pad20_has_any(evidence_text, ("central depression", "ulcer", "pearly", "rolled"))
+        ):
+            return "Basal Cell Carcinoma", "qwen_pad20_scc_to_bcc_central_ulcer_topk_promotion"
+
+        if (
+            baseline_canonical == "SEK"
+            and agent_canonical == "SEK"
+            and "BCC" in differential_canonicals
+            and region in {"FACE", "BACK", "FOREARM", "NOSE", "CHEST"}
+            and uncertainty == "medium"
+            and _qwen_pad20_has_any(evidence_text, ("central depression", "ulcer", "pearly", "rolled"))
+            and not (
+                "ACK" in differential_canonicals
+                and region in {"FOREARM", "FACE", "NOSE"}
+                and risk_level in {"medium", "high"}
+                and _qwen_pad20_has_any(evidence_text, ("rough", "crust", "scal", "erythemat"))
+            )
+        ):
+            return "Basal Cell Carcinoma", "qwen_pad20_sek_to_bcc_central_ulcer_topk_promotion"
+
+        if (
+            baseline_canonical == "SEK"
+            and agent_canonical == "SEK"
+            and "SCC" in differential_canonicals
+            and age >= 60.0
+            and uncertainty == "medium"
+            and _qwen_pad20_has_any(evidence_text, ("crust", "ulcer", "erythemat", "rough"))
+        ):
+            return "Squamous Cell Carcinoma", "qwen_pad20_older_keratinocyte_scc_topk_promotion"
+
+        if (
+            "NEV" in differential_canonicals
+            and age <= 35.0
+            and risk_level == "low"
+            and _qwen_pad20_has_any(evidence_text, ("smooth", "well-circumscribed"))
+        ):
+            return "Nevus", "qwen_pad20_young_low_risk_nevus_topk_promotion"
+
+    if baseline_canonical != agent_canonical and baseline_label:
+        return baseline_label, "qwen_pad20_baseline_anchor_guard"
+    return agent_label, "qwen_pad20_agent_baseline_agreement"
+
+
+def _qwen_pad20_has_any(text: str, markers: tuple[str, ...]) -> bool:
+    return any(marker in text for marker in markers)
 
 
 def _qwen_scin_grouped_promotion_label_and_reason(
