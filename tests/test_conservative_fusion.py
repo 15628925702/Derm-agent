@@ -188,6 +188,40 @@ def _dermatollama_ham10000_evidence_bundle(
     }
 
 
+def _qwen_scin_evidence_bundle(
+    *,
+    early_ddx_candidates: list[str],
+    clinical_metadata: dict | None = None,
+    skill_outputs: dict | None = None,
+    uncertainty_level: str = "medium",
+    workflow_cell_id: str = "qwen__scin__grouped_best",
+) -> dict:
+    return {
+        "skill_outputs": dict(skill_outputs or {}),
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": early_ddx_candidates,
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": workflow_cell_id,
+                    "workflow_profile": "family_routing_workflow",
+                    "label_space_id": "scin_grouped",
+                    "dataset_name": "scin",
+                    "clinical_metadata": dict(clinical_metadata or {}),
+                },
+                "selected_evidence_present": True,
+                "support_margin": 60.0,
+                "subtype_support_margin": 14.0,
+                "uncertainty_level": uncertainty_level,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+
 def test_dermatollama_isic_upper_extremity_melanoma_topk_promotion() -> None:
     baseline_output = {"final_diagnosis": "Nevus", "differential_diagnoses": ["Nevus"], "confidence": "High"}
     agent_output = {
@@ -4847,6 +4881,296 @@ def test_medgemma_ham10000_extremity_melanoma_topk_promotion_requires_workflow_c
 
     assert result["final_diagnosis"] == "Basal Cell Carcinoma"
     assert "medgemma_ham10000_extremity_melanoma_topk_promotion" not in result["fusion_decision"]["reasons"]
+
+def test_qwen_scin_promotes_face_acne_grouped_pattern() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"], "confidence": "Moderate"},
+        agent_output={"final_diagnosis": "DERMATITIS_ECZEMA", "differential_diagnoses": ["Contact Dermatitis"], "confidence": "Moderate"},
+        evidence_bundle=_qwen_scin_evidence_bundle(
+            early_ddx_candidates=["DERMATITIS_ECZEMA", "ACNE_ROSACEA_FOLLICULAR"],
+            skill_outputs={"distribution_analysis_skill": {"body_location": "face"}},
+        ),
+    )
+
+    assert result["final_diagnosis"] == "ACNE_ROSACEA_FOLLICULAR"
+    assert "qwen_scin_face_acne_grouped_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_scin_face_acne_requires_target_workflow_cell() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"], "confidence": "Moderate"},
+        agent_output={"final_diagnosis": "DERMATITIS_ECZEMA", "differential_diagnoses": ["Contact Dermatitis"], "confidence": "Moderate"},
+        evidence_bundle=_qwen_scin_evidence_bundle(
+            early_ddx_candidates=["DERMATITIS_ECZEMA", "ACNE_ROSACEA_FOLLICULAR"],
+            skill_outputs={"distribution_analysis_skill": {"body_location": "face"}},
+            workflow_cell_id="qwen__scin__alternate_cell",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Contact Dermatitis"
+    assert "qwen_scin_face_acne_grouped_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_scin_face_acne_blocks_scaling_scarred_dermatitis_anchor() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"], "confidence": "Moderate"},
+        agent_output={"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"], "confidence": "Moderate"},
+        evidence_bundle=_qwen_scin_evidence_bundle(
+            early_ddx_candidates=["ACNE_ROSACEA_FOLLICULAR", "DERMATITIS_ECZEMA"],
+            skill_outputs={
+                "distribution_analysis_skill": {"body_location": "face"},
+                "lesion_description_structuring_skill": {
+                    "primary_lesion_morphology": "raised papules with scarring",
+                    "surface": ["scaling and peeling"],
+                },
+            },
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Contact Dermatitis"
+    assert "qwen_scin_face_acne_grouped_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_scin_promotes_torso_pustular_infection_grouped_pattern() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"], "confidence": "Moderate"},
+        agent_output={"final_diagnosis": "DERMATITIS_ECZEMA", "differential_diagnoses": ["Contact Dermatitis"], "confidence": "Moderate"},
+        evidence_bundle=_qwen_scin_evidence_bundle(
+            early_ddx_candidates=["DERMATITIS_ECZEMA", "URTICARIA_BITE_FOLLICULITIS"],
+            clinical_metadata={"region": "torso_front"},
+            skill_outputs={
+                "lesion_description_structuring_skill": {
+                    "primary_lesion_morphology": "clustered papules with pustules",
+                    "surface": ["vesicular crust"],
+                }
+            },
+        ),
+    )
+
+    assert result["final_diagnosis"] == "INFECTION_VIRAL_FUNGAL"
+    assert "qwen_scin_torso_pustular_infection_grouped_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_scin_torso_infection_blocks_negated_pustules() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"], "confidence": "Moderate"},
+        agent_output={"final_diagnosis": "DERMATITIS_ECZEMA", "differential_diagnoses": ["Contact Dermatitis"], "confidence": "Moderate"},
+        evidence_bundle=_qwen_scin_evidence_bundle(
+            early_ddx_candidates=["DERMATITIS_ECZEMA", "URTICARIA_BITE_FOLLICULITIS"],
+            clinical_metadata={"region": "torso_front"},
+            skill_outputs={
+                "lesion_description_structuring_skill": {
+                    "primary_lesion_morphology": "eczema-like papules",
+                    "surface": ["no pustules or vesicles"],
+                }
+            },
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Contact Dermatitis"
+    assert "qwen_scin_torso_pustular_infection_grouped_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_scin_promotes_lower_body_joint_pain_vascular_pattern() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"], "confidence": "Moderate"},
+        agent_output={"final_diagnosis": "VASCULAR_PURPURIC", "differential_diagnoses": ["VASCULAR_PURPURIC"], "confidence": "Moderate"},
+        evidence_bundle=_qwen_scin_evidence_bundle(
+            early_ddx_candidates=["DERMATITIS_ECZEMA", "URTICARIA_BITE_FOLLICULITIS"],
+            clinical_metadata={"region": "leg", "textures_present": ["flat"]},
+            skill_outputs={
+                "lesion_description_structuring_skill": {
+                    "primary_lesion_morphology": "flat purpuric macules",
+                    "associated_context": ["systemic joint_pain"],
+                }
+            },
+        ),
+    )
+
+    assert result["final_diagnosis"] == "VASCULAR_PURPURIC"
+    assert "qwen_scin_lower_body_joint_pain_vascular_grouped_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_scin_vascular_pattern_requires_lower_body_region() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"], "confidence": "Moderate"},
+        agent_output={"final_diagnosis": "VASCULAR_PURPURIC", "differential_diagnoses": ["VASCULAR_PURPURIC"], "confidence": "Moderate"},
+        evidence_bundle=_qwen_scin_evidence_bundle(
+            early_ddx_candidates=["DERMATITIS_ECZEMA", "URTICARIA_BITE_FOLLICULITIS"],
+            clinical_metadata={"region": "head_or_neck", "textures_present": ["flat"]},
+            skill_outputs={
+                "lesion_description_structuring_skill": {
+                    "primary_lesion_morphology": "flat purpuric macules",
+                    "associated_context": ["systemic joint_pain"],
+                }
+            },
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Contact Dermatitis"
+    assert "qwen_scin_lower_body_joint_pain_vascular_grouped_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_scin_promotes_buttocks_leg_foot_vascular_pattern() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"], "confidence": "Moderate"},
+        agent_output={"final_diagnosis": "VASCULAR_PURPURIC", "differential_diagnoses": ["VASCULAR_PURPURIC"], "confidence": "Moderate"},
+        evidence_bundle=_qwen_scin_evidence_bundle(
+            early_ddx_candidates=["DERMATITIS_ECZEMA", "URTICARIA_BITE_FOLLICULITIS"],
+            clinical_metadata={
+                "region": "buttocks",
+                "body_sites": ["buttocks", "leg", "foot_top_or_side"],
+                "textures_present": ["flat"],
+                "symptoms_present": ["bothersome_appearance", "increasing_size", "burning"],
+            },
+            skill_outputs={
+                "lesion_description_structuring_skill": {
+                    "primary_lesion_morphology": "flat purpuric macules",
+                }
+            },
+        ),
+    )
+
+    assert result["final_diagnosis"] == "VASCULAR_PURPURIC"
+    assert "qwen_scin_lower_body_joint_pain_vascular_grouped_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_scin_promotes_back_hand_malignant_grouped_pattern() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"], "confidence": "Moderate"},
+        agent_output={"final_diagnosis": "DERMATITIS_ECZEMA", "differential_diagnoses": ["Contact Dermatitis"], "confidence": "Moderate"},
+        evidence_bundle=_qwen_scin_evidence_bundle(
+            early_ddx_candidates=["DERMATITIS_ECZEMA", "ACNE_ROSACEA_FOLLICULAR"],
+            clinical_metadata={"region": "back_of_hand"},
+            skill_outputs={"metadata_consistency_skill": {"consistency_score": "high"}},
+        ),
+    )
+
+    assert result["final_diagnosis"] == "MALIGNANT_PREMALIGNANT"
+    assert "qwen_scin_back_hand_malignant_grouped_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_scin_back_hand_malignant_blocks_secondary_body_site_only() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"], "confidence": "Moderate"},
+        agent_output={"final_diagnosis": "DERMATITIS_ECZEMA", "differential_diagnoses": ["Contact Dermatitis"], "confidence": "Moderate"},
+        evidence_bundle=_qwen_scin_evidence_bundle(
+            early_ddx_candidates=["DERMATITIS_ECZEMA", "ACNE_ROSACEA_FOLLICULAR"],
+            clinical_metadata={"region": "arm", "body_sites": ["back_of_hand"]},
+            skill_outputs={"metadata_consistency_skill": {"consistency_score": "high"}},
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Contact Dermatitis"
+    assert "qwen_scin_back_hand_malignant_grouped_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_scin_promotes_headneck_medium_risk_bcc_grouped_pattern() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"], "confidence": "Moderate"},
+        agent_output={"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis", "Basal Cell Carcinoma"], "confidence": "Moderate"},
+        evidence_bundle=_qwen_scin_evidence_bundle(
+            early_ddx_candidates=["DERMATITIS_ECZEMA", "ACNE_ROSACEA_FOLLICULAR"],
+            clinical_metadata={"region": "head_or_neck"},
+            skill_outputs={
+                "distribution_analysis_skill": {"body_location": "neck"},
+                "malignancy_risk_assessment_skill": {"risk_level": "medium"},
+            },
+        ),
+    )
+
+    assert result["final_diagnosis"] == "MALIGNANT_PREMALIGNANT"
+    assert "qwen_scin_headneck_medium_risk_bcc_grouped_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_scin_headneck_bcc_malignant_requires_medium_risk() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"], "confidence": "Moderate"},
+        agent_output={"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis", "Basal Cell Carcinoma"], "confidence": "Moderate"},
+        evidence_bundle=_qwen_scin_evidence_bundle(
+            early_ddx_candidates=["DERMATITIS_ECZEMA", "ACNE_ROSACEA_FOLLICULAR"],
+            clinical_metadata={"region": "head_or_neck"},
+            skill_outputs={
+                "distribution_analysis_skill": {"body_location": "neck"},
+                "malignancy_risk_assessment_skill": {"risk_level": "low"},
+            },
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Contact Dermatitis"
+    assert "qwen_scin_headneck_medium_risk_bcc_grouped_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_scin_headneck_bcc_malignant_requires_headneck_pattern() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"], "confidence": "Moderate"},
+        agent_output={"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis", "Basal Cell Carcinoma"], "confidence": "Moderate"},
+        evidence_bundle=_qwen_scin_evidence_bundle(
+            early_ddx_candidates=["DERMATITIS_ECZEMA", "ACNE_ROSACEA_FOLLICULAR"],
+            clinical_metadata={"region": "leg"},
+            skill_outputs={
+                "distribution_analysis_skill": {"body_location": "leg"},
+                "malignancy_risk_assessment_skill": {"risk_level": "medium"},
+            },
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Contact Dermatitis"
+    assert "qwen_scin_headneck_medium_risk_bcc_grouped_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_scin_promotes_pigment_nevus_topk_grouped_pattern() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"], "confidence": "Moderate"},
+        agent_output={"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis", "Nevus"], "confidence": "Moderate"},
+        evidence_bundle=_qwen_scin_evidence_bundle(
+            early_ddx_candidates=["DERMATITIS_ECZEMA", "PIGMENT_KERATOSIS_NEVUS"],
+            skill_outputs={
+                "lesion_description_structuring_skill": {
+                    "primary_lesion_morphology": "pigmented papules with pustules",
+                }
+            },
+        ),
+    )
+
+    assert result["final_diagnosis"] == "PIGMENT_KERATOSIS_NEVUS"
+    assert "qwen_scin_pigment_nevus_topk_grouped_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_scin_pigment_nevus_requires_topk_signal() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"], "confidence": "Moderate"},
+        agent_output={"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"], "confidence": "Moderate"},
+        evidence_bundle=_qwen_scin_evidence_bundle(
+            early_ddx_candidates=["DERMATITIS_ECZEMA", "PIGMENT_KERATOSIS_NEVUS"],
+            skill_outputs={
+                "lesion_description_structuring_skill": {
+                    "primary_lesion_morphology": "pigmented papules with pustules",
+                }
+            },
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Contact Dermatitis"
+    assert "qwen_scin_pigment_nevus_topk_grouped_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_scin_grouped_promotions_preserve_non_dermatitis_anchor() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={"final_diagnosis": "Nevus", "differential_diagnoses": ["Nevus"], "confidence": "Moderate"},
+        agent_output={"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis", "Nevus"], "confidence": "Moderate"},
+        evidence_bundle=_qwen_scin_evidence_bundle(
+            early_ddx_candidates=["DERMATITIS_ECZEMA", "PIGMENT_KERATOSIS_NEVUS"],
+            skill_outputs={
+                "distribution_analysis_skill": {"body_location": "face"},
+                "lesion_description_structuring_skill": {"primary_lesion_morphology": "pigmented papules with pustules"},
+            },
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert not any(reason.startswith("qwen_scin_") for reason in result["fusion_decision"]["reasons"])
+
 
 def test_qwen_ham10000_promotes_pigmented_plaque_mel_from_topk() -> None:
     result = apply_conservative_agent_fusion(
