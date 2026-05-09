@@ -156,6 +156,23 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("dermatollama_isic_bcc_consensus_override")
+        elif dermatollama_isic_topk_promotion := _dermatollama_isic_topk_promotion(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            baseline_differentials=baseline_differentials,
+            agent_differentials=agent_differentials,
+            skill_outputs=skill_outputs,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = dermatollama_isic_topk_promotion[0]
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append(dermatollama_isic_topk_promotion[1])
         elif dermatollama_sd198_override_label := _dermatollama_sd198_consensus_override_label(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
@@ -1213,6 +1230,11 @@ def decide_conservative_agent_fusion(
         "qwen_ham10000_reddish_hyperpigmented_akiec_topk_promotion",
         "qwen_ham10000_central_depression_bcc_topk_promotion",
         "qwen_ham10000_red_asymmetric_bkl_topk_promotion",
+        "dermatollama_isic_upper_extremity_melanoma_topk_promotion",
+        "dermatollama_isic_red_pink_melanoma_topk_promotion",
+        "dermatollama_isic_headneck_actinic_topk_promotion",
+        "dermatollama_isic_older_irregular_scc_topk_promotion",
+        "dermatollama_isic_truncal_scaly_bkl_topk_promotion",
         "medgemma_scin_acne_follicular_promotion",
         "medgemma_scin_headneck_skin_cancer_promotion",
         "medgemma_scin_face_acne_evidence_promotion",
@@ -3320,6 +3342,129 @@ def _dermatollama_isic_consensus_override_label(
         return "Basal Cell Carcinoma"
 
     return ""
+
+
+def _dermatollama_isic_topk_promotion(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    baseline_differentials: list[str],
+    agent_differentials: list[str],
+    skill_outputs: dict[str, Any],
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    label_space_id: str,
+    dataset_name: str,
+) -> tuple[str, str] | None:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "dermatollama__isic2019__archive_guard_v1":
+        return None
+    if not selected_evidence_present:
+        return None
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    clinical_metadata = workflow_context.get("clinical_metadata", {})
+    if not isinstance(clinical_metadata, dict):
+        clinical_metadata = {}
+    anatom_site = str(clinical_metadata.get("anatom_site_general", "")).strip().lower()
+
+    lesion_output = dict(skill_outputs.get("lesion_description_structuring_skill", {}) or {})
+    color_output = dict(skill_outputs.get("color_pattern_analysis_skill", {}) or {})
+    compare_output = dict(skill_outputs.get("differential_compare_skill", {}) or {})
+    border_text = _joined_lower(lesion_output.get("border"))
+    surface_text = _joined_lower(lesion_output.get("surface"))
+    primary_color = str(color_output.get("primary_color", "")).strip().lower()
+    color_variation = str(color_output.get("color_variation", "")).strip().lower()
+    asymmetry_color = str(color_output.get("asymmetry_color", "")).strip().lower()
+    supporting_text = _joined_lower(compare_output.get("supporting_evidence"))
+    candidate_differentials = list(agent_differentials) + list(baseline_differentials)
+
+    if (
+        baseline_canonical == "NV"
+        and agent_canonical in {"NV", "BKL", "BCC"}
+        and _contains_canonical_label(
+            candidate_differentials,
+            canonical_label="MEL",
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+    ):
+        if (
+            anatom_site == "upper extremity"
+            and agent_canonical in {"NV", "BKL"}
+            and support_margin >= 60.0
+            and "irregular" in border_text
+        ):
+            return "Malignant Melanoma", "dermatollama_isic_upper_extremity_melanoma_topk_promotion"
+        if (
+            any(token in primary_color for token in ("red", "pink"))
+            and agent_canonical in {"NV", "BKL", "BCC"}
+            and color_variation == "marked"
+            and asymmetry_color == "present"
+            and "irregular" in border_text
+            and "irregular" in supporting_text
+            and support_margin >= 44.0
+            and subtype_support_margin >= 10.0
+        ):
+            return "Malignant Melanoma", "dermatollama_isic_red_pink_melanoma_topk_promotion"
+
+    if (
+        baseline_canonical == "BCC"
+        and agent_canonical == "BCC"
+        and anatom_site == "head/neck"
+        and any(token in primary_color for token in ("red", "pink"))
+        and subtype_support_margin >= 10.0
+        and _contains_canonical_label(
+            candidate_differentials,
+            canonical_label="AK",
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+    ):
+        return "Actinic Keratosis", "dermatollama_isic_headneck_actinic_topk_promotion"
+
+    if (
+        baseline_canonical != "SCC"
+        and agent_canonical != "SCC"
+        and "irregular" in border_text
+        and "color" in supporting_text
+        and ("flat" in surface_text or "scaly" in surface_text)
+        and _contains_canonical_label(
+            candidate_differentials,
+            canonical_label="SCC",
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+    ):
+        return "Squamous Cell Carcinoma", "dermatollama_isic_older_irregular_scc_topk_promotion"
+
+    if (
+        baseline_canonical == "NV"
+        and agent_canonical == "NV"
+        and anatom_site in {"anterior torso", "posterior torso"}
+        and "scaly" in surface_text
+        and asymmetry_color == "absent"
+        and _contains_canonical_label(
+            candidate_differentials,
+            canonical_label="BKL",
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+    ):
+        return "Seborrheic Keratosis", "dermatollama_isic_truncal_scaly_bkl_topk_promotion"
+
+    return None
 
 
 def _dermatollama_sd198_consensus_override_label(
@@ -5859,6 +6004,12 @@ def _safe_int(value: Any) -> int:
         return int(float(value or 0))
     except Exception:
         return 0
+
+
+def _joined_lower(value: Any) -> str:
+    if isinstance(value, list):
+        return " ".join(str(item).strip().lower() for item in value if str(item).strip())
+    return str(value or "").strip().lower()
 
 
 def _coerce_label_list(value: Any) -> list[str]:

@@ -78,6 +78,350 @@ def _qwen_ham10000_evidence_bundle(
     }
 
 
+def _dermatollama_isic2019_evidence_bundle(
+    *,
+    site: str,
+    age: str = "70",
+    primary_color: str = "brown",
+    color_variation: str = "marked",
+    asymmetry_color: str = "present",
+    border: list[str] | None = None,
+    surface: list[str] | None = None,
+    supporting_evidence: list[str] | None = None,
+    support_margin: float = 58.0,
+    subtype_support_margin: float = 12.0,
+    workflow_cell_id: str = "dermatollama__isic2019__archive_guard_v1",
+) -> dict:
+    return {
+        "selected_evidence": [
+            {
+                "source_name": "differential_compare_skill",
+                "summary": "differential_compare_skill: supporting_evidence=irregular border; color variation",
+            }
+        ],
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": workflow_cell_id,
+                    "model_workflow_profile": "dermatollama_isic2019_archive_guard_workflow",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {
+                        "anatom_site_general": site,
+                        "age_approx": age,
+                    },
+                },
+                "selected_evidence_present": True,
+                "support_margin": support_margin,
+                "subtype_support_margin": subtype_support_margin,
+                "uncertainty_level": "medium",
+                "contradiction_count": 0,
+            },
+        },
+        "skill_outputs": {
+            "lesion_description_structuring_skill": {
+                "border": list(border or ["irregular"]),
+                "surface": list(surface or ["flat"]),
+            },
+            "color_pattern_analysis_skill": {
+                "primary_color": primary_color,
+                "color_variation": color_variation,
+                "asymmetry_color": asymmetry_color,
+            },
+            "differential_compare_skill": {
+                "supporting_evidence": list(supporting_evidence or ["irregular border", "color variation"]),
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+
+def test_dermatollama_isic_upper_extremity_melanoma_topk_promotion() -> None:
+    baseline_output = {"final_diagnosis": "Nevus", "differential_diagnoses": ["Nevus"], "confidence": "High"}
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "High",
+    }
+    evidence = _dermatollama_isic2019_evidence_bundle(site="upper extremity", age="65", support_margin=60.2)
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence,
+    )
+
+    assert result["final_diagnosis"] == "Malignant Melanoma"
+    assert "dermatollama_isic_upper_extremity_melanoma_topk_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_isic_upper_extremity_melanoma_requires_target_cell_and_support() -> None:
+    baseline_output = {"final_diagnosis": "Nevus", "differential_diagnoses": ["Nevus"], "confidence": "High"}
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "High",
+    }
+    evidence = _dermatollama_isic2019_evidence_bundle(
+        site="upper extremity",
+        age="65",
+        support_margin=59.9,
+        workflow_cell_id="qwen__isic2019__dataset_best",
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "dermatollama_isic_upper_extremity_melanoma_topk_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_isic_upper_extremity_melanoma_allows_bkl_prefusion_anchor() -> None:
+    baseline_output = {"final_diagnosis": "Nevus", "differential_diagnoses": ["Nevus"], "confidence": "High"}
+    agent_output = {
+        "final_diagnosis": "Seborrheic Keratosis",
+        "differential_diagnoses": ["Nevus", "Seborrheic Keratosis", "Malignant Melanoma"],
+        "confidence": "High",
+    }
+    evidence = _dermatollama_isic2019_evidence_bundle(site="upper extremity", age="60", support_margin=60.2)
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence,
+    )
+
+    assert result["final_diagnosis"] == "Malignant Melanoma"
+    assert "dermatollama_isic_upper_extremity_melanoma_topk_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_isic_red_pink_melanoma_topk_promotion() -> None:
+    baseline_output = {"final_diagnosis": "Nevus", "differential_diagnoses": ["Nevus"], "confidence": "High"}
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Basal Cell Carcinoma", "Malignant Melanoma"],
+        "confidence": "High",
+    }
+    evidence = _dermatollama_isic2019_evidence_bundle(
+        site="lower extremity",
+        age="75",
+        primary_color="red",
+        color_variation="marked",
+        asymmetry_color="present",
+        support_margin=44.8,
+        subtype_support_margin=18.0,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence,
+    )
+
+    assert result["final_diagnosis"] == "Malignant Melanoma"
+    assert "dermatollama_isic_red_pink_melanoma_topk_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_isic_red_pink_melanoma_requires_marked_asymmetry() -> None:
+    baseline_output = {"final_diagnosis": "Nevus", "differential_diagnoses": ["Nevus"], "confidence": "High"}
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Basal Cell Carcinoma", "Malignant Melanoma"],
+        "confidence": "High",
+    }
+    evidence = _dermatollama_isic2019_evidence_bundle(
+        site="lower extremity",
+        age="75",
+        primary_color="red",
+        color_variation="mild",
+        asymmetry_color="absent",
+        support_margin=44.8,
+        subtype_support_margin=18.0,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "dermatollama_isic_red_pink_melanoma_topk_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_isic_headneck_actinic_topk_promotion() -> None:
+    baseline_output = {
+        "final_diagnosis": "Basal Cell Carcinoma",
+        "differential_diagnoses": ["Basal Cell Carcinoma"],
+        "confidence": "High",
+    }
+    agent_output = {
+        "final_diagnosis": "Basal Cell Carcinoma",
+        "differential_diagnoses": ["Basal Cell Carcinoma", "Squamous Cell Carcinoma", "Actinic Keratosis"],
+        "confidence": "High",
+    }
+    evidence = _dermatollama_isic2019_evidence_bundle(
+        site="head/neck",
+        age="75",
+        primary_color="red",
+        color_variation="mild",
+        asymmetry_color="absent",
+        subtype_support_margin=10.6,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence,
+    )
+
+    assert result["final_diagnosis"] == "Actinic Keratosis"
+    assert "dermatollama_isic_headneck_actinic_topk_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_isic_headneck_actinic_requires_bcc_anchor() -> None:
+    baseline_output = {"final_diagnosis": "Nevus", "differential_diagnoses": ["Nevus"], "confidence": "High"}
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Actinic Keratosis"],
+        "confidence": "High",
+    }
+    evidence = _dermatollama_isic2019_evidence_bundle(
+        site="head/neck",
+        age="75",
+        primary_color="red",
+        color_variation="mild",
+        asymmetry_color="absent",
+        subtype_support_margin=10.6,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "dermatollama_isic_headneck_actinic_topk_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_isic_older_irregular_scc_topk_promotion() -> None:
+    baseline_output = {"final_diagnosis": "Nevus", "differential_diagnoses": ["Nevus"], "confidence": "High"}
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Basal Cell Carcinoma", "Squamous Cell Carcinoma"],
+        "confidence": "High",
+    }
+    evidence = _dermatollama_isic2019_evidence_bundle(
+        site="lower extremity",
+        age="75",
+        primary_color="red",
+        color_variation="mild",
+        asymmetry_color="absent",
+        surface=["flat"],
+        supporting_evidence=["irregular border", "color variation"],
+        support_margin=42.6,
+        subtype_support_margin=9.7,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence,
+    )
+
+    assert result["final_diagnosis"] == "Squamous Cell Carcinoma"
+    assert "dermatollama_isic_older_irregular_scc_topk_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_isic_older_irregular_scc_does_not_rewrite_smooth_vascular_like_case() -> None:
+    baseline_output = {"final_diagnosis": "Nevus", "differential_diagnoses": ["Nevus"], "confidence": "High"}
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Basal Cell Carcinoma", "Squamous Cell Carcinoma"],
+        "confidence": "High",
+    }
+    evidence = _dermatollama_isic2019_evidence_bundle(
+        site="anterior torso",
+        age="75",
+        primary_color="red",
+        color_variation="marked",
+        asymmetry_color="present",
+        surface=["smooth"],
+        supporting_evidence=["irregular border", "color variation"],
+        support_margin=43.8,
+        subtype_support_margin=10.1,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "dermatollama_isic_older_irregular_scc_topk_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_isic_truncal_scaly_bkl_topk_promotion() -> None:
+    baseline_output = {"final_diagnosis": "Nevus", "differential_diagnoses": ["Nevus"], "confidence": "High"}
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Seborrheic Keratosis", "Malignant Melanoma"],
+        "confidence": "High",
+    }
+    evidence = _dermatollama_isic2019_evidence_bundle(
+        site="anterior torso",
+        age="80",
+        primary_color="brown",
+        color_variation="mild",
+        asymmetry_color="absent",
+        surface=["scaly"],
+        support_margin=43.6,
+        subtype_support_margin=10.3,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence,
+    )
+
+    assert result["final_diagnosis"] == "Seborrheic Keratosis"
+    assert "dermatollama_isic_truncal_scaly_bkl_topk_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_isic_truncal_scaly_bkl_requires_absent_asymmetry() -> None:
+    baseline_output = {"final_diagnosis": "Nevus", "differential_diagnoses": ["Nevus"], "confidence": "High"}
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Seborrheic Keratosis", "Malignant Melanoma"],
+        "confidence": "High",
+    }
+    evidence = _dermatollama_isic2019_evidence_bundle(
+        site="anterior torso",
+        age="80",
+        primary_color="brown",
+        color_variation="mild",
+        asymmetry_color="present",
+        surface=["scaly"],
+        support_margin=43.6,
+        subtype_support_margin=10.3,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "dermatollama_isic_truncal_scaly_bkl_topk_promotion" not in result["fusion_decision"]["reasons"]
+
+
 def _hulumed_isic_evidence_bundle(
     *,
     site: str = "head/neck",
