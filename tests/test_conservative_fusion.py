@@ -3709,3 +3709,297 @@ def test_clinical_route_blocks_weak_benign_overwrite_when_malignant_is_in_baseli
 
     assert result["final_diagnosis"] == "Basal Cell Carcinoma"
     assert "clinical_malignant_recall_guard" in result["fusion_decision"]["reasons"]
+
+
+def _medgemma_ham10000_evidence_bundle(
+    *,
+    site: str,
+    image_summary: str,
+    early_ddx_candidates: list[str],
+    support_margin: float = 62.5,
+    subtype_support_margin: float = 7.2,
+    workflow_cell_id: str = "medgemma__ham10000__akiec_face_guard_v1",
+) -> dict:
+    return {
+        "selected_evidence": [
+            {
+                "source_name": "lesion_description_structuring_skill",
+                "summary": f"lesion_description_structuring_skill: {image_summary}",
+            }
+        ],
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": early_ddx_candidates,
+                    "image_summary": image_summary,
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": workflow_cell_id,
+                    "workflow_profile": "sparse_lesion_workflow",
+                    "dataset_workflow_profile": "sparse_lesion_workflow",
+                    "label_space_id": "ham10000_full",
+                    "dataset_name": "ham10000",
+                    "clinical_metadata": {"localization": site},
+                },
+                "selected_evidence_present": True,
+                "support_margin": support_margin,
+                "subtype_support_margin": subtype_support_margin,
+                "uncertainty_level": "medium",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+
+def test_medgemma_ham10000_face_akiec_surface_promotion() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_medgemma_ham10000_evidence_bundle(
+            site="face",
+            image_summary="A well-defined reddish-brown lesion with rough mottled irregular surface change.",
+            early_ddx_candidates=["AKIEC", "BKL", "DF"],
+            support_margin=62.7,
+            subtype_support_margin=4.1,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Actinic Keratosis"
+    assert "medgemma_ham10000_face_akiec_surface_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_ham10000_face_akiec_surface_promotion_blocks_bcc_anchor_margin() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_medgemma_ham10000_evidence_bundle(
+            site="scalp",
+            image_summary="A well-defined reddish-brown irregular raised lesion.",
+            early_ddx_candidates=["AKIEC", "BCC", "MEL"],
+            support_margin=48.8,
+            subtype_support_margin=14.4,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "medgemma_ham10000_face_akiec_surface_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_ham10000_face_akiec_surface_promotion_requires_workflow_cell() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_medgemma_ham10000_evidence_bundle(
+            site="face",
+            image_summary="A well-defined reddish-brown lesion with rough mottled irregular surface change.",
+            early_ddx_candidates=["AKIEC", "BKL", "DF"],
+            support_margin=62.7,
+            subtype_support_margin=4.1,
+            workflow_cell_id="qwen__ham10000__dataset_best",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "medgemma_ham10000_face_akiec_surface_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_ham10000_fallback_guard_handles_agent_disagreement() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Basal Cell Carcinoma"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_medgemma_ham10000_evidence_bundle(
+            site="trunk",
+            image_summary="A uniform brown lesion without the low-uncertainty AKIEC surface pattern.",
+            early_ddx_candidates=["NV", "BCC", "BKL"],
+            support_margin=42.0,
+            subtype_support_margin=12.0,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "medgemma_ham10000_baseline_anchor_guard" in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_ham10000_truncal_nevus_topk_promotion() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma", "Nevus"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_medgemma_ham10000_evidence_bundle(
+            site="chest",
+            image_summary="A well-defined irregular brown lesion with central pigmentation.",
+            early_ddx_candidates=["AKIEC", "BCC", "MEL"],
+            support_margin=41.2,
+            subtype_support_margin=21.4,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "medgemma_ham10000_truncal_nevus_topk_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_ham10000_truncal_nevus_topk_promotion_blocks_vascular_pattern() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma", "Nevus"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_medgemma_ham10000_evidence_bundle(
+            site="neck",
+            image_summary="A solitary well-defined dark purple vascular lesion.",
+            early_ddx_candidates=["MEL", "BCC", "NV"],
+            support_margin=49.0,
+            subtype_support_margin=22.5,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "medgemma_ham10000_truncal_nevus_topk_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_ham10000_truncal_nevus_topk_promotion_blocks_bcc_anchor_margin() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma", "Nevus"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_medgemma_ham10000_evidence_bundle(
+            site="back",
+            image_summary="Sparse slightly irregular and somewhat heterogeneous pigmentation.",
+            early_ddx_candidates=["BKL", "AKIEC", "NV"],
+            support_margin=61.0,
+            subtype_support_margin=14.4,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "medgemma_ham10000_truncal_nevus_topk_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_ham10000_extremity_melanoma_topk_promotion() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma", "Malignant Melanoma", "Nevus"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_medgemma_ham10000_evidence_bundle(
+            site="upper extremity",
+            image_summary="A dark irregular lesion with a central area of necrosis.",
+            early_ddx_candidates=["MEL", "BCC", "AKIEC"],
+            support_margin=48.2,
+            subtype_support_margin=15.9,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Malignant Melanoma"
+    assert "medgemma_ham10000_extremity_melanoma_topk_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_ham10000_extremity_melanoma_topk_promotion_blocks_face_anchor() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma", "Malignant Melanoma", "Nevus"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_medgemma_ham10000_evidence_bundle(
+            site="face",
+            image_summary="A well-defined dark lesion with a central area of pigmentation.",
+            early_ddx_candidates=["MEL", "BCC", "AKIEC"],
+            support_margin=46.2,
+            subtype_support_margin=2.3,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "medgemma_ham10000_extremity_melanoma_topk_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_medgemma_ham10000_extremity_melanoma_topk_promotion_requires_workflow_cell() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "High",
+        },
+        agent_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma", "Malignant Melanoma", "Nevus"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_medgemma_ham10000_evidence_bundle(
+            site="upper extremity",
+            image_summary="A dark irregular lesion with a central area of necrosis.",
+            early_ddx_candidates=["MEL", "BCC", "AKIEC"],
+            support_margin=48.2,
+            subtype_support_margin=15.9,
+            workflow_cell_id="qwen__ham10000__dataset_best",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "medgemma_ham10000_extremity_melanoma_topk_promotion" not in result["fusion_decision"]["reasons"]

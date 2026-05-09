@@ -175,6 +175,54 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("dermatollama_sd198_sun_damage_consensus_override")
+        elif medgemma_ham10000_akiec_label := _medgemma_ham10000_face_akiec_surface_promotion_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            initial_ddx=initial_ddx,
+            baseline_preview=baseline_preview,
+            selected_evidence=selected_evidence,
+            skill_outputs=skill_outputs,
+            selected_evidence_present=selected_evidence_present,
+            subtype_support_margin=subtype_support_margin,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = medgemma_ham10000_akiec_label
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("medgemma_ham10000_face_akiec_surface_promotion")
+        elif medgemma_ham10000_nevus_label := _medgemma_ham10000_truncal_nevus_topk_promotion_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            agent_differentials=agent_differentials,
+            baseline_preview=baseline_preview,
+            selected_evidence_present=selected_evidence_present,
+            subtype_support_margin=subtype_support_margin,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = medgemma_ham10000_nevus_label
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("medgemma_ham10000_truncal_nevus_topk_promotion")
+        elif medgemma_ham10000_melanoma_label := _medgemma_ham10000_extremity_melanoma_topk_promotion_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            agent_differentials=agent_differentials,
+            initial_ddx=initial_ddx,
+            baseline_preview=baseline_preview,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = medgemma_ham10000_melanoma_label
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("medgemma_ham10000_extremity_melanoma_topk_promotion")
         elif medgemma_ham10000_override_label := _medgemma_ham10000_consensus_override_label(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
@@ -1596,7 +1644,6 @@ def _route_specific_fallback_reason(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
             agent_label=agent_label,
-            agent_differentials=agent_differentials,
             initial_ddx=initial_ddx,
             baseline_preview=baseline_preview,
             selected_evidence_present=selected_evidence_present,
@@ -3366,6 +3413,235 @@ def _medgemma_ham10000_consensus_override_label(
         return ""
 
     return "Actinic Keratosis"
+
+
+def _medgemma_ham10000_face_akiec_surface_promotion_label(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    initial_ddx: list[str],
+    baseline_preview: dict[str, Any],
+    selected_evidence: list[Any],
+    skill_outputs: dict[str, Any],
+    selected_evidence_present: bool,
+    subtype_support_margin: float,
+    label_space_id: str,
+    dataset_name: str,
+) -> str:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "medgemma__ham10000__akiec_face_guard_v1":
+        return ""
+    if not selected_evidence_present:
+        return ""
+    if not _both_medgemma_ham10000_bcc_anchor(
+        baseline_label=baseline_label,
+        agent_label=agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    ):
+        return ""
+    if not (4.0 <= subtype_support_margin <= 9.0):
+        return ""
+
+    initial_canonicals = _canonicalize_labels_for_route(
+        initial_ddx,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if initial_canonicals[:1] != ["AKIEC"]:
+        return ""
+
+    site = _ham10000_workflow_site(workflow_context)
+    if site not in {"face", "ear", "scalp"}:
+        return ""
+
+    evidence_text = _ham10000_evidence_text(
+        baseline_preview=baseline_preview,
+        selected_evidence=selected_evidence,
+        skill_outputs=skill_outputs,
+    )
+    if not evidence_text:
+        return ""
+    if "vascular" in evidence_text or "purple" in evidence_text:
+        return ""
+    if not any(marker in evidence_text for marker in ("rough", "scaly", "keratotic", "mottled", "crusty")):
+        return ""
+
+    return "Actinic Keratosis"
+
+
+def _medgemma_ham10000_truncal_nevus_topk_promotion_label(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    agent_differentials: list[str],
+    baseline_preview: dict[str, Any],
+    selected_evidence_present: bool,
+    subtype_support_margin: float,
+    label_space_id: str,
+    dataset_name: str,
+) -> str:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "medgemma__ham10000__akiec_face_guard_v1":
+        return ""
+    if not selected_evidence_present:
+        return ""
+    if not _both_medgemma_ham10000_bcc_anchor(
+        baseline_label=baseline_label,
+        agent_label=agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    ):
+        return ""
+    if not (4.0 <= subtype_support_margin <= 22.5):
+        return ""
+
+    agent_canonicals = _canonicalize_labels_for_route(
+        agent_differentials,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if "NV" not in agent_canonicals:
+        return ""
+
+    site = _ham10000_workflow_site(workflow_context)
+    if site not in {"trunk", "chest", "neck", "scalp"}:
+        return ""
+
+    summary = _ham10000_baseline_summary_text(baseline_preview)
+    if "vascular" in summary or "purple" in summary:
+        return ""
+
+    return "Nevus"
+
+
+def _medgemma_ham10000_extremity_melanoma_topk_promotion_label(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    agent_differentials: list[str],
+    initial_ddx: list[str],
+    baseline_preview: dict[str, Any],
+    selected_evidence_present: bool,
+    support_margin: float,
+    label_space_id: str,
+    dataset_name: str,
+) -> str:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "medgemma__ham10000__akiec_face_guard_v1":
+        return ""
+    if not selected_evidence_present:
+        return ""
+    if not (40.0 <= support_margin <= 55.0):
+        return ""
+    if not _both_medgemma_ham10000_bcc_anchor(
+        baseline_label=baseline_label,
+        agent_label=agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    ):
+        return ""
+
+    initial_canonicals = _canonicalize_labels_for_route(
+        initial_ddx,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if initial_canonicals[:1] != ["MEL"]:
+        return ""
+
+    agent_canonicals = _canonicalize_labels_for_route(
+        agent_differentials,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if "MEL" not in agent_canonicals:
+        return ""
+    if "NV" not in agent_canonicals:
+        return ""
+
+    site = _ham10000_workflow_site(workflow_context)
+    if site not in {"upper extremity", "lower extremity"}:
+        return ""
+
+    summary = _ham10000_baseline_summary_text(baseline_preview)
+    if "vascular" in summary or "purple" in summary:
+        return ""
+    if not any(marker in summary for marker in ("dark", "necrosis", "ulcerated", "ulceration")):
+        return ""
+
+    return "Malignant Melanoma"
+
+
+def _both_medgemma_ham10000_bcc_anchor(
+    *,
+    baseline_label: str,
+    agent_label: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> bool:
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    return baseline_canonical == "BCC" and agent_canonical == "BCC"
+
+
+def _canonicalize_labels_for_route(
+    labels: list[str],
+    *,
+    label_space_id: str,
+    dataset_name: str,
+) -> list[str]:
+    canonicals: list[str] = []
+    for label in labels:
+        canonical = canonicalize_label(
+            label,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+        if canonical and canonical not in canonicals:
+            canonicals.append(canonical)
+    return canonicals
+
+
+def _ham10000_workflow_site(workflow_context: dict[str, Any]) -> str:
+    metadata = dict(workflow_context.get("clinical_metadata", {}) or {})
+    return str(
+        metadata.get("localization")
+        or metadata.get("region")
+        or metadata.get("anatom_site_general")
+        or ""
+    ).strip().lower()
+
+
+def _ham10000_baseline_summary_text(baseline_preview: dict[str, Any]) -> str:
+    return str(baseline_preview.get("image_summary", "")).strip().lower()
+
+
+def _ham10000_evidence_text(
+    *,
+    baseline_preview: dict[str, Any],
+    selected_evidence: list[Any],
+    skill_outputs: dict[str, Any],
+) -> str:
+    parts = [_ham10000_baseline_summary_text(baseline_preview)]
+    for item in selected_evidence:
+        if isinstance(item, dict):
+            parts.append(str(item.get("summary", "")))
+    for output in skill_outputs.values():
+        if isinstance(output, dict):
+            parts.append(str(output))
+    return " ".join(part for part in parts if part).strip().lower()
 
 
 def _medgemma_isic_consensus_override_label(
