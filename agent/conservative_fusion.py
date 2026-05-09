@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from skills.workflow_fusion_decision import (
+from memory.fusion_experience.workflow_fusion_decision import (
     apply_conservative_agent_fusion as _apply_conservative_agent_fusion,
     decide_conservative_agent_fusion as _decide_conservative_agent_fusion,
 )

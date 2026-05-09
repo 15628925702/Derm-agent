@@ -25,7 +25,7 @@ from integrations.openai_client import DermOpenAIClient
 from memory.experience_bank import ExperienceBank
 from project_paths import outputs_root, state_root
 from skills.registry import build_default_registry
-from skills.workflow_fusion_decision import apply_conservative_agent_fusion
+from memory.fusion_experience.workflow_fusion_decision import apply_conservative_agent_fusion
 
 try:
     from agent.retrieval_scorer import LearnedRetrievalScorer

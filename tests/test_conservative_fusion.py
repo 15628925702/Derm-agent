@@ -11,6 +11,71 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from agent.conservative_fusion import apply_conservative_agent_fusion, decide_conservative_agent_fusion
+from memory.fusion_experience.accumulation import FUSION_EXPERIENCE_ACCUMULATION_ENV
+from memory.fusion_experience.workflow_fusion_decision import (
+    apply_conservative_agent_fusion as memory_apply_conservative_agent_fusion,
+)
+from skills.workflow_fusion_decision import (
+    apply_conservative_agent_fusion as legacy_apply_conservative_agent_fusion,
+)
+
+
+def test_legacy_skill_fusion_wrapper_points_to_memory_implementation() -> None:
+    assert legacy_apply_conservative_agent_fusion is memory_apply_conservative_agent_fusion
+
+
+def test_fusion_experience_accumulation_is_default_off(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    proposal_path = tmp_path / "pending_fusion_experience.jsonl"
+    monkeypatch.delenv(FUSION_EXPERIENCE_ACCUMULATION_ENV, raising=False)
+    monkeypatch.setenv("DERMAGENT_FUSION_EXPERIENCE_PROPOSAL_PATH", str(proposal_path))
+
+    apply_conservative_agent_fusion(
+        baseline_output={"final_diagnosis": "Nevus", "differential_diagnoses": []},
+        agent_output={"final_diagnosis": "Nevus", "differential_diagnoses": []},
+        evidence_bundle={
+            "evidence_decision_policy": {
+                "diagnosis_override_layer": {
+                    "workflow_context": {"workflow_cell_id": "test__cell"},
+                    "selected_evidence_present": False,
+                }
+            },
+            "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+        },
+    )
+
+    assert not proposal_path.exists()
+
+
+def test_fusion_experience_accumulation_writes_pending_observation_only(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    proposal_path = tmp_path / "pending_fusion_experience.jsonl"
+    monkeypatch.setenv(FUSION_EXPERIENCE_ACCUMULATION_ENV, "1")
+    monkeypatch.setenv("DERMAGENT_FUSION_EXPERIENCE_PROPOSAL_PATH", str(proposal_path))
+
+    result = apply_conservative_agent_fusion(
+        baseline_output={"final_diagnosis": "Nevus", "differential_diagnoses": []},
+        agent_output={"final_diagnosis": "Nevus", "differential_diagnoses": []},
+        evidence_bundle={
+            "evidence_decision_policy": {
+                "diagnosis_override_layer": {
+                    "workflow_context": {
+                        "workflow_cell_id": "test__cell",
+                        "dataset_name": "test_dataset",
+                        "label_space_id": "test_label_space",
+                    },
+                    "selected_evidence_present": False,
+                }
+            },
+            "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+        },
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    line = proposal_path.read_text(encoding="utf-8").strip()
+    assert '"review_status": "pending_human_review"' in line
+    assert '"runtime_effect": "none"' in line
+    assert '"workflow_cell_id": "test__cell"' in line
 
 
 def _qwen_isic_evidence_bundle(
