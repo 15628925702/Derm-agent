@@ -78,6 +78,48 @@ def _qwen_ham10000_evidence_bundle(
     }
 
 
+def _hulumed_isic_evidence_bundle(
+    *,
+    site: str = "head/neck",
+    early_ddx_candidates: list[str],
+    image_summary: str,
+    support_margin: float = 39.0,
+    subtype_support_margin: float = 16.0,
+    uncertainty_level: str = "medium",
+    workflow_cell_id: str = "hulumed__isic2019__archive_guard_v1",
+) -> dict:
+    return {
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": early_ddx_candidates,
+                    "image_summary": image_summary,
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": workflow_cell_id,
+                    "workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "dataset_workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "model_workflow_profile": "hulumed_isic2019_archive_guard_workflow",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": site},
+                },
+                "selected_evidence_present": True,
+                "override_allowed": False,
+                "malignancy_override_allowed": False,
+                "subtype_override_allowed": False,
+                "family_override_allowed": False,
+                "override_mode": "risk_only",
+                "support_margin": support_margin,
+                "subtype_support_margin": subtype_support_margin,
+                "uncertainty_level": uncertainty_level,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
 def _medgemma_scin_evidence_bundle(
     *,
     early_ddx_candidates: list[str],
@@ -1439,6 +1481,380 @@ def test_llama_archive_route_preserves_malignant_baseline_against_benign_drift()
 
     assert result["final_diagnosis"] == "MEL"
     assert "llama_archive_malignant_recall_guard" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_isic_promotes_headneck_ak_scale_topk_case() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Basal Cell Carcinoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Actinic Keratosis", "Psoriasis", "Basal Cell Carcinoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _hulumed_isic_evidence_bundle(
+        early_ddx_candidates=["actinic keratosis", "lichen planus", "psoriasis"],
+        image_summary="Erythematous patch with subtle scaling and faint vascular structures",
+        support_margin=35.62,
+        subtype_support_margin=19.78,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Actinic Keratosis"
+    assert "hulumed_isic_headneck_ak_scale_promotion" in result["fusion_decision"]["reasons"]
+    assert "Nevus" in result["differential_diagnoses"]
+
+
+def test_hulumed_isic_ak_scale_promotion_blocks_slightly_raised_nevus_anchor() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Actinic Keratosis", "Squamous Cell Carcinoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _hulumed_isic_evidence_bundle(
+        early_ddx_candidates=["actinic keratosis", "basal cell carcinoma", "squamous cell carcinoma", "nevus"],
+        image_summary="Erythematous, slightly raised lesion with subtle scaling and pink-red discoloration",
+        support_margin=39.0,
+        subtype_support_margin=12.0,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "hulumed_isic_headneck_ak_scale_promotion" not in result["fusion_decision"]["reasons"]
+    assert "agent_matches_baseline" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_isic_promotes_headneck_scc_vascular_scale_topk_case() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Basal Cell Carcinoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Basal Cell Carcinoma", "Squamous Cell Carcinoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _hulumed_isic_evidence_bundle(
+        early_ddx_candidates=["nevus", "basal cell carcinoma", "squamous cell carcinoma"],
+        image_summary=(
+            "Irregularly shaped lesion with pinkish-red background, "
+            "brownish pigmentation, and visible blood vessels."
+        ),
+        support_margin=39.13,
+        subtype_support_margin=16.95,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Squamous Cell Carcinoma"
+    assert "hulumed_isic_headneck_scc_vascular_scale_promotion" in result["fusion_decision"]["reasons"]
+    assert "Nevus" in result["differential_diagnoses"]
+
+
+def test_hulumed_isic_scc_promotion_requires_target_workflow_cell_and_marker() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Basal Cell Carcinoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Basal Cell Carcinoma", "Squamous Cell Carcinoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _hulumed_isic_evidence_bundle(
+        early_ddx_candidates=["nevus", "basal cell carcinoma", "squamous cell carcinoma"],
+        image_summary="Irregularly shaped lesion with pink-red background and brownish pigmentation.",
+        support_margin=39.13,
+        subtype_support_margin=16.95,
+        workflow_cell_id="hulumed__isic2019__alternate_cell",
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "hulumed_isic_headneck_scc_vascular_scale_promotion" not in result["fusion_decision"]["reasons"]
+    assert "agent_matches_baseline" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_isic_promotes_headneck_bkl_keratotic_topk_case() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Seborrheic Keratosis", "Actinic Keratosis"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _hulumed_isic_evidence_bundle(
+        early_ddx_candidates=["nevus", "seborrheic keratosis", "actinic keratosis"],
+        image_summary="Irregularly shaped, light brown patch with uneven borders and subtle variations in pigmentation.",
+        support_margin=40.354,
+        subtype_support_margin=19.354,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Seborrheic Keratosis"
+    assert "hulumed_isic_headneck_bkl_keratotic_promotion" in result["fusion_decision"]["reasons"]
+    assert "Nevus" in result["differential_diagnoses"]
+
+
+def test_hulumed_isic_bkl_keratotic_promotion_blocks_high_margin_malignant_mimic() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Basal Cell Carcinoma", "Seborrheic Keratosis"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _hulumed_isic_evidence_bundle(
+        early_ddx_candidates=["nevus", "basal cell carcinoma", "seborrheic keratosis"],
+        image_summary="Reddish-brown patch with irregular borders and scattered dark spots on a light background",
+        support_margin=62.4,
+        subtype_support_margin=27.88,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "hulumed_isic_headneck_bkl_keratotic_promotion" not in result["fusion_decision"]["reasons"]
+    assert "agent_matches_baseline" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_isic_promotes_upper_extremity_mel_dark_irregular_topk_case() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Seborrheic Keratosis"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma", "Seborrheic Keratosis"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _hulumed_isic_evidence_bundle(
+        site="upper extremity",
+        early_ddx_candidates=["melanoma", "nevus", "seborrheic keratosis"],
+        image_summary="Irregularly shaped, asymmetric brown lesion with varying shades and a central darker area.",
+        support_margin=42.99,
+        subtype_support_margin=18.75,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Malignant Melanoma"
+    assert (
+        "hulumed_isic_upper_extremity_mel_dark_irregular_promotion"
+        in result["fusion_decision"]["reasons"]
+    )
+    assert "Nevus" in result["differential_diagnoses"]
+
+
+def test_hulumed_isic_mel_dark_irregular_promotion_blocks_blue_vascular_mimic() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _hulumed_isic_evidence_bundle(
+        site="upper extremity",
+        early_ddx_candidates=["melanoma", "vascular lesion", "nevus"],
+        image_summary="Irregular dark blue lesion with asymmetric pigmentation and varying shades.",
+        support_margin=42.0,
+        subtype_support_margin=12.0,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert (
+        "hulumed_isic_upper_extremity_mel_dark_irregular_promotion"
+        not in result["fusion_decision"]["reasons"]
+    )
+    assert "agent_matches_baseline" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_isic_promotes_blue_purple_vascular_topk_case() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _hulumed_isic_evidence_bundle(
+        site="posterior torso",
+        early_ddx_candidates=["Kaposi sarcoma", "Angiosarcoma", "Hemangioma"],
+        image_summary=(
+            "Reddish-purple lesion with central red area and surrounding blue-gray "
+            "structureless region on a pinkish background."
+        ),
+        support_margin=44.58,
+        subtype_support_margin=3.66,
+        uncertainty_level="high",
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Vascular Lesion"
+    assert "hulumed_isic_blue_purple_vascular_promotion" in result["fusion_decision"]["reasons"]
+    assert "Nevus" in result["differential_diagnoses"]
+
+
+def test_hulumed_isic_vascular_promotion_blocks_generic_possible_vascular_language() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Basal Cell Carcinoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _hulumed_isic_evidence_bundle(
+        site="head/neck",
+        early_ddx_candidates=["nevus", "basal cell carcinoma", "seborrheic keratosis"],
+        image_summary="Irregular pigmentation with brown and pink hues, possible vascular structures, and uneven texture.",
+        support_margin=42.68,
+        subtype_support_margin=9.82,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "hulumed_isic_blue_purple_vascular_promotion" not in result["fusion_decision"]["reasons"]
+    assert "agent_matches_baseline" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_isic_promotes_upper_anterior_bcc_inflammatory_topk_case() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Basal Cell Carcinoma", "Actinic Keratosis"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _hulumed_isic_evidence_bundle(
+        site="upper extremity",
+        early_ddx_candidates=["actinic keratosis", "lichen planus", "psoriasis"],
+        image_summary="Erythematous patch with subtle scaling and a small central red dot, surrounded by fine hair.",
+        support_margin=40.6,
+        subtype_support_margin=2.6,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert (
+        "hulumed_isic_upper_anterior_bcc_inflammatory_promotion"
+        in result["fusion_decision"]["reasons"]
+    )
+    assert "Nevus" in result["differential_diagnoses"]
+
+
+def test_hulumed_isic_bcc_inflammatory_promotion_blocks_crusted_petechial_mimic() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Basal Cell Carcinoma", "Squamous Cell Carcinoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _hulumed_isic_evidence_bundle(
+        site="anterior torso",
+        early_ddx_candidates=["keratoacanthoma", "inflammatory plaque", "lichenoid keratosis"],
+        image_summary="Erythematous patch with subtle scaling, central crust, and scattered petechiae.",
+        support_margin=36.54,
+        subtype_support_margin=2.44,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert (
+        "hulumed_isic_upper_anterior_bcc_inflammatory_promotion"
+        not in result["fusion_decision"]["reasons"]
+    )
+    assert "agent_matches_baseline" in result["fusion_decision"]["reasons"]
 
 
 def test_medgemma_isic_route_anchors_melanoma_when_bcc_subtype_support_is_weak() -> None:

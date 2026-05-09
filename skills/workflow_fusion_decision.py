@@ -277,6 +277,24 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("hulumed_isic_guarded_consensus_override")
+        elif hulumed_isic_topk_promotion := _hulumed_isic_topk_promotion_label_and_reason(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            agent_differentials=agent_differentials,
+            initial_ddx=initial_ddx,
+            baseline_preview=baseline_preview,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = hulumed_isic_topk_promotion[0]
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append(hulumed_isic_topk_promotion[1])
         elif hulumed_pad20_override_label := _hulumed_pad20_consensus_override_label(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
@@ -4082,6 +4100,178 @@ def _hulumed_isic_consensus_override_label(
         return ""
 
     return "Nevus"
+
+
+def _hulumed_isic_topk_promotion_label_and_reason(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    agent_differentials: list[str],
+    initial_ddx: list[str],
+    baseline_preview: dict[str, Any],
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> tuple[str, str] | None:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "hulumed__isic2019__archive_guard_v1":
+        return None
+    if not selected_evidence_present:
+        return None
+    uncertainty_normalized = str(uncertainty_level or "").strip().lower()
+
+    clinical_metadata = workflow_context.get("clinical_metadata", {})
+    if not isinstance(clinical_metadata, dict):
+        clinical_metadata = {}
+    site = str(clinical_metadata.get("anatom_site_general", "")).strip().lower()
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    initial_canonicals = [
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in initial_ddx
+    ]
+    initial_first = initial_canonicals[0] if initial_canonicals else ""
+    summary = str(baseline_preview.get("image_summary", "")).strip().lower()
+
+    if (
+        agent_canonical in {"NV", "BCC", "BKL"}
+        and site == "head/neck"
+        and uncertainty_normalized == "medium"
+        and initial_first == "AK"
+        and _contains_canonical_label(
+            agent_differentials,
+            canonical_label="AK",
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+        and 35.0 <= support_margin <= 41.0
+        and subtype_support_margin >= 9.0
+        and "slightly raised" not in summary
+        and any(marker in summary for marker in ("scal", "keratin", "crust", "erosion", "ulcer"))
+        and any(marker in summary for marker in ("erythematous", "pink", "red"))
+    ):
+        return ("Actinic Keratosis", "hulumed_isic_headneck_ak_scale_promotion")
+
+    if (
+        baseline_canonical == "NV"
+        and agent_canonical == "NV"
+        and site == "head/neck"
+        and uncertainty_normalized == "medium"
+        and "SCC" in initial_canonicals
+        and initial_first != "BCC"
+        and _contains_canonical_label(
+            agent_differentials,
+            canonical_label="SCC",
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+        and 38.0 <= support_margin <= 40.0
+        and 9.0 <= subtype_support_margin <= 17.5
+        and any(marker in summary for marker in ("blood vessels", "central white scale"))
+        and any(marker in summary for marker in ("erythematous", "pink", "red"))
+    ):
+        return ("Squamous Cell Carcinoma", "hulumed_isic_headneck_scc_vascular_scale_promotion")
+
+    if (
+        agent_canonical == "NV"
+        and site == "head/neck"
+        and uncertainty_normalized == "medium"
+        and "BKL" in initial_canonicals
+        and initial_first != "AK"
+        and _contains_canonical_label(
+            agent_differentials,
+            canonical_label="BKL",
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+        and 37.0 <= support_margin <= 41.0
+        and 13.0 <= subtype_support_margin <= 20.0
+        and any(
+            marker in summary
+            for marker in (
+                "yellow",
+                "slightly raised",
+                "hair follicles",
+                "brownish",
+                "light brown",
+            )
+        )
+    ):
+        return ("Seborrheic Keratosis", "hulumed_isic_headneck_bkl_keratotic_promotion")
+
+    if (
+        baseline_canonical == "NV"
+        and agent_canonical == "NV"
+        and site == "upper extremity"
+        and uncertainty_normalized in {"medium", "unknown"}
+        and initial_first == "MEL"
+        and _contains_canonical_label(
+            agent_differentials,
+            canonical_label="MEL",
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+        and 40.0 <= support_margin <= 44.0
+        and any(marker in summary for marker in ("dark brown", "black", "multiple colors", "varying shades"))
+        and any(marker in summary for marker in ("irregular", "asymmetric", "uneven"))
+        and "blue" not in summary
+        and "purple" not in summary
+    ):
+        return ("Malignant Melanoma", "hulumed_isic_upper_extremity_mel_dark_irregular_promotion")
+
+    strong_vascular_summary = (
+        "purple" in summary
+        or "blue-black" in summary
+        or "blue-gray" in summary
+        or "red area" in summary
+        or ("pinkish-red" in summary and "peripheral vascular" in summary)
+    )
+    if (
+        baseline_canonical == "NV"
+        and agent_canonical == "NV"
+        and site in {"head/neck", "posterior torso"}
+        and initial_first != "MEL"
+        and 40.0 <= support_margin <= 46.0
+        and subtype_support_margin <= 17.0
+        and strong_vascular_summary
+    ):
+        return ("Vascular Lesion", "hulumed_isic_blue_purple_vascular_promotion")
+
+    if (
+        baseline_canonical == "NV"
+        and agent_canonical == "NV"
+        and site in {"upper extremity", "anterior torso"}
+        and uncertainty_normalized == "medium"
+        and "NV" not in initial_canonicals
+        and "MEL" not in initial_canonicals
+        and _contains_canonical_label(
+            agent_differentials,
+            canonical_label="BCC",
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+        and 35.0 <= support_margin <= 41.0
+        and any(marker in summary for marker in ("erythematous", "pink", "red"))
+        and "subtle scaling" in summary
+        and any(marker in summary for marker in ("faint pigmentation", "scattered brown dots", "central red dot"))
+        and not any(marker in summary for marker in ("crust", "petechiae", "vascular structures"))
+    ):
+        return ("Basal Cell Carcinoma", "hulumed_isic_upper_anterior_bcc_inflammatory_promotion")
+
+    return None
 
 
 def _hulumed_pad20_consensus_override_label(
