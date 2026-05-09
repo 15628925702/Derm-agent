@@ -156,6 +156,25 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("dermatollama_isic_bcc_consensus_override")
+        elif dermatollama_sd198_topk_promotion := _dermatollama_sd198_grouped_topk_promotion(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            initial_ddx=initial_ddx,
+            baseline_preview=baseline_preview,
+            selected_evidence=selected_evidence,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            contradiction_count=contradiction_count,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = dermatollama_sd198_topk_promotion[0]
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append(dermatollama_sd198_topk_promotion[1])
         elif dermatollama_sd198_override_label := _dermatollama_sd198_consensus_override_label(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
@@ -1243,6 +1262,8 @@ def decide_conservative_agent_fusion(
         "medgemma_scin_pigment_bcc_symptom_promotion",
         "medgemma_scin_genital_herpes_promotion",
         "medgemma_scin_lower_body_vascular_promotion",
+        "dermatollama_sd198_actinic_scaly_papulosquamous_topk_promotion",
+        "dermatollama_sd198_crowe_sign_pigmentary_rescue",
     }
     if not any(reason in route_guard_exempt_reasons for reason in reasons):
         route_guard = _route_specific_fallback_reason(
@@ -3560,6 +3581,107 @@ def _dermatollama_sd198_consensus_override_label(
         return "Actinic Keratosis"
 
     return ""
+
+
+def _dermatollama_sd198_grouped_topk_promotion(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    initial_ddx: list[str],
+    baseline_preview: dict[str, Any],
+    selected_evidence: list[dict[str, Any]],
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    contradiction_count: int,
+    label_space_id: str,
+    dataset_name: str,
+) -> tuple[str, str] | None:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "dermatollama__sd198__grouped_guard_v1":
+        return None
+    if not selected_evidence_present:
+        return None
+    if str(uncertainty_level or "").strip().lower() != "low":
+        return None
+
+    baseline_raw = str(baseline_label or "").strip().lower()
+    agent_raw = str(agent_label or "").strip().lower()
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    initial_canonicals = {
+        canonicalize_label(
+            label,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+        for label in initial_ddx
+    }
+    selected_text = " ".join(
+        str(item.get("summary", "")).strip().lower()
+        for item in selected_evidence
+        if isinstance(item, dict)
+    )
+    preview_text = str(baseline_preview.get("image_summary", "")).strip().lower()
+    evidence_text = f"{preview_text} {selected_text}"
+
+    if (
+        baseline_raw == "nevus"
+        and agent_raw == "nevus"
+        and baseline_canonical == "PIGMENTARY_NEVUS_KERATOSIS"
+        and "BENIGN_TUMOR_CYST" in initial_canonicals
+        and "ACNE_FOLLICULITIS_ROSACEA" not in initial_canonicals
+        and support_margin >= 50.0
+        and subtype_support_margin >= 10.0
+        and contradiction_count <= 8
+        and any(marker in evidence_text for marker in ("nodule", "nodular", "skin tag", "cyst", "fibroma"))
+    ):
+        return ("BENIGN_TUMOR_CYST", "dermatollama_sd198_nevus_benign_nodule_topk_promotion")
+
+    if (
+        baseline_raw == "actinic keratosis"
+        and baseline_canonical == "SUN_DAMAGE_ACTINIC"
+        and (agent_raw == baseline_raw or agent_canonical == "PAPULOSQUAMOUS_KERATOTIC")
+        and (
+            "PAPULOSQUAMOUS_KERATOTIC" in initial_canonicals
+            or agent_canonical == "PAPULOSQUAMOUS_KERATOTIC"
+        )
+        and support_margin >= 52.0
+        and subtype_support_margin >= 11.0
+        and contradiction_count <= 2
+        and any(
+            marker in evidence_text
+            for marker in ("dry", "scaly", "scaling", "hyperkeratosis", "keratotic", "ichthyosis", "xerosis")
+        )
+    ):
+        return ("PAPULOSQUAMOUS_KERATOTIC", "dermatollama_sd198_actinic_scaly_papulosquamous_topk_promotion")
+
+    if (
+        baseline_raw == "crowe's sign"
+        and agent_canonical == "PIGMENTARY_NEVUS_KERATOSIS"
+        and "PIGMENTARY_NEVUS_KERATOSIS" in initial_canonicals
+        and support_margin >= 35.0
+        and subtype_support_margin >= 2.0
+        and contradiction_count <= 1
+        and any(
+            marker in evidence_text
+            for marker in ("nevus", "mole", "freckle", "brown", "pigment", "hair follicle", "linear scar")
+        )
+    ):
+        return ("PIGMENTARY_NEVUS_KERATOSIS", "dermatollama_sd198_crowe_sign_pigmentary_rescue")
+
+    return None
 
 
 def _allow_dermatollama_pad20_guarded_override(
