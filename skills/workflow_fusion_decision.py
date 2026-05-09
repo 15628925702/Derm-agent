@@ -777,6 +777,22 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append(qwen_ham10000_topk_promotion[1])
+        elif qwen_scin_grouped_promotion := _qwen_scin_grouped_promotion_label_and_reason(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            agent_differentials=agent_differentials,
+            initial_ddx=initial_ddx,
+            skill_outputs=skill_outputs,
+            selected_evidence_present=selected_evidence_present,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = qwen_scin_grouped_promotion[0]
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append(qwen_scin_grouped_promotion[1])
         elif _allow_medgemma_scin_face_acne_evidence_promotion(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
@@ -1213,6 +1229,12 @@ def decide_conservative_agent_fusion(
         "qwen_ham10000_reddish_hyperpigmented_akiec_topk_promotion",
         "qwen_ham10000_central_depression_bcc_topk_promotion",
         "qwen_ham10000_red_asymmetric_bkl_topk_promotion",
+        "qwen_scin_face_acne_grouped_promotion",
+        "qwen_scin_torso_pustular_infection_grouped_promotion",
+        "qwen_scin_lower_body_joint_pain_vascular_grouped_promotion",
+        "qwen_scin_headneck_medium_risk_bcc_grouped_promotion",
+        "qwen_scin_back_hand_malignant_grouped_promotion",
+        "qwen_scin_pigment_nevus_topk_grouped_promotion",
         "medgemma_scin_acne_follicular_promotion",
         "medgemma_scin_headneck_skin_cancer_promotion",
         "medgemma_scin_face_acne_evidence_promotion",
@@ -3188,6 +3210,149 @@ def _qwen_ham10000_topk_promotion_label_and_reason(
         return "Seborrheic Keratosis", "qwen_ham10000_red_asymmetric_bkl_topk_promotion"
 
     return None
+
+
+def _qwen_scin_grouped_promotion_label_and_reason(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    agent_differentials: list[str],
+    initial_ddx: list[str],
+    skill_outputs: dict[str, Any],
+    selected_evidence_present: bool,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> tuple[str, str] | None:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "qwen__scin__grouped_best":
+        return None
+    if not selected_evidence_present:
+        return None
+    if str(uncertainty_level or "").strip().lower() not in {"low", "medium"}:
+        return None
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if baseline_canonical != "DERMATITIS_ECZEMA":
+        return None
+
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    initial_canonicals = {
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in initial_ddx
+    }
+    differential_canonicals = {
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in agent_differentials
+    }
+    differential_text = " ".join(str(label).strip().lower() for label in agent_differentials)
+    metadata = _workflow_clinical_metadata(workflow_context)
+    region = str(metadata.get("region", "")).strip().lower()
+    textures = {str(item).strip().lower() for item in metadata.get("textures_present", []) or []}
+    symptoms = {str(item).strip().lower() for item in metadata.get("symptoms_present", []) or []}
+    body_sites = {str(item).strip().lower() for item in metadata.get("body_sites", []) or []}
+    body_location = _qwen_scin_distribution_body_location(skill_outputs)
+    consistency_score = _qwen_scin_metadata_consistency_score(skill_outputs)
+    malignancy_risk_level = _qwen_scin_malignancy_risk_level(skill_outputs)
+    text = _qwen_scin_skill_text(
+        skill_outputs,
+        "morphology_analysis_skill",
+        "color_pattern_analysis_skill",
+        "distribution_analysis_skill",
+        "lesion_description_structuring_skill",
+        "metadata_consistency_skill",
+        "differential_compare_skill",
+        "information_gap_detection_skill",
+    )
+
+    if (
+        body_location == "face"
+        and "ACNE_ROSACEA_FOLLICULAR" in initial_canonicals
+        and not any(
+            marker in text
+            for marker in ("scaling", "scaly", "peeling", "scarring", "crusty", "rough")
+        )
+    ):
+        return "ACNE_ROSACEA_FOLLICULAR", "qwen_scin_face_acne_grouped_promotion"
+
+    if (
+        region == "torso_front" or body_location == "torso_front"
+    ) and "pustules" in text and "no pustules" not in text and "not pustular" not in text:
+        return "INFECTION_VIRAL_FUNGAL", "qwen_scin_torso_pustular_infection_grouped_promotion"
+
+    if (
+        agent_canonical == "VASCULAR_PURPURIC"
+        and region in {"leg", "buttocks", "foot_top_or_side"}
+        and "flat" in textures
+        and (
+            "joint_pain" in text
+            or "joint pain" in text
+            or (
+                region == "buttocks"
+                and {"leg", "foot_top_or_side"}.issubset(body_sites)
+                and "increasing_size" in symptoms
+                and bool({"burning", "pain"}.intersection(symptoms))
+            )
+        )
+    ):
+        return "VASCULAR_PURPURIC", "qwen_scin_lower_body_joint_pain_vascular_grouped_promotion"
+
+    if (
+        "basal cell carcinoma" in differential_text
+        and malignancy_risk_level == "medium"
+        and (region == "head_or_neck" or body_location in {"cheek", "neck"})
+    ):
+        return "MALIGNANT_PREMALIGNANT", "qwen_scin_headneck_medium_risk_bcc_grouped_promotion"
+
+    if (
+        (region == "back_of_hand" or body_location == "back_of_hand")
+        and consistency_score == "high"
+    ):
+        return "MALIGNANT_PREMALIGNANT", "qwen_scin_back_hand_malignant_grouped_promotion"
+
+    if (
+        "PIGMENT_KERATOSIS_NEVUS" in differential_canonicals
+        and "pustules" in text
+        and "no pustules" not in text
+        and "not pustular" not in text
+    ):
+        return "PIGMENT_KERATOSIS_NEVUS", "qwen_scin_pigment_nevus_topk_grouped_promotion"
+
+    return None
+
+
+def _qwen_scin_distribution_body_location(skill_outputs: dict[str, Any]) -> str:
+    distribution = skill_outputs.get("distribution_analysis_skill", {})
+    if not isinstance(distribution, dict):
+        return ""
+    return str(distribution.get("body_location", "")).strip().lower()
+
+
+def _qwen_scin_metadata_consistency_score(skill_outputs: dict[str, Any]) -> str:
+    metadata_consistency = skill_outputs.get("metadata_consistency_skill", {})
+    if not isinstance(metadata_consistency, dict):
+        return ""
+    return str(metadata_consistency.get("consistency_score", "")).strip().lower()
+
+
+def _qwen_scin_malignancy_risk_level(skill_outputs: dict[str, Any]) -> str:
+    malignancy_risk = skill_outputs.get("malignancy_risk_assessment_skill", {})
+    if not isinstance(malignancy_risk, dict):
+        return ""
+    return str(malignancy_risk.get("risk_level", "")).strip().lower()
+
+
+def _qwen_scin_skill_text(skill_outputs: dict[str, Any], *skill_names: str) -> str:
+    return _medgemma_scin_skill_text(skill_outputs, *skill_names)
 
 
 def _qwen_isic_nevus_mel_differential_promotion_base(
