@@ -1,17 +1,29 @@
-# Final 30/70 Large Run
+# final_20260509 30/70 全量大实验运行说明
 
-This run uses the `final_20260509` 30/70 split:
+这份说明对应当前整合分支上的大实验调度脚本：
 
-- `train` / `final_experience_train`: bootstrap experience-bank build only.
-- `test` / `final_compare_test`: held-out comparison only.
-- Current scripts cover the five datasets that have final 30/70 split JSONs: `ham10000`, `isic2019`, `pad20`, `scin`, `sd198`.
-- Xiangya is not included in `final_20260509`; do not call the result a true 6-dataset run unless a Xiangya final 30/70 split is built first.
+```text
+scripts/run_final_30_70_6x5_dynamic.py
+```
 
-The runner defaults to 6 models x 5 final datasets. Bootstrap does not enable the doctor evidence package. Test compare does enable it and exports per-case doctor-facing evidence files.
+默认运行的是 `final_20260509` 的 30/70 固定划分：
 
-## Pre-Run Git State
+- `train` / `final_experience_train`：只用于 bootstrap 建经验库。
+- `test` / `final_compare_test`：只用于最终对比评测。
+- 当前已有 final split 的数据集是 5 个：`ham10000`、`isic2019`、`pad20`、`scin`、`sd198`。
+- `xiangya` 目前没有 `final_20260509` 的 30/70 split JSON，所以默认脚本是 `6 models x 5 datasets`，不能把这次直接叫严格的 6 数据集全量，除非先补 Xiangya 的 final split。
 
-The pre-large-test state is tagged and pushed:
+## 关键约定
+
+- Bootstrap 阶段不会打开“导出给医生的辅助证据诊断包”。
+- Compare 阶段默认 GPU `0,1,2,3,4,5,6,7` 全部跑评测，不单独浪费一张卡跑证据包服务。
+- Compare 全部结束并合并 report 后，脚本会进入 posthoc doctor evidence 阶段；这个阶段再用 GPU `0,1,2,3,4,5,6,7` 启动 Qwen 服务并行导出每个 case 的医生证据文本。
+- 每个 shard 完成后会写 `*.DONE.json`，断线或终端退出后用同一个命令、同一个 `RUN_ID` 可以续跑。
+- 模型服务使用 `MAX_NUM_SEQS=1`，并按模型设置较保守的上下文长度，降低上下文过长和 OOM 风险。
+
+## Git 保护点
+
+大实验开始前已经打 tag 并推送：
 
 ```bash
 git tag beforeLargeTest
@@ -19,45 +31,57 @@ git push origin merge-final-weak-workflow-tuning
 git push origin beforeLargeTest
 ```
 
-Current pre-run tag points to `a60aae274eb04e3caa3ec37cdc5a2726fb80a3c2`.
+当前 `beforeLargeTest` 指向：
 
-## What To Migrate To 100.126.2.24
+```text
+a60aae274eb04e3caa3ec37cdc5a2726fb80a3c2
+```
 
-Required:
+## 需要迁移到 100.126.2.24 的目录
 
-- `/data/gh/DermAgent`
-- `/data/gh/models`
+必须迁移：
 
-Usually required if the target machine does not already have the environment:
+```text
+/data/gh/DermAgent
+/data/gh/models
+```
 
-- `/home/zhongnan/miniconda3/envs/dermagent-6x6`
+如果 100.126.2.24 上没有同名 conda 环境，也需要迁移：
 
-The model start scripts auto-detect `/data/gh/models`, so keeping the same paths is the least painful route.
+```text
+/home/zhongnan/miniconda3/envs/dermagent-6x6
+```
 
-Use SSH or `rsync`. Prefer interactive password entry or `SSHPASS` from the shell; do not write passwords into tracked files.
+保持这些路径不变最省事，因为现有模型启动脚本会自动寻找 `/data/gh/models`。
+
+不要把密码写进仓库文件。同步时推荐交互式输入密码；如果确认机器上有 `sshpass`，可以临时在 shell 里用环境变量。
+
+普通同步：
 
 ```bash
 cd /data/gh/DermAgent
 bash scripts/rsync_large_run_to_remote.sh
 ```
 
-If the target machine lacks the conda env:
+连 conda 环境一起同步：
 
 ```bash
 cd /data/gh/DermAgent
 COPY_CONDA_ENV=1 bash scripts/rsync_large_run_to_remote.sh
 ```
 
-Optional non-interactive style, if `sshpass` is installed:
+如果使用 `sshpass`：
 
 ```bash
-export SSHPASS='<password>'
+cd /data/gh/DermAgent
+export SSHPASS='<这里填本次 ssh 密码>'
 sshpass -e bash scripts/rsync_large_run_to_remote.sh
+unset SSHPASS
 ```
 
-## Target Machine Sanity Check
+## 目标机器启动前检查
 
-On `100.126.2.24`:
+在 `100.126.2.24` 上执行：
 
 ```bash
 cd /data/gh/DermAgent
@@ -68,18 +92,17 @@ nvidia-smi
   scripts/run_final_30_70_6x5_dynamic.py \
   scripts/merge_experience_shards.py \
   scripts/merge_final_compare_reports.py \
+  scripts/generate_doctor_evidence_posthoc.py \
   scripts/export_doctor_evidence_packages.py
 /home/zhongnan/miniconda3/envs/dermagent-6x6/bin/python -m pytest \
   tests/test_conservative_fusion.py tests/test_model_workflow_router.py -q
 ```
 
-## Launch
+## 双机启动命令
 
-Use the same `RUN_ID` on both machines. Machine `100.126.2.23` uses `--machine-id 0`; machine `100.126.2.24` uses `--machine-id 1`.
+两台机器必须使用同一个 `RUN_ID`。
 
-Bootstrap uses GPUs `0..7`. Test compare uses GPUs `0..6` and reserves GPU `7` for the Qwen physician-summary service. This is intentional: the doctor evidence package needs a separate Qwen service during test, and bootstrap must not enable it.
-
-Machine `100.126.2.23`:
+`100.126.2.23` 使用 `--machine-id 0`：
 
 ```bash
 cd /data/gh/DermAgent
@@ -95,11 +118,11 @@ echo $! > "paper_data/final_30_70_large_runs/${RUN_ID}/machine_0_launcher.pid"
 echo "${RUN_ID}"
 ```
 
-Machine `100.126.2.24`, using the same `RUN_ID`:
+`100.126.2.24` 使用 `--machine-id 1`，并填入同一个 `RUN_ID`：
 
 ```bash
 cd /data/gh/DermAgent
-export RUN_ID=<same-run-id-from-machine-0>
+export RUN_ID=<填 100.126.2.23 打印出来的 RUN_ID>
 mkdir -p "paper_data/final_30_70_large_runs/${RUN_ID}"
 nohup setsid /home/zhongnan/miniconda3/envs/dermagent-6x6/bin/python \
   scripts/run_final_30_70_6x5_dynamic.py \
@@ -110,38 +133,40 @@ nohup setsid /home/zhongnan/miniconda3/envs/dermagent-6x6/bin/python \
 echo $! > "paper_data/final_30_70_large_runs/${RUN_ID}/machine_1_launcher.pid"
 ```
 
-Resume uses the same command and same `RUN_ID`; completed shards have `*.DONE.json` markers and are skipped.
+续跑仍然用同一条命令和同一个 `RUN_ID`。默认 `--resume` 已开启，已完成 shard 会跳过。
 
-## Outputs To Preserve
+## 输出目录
 
-Per machine:
+每台机器各自保留：
 
-- `paper_data/final_30_70_large_runs/<RUN_ID>/machine_<id>/run_manifest.json`
-- `paper_data/final_30_70_large_runs/<RUN_ID>/machine_<id>/reports/`
-- `paper_data/final_30_70_large_runs/<RUN_ID>/machine_<id>/paper_case_exports/`
-- `paper_data/final_30_70_large_runs/<RUN_ID>/machine_<id>/logs/`
-- `doctor_evidence_final_30_70_<RUN_ID>/`
+```text
+paper_data/final_30_70_large_runs/<RUN_ID>/machine_<id>/run_manifest.json
+paper_data/final_30_70_large_runs/<RUN_ID>/machine_<id>/reports/
+paper_data/final_30_70_large_runs/<RUN_ID>/machine_<id>/paper_case_exports/
+paper_data/final_30_70_large_runs/<RUN_ID>/machine_<id>/logs/
+doctor_evidence_final_30_70_<RUN_ID>/
+```
 
-The merged per-combo compare report is:
+每个组合合并后的 compare report：
 
 ```text
 paper_data/final_30_70_large_runs/<RUN_ID>/machine_<id>/reports/<model>/<dataset>/compare_agent_vs_qwen_final_compare_test_merged.json
 ```
 
-The paper-ready per-case CSV/JSON/XLSX export is under:
+给论文留存的逐 case CSV/JSON/XLSX：
 
 ```text
 paper_data/final_30_70_large_runs/<RUN_ID>/machine_<id>/paper_case_exports/<model>/<dataset>/merged/
 ```
 
-The doctor-facing evidence package is under:
+医生证据包 posthoc 输出：
 
 ```text
-doctor_evidence_final_30_70_<RUN_ID>/<model>/<dataset>/<case_id>.json
-doctor_evidence_final_30_70_<RUN_ID>/<model>/<dataset>/<case_id>.md
+doctor_evidence_final_30_70_<RUN_ID>/<model>/<dataset>/shard_<id>/<case_id>.json
+doctor_evidence_final_30_70_<RUN_ID>/<model>/<dataset>/shard_<id>/<case_id>.md
 ```
 
-## Monitoring
+## 监控命令
 
 ```bash
 tail -f paper_data/final_30_70_large_runs/<RUN_ID>/machine_0/runner.log
@@ -149,11 +174,11 @@ find paper_data/final_30_70_large_runs/<RUN_ID>/machine_0 -name '*.DONE.json' | 
 nvidia-smi
 ```
 
-On the second machine replace `machine_0` with `machine_1`.
+第二台机器把 `machine_0` 换成 `machine_1`。
 
-## Collect Machine 1 Results Back To Machine 0
+## 把第二台机器结果收回第一台
 
-After both finish:
+两台都结束后，在 `100.126.2.23` 上执行：
 
 ```bash
 rsync -aH --info=progress2 \
@@ -165,11 +190,11 @@ rsync -aH --info=progress2 \
   /data/gh/DermAgent/doctor_evidence_final_30_70_<RUN_ID>/
 ```
 
-## Engineering Notes
+## 工程实现说明
 
-- Bootstrap shards write isolated split-state roots to avoid concurrent JSONL/cognition overwrite.
-- After bootstrap, `merge_experience_shards.py` merges raw/tactical/abstract experience and cognition stats.
-- Compare shards use the merged train state promoted to `test`.
-- The doctor evidence package is only enabled in compare shards.
-- Model services use `MAX_NUM_SEQS=1` and conservative context defaults to reduce context/OOM failures.
-- Qwen uses `MAX_MODEL_LEN=16384`; MedGemma uses `12288`; Llama/HuluMed/DermatoLlama use `8192`; SkinVL uses its own server defaults.
+- Bootstrap shard 使用独立 split-state 根目录，避免多个进程同时写同一份 JSONL/cognition 文件。
+- Bootstrap 后由 `scripts/merge_experience_shards.py` 合并 raw/tactical/abstract experience 和 cognition stats。
+- Compare 前把合并后的 train state promote 到 `test`。
+- Compare shard 只负责评测和论文逐 case 导出，不启动医生证据包 summary。
+- Doctor evidence 阶段读取 compare merged report，再用 Qwen 并行生成医生证据文本。
+- Qwen 默认 `MAX_MODEL_LEN=16384`，MedGemma 默认 `12288`，Llama/HuluMed/DermatoLlama 默认 `8192`，SkinVL 使用自身服务默认值。

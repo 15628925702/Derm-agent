@@ -136,19 +136,14 @@ class Runner:
         if not self.args.skip_compare:
             for model, dataset in combos:
                 self.promote_state(model, dataset)
-            summary_pid_path: Path | None = None
+            compare_tasks = self.build_compare_tasks(combos)
+            compare_gpus = self.parse_gpus(self.args.compare_gpus)
+            self.run_stage("compare", compare_tasks, compare_gpus)
+            for model, dataset in combos:
+                self.merge_compare(model, dataset)
             if self.args.enable_physician_evidence_summary:
-                summary_pid_path = self.start_physician_summary_server()
-            try:
-                compare_tasks = self.build_compare_tasks(combos)
-                compare_gpus = self.parse_gpus(self.args.compare_gpus)
-                self.run_stage("compare", compare_tasks, compare_gpus)
-                for model, dataset in combos:
-                    self.merge_compare(model, dataset)
-                self.export_doctor_packages()
-            finally:
-                if summary_pid_path is not None and not self.args.keep_physician_summary_server:
-                    self.stop_service(summary_pid_path, int(self.args.physician_summary_port))
+                doctor_tasks = self.build_doctor_tasks(combos)
+                self.run_doctor_stage(doctor_tasks, self.parse_gpus(self.args.doctor_gpus))
         self.write_run_manifest()
         if self.failures:
             raise SystemExit(2)
@@ -205,6 +200,7 @@ class Runner:
             "bootstrap_shard_size": self.args.bootstrap_shard_size,
             "compare_shard_size": self.args.compare_shard_size,
             "physician_evidence_summary_enabled": bool(self.args.enable_physician_evidence_summary),
+            "physician_evidence_summary_mode": "posthoc_after_compare",
             "failures": self.failures,
         }
         (self.output_root / "run_manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -252,6 +248,18 @@ class Runner:
                 tasks.append(Task("compare", model, dataset, shard_id, offset, limit))
         return tasks
 
+    def build_doctor_tasks(self, combos: list[tuple[str, str]]) -> list[Task]:
+        tasks: list[Task] = []
+        for model, dataset in combos:
+            report = self.merged_report_path(model, dataset)
+            if not report.exists():
+                continue
+            cases = json.loads(report.read_text(encoding="utf-8")).get("cases", []) or []
+            for shard_id, offset in enumerate(range(0, len(cases), self.args.doctor_shard_size)):
+                limit = min(self.args.doctor_shard_size, len(cases) - offset)
+                tasks.append(Task("doctor", model, dataset, shard_id, offset, limit))
+        return tasks
+
     def run_stage(self, phase: str, tasks: list[Task], gpus: list[int]) -> None:
         pending = queue.Queue()
         for task in tasks:
@@ -268,6 +276,46 @@ class Runner:
         for thread in threads:
             thread.join()
         self.log(f"{phase}: stage complete")
+
+    def run_doctor_stage(self, tasks: list[Task], gpus: list[int]) -> None:
+        pending = queue.Queue()
+        for task in tasks:
+            if self.args.resume and self.task_done_path(task).exists():
+                continue
+            pending.put(task)
+        self.log(f"doctor: {pending.qsize()} pending shards on GPUs {gpus}")
+        threads = [
+            threading.Thread(target=self.doctor_worker_loop, args=(gpu, 8400 + gpu, pending), daemon=True)
+            for gpu in gpus
+        ]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join()
+        self.log("doctor: stage complete")
+
+    def doctor_worker_loop(self, gpu: int, port: int, pending: queue.Queue[Task]) -> None:
+        service_pid_path: Path | None = None
+        try:
+            service_pid_path = self.start_service("qwen", gpu, port)
+            while not self.stop_event.is_set():
+                try:
+                    task = pending.get_nowait()
+                except queue.Empty:
+                    break
+                try:
+                    self.run_doctor_task(task, port)
+                    self.mark_done(task, gpu)
+                except Exception as exc:
+                    failure = {"task": task.__dict__, "gpu": gpu, "error": str(exc)}
+                    with self.lock:
+                        self.failures.append(failure)
+                    self.log(f"FAILED doctor {task.model}/{task.dataset} shard {task.shard_id}: {exc}")
+                finally:
+                    pending.task_done()
+        finally:
+            if service_pid_path is not None:
+                self.stop_service(service_pid_path, port)
 
     def worker_loop(self, phase: str, gpu: int, port: int, pending: queue.Queue[Task]) -> None:
         current_model = ""
@@ -449,23 +497,36 @@ class Runner:
             "--paper-case-data-dir",
             str(self.paper_root / task.model / task.dataset / f"shard_{task.shard_id:05d}"),
         ]
-        if self.args.enable_physician_evidence_summary:
-            cmd.extend(
-                [
-                    "--enable-physician-evidence-summary",
-                    "--physician-evidence-summary-base-url",
-                    f"http://127.0.0.1:{self.args.physician_summary_port}/v1",
-                    "--physician-evidence-summary-model",
-                    "Qwen2.5-VL-7B-Instruct",
-                    "--physician-evidence-summary-detail",
-                    self.args.physician_evidence_detail,
-                    "--physician-evidence-summary-timeout",
-                    str(self.args.physician_summary_timeout),
-                    "--physician-evidence-summary-max-retries",
-                    str(self.args.physician_summary_max_retries),
-                ]
-            )
+        env.pop("DERMAGENT_ENABLE_PHYSICIAN_EVIDENCE_SUMMARY", None)
         self.run_logged(cmd, env, self.logs_root / f"{task.model}_{task.dataset}_compare_{task.shard_id:05d}.log")
+
+    def run_doctor_task(self, task: Task, port: int) -> None:
+        output_dir = self.doctor_root / task.model / task.dataset / f"shard_{task.shard_id:05d}"
+        cmd = [
+            str(PYTHON),
+            str(PROJECT_ROOT / "scripts/generate_doctor_evidence_posthoc.py"),
+            "--compare-report",
+            str(self.merged_report_path(task.model, task.dataset)),
+            "--output-dir",
+            str(output_dir),
+            "--case-offset",
+            str(task.offset),
+            "--limit",
+            str(task.limit),
+            "--base-url",
+            f"http://127.0.0.1:{port}/v1",
+            "--api-key",
+            "EMPTY",
+            "--model",
+            "Qwen2.5-VL-7B-Instruct",
+            "--detail",
+            self.args.physician_evidence_detail,
+            "--timeout",
+            str(self.args.physician_summary_timeout),
+            "--max-retries",
+            str(self.args.physician_summary_max_retries),
+        ]
+        self.run_logged(cmd, os.environ.copy(), self.logs_root / f"{task.model}_{task.dataset}_doctor_{task.shard_id:05d}.log")
 
     def base_env(self, model: str, dataset: str, port: int, policy_root: Path, split_state_root: Path) -> dict[str, str]:
         env = os.environ.copy()
@@ -543,7 +604,7 @@ class Runner:
 
     def merge_compare(self, model: str, dataset: str) -> None:
         glob_pattern = str(self.combo_root(model, dataset) / "compare_shards" / "shard_*" / "compare_agent_vs_qwen_*.json")
-        out_report = self.reports_root / model / dataset / "compare_agent_vs_qwen_final_compare_test_merged.json"
+        out_report = self.merged_report_path(model, dataset)
         subprocess.run(
             [
                 str(PYTHON),
@@ -561,57 +622,8 @@ class Runner:
             check=True,
         )
 
-    def start_physician_summary_server(self) -> Path:
-        gpu = int(self.args.physician_summary_gpu)
-        port = int(self.args.physician_summary_port)
-        log_path = self.logs_root / f"physician_summary_gpu{gpu}_{port}.log"
-        env = os.environ.copy()
-        pid_path = self.output_root / "pids" / "physician_summary.pid"
-        pid_path.parent.mkdir(parents=True, exist_ok=True)
-        env.update(
-            {
-                "CUDA_VISIBLE_DEVICES": str(gpu),
-                "PORT": str(port),
-                "HOST": "127.0.0.1",
-                "OPENAI_API_KEY": "EMPTY",
-                "FORCE_RESTART": "1",
-                "MAX_MODEL_LEN": "16384",
-                "MAX_NUM_SEQS": "1",
-                "GPU_MEMORY_UTILIZATION": "0.82",
-                "LOG_FILE": str(log_path),
-                "PID_FILE": str(pid_path),
-            }
-        )
-        self.log(f"starting physician summary Qwen on GPU{gpu} port {port}")
-        startup_log = self.logs_root / f"physician_summary_gpu{gpu}_{port}.startup.log"
-        with startup_log.open("a", encoding="utf-8") as handle:
-            subprocess.Popen(
-                ["bash", str(PROJECT_ROOT / "scripts/start_qwen_physician_summary_server.sh"), str(PROJECT_ROOT)],
-                cwd=PROJECT_ROOT,
-                env=env,
-                text=True,
-                stdout=handle,
-                stderr=subprocess.STDOUT,
-            )
-        if not self.wait_ready(port, timeout=self.args.service_timeout):
-            raise RuntimeError(f"physician summary server did not become ready; see {log_path}")
-        return pid_path
-
-    def export_doctor_packages(self) -> None:
-        if not self.args.enable_physician_evidence_summary:
-            return
-        subprocess.run(
-            [
-                str(PYTHON),
-                str(PROJECT_ROOT / "scripts/export_doctor_evidence_packages.py"),
-                "--compare-report-glob",
-                str(self.reports_root / "*" / "*" / "compare_agent_vs_qwen_final_compare_test_merged.json"),
-                "--output-dir",
-                str(self.doctor_root),
-            ],
-            cwd=PROJECT_ROOT,
-            check=True,
-        )
+    def merged_report_path(self, model: str, dataset: str) -> Path:
+        return self.reports_root / model / dataset / "compare_agent_vs_qwen_final_compare_test_merged.json"
 
 
 def parse_args() -> argparse.Namespace:
@@ -625,7 +637,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--models", type=str, default="qwen,llama,skinvl,hulumed,medgemma,dermatollama")
     parser.add_argument("--datasets", type=str, default="ham10000,isic2019,pad20,scin,sd198")
     parser.add_argument("--bootstrap-gpus", type=str, default="0,1,2,3,4,5,6,7")
-    parser.add_argument("--compare-gpus", type=str, default="0,1,2,3,4,5,6")
+    parser.add_argument("--compare-gpus", type=str, default="0,1,2,3,4,5,6,7")
+    parser.add_argument("--doctor-gpus", type=str, default="0,1,2,3,4,5,6,7")
     parser.add_argument("--bootstrap-shard-size", type=int, default=64)
     parser.add_argument("--compare-shard-size", type=int, default=32)
     parser.add_argument("--client-timeout", type=float, default=240.0)
@@ -637,12 +650,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--no-resume", dest="resume", action="store_false")
     parser.add_argument("--enable-physician-evidence-summary", action="store_true", default=True)
     parser.add_argument("--disable-physician-evidence-summary", dest="enable_physician_evidence_summary", action="store_false")
-    parser.add_argument("--physician-summary-gpu", type=int, default=7)
-    parser.add_argument("--physician-summary-port", type=int, default=8200)
+    parser.add_argument("--doctor-shard-size", type=int, default=32)
     parser.add_argument("--physician-evidence-detail", type=str, default="detailed", choices=("brief", "detailed"))
     parser.add_argument("--physician-summary-timeout", type=float, default=240.0)
     parser.add_argument("--physician-summary-max-retries", type=int, default=3)
-    parser.add_argument("--keep-physician-summary-server", action="store_true")
     args = parser.parse_args()
     if args.output_root is None:
         args.output_root = PROJECT_ROOT / "paper_data" / "final_30_70_large_runs" / args.run_id / f"machine_{args.machine_id}"
