@@ -428,6 +428,23 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("hulumed_sd198_grouped_guarded_override")
+        elif hulumed_scin_topk_promotion := _hulumed_scin_grouped_promotion_label_and_reason(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_differentials=agent_differentials,
+            initial_ddx=initial_ddx,
+            baseline_preview=baseline_preview,
+            selected_evidence=selected_evidence,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = hulumed_scin_topk_promotion[0]
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append(hulumed_scin_topk_promotion[1])
         elif hulumed_scin_override_label := _hulumed_scin_consensus_override_label(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
@@ -1349,6 +1366,8 @@ def decide_conservative_agent_fusion(
         "medgemma_scin_pigment_bcc_symptom_promotion",
         "medgemma_scin_genital_herpes_promotion",
         "medgemma_scin_lower_body_vascular_promotion",
+        "hulumed_scin_face_chest_acne_grouped_promotion",
+        "hulumed_scin_lower_body_vascular_grouped_promotion",
         "dermatollama_sd198_actinic_scaly_papulosquamous_topk_promotion",
         "dermatollama_sd198_crowe_sign_pigmentary_rescue",
     }
@@ -5883,6 +5902,76 @@ def _hulumed_scin_consensus_override_label(
             return "DERMATITIS_ECZEMA"
 
     return ""
+
+
+def _hulumed_scin_grouped_promotion_label_and_reason(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_differentials: list[str],
+    initial_ddx: list[str],
+    baseline_preview: dict[str, Any],
+    selected_evidence: list[Any],
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    label_space_id: str,
+    dataset_name: str,
+) -> tuple[str, str] | None:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "hulumed__scin__grouped_guard_v1":
+        return None
+    if not selected_evidence_present:
+        return None
+    if support_margin < 39.0 or subtype_support_margin < 2.0:
+        return None
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonicals = {
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in agent_differentials
+    }
+    summary = str(baseline_preview.get("image_summary", "")).strip().lower()
+    evidence_text = f"{summary} {_selected_evidence_text(selected_evidence)}"
+    clinical_metadata = workflow_context.get("clinical_metadata", {})
+    if not isinstance(clinical_metadata, dict):
+        clinical_metadata = {}
+    metadata_text = " ".join(
+        [
+            str(clinical_metadata.get("region", "")),
+            " ".join(str(item) for item in clinical_metadata.get("body_sites", []) or []),
+            " ".join(str(item) for item in clinical_metadata.get("textures_present", []) or []),
+            " ".join(str(item) for item in clinical_metadata.get("symptoms_present", []) or []),
+        ]
+    ).lower()
+    combined_text = f"{evidence_text} {metadata_text}"
+
+    if (
+        baseline_canonical == "URTICARIA_BITE_FOLLICULITIS"
+        and "ACNE_ROSACEA_FOLLICULAR" in agent_canonicals
+        and any(marker in combined_text for marker in ("face", "cheek", "forehead", "perioral", "upper chest"))
+        and any(marker in combined_text for marker in ("pustule", "papule", "comedone", "follicular", "acne"))
+        and "no visible lesion" not in combined_text
+        and "scaly plaque" not in combined_text
+    ):
+        return "ACNE_ROSACEA_FOLLICULAR", "hulumed_scin_face_chest_acne_grouped_promotion"
+
+    if (
+        baseline_canonical == "URTICARIA_BITE_FOLLICULITIS"
+        and "VASCULAR_PURPURIC" in agent_canonicals
+        and any(marker in combined_text for marker in ("leg", "foot", "ankle", "lower extremity", "thigh"))
+        and any(marker in combined_text for marker in ("red", "erythematous", "purpuric", "petechiae", "confluent"))
+        and any(marker in combined_text for marker in ("pain", "burning", "increasing_size", "vasculitis", "vascular"))
+        and "insect bite" not in combined_text
+        and "single bite" not in combined_text
+    ):
+        return "VASCULAR_PURPURIC", "hulumed_scin_lower_body_vascular_grouped_promotion"
+
+    return None
 
 
 def _medgemma_isic_confident_bcc_agent(agent_confidence: str) -> bool:

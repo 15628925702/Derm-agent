@@ -659,6 +659,49 @@ def _hulumed_isic_evidence_bundle(
         "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
     }
 
+
+def _hulumed_scin_evidence_bundle(
+    *,
+    early_ddx_candidates: list[str],
+    image_summary: str = "",
+    clinical_metadata: dict | None = None,
+    selected_evidence_text: str = "",
+    support_margin: float = 42.0,
+    subtype_support_margin: float = 6.0,
+    workflow_cell_id: str = "hulumed__scin__grouped_guard_v1",
+) -> dict:
+    return {
+        "selected_evidence": [
+            {
+                "source_name": "visual_summary_skill",
+                "summary": selected_evidence_text,
+            }
+        ],
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": early_ddx_candidates,
+                    "image_summary": image_summary,
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": workflow_cell_id,
+                    "workflow_profile": "family_routing_workflow",
+                    "label_space_id": "scin_grouped",
+                    "dataset_name": "scin",
+                    "clinical_metadata": dict(clinical_metadata or {}),
+                },
+                "selected_evidence_present": True,
+                "support_margin": support_margin,
+                "subtype_support_margin": subtype_support_margin,
+                "uncertainty_level": "medium",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+
 def _medgemma_scin_evidence_bundle(
     *,
     early_ddx_candidates: list[str],
@@ -2394,6 +2437,133 @@ def test_hulumed_isic_bcc_inflammatory_promotion_blocks_crusted_petechial_mimic(
         not in result["fusion_decision"]["reasons"]
     )
     assert "agent_matches_baseline" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_scin_promotes_face_chest_acne_topk_pattern() -> None:
+    baseline_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS"],
+    }
+    agent_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS", "ACNE_ROSACEA_FOLLICULAR"],
+    }
+    evidence_bundle = _hulumed_scin_evidence_bundle(
+        early_ddx_candidates=["URTICARIA_BITE_FOLLICULITIS", "ACNE_ROSACEA_FOLLICULAR"],
+        image_summary="Multiple inflammatory papules and pustules on the cheeks and forehead.",
+        clinical_metadata={"body_sites": ["face"], "textures_present": ["raised_or_bumpy"]},
+        selected_evidence_text="visual_summary_skill: papules and pustules clustered on face, acne-like follicular pattern.",
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "ACNE_ROSACEA_FOLLICULAR"
+    assert "hulumed_scin_face_chest_acne_grouped_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_scin_acne_promotion_blocks_dermatitis_neck_scaling_mimic() -> None:
+    baseline_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS"],
+    }
+    agent_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS", "ACNE_ROSACEA_FOLLICULAR"],
+    }
+    evidence_bundle = _hulumed_scin_evidence_bundle(
+        early_ddx_candidates=["URTICARIA_BITE_FOLLICULITIS", "ACNE_ROSACEA_FOLLICULAR"],
+        image_summary="Scaly plaque on the lateral neck without clear pustules.",
+        clinical_metadata={"body_sites": ["neck"], "textures_present": ["rough_or_flaky"]},
+        selected_evidence_text="visual_summary_skill: scaly plaque, no visible lesion suggesting acne.",
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "URTICARIA_BITE_FOLLICULITIS"
+    assert "hulumed_scin_face_chest_acne_grouped_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_scin_promotes_lower_body_vascular_topk_pattern() -> None:
+    baseline_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS"],
+    }
+    agent_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS", "VASCULAR_PURPURIC"],
+    }
+    evidence_bundle = _hulumed_scin_evidence_bundle(
+        early_ddx_candidates=["URTICARIA_BITE_FOLLICULITIS", "VASCULAR_PURPURIC"],
+        image_summary="Confluent erythematous papules on the leg with purpuric vascular appearance.",
+        clinical_metadata={"body_sites": ["leg"], "symptoms_present": ["pain", "burning", "increasing_size"]},
+        selected_evidence_text="visual_summary_skill: red painful lower extremity papules; vasculitis remains plausible.",
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "VASCULAR_PURPURIC"
+    assert "hulumed_scin_lower_body_vascular_grouped_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_scin_vascular_promotion_blocks_insect_bite_anchor() -> None:
+    baseline_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS"],
+    }
+    agent_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS", "VASCULAR_PURPURIC"],
+    }
+    evidence_bundle = _hulumed_scin_evidence_bundle(
+        early_ddx_candidates=["URTICARIA_BITE_FOLLICULITIS", "VASCULAR_PURPURIC"],
+        image_summary="Single bite-like red papule on the ankle after suspected insect bite.",
+        clinical_metadata={"body_sites": ["ankle"], "symptoms_present": ["itching"]},
+        selected_evidence_text="visual_summary_skill: single bite lesion, no vascular clustering.",
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "URTICARIA_BITE_FOLLICULITIS"
+    assert "hulumed_scin_lower_body_vascular_grouped_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_scin_does_not_promote_malignant_pattern_from_rash_anchor() -> None:
+    baseline_output = {"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"]}
+    agent_output = {
+        "final_diagnosis": "Contact Dermatitis",
+        "differential_diagnoses": ["Contact Dermatitis", "MALIGNANT_PREMALIGNANT"],
+    }
+    evidence_bundle = _hulumed_scin_evidence_bundle(
+        early_ddx_candidates=["MALIGNANT_PREMALIGNANT", "DERMATITIS_ECZEMA"],
+        image_summary="Rough flaky keratotic scale on the back of hand, sun-exposed site.",
+        clinical_metadata={"body_sites": ["back_of_hand"], "textures_present": ["rough_or_flaky"]},
+        selected_evidence_text="visual_summary_skill: actinic keratosis-like crust and scale on hand.",
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Contact Dermatitis"
+    assert not any(reason.startswith("hulumed_scin_sun_exposed") for reason in result["fusion_decision"]["reasons"])
 
 
 def test_medgemma_isic_route_anchors_melanoma_when_bcc_subtype_support_is_weak() -> None:
