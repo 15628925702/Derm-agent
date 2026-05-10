@@ -2465,6 +2465,63 @@ def test_hulumed_scin_promotes_face_chest_acne_topk_pattern() -> None:
     assert "hulumed_scin_face_chest_acne_grouped_promotion" in result["fusion_decision"]["reasons"]
 
 
+def test_hulumed_scin_promotes_cheek_rosacea_from_raw_acne_signal() -> None:
+    baseline_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS"],
+    }
+    agent_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["Acne", "VASCULAR_PURPURIC"],
+    }
+    evidence_bundle = _hulumed_scin_evidence_bundle(
+        early_ddx_candidates=["urticaria", "eczema", "contact dermatitis"],
+        image_summary="Erythematous patches and plaques on the cheek with a slightly raised texture.",
+        clinical_metadata={
+            "body_sites": ["other"],
+            "textures_present": ["raised_or_bumpy"],
+            "symptoms_present": ["burning"],
+        },
+        selected_evidence_text="visual_summary_skill: cheek erythema with raised plaque-like acne or rosacea pattern.",
+        support_margin=62.0,
+        subtype_support_margin=14.0,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "ACNE_ROSACEA_FOLLICULAR"
+    assert "hulumed_scin_face_chest_acne_grouped_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_scin_uses_baseline_topk_for_cheek_rosacea_signal() -> None:
+    baseline_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["Acne", "VASCULAR_PURPURIC"],
+    }
+    agent_output = {"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"]}
+    evidence_bundle = _hulumed_scin_evidence_bundle(
+        early_ddx_candidates=["urticaria", "eczema", "contact dermatitis"],
+        image_summary="Erythematous patches and plaques on the cheek with a slightly raised texture.",
+        clinical_metadata={"body_sites": ["other"], "textures_present": ["raised_or_bumpy"]},
+        selected_evidence_text="visual_summary_skill: cheek erythema with slightly raised plaque pattern.",
+        support_margin=62.0,
+        subtype_support_margin=14.0,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "ACNE_ROSACEA_FOLLICULAR"
+    assert "hulumed_scin_face_chest_acne_grouped_promotion" in result["fusion_decision"]["reasons"]
+
+
 def test_hulumed_scin_acne_promotion_blocks_dermatitis_neck_scaling_mimic() -> None:
     baseline_output = {
         "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
@@ -2479,6 +2536,33 @@ def test_hulumed_scin_acne_promotion_blocks_dermatitis_neck_scaling_mimic() -> N
         image_summary="Scaly plaque on the lateral neck without clear pustules.",
         clinical_metadata={"body_sites": ["neck"], "textures_present": ["rough_or_flaky"]},
         selected_evidence_text="visual_summary_skill: scaly plaque, no visible lesion suggesting acne.",
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "URTICARIA_BITE_FOLLICULITIS"
+    assert "hulumed_scin_face_chest_acne_grouped_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_scin_acne_promotion_does_not_match_surface_as_face() -> None:
+    baseline_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["Acne", "INFECTION_VIRAL_FUNGAL"],
+    }
+    agent_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["ACNE_ROSACEA_FOLLICULAR", "INFECTION_VIRAL_FUNGAL"],
+    }
+    evidence_bundle = _hulumed_scin_evidence_bundle(
+        early_ddx_candidates=["urticaria", "folliculitis", "eczema"],
+        image_summary="Numerous small, raised, red bumps scattered across the skin surface.",
+        selected_evidence_text="visual_summary_skill: unrelated retrieved face examples should not define anatomy.",
+        support_margin=58.7,
+        subtype_support_margin=7.2,
     )
 
     result = apply_conservative_agent_fusion(
@@ -2515,6 +2599,142 @@ def test_hulumed_scin_promotes_lower_body_vascular_topk_pattern() -> None:
 
     assert result["final_diagnosis"] == "VASCULAR_PURPURIC"
     assert "hulumed_scin_lower_body_vascular_grouped_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_scin_vascular_promotion_blocks_low_inflammation_bite_pattern() -> None:
+    baseline_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["VASCULAR_PURPURIC", "Acne"],
+    }
+    agent_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS", "VASCULAR_PURPURIC"],
+    }
+    evidence_bundle = _hulumed_scin_evidence_bundle(
+        early_ddx_candidates=["urticaria", "folliculitis", "contact dermatitis"],
+        image_summary="Three small, raised, red lesions on the leg with no surrounding inflammation or scaling.",
+        clinical_metadata={"body_sites": ["leg"], "symptoms_present": ["burning"]},
+        selected_evidence_text="visual_summary_skill: low inflammation bite-like lesions.",
+        support_margin=62.6,
+        subtype_support_margin=7.4,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "URTICARIA_BITE_FOLLICULITIS"
+    assert "hulumed_scin_lower_body_vascular_grouped_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_scin_promotes_crusted_impetigo_pattern() -> None:
+    baseline_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS"],
+    }
+    agent_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["Acne", "INFECTION_VIRAL_FUNGAL"],
+    }
+    evidence_bundle = _hulumed_scin_evidence_bundle(
+        early_ddx_candidates=["folliculitis", "eczema", "contact dermatitis"],
+        image_summary="Erythematous papules with central crusting and surrounding erythema on the arm.",
+        clinical_metadata={
+            "body_sites": ["arm", "leg"],
+            "textures_present": ["raised_or_bumpy", "fluid_filled"],
+            "symptoms_present": ["bleeding", "increasing_size", "pain"],
+        },
+        selected_evidence_text="visual_summary_skill: crusted impetigo-like papules with surrounding erythema.",
+        support_margin=60.6,
+        subtype_support_margin=13.3,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "INFECTION_VIRAL_FUNGAL"
+    assert "hulumed_scin_crusted_impetigo_grouped_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_scin_uses_baseline_topk_for_crusted_impetigo_signal() -> None:
+    baseline_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["Acne", "INFECTION_VIRAL_FUNGAL"],
+    }
+    agent_output = {"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"]}
+    evidence_bundle = _hulumed_scin_evidence_bundle(
+        early_ddx_candidates=["folliculitis", "eczema", "contact dermatitis"],
+        image_summary="Erythematous papules with central crusting and surrounding erythema on the arm.",
+        clinical_metadata={"body_sites": ["arm"], "textures_present": ["raised_or_bumpy", "fluid_filled"]},
+        selected_evidence_text="visual_summary_skill: central crusting with surrounding erythema.",
+        support_margin=60.6,
+        subtype_support_margin=13.3,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "INFECTION_VIRAL_FUNGAL"
+    assert "hulumed_scin_crusted_impetigo_grouped_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_scin_promotes_herpetic_cluster_from_dermatitis_anchor() -> None:
+    baseline_output = {"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"]}
+    agent_output = {"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"]}
+    evidence_bundle = _hulumed_scin_evidence_bundle(
+        early_ddx_candidates=["Herpes zoster", "Contact dermatitis", "Insect bite reaction"],
+        image_summary="Cluster of small, raised, fluid-filled lesions on arm with surrounding erythema.",
+        clinical_metadata={"body_sites": ["arm"], "textures_present": ["fluid_filled"]},
+        selected_evidence_text="visual_summary_skill: clustered vesicles with surrounding erythema.",
+        support_margin=60.5,
+        subtype_support_margin=7.1,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "INFECTION_VIRAL_FUNGAL"
+    assert "hulumed_scin_herpetic_cluster_grouped_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_scin_promotes_elderly_back_hand_actinic_pattern() -> None:
+    baseline_output = {"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"]}
+    agent_output = {
+        "final_diagnosis": "Contact Dermatitis",
+        "differential_diagnoses": ["Contact Dermatitis", "Actinic Keratosis", "Psoriasis"],
+    }
+    evidence_bundle = _hulumed_scin_evidence_bundle(
+        early_ddx_candidates=["actinic keratosis", "eczema", "psoriasis"],
+        image_summary="Elderly hand with rough, flaky skin and a small, dark spot.",
+        clinical_metadata={
+            "age_group": "AGE_60_TO_69",
+            "body_sites": ["back_of_hand"],
+            "textures_present": ["rough_or_flaky"],
+        },
+        selected_evidence_text="visual_summary_skill: actinic keratosis-like rough scale on the back of hand.",
+        support_margin=64.9,
+        subtype_support_margin=16.1,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "MALIGNANT_PREMALIGNANT"
+    assert "hulumed_scin_elderly_hand_actinic_grouped_promotion" in result["fusion_decision"]["reasons"]
 
 
 def test_hulumed_scin_vascular_promotion_blocks_insect_bite_anchor() -> None:
