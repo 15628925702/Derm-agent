@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import argparse
+from collections import Counter, defaultdict
+import hashlib
 import json
 import os
 import queue
+import random
 import signal
 import subprocess
 import sys
@@ -14,6 +17,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 from urllib.request import Request, urlopen
+
+from scripts.build_final_dataset_splits import dataset_specs as final_dataset_specs
+from scripts.build_final_dataset_splits import load_cases as load_final_split_cases
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -209,6 +215,113 @@ class Runner:
     def split_payload(self, dataset: str) -> dict[str, Any]:
         return json.loads((PROJECT_ROOT / DATASETS[dataset]["split_json"]).read_text(encoding="utf-8"))
 
+    @staticmethod
+    def stable_seed(*parts: Any) -> int:
+        digest = hashlib.sha256("::".join(str(part) for part in parts).encode("utf-8")).hexdigest()
+        return int(digest[:16], 16)
+
+    def label_by_case_index(self, dataset: str) -> dict[int, str]:
+        spec_by_key = {spec.key: spec for spec in final_dataset_specs(PROJECT_ROOT / "data")}
+        spec = spec_by_key.get(dataset)
+        if spec is None:
+            raise ValueError(f"No label-aware sampling spec available for dataset: {dataset}")
+        labels: dict[int, str] = {}
+        for case in load_final_split_cases(spec):
+            labels[int(case.case_index)] = str(case.label).strip() or "UNKNOWN"
+        return labels
+
+    def sample_bootstrap_indices(
+        self,
+        *,
+        dataset: str,
+        train_indices: list[int],
+        target_count: int,
+        split_seed: int,
+    ) -> tuple[list[int], dict[str, Any]]:
+        label_by_index = self.label_by_case_index(dataset)
+        grouped: dict[str, list[int]] = defaultdict(list)
+        for index in train_indices:
+            grouped[label_by_index.get(int(index), "UNKNOWN")].append(int(index))
+        grouped = {label: values for label, values in grouped.items() if values}
+        if not grouped:
+            raise ValueError(f"No labeled train cases available for bootstrap sampling: {dataset}")
+
+        rng = random.Random(self.stable_seed(self.args.run_id, dataset, split_seed, "bootstrap_stratified_0p5"))
+        for values in grouped.values():
+            values.sort()
+            rng.shuffle(values)
+
+        label_order = sorted(grouped)
+        target_count = max(1, min(int(target_count), sum(len(values) for values in grouped.values())))
+        takes = {label: 0 for label in label_order}
+
+        # Preserve rare-label coverage whenever the sample is large enough.
+        remaining = target_count
+        if target_count >= len(label_order):
+            for label in label_order:
+                takes[label] = 1
+            remaining -= len(label_order)
+
+        total_train = sum(len(grouped[label]) for label in label_order)
+        quotas = {
+            label: (len(grouped[label]) / total_train) * remaining
+            for label in label_order
+        }
+        for label in label_order:
+            extra = min(len(grouped[label]) - takes[label], int(quotas[label]))
+            takes[label] += max(0, extra)
+
+        while sum(takes.values()) < target_count:
+            candidates = [
+                label for label in label_order
+                if takes[label] < len(grouped[label])
+            ]
+            if not candidates:
+                break
+            candidates.sort(
+                key=lambda label: (
+                    quotas[label] - int(quotas[label]),
+                    len(grouped[label]) - takes[label],
+                    label,
+                ),
+                reverse=True,
+            )
+            takes[candidates[0]] += 1
+
+        selected_by_label = {
+            label: grouped[label][: takes[label]]
+            for label in label_order
+            if takes[label] > 0
+        }
+        round_robin_labels = [label for label in label_order if selected_by_label.get(label)]
+        rng.shuffle(round_robin_labels)
+        selected: list[int] = []
+        cursor = 0
+        while len(selected) < target_count and round_robin_labels:
+            label = round_robin_labels[cursor % len(round_robin_labels)]
+            values = selected_by_label[label]
+            if values:
+                selected.append(values.pop(0))
+            if not values:
+                round_robin_labels = [item for item in round_robin_labels if selected_by_label.get(item)]
+                cursor = 0
+            else:
+                cursor += 1
+
+        train_counts = {label: len(grouped[label]) for label in label_order}
+        sampled_counts = dict(sorted(Counter(label_by_index.get(index, "UNKNOWN") for index in selected).items()))
+        manifest = {
+            "strategy": "stratified_label_proportional_round_robin",
+            "dataset": dataset,
+            "split_seed": split_seed,
+            "target_count": target_count,
+            "selected_count": len(selected),
+            "train_label_counts": dict(sorted(train_counts.items())),
+            "sampled_label_counts": sampled_counts,
+            "sampled_case_indices": selected,
+        }
+        return selected, manifest
+
     def ensure_combo_assets(self, model: str, dataset: str) -> None:
         policy_root = self.combo_policy_root(model, dataset)
         split_state_root = self.combo_split_state_root(model, dataset)
@@ -240,7 +353,15 @@ class Runner:
                 total_cases = len(payload["train_case_indices"]) + len(payload["test_case_indices"])
                 keep = round(total_cases * float(self.args.bootstrap_train_tenths) / 10.0)
                 keep = max(1, min(len(indices), int(keep)))
-                indices = indices[:keep]
+                indices, sample_manifest = self.sample_bootstrap_indices(
+                    dataset=dataset,
+                    train_indices=indices,
+                    target_count=keep,
+                    split_seed=int(payload.get("seed", 0) or 0),
+                )
+                sample_path = self.combo_root(model, dataset) / "bootstrap_sample_manifest.json"
+                sample_path.parent.mkdir(parents=True, exist_ok=True)
+                sample_path.write_text(json.dumps(sample_manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
             for shard_id, start in enumerate(range(0, len(indices), self.args.bootstrap_shard_size)):
                 chunk = tuple(indices[start : start + self.args.bootstrap_shard_size])
                 tasks.append(Task("bootstrap", model, dataset, shard_id, start, len(chunk), chunk))
