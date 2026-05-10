@@ -199,6 +199,7 @@ class Runner:
             "models": {key: MODELS[key]["model_name"] for key in self.args.models.split(",") if key},
             "bootstrap_shard_size": self.args.bootstrap_shard_size,
             "compare_shard_size": self.args.compare_shard_size,
+            "bootstrap_train_tenths": self.args.bootstrap_train_tenths,
             "physician_evidence_summary_enabled": bool(self.args.enable_physician_evidence_summary),
             "physician_evidence_summary_mode": "posthoc_after_compare",
             "failures": self.failures,
@@ -233,7 +234,13 @@ class Runner:
         tasks: list[Task] = []
         for model, dataset in combos:
             self.ensure_combo_assets(model, dataset)
-            indices = [int(item) for item in self.split_payload(dataset)["train_case_indices"]]
+            payload = self.split_payload(dataset)
+            indices = [int(item) for item in payload["train_case_indices"]]
+            if self.args.bootstrap_train_tenths is not None:
+                total_cases = len(payload["train_case_indices"]) + len(payload["test_case_indices"])
+                keep = round(total_cases * float(self.args.bootstrap_train_tenths) / 10.0)
+                keep = max(1, min(len(indices), int(keep)))
+                indices = indices[:keep]
             for shard_id, start in enumerate(range(0, len(indices), self.args.bootstrap_shard_size)):
                 chunk = tuple(indices[start : start + self.args.bootstrap_shard_size])
                 tasks.append(Task("bootstrap", model, dataset, shard_id, start, len(chunk), chunk))
@@ -639,6 +646,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--bootstrap-gpus", type=str, default="0,1,2,3,4,5,6,7")
     parser.add_argument("--compare-gpus", type=str, default="0,1,2,3,4,5,6,7")
     parser.add_argument("--doctor-gpus", type=str, default="0,1,2,3,4,5,6,7")
+    parser.add_argument(
+        "--bootstrap-train-tenths",
+        type=float,
+        default=None,
+        help="If set, bootstrap only the first N train cases equivalent to this many tenths of the full split population; compare still uses the full test split.",
+    )
     parser.add_argument("--bootstrap-shard-size", type=int, default=64)
     parser.add_argument("--compare-shard-size", type=int, default=32)
     parser.add_argument("--client-timeout", type=float, default=240.0)
