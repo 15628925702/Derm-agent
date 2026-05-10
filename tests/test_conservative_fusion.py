@@ -695,6 +695,49 @@ def _medgemma_scin_evidence_bundle(
     }
 
 
+def _dermatollama_scin_evidence_bundle(
+    *,
+    early_ddx_candidates: list[str],
+    image_summary: str = "",
+    clinical_metadata: dict | None = None,
+    selected_evidence_text: str = "",
+    support_margin: float = 42.0,
+    subtype_support_margin: float = 4.0,
+    uncertainty_level: str = "low",
+    workflow_cell_id: str = "dermatollama__scin__grouped_guard_v1",
+) -> dict:
+    return {
+        "selected_evidence": [
+            {
+                "source_name": "visual_summary_skill",
+                "summary": selected_evidence_text,
+            }
+        ],
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": early_ddx_candidates,
+                    "image_summary": image_summary,
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": workflow_cell_id,
+                    "workflow_profile": "family_routing_workflow",
+                    "label_space_id": "scin_grouped",
+                    "dataset_name": "scin",
+                    "clinical_metadata": dict(clinical_metadata or {}),
+                },
+                "selected_evidence_present": True,
+                "support_margin": support_margin,
+                "subtype_support_margin": subtype_support_margin,
+                "uncertainty_level": uncertainty_level,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+
 def test_soft_fusion_allows_scin_grouped_family_override() -> None:
     baseline_output = {
         "final_diagnosis": "Contact Dermatitis",
@@ -2394,6 +2437,164 @@ def test_hulumed_isic_bcc_inflammatory_promotion_blocks_crusted_petechial_mimic(
         not in result["fusion_decision"]["reasons"]
     )
     assert "agent_matches_baseline" in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_scin_promotes_itchy_urticaria_dermatitis_topk_pattern() -> None:
+    baseline_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS"],
+    }
+    agent_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS", "DERMATITIS_ECZEMA"],
+    }
+    evidence_bundle = _dermatollama_scin_evidence_bundle(
+        early_ddx_candidates=["DERMATITIS_ECZEMA", "URTICARIA_BITE_FOLLICULITIS"],
+        image_summary="A patch of erythematous papules and macules on the arm.",
+        clinical_metadata={
+            "body_sites": ["arm"],
+            "textures_present": ["raised_or_bumpy"],
+            "symptoms_present": ["itching"],
+        },
+        selected_evidence_text="raised erythematous papules with dermatitis-like morphology.",
+        support_margin=62.0,
+        subtype_support_margin=14.0,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "DERMATITIS_ECZEMA"
+    assert "dermatollama_scin_itchy_urticaria_dermatitis_topk_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_scin_blocks_folliculitis_anchor_hurt() -> None:
+    baseline_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS"],
+        "confidence": "Medium",
+    }
+    agent_output = {
+        "final_diagnosis": "DERMATITIS_ECZEMA",
+        "differential_diagnoses": ["DERMATITIS_ECZEMA"],
+        "confidence": "Unknown",
+    }
+    evidence_bundle = _dermatollama_scin_evidence_bundle(
+        early_ddx_candidates=["DERMATITIS_ECZEMA", "URTICARIA_BITE_FOLLICULITIS"],
+        image_summary="Follicular pustules on the neck, consistent with folliculitis.",
+        clinical_metadata={"body_sites": ["neck"], "textures_present": ["pustular"]},
+        selected_evidence_text="folliculitis and pustular follicular lesions remain plausible.",
+        support_margin=44.0,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "URTICARIA_BITE_FOLLICULITIS"
+    assert "dermatollama_scin_guarded_override" not in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_scin_blocks_rough_flaky_urticaria_anchor_hurt() -> None:
+    baseline_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS"],
+    }
+    agent_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS", "DERMATITIS_ECZEMA"],
+    }
+    evidence_bundle = _dermatollama_scin_evidence_bundle(
+        early_ddx_candidates=["DERMATITIS_ECZEMA", "URTICARIA_BITE_FOLLICULITIS"],
+        image_summary="Multiple erythematous papules and plaques on the leg.",
+        clinical_metadata={
+            "body_sites": ["leg"],
+            "textures_present": ["raised_or_bumpy", "rough_or_flaky"],
+            "symptoms_present": ["itching"],
+        },
+        selected_evidence_text="itchy red papules remain in the urticaria-bite/follicular confusion zone.",
+        support_margin=64.0,
+        subtype_support_margin=19.0,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "URTICARIA_BITE_FOLLICULITIS"
+    assert "dermatollama_scin_itchy_urticaria_dermatitis_topk_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_scin_blocks_growing_leg_urticaria_anchor_hurt() -> None:
+    baseline_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS"],
+    }
+    agent_output = {
+        "final_diagnosis": "DERMATITIS_ECZEMA",
+        "differential_diagnoses": ["DERMATITIS_ECZEMA", "URTICARIA_BITE_FOLLICULITIS"],
+    }
+    evidence_bundle = _dermatollama_scin_evidence_bundle(
+        early_ddx_candidates=["DERMATITIS_ECZEMA", "URTICARIA_BITE_FOLLICULITIS"],
+        image_summary="A large, erythematous patch on the leg with a somewhat ill-defined border.",
+        clinical_metadata={
+            "body_sites": ["leg"],
+            "textures_present": ["raised_or_bumpy"],
+            "symptoms_present": ["increasing_size", "itching"],
+        },
+        selected_evidence_text="large raised red patch on leg remains compatible with bite or urticaria.",
+        support_margin=63.0,
+        subtype_support_margin=18.0,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "URTICARIA_BITE_FOLLICULITIS"
+    assert "dermatollama_scin_itchy_urticaria_dermatitis_topk_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_dermatollama_scin_topk_promotions_require_target_workflow_cell() -> None:
+    baseline_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS"],
+    }
+    agent_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS", "DERMATITIS_ECZEMA"],
+    }
+    evidence_bundle = _dermatollama_scin_evidence_bundle(
+        early_ddx_candidates=["DERMATITIS_ECZEMA", "URTICARIA_BITE_FOLLICULITIS"],
+        image_summary="A patch of erythematous papules and macules on the arm.",
+        clinical_metadata={
+            "body_sites": ["arm"],
+            "textures_present": ["raised_or_bumpy"],
+            "symptoms_present": ["itching"],
+        },
+        selected_evidence_text="raised erythematous papules with dermatitis-like morphology.",
+        support_margin=62.0,
+        subtype_support_margin=14.0,
+        workflow_cell_id="dermatollama__scin__alternate_cell",
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "URTICARIA_BITE_FOLLICULITIS"
+    assert "dermatollama_scin_itchy_urticaria_dermatitis_topk_promotion" not in result["fusion_decision"]["reasons"]
 
 
 def test_medgemma_isic_route_anchors_melanoma_when_bcc_subtype_support_is_weak() -> None:
