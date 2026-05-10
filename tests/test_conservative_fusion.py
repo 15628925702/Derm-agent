@@ -617,6 +617,52 @@ def _dermatollama_sd198_evidence_bundle(
     }
 
 
+def _qwen_sd198_evidence_bundle(
+    *,
+    early_ddx_candidates: list[str],
+    image_summary: str = "",
+    selected_evidence_text: str = "",
+    skill_outputs: dict | None = None,
+    support_margin: float = 56.0,
+    subtype_support_margin: float = 14.0,
+    contradiction_count: int = 5,
+    uncertainty_level: str = "medium",
+    workflow_cell_id: str = "qwen__sd198__grouped_best",
+) -> dict:
+    return {
+        "selected_evidence": [
+            {
+                "source_name": "visual_summary_skill",
+                "summary": selected_evidence_text,
+            }
+        ],
+        "skill_outputs": dict(skill_outputs or {}),
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": early_ddx_candidates,
+                    "image_summary": image_summary,
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": workflow_cell_id,
+                    "workflow_profile": "coarse_taxonomy_workflow",
+                    "dataset_workflow_profile": "coarse_taxonomy_workflow",
+                    "label_space_id": "sd198_grouped",
+                    "dataset_name": "sd198",
+                },
+                "selected_evidence_present": True,
+                "support_margin": support_margin,
+                "subtype_support_margin": subtype_support_margin,
+                "uncertainty_level": uncertainty_level,
+                "contradiction_count": contradiction_count,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+
 def _hulumed_isic_evidence_bundle(
     *,
     site: str = "head/neck",
@@ -6359,3 +6405,206 @@ def test_dermatollama_sd198_crowe_sign_rescue_requires_pigmentary_initial_candid
 
     assert result["final_diagnosis"] == "Crowe's Sign"
     assert "dermatollama_sd198_crowe_sign_pigmentary_rescue" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_sd198_promotes_in_situ_keratinocyte_malignant_group() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Actinic Keratosis",
+            "differential_diagnoses": ["Actinic Keratosis", "Malignant Melanoma"],
+            "confidence": "Medium",
+        },
+        agent_output={
+            "final_diagnosis": "Actinic Keratosis",
+            "differential_diagnoses": ["Actinic Keratosis", "Malignant Melanoma"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_qwen_sd198_evidence_bundle(
+            early_ddx_candidates=["Bowen's Disease", "Actinic Keratosis", "Malignant Melanoma"],
+            selected_evidence_text="irregular scaly plaque with medium malignant risk signal",
+            support_margin=48.0,
+            subtype_support_margin=11.0,
+            contradiction_count=5,
+            uncertainty_level="high",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "MALIGNANT_SKIN_CANCER"
+    assert "qwen_sd198_in_situ_keratinocyte_malignant_group_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_sd198_malignant_group_promotion_requires_workflow_cell() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Actinic Keratosis",
+            "differential_diagnoses": ["Actinic Keratosis", "Malignant Melanoma"],
+            "confidence": "Medium",
+        },
+        agent_output={
+            "final_diagnosis": "Actinic Keratosis",
+            "differential_diagnoses": ["Actinic Keratosis", "Malignant Melanoma"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_qwen_sd198_evidence_bundle(
+            early_ddx_candidates=["Bowenoid Papulosis", "Malignant Skin Cancer", "Pigmentary Nevus"],
+            selected_evidence_text="central depression and surrounding erythema",
+            workflow_cell_id="dermatollama__sd198__grouped_guard_v1",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Actinic Keratosis"
+    assert "qwen_sd198_in_situ_keratinocyte_malignant_group_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_sd198_promotes_appendageal_cyst_group() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Trichofolliculoma",
+            "differential_diagnoses": ["Sebaceous Cyst", "Pilomatrixoma", "Folliculitis"],
+            "confidence": "Medium",
+        },
+        agent_output={
+            "final_diagnosis": "Trichofolliculoma",
+            "differential_diagnoses": ["Sebaceous Cyst", "Pilomatrixoma", "Folliculitis"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_qwen_sd198_evidence_bundle(
+            early_ddx_candidates=["Trichofolliculoma", "Seborrheic Keratosis"],
+            selected_evidence_text="dome-shaped well-circumscribed nodule with central hair follicle",
+            support_margin=57.0,
+            subtype_support_margin=13.0,
+            contradiction_count=6,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "BENIGN_TUMOR_CYST"
+    assert "qwen_sd198_appendageal_cyst_group_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_sd198_promotes_actinic_context_group() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Actinic Keratosis"],
+            "confidence": "Medium",
+        },
+        agent_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Actinic Keratosis"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_qwen_sd198_evidence_bundle(
+            early_ddx_candidates=["Actinic cheilitis", "Lip eczema", "Lip psoriasis"],
+            selected_evidence_text="localized lower lip actinic cheilitis with slight scale",
+            support_margin=56.0,
+            subtype_support_margin=21.0,
+            contradiction_count=5,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "SUN_DAMAGE_ACTINIC"
+    assert "qwen_sd198_actinic_context_group_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_sd198_promotes_eczema_context_group() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Psoriasis",
+            "differential_diagnoses": ["Psoriasis", "Atopic Dermatitis"],
+            "confidence": "Medium",
+        },
+        agent_output={
+            "final_diagnosis": "Psoriasis",
+            "differential_diagnoses": ["Psoriasis", "Contact Dermatitis"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_qwen_sd198_evidence_bundle(
+            early_ddx_candidates=["Exfoliative Erythroderma", "Dermatitis Eczema"],
+            selected_evidence_text="widespread erythematous rash with exfoliation and scaling",
+            support_margin=44.0,
+            subtype_support_margin=2.0,
+            contradiction_count=4,
+            uncertainty_level="high",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "DERMATITIS_ECZEMA"
+    assert "qwen_sd198_eczema_context_group_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_sd198_promotes_discoid_lupus_eczema_group() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Actinic Keratosis",
+            "differential_diagnoses": ["Actinic Keratosis", "Seborrheic Keratosis"],
+            "confidence": "Medium",
+        },
+        agent_output={
+            "final_diagnosis": "Actinic Keratosis",
+            "differential_diagnoses": ["Actinic Keratosis", "Seborrheic Keratosis"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_qwen_sd198_evidence_bundle(
+            early_ddx_candidates=["Discoid Lupus Erythematosus", "Psoriasis", "Seborrheic Keratosis"],
+            selected_evidence_text="erythematous scaly plaque with lupus-like inflammatory context",
+            support_margin=57.0,
+            subtype_support_margin=13.0,
+            contradiction_count=6,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "DERMATITIS_ECZEMA"
+    assert "qwen_sd198_discoid_lupus_eczema_group_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_sd198_keeps_eczema_anchor_for_papulosquamous_context() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Contact Dermatitis",
+            "differential_diagnoses": ["Contact Dermatitis", "Psoriasis"],
+            "confidence": "Medium",
+        },
+        agent_output={
+            "final_diagnosis": "Contact Dermatitis",
+            "differential_diagnoses": ["Contact Dermatitis", "Psoriasis"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_qwen_sd198_evidence_bundle(
+            early_ddx_candidates=["Dermatitis Eczema", "Psoriasis", "Seborrheic Dermatitis"],
+            selected_evidence_text="scalp psoriasis with scaly plaques",
+            support_margin=56.0,
+            subtype_support_margin=13.0,
+            contradiction_count=5,
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Contact Dermatitis"
+    assert "qwen_sd198_papulosquamous_context_group_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_qwen_sd198_grouped_promotions_preserve_pigmentary_anchor() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+            "confidence": "Medium",
+        },
+        agent_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_qwen_sd198_evidence_bundle(
+            early_ddx_candidates=["PIGMENTARY_NEVUS_KERATOSIS", "MALIGNANT_SKIN_CANCER"],
+            selected_evidence_text="pigmented nevus with a broad malignant differential but no in-situ keratinocyte context",
+            support_margin=48.0,
+            subtype_support_margin=3.0,
+            contradiction_count=5,
+            uncertainty_level="high",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    reasons = result["fusion_decision"]["reasons"]
+    assert "qwen_sd198_in_situ_keratinocyte_malignant_group_promotion" not in reasons
+    assert "qwen_sd198_eczema_context_group_promotion" not in reasons

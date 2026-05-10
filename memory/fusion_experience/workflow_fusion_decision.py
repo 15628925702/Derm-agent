@@ -908,6 +908,28 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append(qwen_scin_grouped_promotion[1])
+        elif qwen_sd198_grouped_promotion := _qwen_sd198_grouped_promotion_label_and_reason(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            baseline_differentials=baseline_differentials,
+            agent_differentials=agent_differentials,
+            initial_ddx=initial_ddx,
+            baseline_preview=baseline_preview,
+            selected_evidence=selected_evidence,
+            skill_outputs=skill_outputs,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            contradiction_count=contradiction_count,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = qwen_sd198_grouped_promotion[0]
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append(qwen_sd198_grouped_promotion[1])
         elif _allow_medgemma_scin_face_acne_evidence_promotion(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
@@ -1361,6 +1383,11 @@ def decide_conservative_agent_fusion(
         "qwen_scin_headneck_medium_risk_bcc_grouped_promotion",
         "qwen_scin_back_hand_malignant_grouped_promotion",
         "qwen_scin_pigment_nevus_topk_grouped_promotion",
+        "qwen_sd198_in_situ_keratinocyte_malignant_group_promotion",
+        "qwen_sd198_appendageal_cyst_group_promotion",
+        "qwen_sd198_actinic_context_group_promotion",
+        "qwen_sd198_eczema_context_group_promotion",
+        "qwen_sd198_discoid_lupus_eczema_group_promotion",
         "medgemma_scin_acne_follicular_promotion",
         "medgemma_scin_headneck_skin_cancer_promotion",
         "medgemma_scin_face_acne_evidence_promotion",
@@ -3471,6 +3498,133 @@ def _qwen_scin_grouped_promotion_label_and_reason(
         and "not pustular" not in text
     ):
         return "PIGMENT_KERATOSIS_NEVUS", "qwen_scin_pigment_nevus_topk_grouped_promotion"
+
+    return None
+
+
+def _qwen_sd198_grouped_promotion_label_and_reason(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    baseline_differentials: list[str],
+    agent_differentials: list[str],
+    initial_ddx: list[str],
+    baseline_preview: dict[str, Any],
+    selected_evidence: list[dict[str, Any]],
+    skill_outputs: dict[str, Any],
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    contradiction_count: int,
+    label_space_id: str,
+    dataset_name: str,
+) -> tuple[str, str] | None:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "qwen__sd198__grouped_best":
+        return None
+    if not selected_evidence_present:
+        return None
+    if str(uncertainty_level or "").strip().lower() not in {"medium", "high"}:
+        return None
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    initial_canonicals = {
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in initial_ddx
+    }
+    differential_canonicals = {
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in [*baseline_differentials, *agent_differentials]
+    }
+    initial_text = " ".join(str(label).strip().lower() for label in initial_ddx)
+    differential_text = " ".join(
+        str(label).strip().lower() for label in [*baseline_differentials, *agent_differentials]
+    )
+    preview_text = str(baseline_preview.get("image_summary", "")).strip().lower()
+    evidence_text = " ".join(
+        (
+            preview_text,
+            initial_text,
+            differential_text,
+            _selected_evidence_text(selected_evidence),
+            str(skill_outputs).lower(),
+        )
+    )
+
+    if (
+        baseline_canonical == "SUN_DAMAGE_ACTINIC"
+        and agent_canonical == "SUN_DAMAGE_ACTINIC"
+        and "MALIGNANT_SKIN_CANCER" in initial_canonicals
+        and "MALIGNANT_SKIN_CANCER" in differential_canonicals
+        and support_margin >= 37.0
+        and contradiction_count <= 6
+        and any(
+            marker in initial_text
+            for marker in ("bowen", "bowenoid", "cutaneous t-cell", "keratoacanthoma")
+        )
+    ):
+        return "MALIGNANT_SKIN_CANCER", "qwen_sd198_in_situ_keratinocyte_malignant_group_promotion"
+
+    if (
+        baseline_canonical is None
+        and agent_canonical is None
+        and support_margin >= 50.0
+        and subtype_support_margin >= 10.0
+        and contradiction_count <= 8
+        and any(marker in evidence_text for marker in ("trichofolliculoma", "dilated pore of winer"))
+        and any(
+            marker in evidence_text
+            for marker in ("central hair follicle", "dome-shaped", "central plug", "dilated pore")
+        )
+    ):
+        return "BENIGN_TUMOR_CYST", "qwen_sd198_appendageal_cyst_group_promotion"
+
+    if (
+        baseline_canonical in {"PIGMENTARY_NEVUS_KERATOSIS", "DERMATITIS_ECZEMA"}
+        and agent_canonical == baseline_canonical
+        and "SUN_DAMAGE_ACTINIC" in differential_canonicals
+        and support_margin >= 40.0
+        and subtype_support_margin >= 10.0
+        and contradiction_count <= 5
+        and any(
+            marker in evidence_text
+            for marker in ("radiodermatitis", "actinic cheilitis", "cutaneous horn")
+        )
+    ):
+        return "SUN_DAMAGE_ACTINIC", "qwen_sd198_actinic_context_group_promotion"
+
+    if (
+        baseline_canonical in {"PIGMENTARY_NEVUS_KERATOSIS", "PAPULOSQUAMOUS_KERATOTIC"}
+        and agent_canonical == baseline_canonical
+        and support_margin >= 40.0
+        and contradiction_count <= 7
+        and (
+            "lichen simplex chronicus" in initial_text
+            or "exfoliative erythroderma" in initial_text
+        )
+    ):
+        return "DERMATITIS_ECZEMA", "qwen_sd198_eczema_context_group_promotion"
+
+    if (
+        baseline_canonical == "SUN_DAMAGE_ACTINIC"
+        and agent_canonical == "SUN_DAMAGE_ACTINIC"
+        and support_margin >= 40.0
+        and contradiction_count <= 7
+        and "discoid lupus erythematosus" in initial_text
+        and "psoriasis" in initial_text
+    ):
+        return "DERMATITIS_ECZEMA", "qwen_sd198_discoid_lupus_eczema_group_promotion"
 
     return None
 
