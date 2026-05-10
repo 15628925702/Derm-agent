@@ -444,6 +444,24 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("hulumed_scin_grouped_guarded_override")
+        elif dermatollama_scin_topk_promotion := _dermatollama_scin_grouped_topk_promotion(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_differentials=agent_differentials,
+            initial_ddx=initial_ddx,
+            baseline_preview=baseline_preview,
+            selected_evidence=selected_evidence,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = dermatollama_scin_topk_promotion[0]
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append(dermatollama_scin_topk_promotion[1])
         elif hulumed_ham10000_override_label := _hulumed_ham10000_consensus_override_label(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
@@ -1029,6 +1047,8 @@ def decide_conservative_agent_fusion(
             uncertainty_level=uncertainty_level,
             baseline_confidence=baseline_confidence,
             agent_confidence=agent_confidence,
+            baseline_preview=baseline_preview,
+            selected_evidence=selected_evidence,
             label_space_id=label_space_id,
             dataset_name=dataset_name,
         ):
@@ -1349,6 +1369,7 @@ def decide_conservative_agent_fusion(
         "medgemma_scin_pigment_bcc_symptom_promotion",
         "medgemma_scin_genital_herpes_promotion",
         "medgemma_scin_lower_body_vascular_promotion",
+        "dermatollama_scin_itchy_urticaria_dermatitis_topk_promotion",
         "dermatollama_sd198_actinic_scaly_papulosquamous_topk_promotion",
         "dermatollama_sd198_crowe_sign_pigmentary_rescue",
     }
@@ -5958,6 +5979,8 @@ def _allow_dermatollama_scin_guarded_override(
     uncertainty_level: str,
     baseline_confidence: str,
     agent_confidence: str,
+    baseline_preview: dict[str, Any] | None = None,
+    selected_evidence: list[Any] | None = None,
     label_space_id: str,
     dataset_name: str,
 ) -> bool:
@@ -5986,9 +6009,125 @@ def _allow_dermatollama_scin_guarded_override(
         return baseline_conf == "high" and agent_conf == "unknown" and 40.0 <= support_margin <= 46.5
 
     if baseline_canonical == "URTICARIA_BITE_FOLLICULITIS" and agent_canonical == "DERMATITIS_ECZEMA":
+        baseline_preview = baseline_preview or {}
+        selected_evidence = selected_evidence or []
+        summary = str(baseline_preview.get("image_summary", "")).strip().lower()
+        clinical_metadata = workflow_context.get("clinical_metadata", {})
+        if not isinstance(clinical_metadata, dict):
+            clinical_metadata = {}
+        metadata_text = " ".join(
+            [
+                str(clinical_metadata.get("region", "")),
+                " ".join(str(item) for item in clinical_metadata.get("body_sites", []) or []),
+                " ".join(str(item) for item in clinical_metadata.get("textures_present", []) or []),
+                " ".join(str(item) for item in clinical_metadata.get("symptoms_present", []) or []),
+            ]
+        ).lower()
+        combined_text = f"{summary} {_selected_evidence_text(selected_evidence)} {metadata_text}"
+        if any(marker in combined_text for marker in ("folliculitis", "follicular", "pustule", "pustular", "insect bite", "bite-like")):
+            return False
         return baseline_conf == "medium" and agent_conf in {"unknown", "medium"} and 40.0 <= support_margin <= 46.5
 
     return False
+
+
+def _dermatollama_scin_grouped_topk_promotion(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_differentials: list[str],
+    initial_ddx: list[str],
+    baseline_preview: dict[str, Any],
+    selected_evidence: list[Any],
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> tuple[str, str] | None:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "dermatollama__scin__grouped_guard_v1":
+        return None
+    if not selected_evidence_present:
+        return None
+    if str(uncertainty_level or "").strip().lower() not in {"low", "medium"}:
+        return None
+    if support_margin < 40.0 or subtype_support_margin < 1.5:
+        return None
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonicals = {
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in agent_differentials
+    }
+    initial_canonicals = {
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in initial_ddx
+    }
+    candidates = agent_canonicals | initial_canonicals
+    summary = str(baseline_preview.get("image_summary", "")).strip().lower()
+    clinical_metadata = workflow_context.get("clinical_metadata", {})
+    if not isinstance(clinical_metadata, dict):
+        clinical_metadata = {}
+    metadata_text = " ".join(
+        [
+            str(clinical_metadata.get("region", "")),
+            " ".join(str(item) for item in clinical_metadata.get("body_sites", []) or []),
+            " ".join(str(item) for item in clinical_metadata.get("textures_present", []) or []),
+            " ".join(str(item) for item in clinical_metadata.get("symptoms_present", []) or []),
+        ]
+    ).lower()
+    combined_text = f"{summary} {_selected_evidence_text(selected_evidence)} {metadata_text}"
+
+    symptoms = {
+        str(item).strip().lower()
+        for item in clinical_metadata.get("symptoms_present", []) or []
+        if str(item).strip()
+    }
+    body_sites = {
+        str(item).strip().lower()
+        for item in clinical_metadata.get("body_sites", []) or []
+        if str(item).strip()
+    }
+    textures = {
+        str(item).strip().lower()
+        for item in clinical_metadata.get("textures_present", []) or []
+        if str(item).strip()
+    }
+    if (
+        baseline_canonical == "URTICARIA_BITE_FOLLICULITIS"
+        and "DERMATITIS_ECZEMA" in candidates
+        and support_margin >= 60.0
+        and subtype_support_margin >= 13.0
+        and "itching" in symptoms
+        and "burning" not in symptoms
+        and "pain" not in symptoms
+        and not (body_sites == {"leg"} and "increasing_size" in symptoms)
+        and "rough_or_flaky" not in textures
+        and any(marker in combined_text for marker in ("erythemat", "red", "rash", "patch", "papule", "macule", "scal"))
+        and not any(
+            marker in combined_text
+            for marker in (
+                "central clearing",
+                "widespread",
+                "punctum",
+                "pustule",
+                "pustular",
+                "folliculitis",
+                "follicular",
+                "insect bite",
+                "bite-like",
+            )
+        )
+    ):
+        return "DERMATITIS_ECZEMA", "dermatollama_scin_itchy_urticaria_dermatitis_topk_promotion"
+
+    return None
 
 
 def _allow_medgemma_scin_grouped_override(
