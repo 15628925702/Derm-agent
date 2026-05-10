@@ -145,6 +145,9 @@ MODEL_DATASET_WORKFLOW_PROFILES = {
             "label_space_id": "derm_six",
             "inherit_dataset_workflow": True,
             "block_model_workflow_profile": True,
+            "workflow_capabilities": ["baseline_anchored_final"],
+            "force_conservative_fusion": True,
+            "disable_legacy_final_path": True,
         },
         "isic2019": {
             "workflow_cell_id": "qwen__isic2019__dataset_best",
