@@ -18,14 +18,16 @@ from pathlib import Path
 from typing import Any
 from urllib.request import Request, urlopen
 
-from scripts.build_final_dataset_splits import dataset_specs as final_dataset_specs
-from scripts.build_final_dataset_splits import load_cases as load_final_split_cases
-
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 PYTHON = Path("/home/zhongnan/miniconda3/envs/dermagent-6x6/bin/python")
 if not PYTHON.exists():
     PYTHON = Path(sys.executable)
+
+from scripts.build_final_dataset_splits import dataset_specs as final_dataset_specs
+from scripts.build_final_dataset_splits import load_cases as load_final_split_cases
 
 
 MODELS: dict[str, dict[str, str]] = {
