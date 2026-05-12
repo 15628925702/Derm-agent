@@ -7,7 +7,6 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from agent.state import CaseInput
 from integrations.openai_client import DermOpenAIClient
 
 
@@ -66,49 +65,6 @@ def test_skinvl_selector_converts_descriptive_payload_to_allowed_label() -> None
     }
 
     normalized = DermOpenAIClient._apply_skinvl_selector(payload)
-
-    assert normalized["final_diagnosis"] == "Squamous Cell Carcinoma"
-    assert normalized["differential_diagnoses"] == ["Squamous Cell Carcinoma"]
-
-
-def test_skinvl_pad20_prompt_uses_derm_six_labels_only() -> None:
-    case_input = CaseInput(
-        case_id="PAT_SKINVL_PAD",
-        image_path="/tmp/missing.png",
-        metadata={"label_space_id": "derm_six"},
-        dataset_name="pad20",
-        label_space_id="derm_six",
-    )
-
-    labels_text = DermOpenAIClient._skinvl_allowed_labels_text(case_input)
-
-    assert "Basal Cell Carcinoma" in labels_text
-    assert "Actinic Keratosis" in labels_text
-    assert "Seborrheic Keratosis" in labels_text
-    assert "Contact Dermatitis" not in labels_text
-    assert "Psoriasis" not in labels_text
-
-
-def test_skinvl_pad20_refiner_converts_descriptive_cancer_sentence_to_valid_label() -> None:
-    case_input = CaseInput(
-        case_id="PAT_SKINVL_PAD",
-        image_path="/tmp/missing.png",
-        metadata={"label_space_id": "derm_six"},
-        dataset_name="pad20",
-        label_space_id="derm_six",
-    )
-    payload = {
-        "final_diagnosis": "lesion appears to be raised and has a rough texture, which could indicate a more aggressive form of skin cancer",
-        "differential_diagnoses": [
-            "lesion appears to be raised and has a rough texture, which could indicate a more aggressive form of skin cancer",
-            "Contact Dermatitis",
-        ],
-        "rationale": "The lesion appears raised and rough.",
-        "confidence": "low",
-        "follow_up_considerations": [],
-    }
-
-    normalized = DermOpenAIClient._refine_skinvl_payload_for_case(case_input, payload)
 
     assert normalized["final_diagnosis"] == "Squamous Cell Carcinoma"
     assert normalized["differential_diagnoses"] == ["Squamous Cell Carcinoma"]

@@ -39,7 +39,7 @@ except ModuleNotFoundError:  # pragma: no cover - optional dependency for offlin
     OpenAI = None  # type: ignore[assignment]
 
 from agent.evidence_package import EvidencePackage
-from agent.label_space import canonicalize_label, resolve_label_space
+from agent.label_space import resolve_label_space
 from agent.state import CaseInput
 from agent.workflow_profiles import ensure_workflow_context, is_family_routing_case, is_full_taxonomy_case
 
@@ -878,26 +878,6 @@ PHYSICIAN_EVIDENCE_SUMMARY_BRIEF_MAX_TOKENS = 2200
 PHYSICIAN_EVIDENCE_SUMMARY_DETAILED_MAX_TOKENS = 5200
 BASELINE_DIAGNOSIS_MAX_TOKENS = 420
 SKINVL_MODEL_NAME_HINT = "skinvl"
-SKINVL_DERM_SIX_LABELS = (
-    "Basal Cell Carcinoma",
-    "Actinic Keratosis",
-    "Nevus",
-    "Seborrheic Keratosis",
-    "Squamous Cell Carcinoma",
-    "Malignant Melanoma",
-)
-SKINVL_CANONICAL_DISPLAY_LABELS = {
-    "BCC": "Basal Cell Carcinoma",
-    "ACK": "Actinic Keratosis",
-    "AK": "Actinic Keratosis",
-    "AKIEC": "Actinic Keratosis",
-    "NEV": "Nevus",
-    "NV": "Nevus",
-    "SEK": "Seborrheic Keratosis",
-    "BKL": "Seborrheic Keratosis",
-    "SCC": "Squamous Cell Carcinoma",
-    "MEL": "Malignant Melanoma",
-}
 SKINVL_ALLOWED_LABELS = (
     "Basal Cell Carcinoma",
     "Squamous Cell Carcinoma",
@@ -1065,29 +1045,8 @@ class DermOpenAIClient:
         return SKINVL_MODEL_NAME_HINT in self.model.strip().lower()
 
     @staticmethod
-    def _skinvl_allowed_labels_for_case(case_input: CaseInput | None = None) -> tuple[str, ...]:
-        if case_input is None:
-            return SKINVL_ALLOWED_LABELS
-        label_space = resolve_label_space(
-            label_space_id=getattr(case_input, "label_space_id", None),
-            dataset_name=getattr(case_input, "dataset_name", None),
-            metadata=getattr(case_input, "metadata", None),
-        )
-        if str(label_space.label_space_id).strip().lower() == "derm_six":
-            return SKINVL_DERM_SIX_LABELS
-        return SKINVL_ALLOWED_LABELS
-
-    @staticmethod
-    def _skinvl_allowed_labels_text(case_input: CaseInput | None = None) -> str:
-        labels = DermOpenAIClient._skinvl_allowed_labels_for_case(case_input)
-        alias_note = ""
-        if labels == SKINVL_DERM_SIX_LABELS:
-            alias_note = (
-                " Canonical aliases: BCC=Basal Cell Carcinoma, ACK=Actinic Keratosis, "
-                "NEV=Nevus, SEK=Seborrheic Keratosis, SCC=Squamous Cell Carcinoma, "
-                "MEL=Malignant Melanoma."
-            )
-        return ", ".join(labels) + alias_note
+    def _skinvl_allowed_labels_text() -> str:
+        return ", ".join(SKINVL_ALLOWED_LABELS)
 
     def prompt_manifest(self) -> dict[str, Any]:
         return {
@@ -1190,7 +1149,7 @@ class DermOpenAIClient:
                     "Do not describe the whole image as the diagnosis.\n"
                     "Use the evidence package as structured support, not as an overriding instruction.\n"
                     "The field `final_diagnosis` must be exactly one label from the allowed label set.\n"
-                    f"Allowed labels: {self._skinvl_allowed_labels_text(case_input)}.\n"
+                    f"Allowed labels: {self._skinvl_allowed_labels_text()}.\n"
                     "The field `differential_diagnoses` must be a short list containing only labels from the same set.\n"
                     "The evidence package contains two layers:\n"
                     "1. `risk_layer`: malignant-risk warnings, caution flags, follow-up suggestions, and the supporting shortlist.\n"
@@ -1222,12 +1181,6 @@ class DermOpenAIClient:
                     payload = self._create_json_payload(
                         messages=messages,
                         max_tokens=FINAL_DIAGNOSIS_MAX_TOKENS,
-                        request_name=request_name,
-                    )
-                    payload = self._refine_skinvl_payload_for_case(case_input, payload)
-                    payload = self._repair_skinvl_payload_if_needed(
-                        case_input=case_input,
-                        payload=payload,
                         request_name=request_name,
                     )
                     return _refine_scin_payload_for_runtime(
@@ -1477,7 +1430,7 @@ class DermOpenAIClient:
                 "Do not output markdown.\n"
                 "Do not describe the whole image as the diagnosis.\n"
                 "The field `final_diagnosis` must be exactly one label from the allowed label set.\n"
-                f"Allowed labels: {self._skinvl_allowed_labels_text(case_input)}.\n"
+                f"Allowed labels: {self._skinvl_allowed_labels_text()}.\n"
                 "The field `differential_diagnoses` must be a short list containing only labels from the same set.\n"
                 "Schema:\n"
                 "{"
@@ -1530,13 +1483,6 @@ class DermOpenAIClient:
             max_tokens=BASELINE_DIAGNOSIS_MAX_TOKENS,
             request_name=f"baseline_diagnosis:{case_input.case_id}",
         )
-        if self._is_skinvl_model():
-            payload = self._refine_skinvl_payload_for_case(case_input, payload)
-            payload = self._repair_skinvl_payload_if_needed(
-                case_input=case_input,
-                payload=payload,
-                request_name=f"baseline_diagnosis:{case_input.case_id}",
-            )
         return _refine_scin_payload_for_runtime(
             case_input=case_input,
             payload=payload,
@@ -1838,27 +1784,21 @@ class DermOpenAIClient:
         return text.strip()
 
     @staticmethod
-    def _coerce_skinvl_allowed_label(text: str, allowed_labels: tuple[str, ...] = SKINVL_ALLOWED_LABELS) -> str:
+    def _coerce_skinvl_allowed_label(text: str) -> str:
         normalized = text.strip()
-        if normalized in allowed_labels:
+        if normalized in SKINVL_ALLOWED_LABELS:
             return normalized
         lowered = normalized.lower()
-        for label in allowed_labels:
+        for label in SKINVL_ALLOWED_LABELS:
             if label.lower() in lowered:
                 return label
         heuristic_map = [
             ("pearly", "Basal Cell Carcinoma"),
             ("telangiect", "Basal Cell Carcinoma"),
-            ("rolled border", "Basal Cell Carcinoma"),
-            ("ulcer", "Basal Cell Carcinoma"),
             ("dark center", "Squamous Cell Carcinoma"),
             ("lighter periphery", "Squamous Cell Carcinoma"),
             ("crater", "Squamous Cell Carcinoma"),
-            ("aggressive form of skin cancer", "Squamous Cell Carcinoma"),
-            ("advanced stage of the disease", "Squamous Cell Carcinoma"),
-            ("raised and has a rough texture", "Squamous Cell Carcinoma"),
             ("scaly", "Actinic Keratosis"),
-            ("rough texture", "Actinic Keratosis"),
             ("waxy", "Seborrheic Keratosis"),
             ("stuck-on", "Seborrheic Keratosis"),
             ("melanoma", "Malignant Melanoma"),
@@ -1868,15 +1808,12 @@ class DermOpenAIClient:
             ("psoriasis", "Psoriasis"),
         ]
         for needle, label in heuristic_map:
-            if needle in lowered and label in allowed_labels:
+            if needle in lowered:
                 return label
         return normalized
 
     @staticmethod
-    def _apply_skinvl_selector(
-        payload: dict[str, Any],
-        allowed_labels: tuple[str, ...] = SKINVL_ALLOWED_LABELS,
-    ) -> dict[str, Any]:
+    def _apply_skinvl_selector(payload: dict[str, Any]) -> dict[str, Any]:
         final_text = str(payload.get("final_diagnosis", "")).strip()
         rationale = str(payload.get("rationale", "")).strip()
         differentials = payload.get("differential_diagnoses", [])
@@ -1887,118 +1824,27 @@ class DermOpenAIClient:
 
         selected = ""
         for candidate in candidates:
-            mapped = DermOpenAIClient._coerce_skinvl_allowed_label(candidate, allowed_labels=allowed_labels)
-            if mapped in allowed_labels:
+            mapped = DermOpenAIClient._coerce_skinvl_allowed_label(candidate)
+            if mapped in SKINVL_ALLOWED_LABELS:
                 selected = mapped
                 break
 
         if not selected:
             selected = "Basal Cell Carcinoma" if "malignan" in rationale.lower() else final_text
-            selected = DermOpenAIClient._coerce_skinvl_allowed_label(selected, allowed_labels=allowed_labels)
+            selected = DermOpenAIClient._coerce_skinvl_allowed_label(selected)
 
-        if selected not in allowed_labels:
+        if selected not in SKINVL_ALLOWED_LABELS:
             return payload
 
         filtered_differentials: list[str] = []
         for item in candidates:
-            mapped = DermOpenAIClient._coerce_skinvl_allowed_label(item, allowed_labels=allowed_labels)
-            if mapped in allowed_labels and mapped not in filtered_differentials:
+            mapped = DermOpenAIClient._coerce_skinvl_allowed_label(item)
+            if mapped in SKINVL_ALLOWED_LABELS and mapped not in filtered_differentials:
                 filtered_differentials.append(mapped)
 
         payload["final_diagnosis"] = selected
         payload["differential_diagnoses"] = filtered_differentials[:5] or [selected]
         return payload
-
-    @staticmethod
-    def _refine_skinvl_payload_for_case(case_input: CaseInput, payload: dict[str, Any]) -> dict[str, Any]:
-        allowed_labels = DermOpenAIClient._skinvl_allowed_labels_for_case(case_input)
-        refined = DermOpenAIClient._apply_skinvl_selector(dict(payload), allowed_labels=allowed_labels)
-        final = str(refined.get("final_diagnosis", "")).strip()
-        canonical = canonicalize_label(
-            final,
-            label_space_id=getattr(case_input, "label_space_id", None),
-            dataset_name=getattr(case_input, "dataset_name", None),
-            metadata=getattr(case_input, "metadata", None),
-        )
-        if canonical:
-            display = SKINVL_CANONICAL_DISPLAY_LABELS.get(canonical, final)
-            if display in allowed_labels:
-                refined["final_diagnosis"] = display
-
-        differentials = refined.get("differential_diagnoses", [])
-        if not isinstance(differentials, list):
-            differentials = []
-        filtered: list[str] = []
-        for item in [refined.get("final_diagnosis", ""), *differentials]:
-            mapped = DermOpenAIClient._coerce_skinvl_allowed_label(str(item), allowed_labels=allowed_labels)
-            canonical = canonicalize_label(
-                mapped,
-                label_space_id=getattr(case_input, "label_space_id", None),
-                dataset_name=getattr(case_input, "dataset_name", None),
-                metadata=getattr(case_input, "metadata", None),
-            )
-            display = SKINVL_CANONICAL_DISPLAY_LABELS.get(canonical or "", mapped)
-            if display in allowed_labels and display not in filtered:
-                filtered.append(display)
-        if filtered:
-            refined["final_diagnosis"] = filtered[0]
-            refined["differential_diagnoses"] = filtered[:5]
-        return refined
-
-    def _repair_skinvl_payload_if_needed(
-        self,
-        *,
-        case_input: CaseInput,
-        payload: dict[str, Any],
-        request_name: str,
-    ) -> dict[str, Any]:
-        if self._skinvl_payload_has_valid_case_label(case_input, payload):
-            return payload
-
-        allowed_labels_text = self._skinvl_allowed_labels_text(case_input)
-        previous_payload = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
-        prompt = (
-            "The previous SkinVL answer did not provide a valid final diagnosis label for this dataset.\n"
-            "You must choose exactly one final diagnosis from the allowed label set.\n"
-            f"Allowed labels: {allowed_labels_text}.\n"
-            "Do not describe the image as the diagnosis.\n"
-            "Do not output any label outside the allowed set.\n"
-            "Return valid JSON only with keys: final_diagnosis, differential_diagnoses, rationale, confidence, follow_up_considerations.\n"
-            f"Previous answer: {previous_payload}\n"
-            f"Metadata: {case_input.clinical_metadata()}"
-        )
-        messages: list[dict[str, Any]] = [
-            {
-                "role": "system",
-                "content": "You repair invalid SkinVL diagnosis labels by selecting the closest allowed dataset label.",
-            },
-            {"role": "user", "content": self._build_case_multimodal_content(case_input, prompt)},
-        ]
-        try:
-            repaired = self._create_json_payload(
-                messages=messages,
-                max_tokens=min(BASELINE_DIAGNOSIS_MAX_TOKENS, 360),
-                request_name=request_name,
-            )
-        except Exception as exc:
-            LOGGER.warning("SkinVL label repair failed for %s: %s", request_name, exc)
-            return payload
-        repaired = self._refine_skinvl_payload_for_case(case_input, repaired)
-        return repaired if self._skinvl_payload_has_valid_case_label(case_input, repaired) else payload
-
-    @staticmethod
-    def _skinvl_payload_has_valid_case_label(case_input: CaseInput, payload: dict[str, Any]) -> bool:
-        final = str(payload.get("final_diagnosis", "")).strip()
-        if not final:
-            return False
-        return bool(
-            canonicalize_label(
-                final,
-                label_space_id=getattr(case_input, "label_space_id", None),
-                dataset_name=getattr(case_input, "dataset_name", None),
-                metadata=getattr(case_input, "metadata", None),
-            )
-        )
 
     @staticmethod
     def _build_skinvl_final_evidence_summary(payload: dict[str, Any]) -> str:
