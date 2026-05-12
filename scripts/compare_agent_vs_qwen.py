@@ -212,7 +212,7 @@ def main() -> int:
             base_workflow_context=None,
         )
         agent_execution_overrides = execution_overrides_for_run_agent(model_workflow_overrides)
-        if model_workflow_overrides.get("skip_specialist_skills"):
+        if model_workflow_overrides:
             policy = merge_model_workflow_policy_overrides(policy, model_workflow_overrides)
     if args.enable_physician_evidence_summary or _env_flag("DERMAGENT_ENABLE_PHYSICIAN_EVIDENCE_SUMMARY"):
         agent_execution_overrides["enable_physician_evidence_summary"] = True
@@ -235,6 +235,7 @@ def main() -> int:
                     "model_workflow_routing": {
                         "model": agent_model_name,
                         "model_workflow_profile": model_workflow_overrides.get("workflow_profile", ""),
+                        "workflow_cell_id": model_workflow_overrides.get("workflow_cell_id", ""),
                         "execution_overrides": _redact_execution_overrides(agent_execution_overrides),
                         "skip_specialist_skills": bool(model_workflow_overrides.get("skip_specialist_skills", False)),
                         "skip_experience_retrieval": bool(model_workflow_overrides.get("skip_experience_retrieval", False)),

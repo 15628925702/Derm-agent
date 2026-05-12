@@ -75,11 +75,11 @@ def test_skinvl_model_workflow_layers_on_dataset_workflow() -> None:
     assert uses_legacy_agent_final_path(case_input.workflow_context) is False
     assert "sparse_lesion_reasoning" in case_input.workflow_context["workflow_capabilities"]
     assert "baseline_anchored_final" in case_input.workflow_context["workflow_capabilities"]
-    assert overrides["skip_specialist_skills"] is True
-    assert overrides["skip_experience_retrieval"] is True
+    assert "skip_specialist_skills" not in overrides
+    assert "skip_experience_retrieval" not in overrides
     assert execution_overrides_for_run_agent(overrides) == {
-        "enable_experience_retrieval": False,
-        "enable_skill_retrieval": False,
+        "enable_experience_retrieval": True,
+        "enable_skill_retrieval": True,
     }
 
 
@@ -294,3 +294,7 @@ def test_skinvl_run_agent_route_preserves_dataset_workflow_and_falls_back(monkey
     assert "fallback_to_baseline" in state.final_diagnosis["fusion_decision"]["reasons"]
     assert state.retrieved_experience == []
     assert not [skill for skill in state.planner_output.get("selected_skills", []) if skill.endswith("specialist_skill")]
+    assert execution_overrides_for_run_agent(overrides) == {
+        "enable_experience_retrieval": True,
+        "enable_skill_retrieval": True,
+    }

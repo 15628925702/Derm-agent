@@ -480,6 +480,18 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append(dermatollama_scin_topk_promotion[1])
+        elif hulumed_ham10000_topk_promotion := _hulumed_ham10000_topk_to_top1_promotion_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_differentials=agent_differentials,
+            selected_evidence_present=selected_evidence_present,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = hulumed_ham10000_topk_promotion
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append("hulumed_ham10000_malignant_preserving_top1_promotion")
         elif hulumed_ham10000_override_label := _hulumed_ham10000_consensus_override_label(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
@@ -5703,6 +5715,44 @@ def _hulumed_ham10000_consensus_override_label(
         return ""
 
     return "Actinic Keratosis"
+
+
+def _hulumed_ham10000_topk_to_top1_promotion_label(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_differentials: list[str],
+    selected_evidence_present: bool,
+    label_space_id: str,
+    dataset_name: str,
+) -> str:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "hulumed__ham10000__akiec_guard_v1":
+        return ""
+    if not selected_evidence_present:
+        return ""
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if baseline_canonical != "BCC":
+        return ""
+
+    priority_labels = [
+        ("MEL", "Malignant Melanoma"),
+        ("AKIEC", "Actinic Keratosis"),
+    ]
+    for canonical_label, diagnosis_label in priority_labels:
+        if _contains_canonical_label(
+            agent_differentials,
+            canonical_label=canonical_label,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            return diagnosis_label
+    return ""
 
 
 def _llama_ham10000_consensus_override_label(

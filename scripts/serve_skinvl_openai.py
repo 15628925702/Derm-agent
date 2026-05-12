@@ -87,7 +87,12 @@ def _prepare_model_path(model_path: str) -> str:
     if not resolved_vision_tower:
         return str(source)
 
-    runtime_dir = state_root() / "runtime" / "skinvl_model_view"
+    runtime_view_id = os.getenv("DERMAGENT_SKINVL_RUNTIME_VIEW_ID") or os.getenv("PORT") or str(os.getpid())
+    safe_runtime_view_id = "".join(
+        char if char.isalnum() or char in {"-", "_"} else "_"
+        for char in runtime_view_id
+    )
+    runtime_dir = state_root() / "runtime" / f"skinvl_model_view_{safe_runtime_view_id}"
     runtime_dir.mkdir(parents=True, exist_ok=True)
 
     for child in source.iterdir():

@@ -143,6 +143,91 @@ def _qwen_ham10000_evidence_bundle(
     }
 
 
+def _hulumed_ham10000_evidence_bundle(
+    *,
+    workflow_cell_id: str = "hulumed__ham10000__akiec_guard_v1",
+) -> dict:
+    return {
+        "selected_evidence": [
+            {
+                "source_name": "differential_compare_skill",
+                "summary": "differential_compare_skill: top-k contains a plausible non-BCC HAM10000 subtype.",
+            }
+        ],
+        "evidence_decision_policy": {
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": workflow_cell_id,
+                    "label_space_id": "ham10000_full",
+                    "dataset_name": "ham10000",
+                },
+                "selected_evidence_present": True,
+                "support_margin": 18.0,
+                "subtype_support_margin": 1.0,
+                "uncertainty_level": "medium",
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+
+def test_hulumed_ham10000_topk_to_top1_promotes_melanoma_from_bcc_anchor() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "high",
+        },
+        agent_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma", "Malignant Melanoma", "Nevus"],
+            "confidence": "high",
+        },
+        evidence_bundle=_hulumed_ham10000_evidence_bundle(),
+    )
+
+    assert result["final_diagnosis"] == "Malignant Melanoma"
+    assert "hulumed_ham10000_malignant_preserving_top1_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_ham10000_topk_to_top1_does_not_promote_benign_from_bcc_anchor() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "high",
+        },
+        agent_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma", "Nevus"],
+            "confidence": "high",
+        },
+        evidence_bundle=_hulumed_ham10000_evidence_bundle(),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "hulumed_ham10000_malignant_preserving_top1_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_ham10000_topk_to_top1_requires_target_workflow_cell() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "high",
+        },
+        agent_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma", "Malignant Melanoma", "Nevus"],
+            "confidence": "high",
+        },
+        evidence_bundle=_hulumed_ham10000_evidence_bundle(workflow_cell_id="qwen__ham10000__dataset_best"),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "hulumed_ham10000_malignant_preserving_top1_promotion" not in result["fusion_decision"]["reasons"]
+
+
 def _qwen_pad20_evidence_bundle(
     *,
     region: str,
