@@ -87,7 +87,12 @@ def _prepare_model_path(model_path: str) -> str:
     if not resolved_vision_tower:
         return str(source)
 
-    runtime_dir = state_root() / "runtime" / "skinvl_model_view"
+    runtime_view_id = os.getenv("DERMAGENT_SKINVL_RUNTIME_VIEW_ID") or os.getenv("PORT") or str(os.getpid())
+    safe_runtime_view_id = "".join(
+        char if char.isalnum() or char in {"-", "_"} else "_"
+        for char in runtime_view_id
+    )
+    runtime_dir = state_root() / "runtime" / f"skinvl_model_view_{safe_runtime_view_id}"
     runtime_dir.mkdir(parents=True, exist_ok=True)
 
     for child in source.iterdir():
@@ -157,7 +162,7 @@ class SkinVLServer:
         model_path: str,
         model_name: str,
         device: str = "cuda",
-        conv_mode: str = "chatml_direct",
+        conv_mode: str = "mistral_instruct",
         max_new_tokens_default: int = 768,
     ) -> None:
         self.model_path = model_path
@@ -223,13 +228,7 @@ class SkinVLServer:
                 max_new_tokens=min(request.max_tokens or self.max_new_tokens_default, self.max_new_tokens_default),
             )
             if expects_json and not self._looks_like_json(raw_output):
-                LOGGER.info("SkinVL first-pass output was not valid JSON; retrying with JSON repair prompt.")
-                raw_output = self._generate(
-                    prompt_text=self._build_json_repair_prompt(effective_prompt, raw_output),
-                    image=image,
-                    temperature=0.0,
-                    max_new_tokens=min(request.max_tokens or self.max_new_tokens_default, self.max_new_tokens_default),
-                )
+                LOGGER.info("SkinVL first-pass output was not valid JSON; returning raw_text for deterministic client parsing.")
         except torch.cuda.OutOfMemoryError as exc:
             LOGGER.exception("SkinVL generation OOM")
             if torch.cuda.is_available():
@@ -347,6 +346,18 @@ class SkinVLServer:
 
     @staticmethod
     def _coerce_to_json_text(output_text: str) -> str:
+        repair_echo_markers = (
+            "Your previous answer was not valid JSON",
+            "Rewrite it as valid JSON only",
+            "Previous answer:",
+            "Allowed canonical label IDs",
+            "Allowed labels:",
+            "The field `final_diagnosis`",
+            "Return valid JSON only",
+            "Do not output markdown",
+        )
+        if any(marker in output_text for marker in repair_echo_markers):
+            return json.dumps({"raw_text": output_text}, ensure_ascii=False)
         candidate = output_text.strip()
         if candidate.startswith("```"):
             lines = candidate.splitlines()
@@ -427,7 +438,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--port", type=int, default=8011)
     parser.add_argument("--api-key", default="EMPTY")
     parser.add_argument("--device", default="cuda")
-    parser.add_argument("--conv-mode", default="chatml_direct")
+    parser.add_argument("--conv-mode", default="mistral_instruct")
     parser.add_argument("--max-new-tokens-default", type=int, default=128)
     return parser.parse_args()
 

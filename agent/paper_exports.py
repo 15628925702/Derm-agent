@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 from xml.sax.saxutils import escape
 
+from agent.label_space import canonicalize_label, is_malignant_label
 from project_paths import repo_root, outputs_root
 
 
@@ -57,11 +58,17 @@ CASE_LEVEL_EXPORT_COLUMNS = (
     "ground_truth_canonical_label",
     "ground_truth_malignant_flag",
     "baseline_final_diagnosis",
+    "baseline_final_canonical_label",
+    "baseline_predicted_malignant_flag",
     "baseline_differential_diagnoses",
+    "baseline_topk_canonical_labels",
     "baseline_confidence",
     "baseline_rationale",
     "agent_final_diagnosis",
+    "agent_final_canonical_label",
+    "agent_predicted_malignant_flag",
     "agent_differential_diagnoses",
+    "agent_topk_canonical_labels",
     "agent_confidence",
     "agent_rationale",
     "agent_follow_up_considerations",
@@ -994,6 +1001,14 @@ def _case_row_from_compare_case(
     evaluation = dict(case.get("evaluation", {}) or {})
     writeback = dict(case.get("writeback_ops", {}) or {})
     delta = dict(evaluation.get("agent_vs_baseline_delta", {}) or {})
+    label_space = dict(ground_truth.get("label_space", {}) or {})
+    label_space_id = (
+        str(label_space.get("label_space_id", "") or "").strip()
+        or str(input_summary.get("label_space_id", "") or "").strip()
+        or str(clinical_metadata.get("label_space_id", "") or "").strip()
+        or None
+    )
+    row_dataset_name = dataset_name or str(case.get("dataset_name", "")).strip()
 
     baseline_correct = evaluation.get("baseline_correct")
     agent_correct = evaluation.get("correct")
@@ -1011,6 +1026,31 @@ def _case_row_from_compare_case(
         or int(writeback.get("abstract_experience_count") or 0) > 0
     )
     agent_final_diagnosis = agent.get("final_diagnosis", "")
+    baseline_final_diagnosis = baseline.get("final_diagnosis", "")
+    baseline_final_canonical = _canonical_case_label(
+        baseline_final_diagnosis,
+        label_space_id=label_space_id,
+        dataset_name=row_dataset_name,
+        metadata=clinical_metadata,
+    )
+    agent_final_canonical = _canonical_case_label(
+        agent_final_diagnosis,
+        label_space_id=label_space_id,
+        dataset_name=row_dataset_name,
+        metadata=clinical_metadata,
+    )
+    baseline_topk_canonical = _canonical_topk_labels(
+        baseline,
+        label_space_id=label_space_id,
+        dataset_name=row_dataset_name,
+        metadata=clinical_metadata,
+    )
+    agent_topk_canonical = _canonical_topk_labels(
+        agent,
+        label_space_id=label_space_id,
+        dataset_name=row_dataset_name,
+        metadata=clinical_metadata,
+    )
     agent_error_type = case_outcome.get("error_type", "")
     agent_case_status = case_outcome.get("status", "")
     agent_timeout = "timeout" in str(agent_error_type).lower() or "timeout" in str(agent_case_status).lower()
@@ -1026,7 +1066,7 @@ def _case_row_from_compare_case(
         "model_name": model_name,
         "agent_model": run_config.get("agent_model", ""),
         "baseline_model": run_config.get("baseline_model", ""),
-        "dataset_name": dataset_name or str(case.get("dataset_name", "")).strip(),
+        "dataset_name": row_dataset_name,
         "case_offset": run_config.get("case_offset", ""),
         "case_index": case_index,
         "case_id": case.get("case_id", ""),
@@ -1037,12 +1077,28 @@ def _case_row_from_compare_case(
         "ground_truth_raw_label": ground_truth.get("raw_label", ""),
         "ground_truth_canonical_label": ground_truth.get("canonical_label", ""),
         "ground_truth_malignant_flag": ground_truth.get("malignant_flag", ""),
-        "baseline_final_diagnosis": baseline.get("final_diagnosis", ""),
+        "baseline_final_diagnosis": baseline_final_diagnosis,
+        "baseline_final_canonical_label": baseline_final_canonical or "",
+        "baseline_predicted_malignant_flag": _canonical_malignant_flag(
+            baseline_final_canonical,
+            label_space_id=label_space_id,
+            dataset_name=row_dataset_name,
+            metadata=clinical_metadata,
+        ),
         "baseline_differential_diagnoses": baseline.get("differential_diagnoses", []),
+        "baseline_topk_canonical_labels": baseline_topk_canonical,
         "baseline_confidence": baseline.get("confidence", ""),
         "baseline_rationale": baseline.get("rationale", ""),
         "agent_final_diagnosis": agent_final_diagnosis,
+        "agent_final_canonical_label": agent_final_canonical or "",
+        "agent_predicted_malignant_flag": _canonical_malignant_flag(
+            agent_final_canonical,
+            label_space_id=label_space_id,
+            dataset_name=row_dataset_name,
+            metadata=clinical_metadata,
+        ),
         "agent_differential_diagnoses": agent.get("differential_diagnoses", []),
+        "agent_topk_canonical_labels": agent_topk_canonical,
         "agent_confidence": agent.get("confidence", ""),
         "agent_rationale": agent.get("rationale", ""),
         "agent_follow_up_considerations": agent.get("follow_up_considerations", []),
@@ -1067,6 +1123,64 @@ def _case_row_from_compare_case(
         "summary_baseline": summary.get("baseline", {}),
         "summary_agent": summary.get("agent", {}),
     }
+
+
+def _canonical_case_label(
+    value: Any,
+    *,
+    label_space_id: str | None,
+    dataset_name: str,
+    metadata: dict[str, Any],
+) -> str | None:
+    return canonicalize_label(
+        str(value or ""),
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+        metadata=metadata,
+    )
+
+
+def _canonical_topk_labels(
+    output: dict[str, Any],
+    *,
+    label_space_id: str | None,
+    dataset_name: str,
+    metadata: dict[str, Any],
+) -> list[str]:
+    labels: list[str] = []
+    differential = output.get("differential_diagnoses", []) or []
+    if not isinstance(differential, list):
+        differential = [differential]
+    for value in [output.get("final_diagnosis", ""), *differential]:
+        canonical = _canonical_case_label(
+            value,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+            metadata=metadata,
+        )
+        if canonical and canonical not in labels:
+            labels.append(canonical)
+        if len(labels) >= 3:
+            break
+    return labels
+
+
+def _canonical_malignant_flag(
+    canonical_label: str | None,
+    *,
+    label_space_id: str | None,
+    dataset_name: str,
+    metadata: dict[str, Any],
+) -> bool | str:
+    if not canonical_label:
+        return ""
+    malignant = is_malignant_label(
+        canonical_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+        metadata=metadata,
+    )
+    return "" if malignant is None else malignant
 
 
 def _build_xlsx_sheet_xml(*, columns: list[str], rows: list[dict[str, Any]]) -> str:

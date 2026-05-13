@@ -69,14 +69,18 @@ def test_skinvl_model_workflow_layers_on_dataset_workflow() -> None:
     assert case_input.workflow_context is not None
     assert case_input.workflow_context["workflow_profile"] == "sparse_lesion_workflow"
     assert case_input.workflow_context["dataset_workflow_profile"] == "sparse_lesion_workflow"
-    assert case_input.workflow_context["model_workflow_profile"] == "direct_baseline_workflow"
+    assert "model_workflow_profile" not in case_input.workflow_context
+    assert case_input.workflow_context["workflow_cell_id"] == "skinvl__ham10000__sparse_guard_v1"
     assert case_input.workflow_context["disable_legacy_final_path"] is True
     assert uses_legacy_agent_final_path(case_input.workflow_context) is False
     assert "sparse_lesion_reasoning" in case_input.workflow_context["workflow_capabilities"]
-    assert "direct_prediction" in case_input.workflow_context["workflow_capabilities"]
-    assert overrides["skip_specialist_skills"] is True
-    assert overrides["skip_experience_retrieval"] is True
-    assert execution_overrides_for_run_agent(overrides) == {"enable_experience_retrieval": False}
+    assert "baseline_anchored_final" in case_input.workflow_context["workflow_capabilities"]
+    assert "skip_specialist_skills" not in overrides
+    assert "skip_experience_retrieval" not in overrides
+    assert execution_overrides_for_run_agent(overrides) == {
+        "enable_experience_retrieval": True,
+        "enable_skill_retrieval": True,
+    }
 
 
 def test_default_models_do_not_change_workflow() -> None:
@@ -125,7 +129,10 @@ def test_qwen_model_dataset_cell_blocks_legacy_model_overlay() -> None:
     assert "model_workflow_profile" not in case_input.workflow_context
     assert case_input.workflow_context["workflow_cell_id"] == "qwen__pad20__dataset_best"
     assert case_input.workflow_context["workflow_routing_priority"] == "model_dataset"
+    assert case_input.workflow_context["force_conservative_fusion"] is True
+    assert uses_legacy_agent_final_path(case_input.workflow_context) is False
     assert overrides["workflow_routing_priority"] == "model_dataset"
+    assert overrides["force_conservative_fusion"] is True
 
 
 def test_qwen_scin_cell_declares_grouped_label_space_and_environment() -> None:
@@ -241,7 +248,8 @@ def test_llama_archive_workflow_adds_conservative_overlay() -> None:
 
     assert case_input.workflow_context is not None
     assert case_input.workflow_context["workflow_profile"] == "image_archive_full_taxonomy_lesion_workflow"
-    assert case_input.workflow_context["model_workflow_profile"] == "conservative_archive_workflow"
+    assert "model_workflow_profile" not in case_input.workflow_context
+    assert case_input.workflow_context["workflow_cell_id"] == "llama__isic2019__archive_guard_v1"
     assert case_input.workflow_context["disable_legacy_final_path"] is True
     assert overrides["fallback_on_malformed_final"] is True
 
@@ -280,8 +288,13 @@ def test_skinvl_run_agent_route_preserves_dataset_workflow_and_falls_back(monkey
     assert state.case_input.workflow_context is not None
     assert state.case_input.workflow_context["workflow_profile"] == "clinical_full_taxonomy_lesion_workflow"
     assert state.case_input.workflow_context["dataset_workflow_profile"] == "clinical_full_taxonomy_lesion_workflow"
-    assert state.case_input.workflow_context["model_workflow_profile"] == "direct_baseline_workflow"
+    assert "model_workflow_profile" not in state.case_input.workflow_context
+    assert state.case_input.workflow_context["workflow_cell_id"] == "skinvl__pad20__clinical_guard_v1"
     assert state.final_diagnosis["final_diagnosis"] == "Basal Cell Carcinoma"
     assert "fallback_to_baseline" in state.final_diagnosis["fusion_decision"]["reasons"]
     assert state.retrieved_experience == []
     assert not [skill for skill in state.planner_output.get("selected_skills", []) if skill.endswith("specialist_skill")]
+    assert execution_overrides_for_run_agent(overrides) == {
+        "enable_experience_retrieval": True,
+        "enable_skill_retrieval": True,
+    }
