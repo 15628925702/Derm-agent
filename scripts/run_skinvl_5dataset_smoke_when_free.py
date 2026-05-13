@@ -99,6 +99,14 @@ class SkinVLSmokeRunner:
     def process_alive(pid: int) -> bool:
         if pid <= 0:
             return False
+        proc_stat = Path(f"/proc/{pid}/stat")
+        if proc_stat.exists():
+            try:
+                parts = proc_stat.read_text(encoding="utf-8").split()
+                if len(parts) >= 3 and parts[2] == "Z":
+                    return False
+            except Exception:
+                pass
         try:
             os.kill(pid, 0)
             return True
