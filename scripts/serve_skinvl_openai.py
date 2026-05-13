@@ -162,7 +162,7 @@ class SkinVLServer:
         model_path: str,
         model_name: str,
         device: str = "cuda",
-        conv_mode: str = "chatml_direct",
+        conv_mode: str = "mistral_instruct",
         max_new_tokens_default: int = 768,
     ) -> None:
         self.model_path = model_path
@@ -352,6 +352,13 @@ class SkinVLServer:
 
     @staticmethod
     def _coerce_to_json_text(output_text: str) -> str:
+        repair_echo_markers = (
+            "Your previous answer was not valid JSON",
+            "Rewrite it as valid JSON only",
+            "Previous answer:",
+        )
+        if any(marker in output_text for marker in repair_echo_markers):
+            return json.dumps({"raw_text": output_text}, ensure_ascii=False)
         candidate = output_text.strip()
         if candidate.startswith("```"):
             lines = candidate.splitlines()
@@ -432,7 +439,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--port", type=int, default=8011)
     parser.add_argument("--api-key", default="EMPTY")
     parser.add_argument("--device", default="cuda")
-    parser.add_argument("--conv-mode", default="chatml_direct")
+    parser.add_argument("--conv-mode", default="mistral_instruct")
     parser.add_argument("--max-new-tokens-default", type=int, default=128)
     return parser.parse_args()
 

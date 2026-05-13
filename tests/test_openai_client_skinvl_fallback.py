@@ -8,6 +8,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from integrations.openai_client import DermOpenAIClient
+from agent.state import CaseInput
 
 
 def test_skinvl_raw_text_baseline_fallback_extracts_diagnosis() -> None:
@@ -68,3 +69,103 @@ def test_skinvl_selector_converts_descriptive_payload_to_allowed_label() -> None
 
     assert normalized["final_diagnosis"] == "Squamous Cell Carcinoma"
     assert normalized["differential_diagnoses"] == ["Squamous Cell Carcinoma"]
+
+
+def test_skinvl_nonpad_uses_dataset_label_space_codes() -> None:
+    case_input = CaseInput(
+        case_id="ISIC_CASE",
+        image_path="missing.jpg",
+        metadata={"label_space_id": "isic2019_full"},
+        dataset_name="isic2019",
+        label_space_id="isic2019_full",
+    )
+    payload = {
+        "final_diagnosis": "Malignant Melanoma",
+        "differential_diagnoses": ["Nevus", "Basal Cell Carcinoma"],
+        "rationale": "Short structured rationale.",
+        "confidence": "medium",
+        "follow_up_considerations": [],
+    }
+
+    normalized = DermOpenAIClient._normalize_diagnosis_payload(
+        payload,
+        request_name="baseline_diagnosis:ISIC_CASE",
+        case_input=case_input,
+        skinvl_mode=True,
+    )
+
+    assert normalized["final_diagnosis"] == "MEL"
+    assert normalized["differential_diagnoses"] == ["MEL", "NV", "BCC"]
+
+
+def test_skinvl_nonpad_uses_metadata_label_space_when_case_field_missing() -> None:
+    case_input = CaseInput(
+        case_id="ISIC_METADATA_SPACE",
+        image_path="missing.jpg",
+        metadata={"label_space_id": "isic2019_full"},
+        dataset_name="isic2019",
+    )
+
+    assert DermOpenAIClient._skinvl_allowed_labels_for_case(case_input) == (
+        "MEL",
+        "NV",
+        "BCC",
+        "AK",
+        "BKL",
+        "DF",
+        "VASC",
+        "SCC",
+        "UNK",
+    )
+
+
+def test_skinvl_nonpad_repair_echo_is_not_coerced_to_scc() -> None:
+    case_input = CaseInput(
+        case_id="ISIC_BAD_JSON",
+        image_path="missing.jpg",
+        metadata={"label_space_id": "isic2019_full"},
+        dataset_name="isic2019",
+        label_space_id="isic2019_full",
+    )
+    raw_text = (
+        "Your previous answer was not valid JSON.\n"
+        "Rewrite it as valid JSON only.\n"
+        "Previous answer:\n"
+        '{"final_diagnosis":"Squamous Cell Carcinoma","rationale":"crater"}'
+    )
+
+    normalized = DermOpenAIClient._normalize_diagnosis_payload(
+        {"raw_text": raw_text},
+        request_name="baseline_diagnosis:ISIC_BAD_JSON",
+        case_input=case_input,
+        skinvl_mode=True,
+    )
+
+    assert normalized["final_diagnosis"] == ""
+    assert normalized["differential_diagnoses"] == []
+    assert normalized["parse_warning"] == "skinvl_nonpad_json_repair_echo"
+
+
+def test_skinvl_pad_keeps_legacy_selector() -> None:
+    case_input = CaseInput(
+        case_id="PAD_CASE",
+        image_path="missing.jpg",
+        metadata={},
+        dataset_name="pad_ufes_20",
+    )
+    payload = {
+        "final_diagnosis": "raised lesion with dark center and lighter periphery",
+        "differential_diagnoses": [],
+        "rationale": "The lesion has a dark center and a lighter periphery.",
+        "confidence": "unknown",
+        "follow_up_considerations": [],
+    }
+
+    normalized = DermOpenAIClient._normalize_diagnosis_payload(
+        payload,
+        request_name="baseline_diagnosis:PAD_CASE",
+        case_input=case_input,
+        skinvl_mode=True,
+    )
+
+    assert normalized["final_diagnosis"] == "Squamous Cell Carcinoma"
