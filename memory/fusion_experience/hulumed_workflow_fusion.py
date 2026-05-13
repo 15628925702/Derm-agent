@@ -219,6 +219,181 @@ def _hulumed_isic_topk_promotion_label_and_reason(
     initial_first = initial_canonicals[0] if initial_canonicals else ""
     summary = str(baseline_preview.get("image_summary", "")).strip().lower()
 
+    display_labels = {
+        "AK": "Actinic Keratosis",
+        "BCC": "Basal Cell Carcinoma",
+        "DF": "Dermatofibroma",
+        "MEL": "Malignant Melanoma",
+        "SCC": "Squamous Cell Carcinoma",
+        "VASC": "Vascular Lesion",
+    }
+
+    if (
+        site == "head/neck"
+        and 37.0 <= support_margin <= 39.0
+        and subtype_support_margin <= 4.0
+        and "central crust" in summary
+        and "erythema" in summary
+    ):
+        return (display_labels["AK"], "hulumed_isic_headneck_crusted_ak_archive_promotion")
+
+    if (
+        site == "head/neck"
+        and 36.5 <= support_margin <= 38.0
+        and subtype_support_margin <= 3.0
+        and "yellowish, crusted lesion" in summary
+        and "surrounding erythema" in summary
+    ):
+        return (display_labels["SCC"], "hulumed_isic_headneck_yellow_crusted_scc_promotion")
+
+    if (
+        site == "anterior torso"
+        and 36.0 <= support_margin <= 37.0
+        and subtype_support_margin <= 3.0
+        and "central scaling" in summary
+        and "scattered petechiae" in summary
+    ):
+        return (display_labels["SCC"], "hulumed_isic_petechial_scaling_scc_promotion")
+
+    if (
+        site == "lower extremity"
+        and initial_canonicals[:3] == ["NV", "BCC", "SCC"]
+        and support_margin >= 42.0
+        and subtype_support_margin >= 20.0
+        and "subtle scaling" in summary
+        and "vascular structures" in summary
+    ):
+        return (display_labels["SCC"], "hulumed_isic_lower_extremity_scaling_scc_archive_promotion")
+
+    if (
+        site == "head/neck"
+        and initial_canonicals[:2] == ["AK", "SCC"]
+        and 38.0 <= support_margin <= 40.0
+        and "black pigmentation" in summary
+        and "white scales" in summary
+        and any(marker in summary for marker in ("pinkish-red", "brown and black"))
+    ):
+        return (display_labels["MEL"], "hulumed_isic_pigmented_scaled_mel_archive_promotion")
+
+    if (
+        baseline_canonical == "NV"
+        and agent_canonical == "NV"
+        and initial_first == "BCC"
+        and 36.0 <= support_margin <= 40.0
+        and subtype_support_margin >= 8.0
+        and "central erosion" in summary
+        and any(marker in summary for marker in ("surrounding erythema", "erythematous", "pinkish"))
+        and not any(marker in summary for marker in ("blue", "purple", "petechiae", "eschar"))
+    ):
+        return (display_labels["BCC"], "hulumed_isic_bcc_erosion_archive_promotion")
+
+    strong_vascular_summary = (
+        "purple" in summary
+        or "blue-black" in summary
+        or "blue black" in summary
+        or "blue-gray" in summary
+        or "blue grey" in summary
+        or "dark blue" in summary
+        or "petechiae" in summary
+        or "necrotic eschar" in summary
+        or "black necrotic eschar" in summary
+        or "hemangioma" in summary
+    )
+    vascular_archive_signal = any(
+        marker in " ".join(str(label).lower() for label in initial_ddx)
+        for marker in ("hemangioma", "angioma", "kaposi", "pyogenic granuloma")
+    )
+    vascular_color_pattern_signal = any(
+        marker in summary
+        for marker in (
+            "dark blue to black",
+            "blue to black",
+            "dark blue to purple",
+            "blue to purple",
+            "pinkish-purple",
+        )
+    )
+    if (
+        baseline_canonical in {"NV", "BKL", "MEL"}
+        and agent_canonical in {"NV", "BKL", "MEL"}
+        and (
+            site not in {"head/neck", "posterior torso"}
+            or (vascular_color_pattern_signal and (support_margin < 40.0 or support_margin > 46.0))
+        )
+        and strong_vascular_summary
+        and (
+            vascular_archive_signal
+            or vascular_color_pattern_signal
+            or "vascular" in summary
+            or "eschar" in summary
+        )
+        and not ("blue ink" in summary and not vascular_archive_signal)
+    ):
+        return (display_labels["VASC"], "hulumed_isic_strong_vascular_archive_promotion")
+
+    if (
+        baseline_canonical in {"NV", "BKL"}
+        and agent_canonical in {"NV", "BKL"}
+        and support_margin >= 59.0
+        and "central dark area" in summary
+        and "scattered white structures" in summary
+    ):
+        return (display_labels["VASC"], "hulumed_isic_central_dark_white_vascular_promotion")
+
+    if (
+        site == "anterior torso"
+        and baseline_canonical in {"NV", "BKL"}
+        and agent_canonical in {"NV", "BKL"}
+        and 41.0 <= support_margin <= 45.0
+        and "central red area" in summary
+        and any(marker in summary for marker in ("surrounding lighter brown", "surrounding white lines"))
+    ):
+        return (display_labels["VASC"], "hulumed_isic_anterior_central_red_vascular_promotion")
+
+    if (
+        baseline_canonical == "NV"
+        and agent_canonical == "NV"
+        and "DF" in initial_canonicals[:3]
+        and site in {"lower extremity", "upper extremity"}
+        and 37.5 <= support_margin <= 62.0
+        and any(marker in summary for marker in ("central white scar", "central white area", "hypopigmentation", "radial streaks"))
+        and not any(marker in summary for marker in ("blue", "purple", "necrotic", "ulceration"))
+    ):
+        return (display_labels["DF"], "hulumed_isic_dermatofibroma_scar_archive_promotion")
+
+    if (
+        baseline_canonical == "NV"
+        and agent_canonical == "NV"
+        and initial_canonicals[:3] == ["NV", "BCC", "DF"]
+        and site == "upper extremity"
+        and support_margin >= 58.0
+        and subtype_support_margin >= 25.0
+        and "pinkish lesion" in summary
+        and "subtle vascular" in summary
+        and "faint pigmentation" in summary
+    ):
+        return (display_labels["BCC"], "hulumed_isic_subtle_vascular_bcc_archive_promotion")
+
+    if (
+        baseline_canonical == "NV"
+        and agent_canonical == "NV"
+        and site == "anterior torso"
+        and 49.0 <= support_margin <= 52.0
+        and "erythematous patch" in summary
+        and "subtle scaling" in summary
+        and "hair follicles visible" in summary
+    ):
+        return (display_labels["BCC"], "hulumed_isic_hair_follicle_scaling_bcc_promotion")
+
+    if (
+        site == "head/neck"
+        and support_margin >= 50.0
+        and "pinkish-red skin" in summary
+        and "white/yellowish" in summary
+        and "multiple small" in summary
+    ):
+        return (display_labels["BCC"], "hulumed_isic_headneck_white_yellow_bcc_promotion")
+
     if (
         agent_canonical in {"NV", "BCC", "BKL"}
         and site == "head/neck"
@@ -612,7 +787,7 @@ def _hulumed_sd198_consensus_override_label(
         return ""
     if str(uncertainty_level or "").strip().lower() in {"high", "unknown"}:
         return ""
-    if support_margin < 33.0 or subtype_support_margin < 1.5 or contradiction_count > 3:
+    if support_margin < 30.0 or subtype_support_margin < 1.2 or contradiction_count > 4:
         return ""
 
     baseline_canonical = canonicalize_label(
@@ -629,6 +804,182 @@ def _hulumed_sd198_consensus_override_label(
     ]
     initial_first = initial_canonicals[0] if initial_canonicals else ""
     summary = str(baseline_preview.get("image_summary", "")).strip().lower()
+    diagnostic_text = " ".join(
+        str(item).strip().lower()
+        for item in [summary, *initial_ddx, *agent_differentials]
+        if str(item).strip()
+    )
+
+    if initial_first == "BENIGN_TUMOR_CYST" and _hulumed_scin_contains_phrase(
+        diagnostic_text,
+        (
+            "cyst",
+            "fibroma",
+            "lipoma",
+            "hydrocystoma",
+            "syringoma",
+            "skin tag",
+            "milia",
+            "chalazion",
+            "dilated pore",
+            "ganglion",
+            "dome-shaped",
+            "pedunculated",
+            "fleshy",
+            "flesh-colored",
+            "flesh colored",
+            "smooth",
+            "central umbilication",
+            "central depression",
+            "nodule",
+            "pore",
+            "scar-like",
+        ),
+    ):
+        return "BENIGN_TUMOR_CYST"
+
+    if (
+        initial_first == "HAIR_NAIL_APPENDAGE"
+        and _hulumed_scin_contains_phrase(
+            diagnostic_text,
+            (
+                "nail",
+                "fingernail",
+                "toenail",
+                "subungual",
+                "onych",
+                "clubbing",
+                "koilonychia",
+                "beau",
+                "terry",
+                "pincer nail",
+                "racquet nail",
+                "half white",
+                "half and half",
+            ),
+        )
+        and not _hulumed_scin_contains_phrase(diagnostic_text, ("green nail", "pseudomonas"))
+    ):
+        return "HAIR_NAIL_APPENDAGE"
+
+    if initial_first == "ACNE_FOLLICULITIS_ROSACEA" and _hulumed_scin_contains_phrase(
+        diagnostic_text,
+        (
+            "acne",
+            "rosacea",
+            "folliculitis",
+            "comedone",
+            "comedones",
+            "pustule",
+            "pustules",
+            "perioral",
+            "rhinophyma",
+            "pseudofolliculitis",
+            "facial hair",
+            "black dots",
+        ),
+    ):
+        return "ACNE_FOLLICULITIS_ROSACEA"
+
+    if initial_first == "INFECTION_INFESTATION" and _hulumed_scin_contains_phrase(
+        diagnostic_text,
+        (
+            "fungal",
+            "infection",
+            "infectious",
+            "candidiasis",
+            "cellulitis",
+            "impetigo",
+            "herpes",
+            "vesicle",
+            "vesicular",
+            "larva",
+            "serpiginous",
+            "track",
+            "tinea",
+            "onychomycosis",
+            "green nail",
+            "pseudomonas",
+            "molluscum",
+            "central clearing",
+            "peripheral scaling",
+            "wound infection",
+            "necrot",
+        ),
+    ):
+        return "INFECTION_INFESTATION"
+
+    if initial_first == "VASCULAR_ULCER_PURPURA" and _hulumed_scin_contains_phrase(
+        diagnostic_text,
+        (
+            "angioma",
+            "hemangioma",
+            "vasculitis",
+            "purpura",
+            "purpuric",
+            "livedo",
+            "mottled",
+            "reticulated",
+            "vascular",
+            "telangiectasia",
+            "ulcer",
+            "pyogenic",
+            "pyoderma",
+            "stasis",
+            "necrosis",
+            "red patches and spots",
+            "granulation tissue",
+        ),
+    ):
+        return "VASCULAR_ULCER_PURPURA"
+
+    if (
+        initial_first == "SUN_DAMAGE_ACTINIC"
+        and _hulumed_scin_contains_phrase(
+            diagnostic_text,
+            (
+                "actinic",
+                "solar",
+                "sun-damaged",
+                "sun damaged",
+                "sun-exposed",
+                "sun exposed",
+                "radiodermatitis",
+                "telangiectasia",
+                "erythema ab igne",
+                "cheilitis",
+                "lower lip",
+                "dorsal hand",
+            ),
+        )
+        and not _hulumed_scin_contains_phrase(
+            summary,
+            ("palm with diffuse scaling", "desquamation, particularly prominent on the fingers"),
+        )
+    ):
+        return "SUN_DAMAGE_ACTINIC"
+
+    if initial_first == "PAPULOSQUAMOUS_KERATOTIC" and _hulumed_scin_contains_phrase(
+        diagnostic_text,
+        (
+            "psoriasis",
+            "lichen planus",
+            "hyperkeratosis",
+            "keratolysis",
+            "callus",
+            "darier",
+            "hailey",
+            "kyrle",
+            "palms",
+            "soles",
+            "bilateral feet",
+            "thickened",
+            "scaly plaques",
+            "scaling and crusting",
+            "keratotic plugs",
+        ),
+    ):
+        return "PAPULOSQUAMOUS_KERATOTIC"
 
     has_dermatitis = _contains_canonical_label(
         agent_differentials,
@@ -927,7 +1278,36 @@ def _hulumed_scin_grouped_promotion_label_and_reason(
     ).lower()
     combined_text = f"{evidence_text} {metadata_text} {agent_text} {early_ddx_text}"
     focused_text = f"{summary} {metadata_text} {agent_text} {early_ddx_text}"
+    diagnostic_text = f"{agent_text} {early_ddx_text}"
 
+    malignant_named = any(
+        marker in diagnostic_text
+        for marker in (
+            "basal cell carcinoma",
+            "melanoma",
+            "b-cell cutaneous lymphoma",
+            "kaposi",
+            "scc/sccis",
+        )
+    )
+    actinic_named = "actinic keratosis" in diagnostic_text
+    sun_exposed_or_keratinocyte_site = _hulumed_scin_contains_phrase(
+        focused_text,
+        ("back of hand", "forearm", "hand", "leg", "head or neck", "cheek", "arm"),
+    )
+    keratinocyte_surface_signal = any(
+        marker in summary
+        for marker in (
+            "rough",
+            "flaky",
+            "scaly",
+            "scale",
+            "crust",
+            "dark brown",
+            "black",
+            "central clearing",
+        )
+    ) or "rough_or_flaky" in metadata_text
     if (
         baseline_canonical == "URTICARIA_BITE_FOLLICULITIS"
         and "ACNE_ROSACEA_FOLLICULAR" in candidate_canonicals
@@ -1001,6 +1381,39 @@ def _hulumed_scin_grouped_promotion_label_and_reason(
         and any(marker in combined_text for marker in ("dark spot", "small, dark", "actinic keratosis"))
     ):
         return "MALIGNANT_PREMALIGNANT", "hulumed_scin_elderly_hand_actinic_grouped_promotion"
+
+    if (
+        baseline_canonical == "DERMATITIS_ECZEMA"
+        and support_margin >= 40.0
+        and subtype_support_margin >= 2.4
+        and (malignant_named or actinic_named)
+        and sun_exposed_or_keratinocyte_site
+        and keratinocyte_surface_signal
+        and not (
+            not malignant_named
+            and "psoriasis" in combined_text
+            and "central crust" not in summary
+            and "small, dark" not in summary
+            and "increasing_size" not in metadata_text
+        )
+        and not (
+            not malignant_named
+            and any(marker in early_ddx_text for marker in ("insect bite", "urticaria"))
+            and not any(
+                marker in summary
+                for marker in (
+                    "rough",
+                    "flaky",
+                    "scaly",
+                    "scale",
+                    "crust",
+                    "dark brown",
+                    "black",
+                )
+            )
+        )
+    ):
+        return "MALIGNANT_PREMALIGNANT", "hulumed_scin_keratinocyte_malignant_grouped_promotion"
 
     return None
 

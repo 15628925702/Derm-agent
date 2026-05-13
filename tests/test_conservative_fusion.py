@@ -1188,6 +1188,49 @@ def _qwen_sd198_evidence_bundle(
     }
 
 
+def _hulumed_sd198_evidence_bundle(
+    *,
+    early_ddx_candidates: list[str],
+    image_summary: str,
+    support_margin: float = 40.0,
+    subtype_support_margin: float = 2.2,
+    contradiction_count: int = 2,
+    uncertainty_level: str = "medium",
+    workflow_cell_id: str = "hulumed__sd198__grouped_coarse_guard_v1",
+) -> dict:
+    return {
+        "selected_evidence": [
+            {
+                "source_name": "visual_summary_skill",
+                "summary": image_summary,
+            }
+        ],
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": early_ddx_candidates,
+                    "image_summary": image_summary,
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": workflow_cell_id,
+                    "workflow_profile": "coarse_taxonomy_workflow",
+                    "dataset_workflow_profile": "coarse_taxonomy_workflow",
+                    "label_space_id": "sd198_grouped",
+                    "dataset_name": "sd198",
+                },
+                "selected_evidence_present": True,
+                "support_margin": support_margin,
+                "subtype_support_margin": subtype_support_margin,
+                "uncertainty_level": uncertainty_level,
+                "contradiction_count": contradiction_count,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+
 def _hulumed_isic_evidence_bundle(
     *,
     site: str = "head/neck",
@@ -2987,6 +3030,254 @@ def test_hulumed_isic_vascular_promotion_blocks_generic_possible_vascular_langua
     assert "agent_matches_baseline" in result["fusion_decision"]["reasons"]
 
 
+def test_hulumed_isic_promotes_all_site_strong_vascular_archive_signal() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _hulumed_isic_evidence_bundle(
+        site="upper extremity",
+        early_ddx_candidates=["Melanoma", "Nevus", "Hemangioma"],
+        image_summary="Large, irregularly shaped lesion with dark blue to black pigmentation and a reticular pattern.",
+        support_margin=40.17,
+        subtype_support_margin=17.23,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Vascular Lesion"
+    assert "hulumed_isic_strong_vascular_archive_promotion" in result["fusion_decision"]["reasons"]
+    assert "Nevus" in result["differential_diagnoses"]
+
+
+def test_hulumed_isic_promotes_dermatofibroma_scar_archive_signal() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Basal Cell Carcinoma"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Basal Cell Carcinoma"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _hulumed_isic_evidence_bundle(
+        site="lower extremity",
+        early_ddx_candidates=["Nevus", "Basal Cell Carcinoma", "Dermatofibroma"],
+        image_summary="Irregularly shaped lesion with central white scar-like area, surrounded by brown and red hues.",
+        support_margin=61.52,
+        subtype_support_margin=27.36,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Dermatofibroma"
+    assert "hulumed_isic_dermatofibroma_scar_archive_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_isic_promotes_bcc_central_erosion_archive_signal() -> None:
+    baseline_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Actinic Keratosis"],
+        "confidence": "Moderate",
+    }
+    agent_output = {
+        "final_diagnosis": "Nevus",
+        "differential_diagnoses": ["Nevus", "Actinic Keratosis"],
+        "confidence": "Moderate",
+    }
+    evidence_bundle = _hulumed_isic_evidence_bundle(
+        site="anterior torso",
+        early_ddx_candidates=["Basal Cell Carcinoma", "Nevus", "Actinic Keratosis"],
+        image_summary="Pinkish lesion with central erosion and surrounding erythema",
+        support_margin=38.49,
+        subtype_support_margin=9.43,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "hulumed_isic_bcc_erosion_archive_promotion" in result["fusion_decision"]["reasons"]
+
+
+@pytest.mark.parametrize(
+    "baseline_label,agent_label,evidence_kwargs,expected_label,expected_reason",
+    [
+        (
+            "Seborrheic Keratosis",
+            "Seborrheic Keratosis",
+            {
+                "site": "head/neck",
+                "early_ddx_candidates": ["Seborrheic Keratosis", "Nevus", "Dermatofibroma"],
+                "image_summary": "Small, reddish-brown lesion with central crusting and surrounding erythema on skin",
+                "support_margin": 37.48,
+                "subtype_support_margin": 2.3,
+            },
+            "Actinic Keratosis",
+            "hulumed_isic_headneck_crusted_ak_archive_promotion",
+        ),
+        (
+            "Basal Cell Carcinoma",
+            "Basal Cell Carcinoma",
+            {
+                "site": "head/neck",
+                "early_ddx_candidates": ["Seborrheic Keratosis", "Nevus", "Dermatofibroma"],
+                "image_summary": "Yellowish, crusted lesion with surrounding erythema on head/neck skin",
+                "support_margin": 37.2,
+                "subtype_support_margin": 2.34,
+            },
+            "Squamous Cell Carcinoma",
+            "hulumed_isic_headneck_yellow_crusted_scc_promotion",
+        ),
+        (
+            "Nevus",
+            "Nevus",
+            {
+                "site": "anterior torso",
+                "early_ddx_candidates": ["Inflammatory plaque", "Lichenoid keratosis"],
+                "image_summary": "Erythematous patch with central scaling and scattered petechiae.",
+                "support_margin": 36.54,
+                "subtype_support_margin": 2.44,
+            },
+            "Squamous Cell Carcinoma",
+            "hulumed_isic_petechial_scaling_scc_promotion",
+        ),
+        (
+            "Nevus",
+            "Nevus",
+            {
+                "site": "lower extremity",
+                "early_ddx_candidates": ["Nevus", "Basal Cell Carcinoma", "Squamous Cell Carcinoma"],
+                "image_summary": "Irregularly shaped lesion with reddish-brown and pink hues, possible vascular structures, and subtle scaling.",
+                "support_margin": 42.33,
+                "subtype_support_margin": 25.85,
+            },
+            "Squamous Cell Carcinoma",
+            "hulumed_isic_lower_extremity_scaling_scc_archive_promotion",
+        ),
+        (
+            "Nevus",
+            "Nevus",
+            {
+                "site": "head/neck",
+                "early_ddx_candidates": ["Actinic Keratosis", "Squamous Cell Carcinoma", "Basal Cell Carcinoma"],
+                "image_summary": "Irregularly shaped lesion with pinkish-red background, brown and black pigmentation, white scales, and fine lines.",
+                "support_margin": 39.01,
+                "subtype_support_margin": 15.55,
+            },
+            "Malignant Melanoma",
+            "hulumed_isic_pigmented_scaled_mel_archive_promotion",
+        ),
+        (
+            "Nevus",
+            "Nevus",
+            {
+                "site": "",
+                "early_ddx_candidates": ["Nevus", "Basal Cell Carcinoma", "Dermatofibroma"],
+                "image_summary": "Irregularly shaped lesion with central dark area, surrounding erythema, and scattered white structures",
+                "support_margin": 60.4,
+                "subtype_support_margin": 35.22,
+            },
+            "Vascular Lesion",
+            "hulumed_isic_central_dark_white_vascular_promotion",
+        ),
+        (
+            "Seborrheic Keratosis",
+            "Seborrheic Keratosis",
+            {
+                "site": "anterior torso",
+                "early_ddx_candidates": ["Nevus", "Basal Cell Carcinoma", "Dermatofibroma"],
+                "image_summary": "Pinkish-red lesion with central red area and surrounding white lines",
+                "support_margin": 41.4,
+                "subtype_support_margin": 4.0,
+            },
+            "Vascular Lesion",
+            "hulumed_isic_anterior_central_red_vascular_promotion",
+        ),
+        (
+            "Nevus",
+            "Nevus",
+            {
+                "site": "upper extremity",
+                "early_ddx_candidates": ["Nevus", "Basal Cell Carcinoma", "Dermatofibroma"],
+                "image_summary": "Pinkish lesion with subtle vascular structures and faint pigmentation",
+                "support_margin": 60.0,
+                "subtype_support_margin": 25.96,
+            },
+            "Basal Cell Carcinoma",
+            "hulumed_isic_subtle_vascular_bcc_archive_promotion",
+        ),
+        (
+            "Nevus",
+            "Nevus",
+            {
+                "site": "anterior torso",
+                "early_ddx_candidates": ["Inflammatory patch"],
+                "image_summary": "Erythematous patch with subtle scaling and scattered brownish pigmentation, hair follicles visible",
+                "support_margin": 50.62,
+                "subtype_support_margin": 13.7,
+            },
+            "Basal Cell Carcinoma",
+            "hulumed_isic_hair_follicle_scaling_bcc_promotion",
+        ),
+        (
+            "Malignant Melanoma",
+            "Malignant Melanoma",
+            {
+                "site": "head/neck",
+                "early_ddx_candidates": ["Seborrheic Keratosis", "Nevus", "Dermatofibroma"],
+                "image_summary": "Pinkish-red skin with multiple small, irregularly shaped lesions and white/yellowish areas.",
+                "support_margin": 53.06,
+                "subtype_support_margin": 14.34,
+            },
+            "Basal Cell Carcinoma",
+            "hulumed_isic_headneck_white_yellow_bcc_promotion",
+        ),
+    ],
+)
+def test_hulumed_isic_additional_archive_promotion_gates(
+    baseline_label: str,
+    agent_label: str,
+    evidence_kwargs: dict,
+    expected_label: str,
+    expected_reason: str,
+) -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": baseline_label,
+            "differential_diagnoses": [baseline_label, "Nevus"],
+            "confidence": "Moderate",
+        },
+        agent_output={
+            "final_diagnosis": agent_label,
+            "differential_diagnoses": [agent_label, "Nevus"],
+            "confidence": "Moderate",
+        },
+        evidence_bundle=_hulumed_isic_evidence_bundle(**evidence_kwargs),
+    )
+
+    assert result["final_diagnosis"] == expected_label
+    assert expected_reason in result["fusion_decision"]["reasons"]
+
+
 def test_hulumed_isic_promotes_upper_anterior_bcc_inflammatory_topk_case() -> None:
     baseline_output = {
         "final_diagnosis": "Nevus",
@@ -3509,6 +3800,60 @@ def test_hulumed_scin_promotes_elderly_back_hand_actinic_pattern() -> None:
     assert "hulumed_scin_elderly_hand_actinic_grouped_promotion" in result["fusion_decision"]["reasons"]
 
 
+def test_hulumed_scin_promotes_low_margin_keratinocyte_malignant_pattern() -> None:
+    baseline_output = {"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"]}
+    agent_output = {
+        "final_diagnosis": "Contact Dermatitis",
+        "differential_diagnoses": ["Contact Dermatitis", "Actinic Keratosis"],
+    }
+    evidence_bundle = _hulumed_scin_evidence_bundle(
+        early_ddx_candidates=["eczema", "contact dermatitis", "insect bite reaction"],
+        image_summary="Erythematous, slightly raised lesion with central crusting on the leg.",
+        clinical_metadata={"body_sites": ["leg"], "textures_present": ["rough_or_flaky"]},
+        selected_evidence_text="visual_summary_skill: central crusting on a sun-exposed lower extremity lesion.",
+        support_margin=41.7,
+        subtype_support_margin=2.5,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "MALIGNANT_PREMALIGNANT"
+    assert "hulumed_scin_keratinocyte_malignant_grouped_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_scin_keratinocyte_promotion_blocks_psoriasis_mimic() -> None:
+    baseline_output = {"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"]}
+    agent_output = {
+        "final_diagnosis": "Contact Dermatitis",
+        "differential_diagnoses": ["Contact Dermatitis", "Actinic Keratosis"],
+    }
+    evidence_bundle = _hulumed_scin_evidence_bundle(
+        early_ddx_candidates=["eczema", "psoriasis", "contact dermatitis"],
+        image_summary="Multiple erythematous, scaly plaques on the leg with rough texture and some crusting.",
+        clinical_metadata={
+            "body_sites": ["leg"],
+            "textures_present": ["rough_or_flaky"],
+            "symptoms_present": ["itching", "bothersome_appearance"],
+        },
+        selected_evidence_text="visual_summary_skill: plaque psoriasis-like scaling without a focal keratinocyte lesion.",
+        support_margin=41.0,
+        subtype_support_margin=3.0,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "Contact Dermatitis"
+    assert "hulumed_scin_keratinocyte_malignant_grouped_promotion" not in result["fusion_decision"]["reasons"]
+
+
 def test_hulumed_scin_vascular_promotion_blocks_insect_bite_anchor() -> None:
     baseline_output = {
         "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
@@ -3556,6 +3901,7 @@ def test_hulumed_scin_does_not_promote_malignant_pattern_from_rash_anchor() -> N
 
     assert result["final_diagnosis"] == "Contact Dermatitis"
     assert not any(reason.startswith("hulumed_scin_sun_exposed") for reason in result["fusion_decision"]["reasons"])
+    assert "hulumed_scin_keratinocyte_malignant_grouped_promotion" not in result["fusion_decision"]["reasons"]
 
 
 def test_medgemma_isic_route_anchors_melanoma_when_bcc_subtype_support_is_weak() -> None:
@@ -7320,6 +7666,94 @@ def test_dermatollama_sd198_crowe_sign_rescue_requires_pigmentary_initial_candid
 
     assert result["final_diagnosis"] == "Crowe's Sign"
     assert "dermatollama_sd198_crowe_sign_pigmentary_rescue" not in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_sd198_promotes_benign_cyst_anchor_from_pigmentary_output() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus"],
+            "confidence": "Medium",
+        },
+        agent_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_hulumed_sd198_evidence_bundle(
+            early_ddx_candidates=["Epidermoid cyst", "Pilar cyst", "Sebaceous cyst"],
+            image_summary="Skin lesion with central keratin plug and surrounding erythema.",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "BENIGN_TUMOR_CYST"
+    assert "hulumed_sd198_grouped_guarded_override" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_sd198_promotes_infectious_anchor_from_dermatitis_output() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Contact Dermatitis",
+            "differential_diagnoses": ["Contact Dermatitis"],
+            "confidence": "Medium",
+        },
+        agent_output={
+            "final_diagnosis": "Contact Dermatitis",
+            "differential_diagnoses": ["Contact Dermatitis"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_hulumed_sd198_evidence_bundle(
+            early_ddx_candidates=["Tinea Corporis", "Psoriasis", "Contact Dermatitis"],
+            image_summary="Erythematous scaly patch with central clearing and peripheral scaling.",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "INFECTION_INFESTATION"
+    assert "hulumed_sd198_grouped_guarded_override" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_sd198_promotes_nail_appendage_anchor_from_papulosquamous_output() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Psoriasis",
+            "differential_diagnoses": ["Psoriasis"],
+            "confidence": "Medium",
+        },
+        agent_output={
+            "final_diagnosis": "Psoriasis",
+            "differential_diagnoses": ["Psoriasis"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_hulumed_sd198_evidence_bundle(
+            early_ddx_candidates=["Onycholysis", "Subungual hematoma", "Fungal infection"],
+            image_summary="Onycholysis with nail plate separation and subungual debris.",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "HAIR_NAIL_APPENDAGE"
+    assert "hulumed_sd198_grouped_guarded_override" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_sd198_keeps_malignant_baseline_guard_for_nail_like_anchor() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "Medium",
+        },
+        agent_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "Medium",
+        },
+        evidence_bundle=_hulumed_sd198_evidence_bundle(
+            early_ddx_candidates=["Pincer Nail Syndrome", "Onychomycosis"],
+            image_summary="Pincer nail deformity with thickened, ridged nail plate.",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "hulumed_sd198_grouped_guarded_override" not in result["fusion_decision"]["reasons"]
 
 
 def test_qwen_sd198_promotes_in_situ_keratinocyte_malignant_group() -> None:
