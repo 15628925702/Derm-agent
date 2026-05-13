@@ -1071,11 +1071,29 @@ class DermOpenAIClient:
         )
 
     @staticmethod
+    def _skinvl_effective_label_space_id(case_input: CaseInput | None = None) -> str:
+        if case_input is None:
+            return ""
+        metadata = dict(getattr(case_input, "metadata", {}) or {})
+        workflow_context = dict(getattr(case_input, "workflow_context", {}) or {})
+        model_routing = dict(workflow_context.get("model_workflow_routing", {}) or {})
+        for candidate in (
+            workflow_context.get("label_space_id"),
+            model_routing.get("label_space_id"),
+            getattr(case_input, "label_space_id", None),
+            metadata.get("label_space_id"),
+        ):
+            label_space_id = str(candidate or "").strip()
+            if label_space_id:
+                return label_space_id
+        return ""
+
+    @staticmethod
     def _skinvl_allowed_labels_for_case(case_input: CaseInput | None = None) -> tuple[str, ...]:
         if DermOpenAIClient._is_skinvl_legacy_pad_case(case_input):
             return SKINVL_ALLOWED_LABELS
         metadata = dict(getattr(case_input, "metadata", {}) or {})
-        label_space_id = str(getattr(case_input, "label_space_id", "") or metadata.get("label_space_id", "") or "").strip()
+        label_space_id = DermOpenAIClient._skinvl_effective_label_space_id(case_input)
         label_space = resolve_label_space(
             label_space_id=label_space_id or None,
             dataset_name=getattr(case_input, "dataset_name", None),
@@ -1801,6 +1819,9 @@ class DermOpenAIClient:
     @staticmethod
     def _diagnosis_payload_from_raw_text(raw_text: str) -> dict[str, Any]:
         text = " ".join(raw_text.strip().split())
+        embedded_payload = DermOpenAIClient._diagnosis_payload_from_embedded_fields(text, raw_text=raw_text)
+        if embedded_payload:
+            return embedded_payload
         diagnosis = text
         match = re.search(
             r"(?:final diagnosis is|diagnosis is|most likely|likely diagnosis is|impression is)\s+(.*)",
@@ -1828,6 +1849,38 @@ class DermOpenAIClient:
         return {
             "final_diagnosis": diagnosis,
             "differential_diagnoses": differential,
+            "rationale": raw_text,
+            "confidence": "unknown",
+            "follow_up_considerations": [],
+        }
+
+    @staticmethod
+    def _diagnosis_payload_from_embedded_fields(text: str, *, raw_text: str) -> dict[str, Any] | None:
+        final_match = re.search(
+            r"['\"]final_diagnosis['\"]\s*:\s*['\"]([^'\"]+)['\"]",
+            text,
+            flags=re.IGNORECASE,
+        )
+        if not final_match:
+            return None
+        diagnosis = DermOpenAIClient._normalize_diagnosis_label(final_match.group(1).strip())
+        differentials: list[str] = []
+        diff_match = re.search(
+            r"['\"]differential_diagnoses['\"]\s*:\s*\[(.*?)\]",
+            text,
+            flags=re.IGNORECASE,
+        )
+        if diff_match:
+            differentials = [
+                DermOpenAIClient._normalize_diagnosis_label(item.strip())
+                for item in re.findall(r"['\"]([^'\"]+)['\"]", diff_match.group(1))
+                if item.strip()
+            ][:5]
+        if diagnosis and diagnosis not in differentials:
+            differentials.insert(0, diagnosis)
+        return {
+            "final_diagnosis": diagnosis,
+            "differential_diagnoses": differentials[:5],
             "rationale": raw_text,
             "confidence": "unknown",
             "follow_up_considerations": [],
@@ -1921,7 +1974,7 @@ class DermOpenAIClient:
     @staticmethod
     def _apply_skinvl_dataset_selector(payload: dict[str, Any], case_input: CaseInput) -> dict[str, Any]:
         metadata = dict(getattr(case_input, "metadata", {}) or {})
-        label_space_id = str(getattr(case_input, "label_space_id", "") or metadata.get("label_space_id", "") or "").strip()
+        label_space_id = DermOpenAIClient._skinvl_effective_label_space_id(case_input)
         label_space = resolve_label_space(
             label_space_id=label_space_id or None,
             dataset_name=getattr(case_input, "dataset_name", None),

@@ -23,6 +23,7 @@ if not PYTHON.exists():
     PYTHON = Path(sys.executable)
 
 from agent.label_space import canonicalize_label
+from agent.model_workflow_router import apply_model_workflow_to_case
 from dataio.case_loader import load_case_by_index
 from integrations.openai_client import DermOpenAIClient
 
@@ -256,8 +257,24 @@ class SkinVLSmokeRunner:
             data_root = PROJECT_ROOT / DATASETS[dataset]["data_root"]
             for case_index in self.split_indices(dataset, self.args.cases_per_dataset):
                 case_input = load_case_by_index(case_index=case_index, data_root=data_root)
+                apply_model_workflow_to_case(case_input, "SkinVL-MM", dataset_name=dataset)
                 cases.append((dataset, case_input))
         return cases
+
+    @staticmethod
+    def effective_label_space_id(case_input: Any) -> str | None:
+        workflow_context = dict(getattr(case_input, "workflow_context", {}) or {})
+        model_routing = dict(workflow_context.get("model_workflow_routing", {}) or {})
+        for candidate in (
+            workflow_context.get("label_space_id"),
+            model_routing.get("label_space_id"),
+            getattr(case_input, "label_space_id", None),
+            dict(getattr(case_input, "metadata", {}) or {}).get("label_space_id"),
+        ):
+            label_space_id = str(candidate or "").strip()
+            if label_space_id:
+                return label_space_id
+        return None
 
     @staticmethod
     def is_echo_payload(payload: dict[str, Any]) -> bool:
@@ -293,21 +310,23 @@ class SkinVLSmokeRunner:
             except Exception as exc:
                 error = f"{exc.__class__.__name__}: {exc}"
             predicted = str(payload.get("final_diagnosis", "")).strip()
+            label_space_id = self.effective_label_space_id(case_input)
             canonical_pred = canonicalize_label(
                 predicted,
-                label_space_id=getattr(case_input, "label_space_id", None),
+                label_space_id=label_space_id,
                 dataset_name=getattr(case_input, "dataset_name", None),
                 metadata=getattr(case_input, "metadata", None),
             )
             canonical_gt = canonicalize_label(
                 getattr(case_input, "reference_label", None) or getattr(case_input, "label", None),
-                label_space_id=getattr(case_input, "label_space_id", None),
+                label_space_id=label_space_id,
                 dataset_name=getattr(case_input, "dataset_name", None),
                 metadata=getattr(case_input, "metadata", None),
             )
             row = {
                 "dataset": dataset,
                 "case_id": case_input.case_id,
+                "label_space_id": label_space_id or "",
                 "ground_truth": canonical_gt,
                 "final_diagnosis": predicted,
                 "canonical_prediction": canonical_pred or "",

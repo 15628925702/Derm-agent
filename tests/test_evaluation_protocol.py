@@ -13,6 +13,7 @@ from agent.evaluation_protocol import (
     build_target_policy,
     default_ablation_target_specs,
     experience_layers_for_variant,
+    run_baseline_target,
 )
 from agent.execution_record import build_baseline_case_execution_record
 from agent.model_workflow_router import apply_model_workflow_to_case, execution_overrides_for_run_agent
@@ -136,6 +137,51 @@ def test_case_specific_model_overlay_is_merged_from_target_model_name() -> None:
 
     assert case_input.workflow_context is not None
     assert case_input.workflow_context["workflow_profile"] == "clinical_full_taxonomy_lesion_workflow"
-    assert case_input.workflow_context["model_workflow_profile"] == "clinical_malignant_guard_workflow"
+    assert case_input.workflow_context["workflow_cell_id"] == "qwen__pad20__dataset_best"
     assert merged_execution_overrides["model_name"] == "Qwen2.5-VL-7B-Instruct"
     assert merged_execution_overrides["force_conservative_fusion"] is True
+
+
+def test_baseline_target_applies_model_label_space_overlay(tmp_path: Path) -> None:
+    class FakeClient:
+        def baseline_diagnosis(self, case_input: CaseInput) -> dict[str, object]:
+            return {
+                "final_diagnosis": str(case_input.label_space_id),
+                "differential_diagnoses": [str(case_input.workflow_context.get("label_space_id"))],
+                "rationale": "Test output.",
+                "confidence": "medium",
+                "follow_up_considerations": [],
+            }
+
+    case_input = CaseInput(
+        case_id="case_scin",
+        image_path="/tmp/missing.png",
+        metadata={"label_space_id": "scin_full"},
+        label="Contact Dermatitis",
+        dataset_name="scin",
+        label_space_id="scin_full",
+        workflow_context={"workflow_profile": "default_workflow"},
+    )
+    target_spec = EvaluationTargetSpec(
+        target_id="direct_baseline",
+        label="SkinVL direct",
+        target_type="baseline",
+        mode="baseline",
+        description="Direct baseline.",
+        execution_overrides={"model_name": "SkinVL-MM"},
+    )
+
+    records, _ = run_baseline_target(
+        cases=[case_input],
+        client=FakeClient(),
+        target_spec=target_spec,
+        run_root=tmp_path,
+        policy_config={"policy_id": "test_policy"},
+        eval_id="eval_test",
+        manifest_path=tmp_path / "manifest.json",
+        data_split="test",
+    )
+
+    assert records[0]["input_summary"]["label_space_id"] == "scin_grouped"
+    assert records[0]["qwen_final"]["final_diagnosis"] == "scin_grouped"
+    assert records[0]["qwen_final"]["differential_diagnoses"] == ["scin_grouped"]
