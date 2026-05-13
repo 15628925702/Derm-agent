@@ -171,6 +171,114 @@ def _hulumed_ham10000_evidence_bundle(
     }
 
 
+def _hulumed_isic_archive_evidence_bundle(
+    *,
+    initial_ddx: list[str],
+    image_summary: str = "irregular pigmented lesion",
+    site: str = "anterior torso",
+    workflow_cell_id: str = "hulumed__isic2019__archive_guard_v1",
+    selected_evidence_present: bool = True,
+) -> dict:
+    return {
+        "selected_evidence": [
+            {
+                "source_name": "differential_compare_skill",
+                "summary": "differential_compare_skill: archive first-pass differential remains active.",
+            }
+        ],
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": initial_ddx,
+                    "image_summary": image_summary,
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": workflow_cell_id,
+                    "model_workflow_profile": "hulumed_isic2019_archive_guard_workflow",
+                    "dataset_workflow_profile": "image_archive_full_taxonomy_lesion_workflow",
+                    "label_space_id": "isic2019_full",
+                    "dataset_name": "isic2019",
+                    "clinical_metadata": {"anatom_site_general": site},
+                },
+                "selected_evidence_present": selected_evidence_present,
+                "support_margin": 44.0,
+                "subtype_support_margin": 12.0,
+                "uncertainty_level": "medium",
+                "contradiction_count": 0,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+
+def test_hulumed_isic_archive_first_label_promotes_melanoma_from_nevus_anchor() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Malignant Melanoma", "Basal Cell Carcinoma"],
+            "confidence": "moderate",
+        },
+        agent_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Malignant Melanoma", "Basal Cell Carcinoma"],
+            "confidence": "moderate",
+        },
+        evidence_bundle=_hulumed_isic_archive_evidence_bundle(
+            initial_ddx=["Malignant Melanoma", "Nevus", "Basal Cell Carcinoma"],
+            image_summary="dark brown irregular asymmetric lesion with varying shades",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Malignant Melanoma"
+    assert "hulumed_isic_archive_first_top1_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_isic_archive_malignant_rescue_promotes_bcc_from_bkl_first_pass() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Seborrheic Keratosis", "Basal Cell Carcinoma"],
+            "confidence": "moderate",
+        },
+        agent_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Seborrheic Keratosis", "Basal Cell Carcinoma"],
+            "confidence": "moderate",
+        },
+        evidence_bundle=_hulumed_isic_archive_evidence_bundle(
+            initial_ddx=["Seborrheic Keratosis", "Basal Cell Carcinoma", "Nevus"],
+            image_summary="pink brown lesion with subtle vascular structures",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "hulumed_isic_archive_malignant_rescue_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_isic_archive_promotion_requires_target_workflow_cell() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+            "confidence": "moderate",
+        },
+        agent_output={
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": ["Nevus", "Malignant Melanoma"],
+            "confidence": "moderate",
+        },
+        evidence_bundle=_hulumed_isic_archive_evidence_bundle(
+            initial_ddx=["Malignant Melanoma", "Nevus"],
+            workflow_cell_id="qwen__isic2019__dataset_best",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Nevus"
+    assert "hulumed_isic_archive_first_top1_promotion" not in result["fusion_decision"]["reasons"]
+
+
 def test_hulumed_ham10000_topk_to_top1_promotes_melanoma_from_bcc_anchor() -> None:
     result = apply_conservative_agent_fusion(
         baseline_output={
@@ -466,6 +574,98 @@ def test_qwen_pad20_fusion_requires_target_workflow_cell() -> None:
 
     assert result["final_diagnosis"] == "Seborrheic Keratosis"
     assert "qwen_pad20_sun_exposed_ack_topk_promotion" not in result["fusion_decision"]["reasons"]
+
+
+def _hulumed_pad20_evidence_bundle(
+    *,
+    initial_ddx: list[str],
+    image_summary: str,
+    region: str = "ARM",
+    age: str = "79",
+    support_margin: float = 41.0,
+    subtype_support_margin: float = 18.0,
+    workflow_cell_id: str = "hulumed__pad20__clinical_guard_v1",
+) -> dict:
+    return {
+        "selected_evidence": [
+            {
+                "source_name": "ack_scc_specialist_skill",
+                "summary": "ack_scc_specialist_skill: keratinocyte differential remains active",
+            }
+        ],
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": initial_ddx,
+                    "image_summary": image_summary,
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": workflow_cell_id,
+                    "model_workflow_profile": "hulumed_pad20_clinical_guard_workflow",
+                    "dataset_workflow_profile": "clinical_full_taxonomy_lesion_workflow",
+                    "label_space_id": "derm_six",
+                    "dataset_name": "pad_ufes_20",
+                    "clinical_metadata": {"region": region, "age": age},
+                },
+                "selected_evidence_present": True,
+                "support_margin": support_margin,
+                "subtype_support_margin": subtype_support_margin,
+                "uncertainty_level": "medium",
+                "contradiction_count": 0,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+
+def test_hulumed_pad20_promotes_scc_from_bcc_anchor_when_older_crusted_scc_is_topk() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "moderate",
+        },
+        agent_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma", "Squamous Cell Carcinoma"],
+            "confidence": "moderate",
+        },
+        evidence_bundle=_hulumed_pad20_evidence_bundle(
+            initial_ddx=["squamous cell carcinoma", "basal cell carcinoma", "keratoacanthoma"],
+            image_summary="Erythematous plaque with central erosion and crusting, surrounded by yellowish scale.",
+            region="ARM",
+            age="70",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Squamous Cell Carcinoma"
+    assert "hulumed_pad20_guarded_subtype_override" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_pad20_scc_promotion_keeps_classic_bcc_surface_guard() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma"],
+            "confidence": "moderate",
+        },
+        agent_output={
+            "final_diagnosis": "Basal Cell Carcinoma",
+            "differential_diagnoses": ["Basal Cell Carcinoma", "Squamous Cell Carcinoma"],
+            "confidence": "moderate",
+        },
+        evidence_bundle=_hulumed_pad20_evidence_bundle(
+            initial_ddx=["squamous cell carcinoma", "basal cell carcinoma"],
+            image_summary="Translucent pearly lesion with visible blood vessels and central crusting.",
+            region="NOSE",
+            age="78",
+        ),
+    )
+
+    assert result["final_diagnosis"] == "Basal Cell Carcinoma"
+    assert "hulumed_pad20_guarded_subtype_override" not in result["fusion_decision"]["reasons"]
 
 
 def _dermatollama_isic2019_evidence_bundle(

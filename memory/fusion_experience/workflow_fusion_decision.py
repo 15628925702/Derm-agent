@@ -374,17 +374,6 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("hulumed_isic_guarded_consensus_override")
-        elif hulumed_isic_archive_promotion := _hulumed_isic_archive_first_label_promotion(
-            workflow_context=workflow_context,
-            initial_ddx=initial_ddx,
-            selected_evidence_present=selected_evidence_present,
-            label_space_id=label_space_id,
-            dataset_name=dataset_name,
-        ):
-            consensus_override_label = hulumed_isic_archive_promotion[0]
-            use_agent_output = True
-            merge_baseline_differentials = True
-            reasons.append(hulumed_isic_archive_promotion[1])
         elif hulumed_isic_topk_promotion := _hulumed_isic_topk_promotion_label_and_reason(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
@@ -403,6 +392,20 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append(hulumed_isic_topk_promotion[1])
+        elif hulumed_isic_archive_promotion := _hulumed_isic_archive_first_label_promotion(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            initial_ddx=initial_ddx,
+            baseline_preview=baseline_preview,
+            selected_evidence_present=selected_evidence_present,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = hulumed_isic_archive_promotion[0]
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append(hulumed_isic_archive_promotion[1])
         elif hulumed_pad20_override_label := _hulumed_pad20_consensus_override_label(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
@@ -5458,7 +5461,10 @@ def _hulumed_isic_topk_promotion_label_and_reason(
 def _hulumed_isic_archive_first_label_promotion(
     *,
     workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
     initial_ddx: list[str],
+    baseline_preview: dict[str, Any],
     selected_evidence_present: bool,
     label_space_id: str,
     dataset_name: str,
@@ -5488,11 +5494,29 @@ def _hulumed_isic_archive_first_label_promotion(
         "SCC": "Squamous Cell Carcinoma",
     }
     first_label = initial_canonicals[0]
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    summary = str(baseline_preview.get("image_summary", "")).strip().lower()
+
+    if first_label == agent_canonical == baseline_canonical:
+        return None
 
     # Hulu-Med on ISIC2019 has a strong NV anchoring failure mode.  The archive
     # first-pass differential is more balanced than the final answer, so use it
     # as a guarded tie-breaker for the high-yield labels that improved
     # historical ISIC validation without broadening this rule to other routes.
+    if first_label == "AK" and "slightly raised" in summary:
+        return None
+    if first_label == "MEL" and any(marker in summary for marker in ("blue", "purple")):
+        return None
     if first_label in {"AK", "SCC", "MEL", "VASC", "NV"}:
         return (display_labels[first_label], "hulumed_isic_archive_first_top1_promotion")
 
@@ -5500,6 +5524,8 @@ def _hulumed_isic_archive_first_label_promotion(
     # malignant or premalignant ISIC class is still in the top-3 archive
     # differential, preserve safety by promoting the highest-priority malignant
     # candidate instead of falling back to the NV-biased final answer.
+    if first_label not in {"BKL", "DF"}:
+        return None
     for canonical_label in ("MEL", "BCC", "AK", "SCC"):
         if canonical_label in initial_canonicals:
             return (display_labels[canonical_label], "hulumed_isic_archive_malignant_rescue_promotion")
