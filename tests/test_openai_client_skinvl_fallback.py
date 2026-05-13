@@ -117,6 +117,9 @@ def test_skinvl_nonpad_uses_metadata_label_space_when_case_field_missing() -> No
         "SCC",
         "UNK",
     )
+    prompt_block = DermOpenAIClient._skinvl_label_prompt_block(case_input)
+    assert "Allowed canonical label IDs: MEL, NV, BCC, AK, BKL, DF, VASC, SCC, UNK." in prompt_block
+    assert "Do not output disease descriptions" in prompt_block
 
 
 def test_skinvl_nonpad_repair_echo_is_not_coerced_to_scc() -> None:
@@ -137,6 +140,31 @@ def test_skinvl_nonpad_repair_echo_is_not_coerced_to_scc() -> None:
     normalized = DermOpenAIClient._normalize_diagnosis_payload(
         {"raw_text": raw_text},
         request_name="baseline_diagnosis:ISIC_BAD_JSON",
+        case_input=case_input,
+        skinvl_mode=True,
+    )
+
+    assert normalized["final_diagnosis"] == ""
+    assert normalized["differential_diagnoses"] == []
+    assert normalized["parse_warning"] == "skinvl_nonpad_json_repair_echo"
+
+
+def test_skinvl_nonpad_prompt_echo_is_not_coerced_from_allowed_labels() -> None:
+    case_input = CaseInput(
+        case_id="ISIC_PROMPT_ECHO",
+        image_path="missing.jpg",
+        metadata={"label_space_id": "isic2019_full"},
+        dataset_name="isic2019",
+        label_space_id="isic2019_full",
+    )
+    raw_text = (
+        "Return valid JSON only. Allowed canonical label IDs: MEL, NV, BCC, AK, BKL, DF, VASC, SCC, UNK. "
+        "The field `final_diagnosis` must be exactly one canonical label ID."
+    )
+
+    normalized = DermOpenAIClient._normalize_diagnosis_payload(
+        {"raw_text": raw_text},
+        request_name="baseline_diagnosis:ISIC_PROMPT_ECHO",
         case_input=case_input,
         skinvl_mode=True,
     )

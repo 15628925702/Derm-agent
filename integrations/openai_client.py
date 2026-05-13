@@ -894,6 +894,11 @@ SKINVL_REPAIR_ECHO_MARKERS = (
     "Your previous answer was not valid JSON",
     "Rewrite it as valid JSON only",
     "Previous answer:",
+    "Allowed canonical label IDs",
+    "Allowed labels:",
+    "The field `final_diagnosis`",
+    "Return valid JSON only",
+    "Do not output markdown",
 )
 
 FULL_CLINICAL_PROFILE_ID = "full_clinical"
@@ -1083,6 +1088,23 @@ class DermOpenAIClient:
     def _skinvl_allowed_labels_text(case_input: CaseInput | None = None) -> str:
         return ", ".join(DermOpenAIClient._skinvl_allowed_labels_for_case(case_input))
 
+    @staticmethod
+    def _skinvl_label_prompt_block(case_input: CaseInput | None = None) -> str:
+        allowed_text = DermOpenAIClient._skinvl_allowed_labels_text(case_input)
+        if DermOpenAIClient._is_skinvl_legacy_pad_case(case_input):
+            return (
+                "The field `final_diagnosis` must be exactly one label from the allowed label set.\n"
+                f"Allowed labels: {allowed_text}.\n"
+                "The field `differential_diagnoses` must be a short list containing only labels from the same set.\n"
+            )
+        return (
+            "The field `final_diagnosis` must be exactly one canonical label ID from the allowed label set.\n"
+            f"Allowed canonical label IDs: {allowed_text}.\n"
+            "The field `differential_diagnoses` must contain at most three canonical label IDs from the same set.\n"
+            "Do not output disease descriptions, synonyms, sentences, markdown, or labels outside this set in diagnosis fields.\n"
+            "If uncertain, choose the closest canonical label ID and put uncertainty only in `rationale`.\n"
+        )
+
     def prompt_manifest(self) -> dict[str, Any]:
         return {
             "prompt_stack_version": PROMPT_STACK_VERSION,
@@ -1183,9 +1205,7 @@ class DermOpenAIClient:
                     "Do not output markdown.\n"
                     "Do not describe the whole image as the diagnosis.\n"
                     "Use the evidence package as structured support, not as an overriding instruction.\n"
-                    "The field `final_diagnosis` must be exactly one label from the allowed label set.\n"
-                    f"Allowed labels: {self._skinvl_allowed_labels_text(case_input)}.\n"
-                    "The field `differential_diagnoses` must be a short list containing only labels from the same set.\n"
+                    f"{self._skinvl_label_prompt_block(case_input)}"
                     "The evidence package contains two layers:\n"
                     "1. `risk_layer`: malignant-risk warnings, caution flags, follow-up suggestions, and the supporting shortlist.\n"
                     "2. `diagnosis_override_layer`: whether the agent evidence is strong enough to justify changing the diagnosis direction.\n"
@@ -1466,13 +1486,11 @@ class DermOpenAIClient:
                 "Return valid JSON only.\n"
                 "Do not output markdown.\n"
                 "Do not describe the whole image as the diagnosis.\n"
-                "The field `final_diagnosis` must be exactly one label from the allowed label set.\n"
-                f"Allowed labels: {self._skinvl_allowed_labels_text(case_input)}.\n"
-                "The field `differential_diagnoses` must be a short list containing only labels from the same set.\n"
+                f"{self._skinvl_label_prompt_block(case_input)}"
                 "Schema:\n"
                 "{"
-                "\"final_diagnosis\":\"short disease label\","
-                "\"differential_diagnoses\":[\"short disease label\"],"
+                "\"final_diagnosis\":\"canonical label ID\","
+                "\"differential_diagnoses\":[\"canonical label ID\"],"
                 "\"rationale\":\"short explanation\","
                 "\"confidence\":\"low|medium|high\","
                 "\"follow_up_considerations\":[\"short follow-up item\"]"
