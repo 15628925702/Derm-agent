@@ -5,6 +5,9 @@ from typing import Any
 from agent.label_space import canonicalize_label, is_malignant_label, label_space_snapshot, labels_match
 
 
+TOPK_EVAL_LIMIT = 3
+
+
 def evaluate_diagnosis_output(
     diagnosis_output: dict[str, Any],
     ground_truth_label: str | None,
@@ -46,6 +49,8 @@ def evaluate_diagnosis_output(
     for label in differential_labels:
         if label and label not in topk_candidates:
             topk_candidates.append(label)
+        if len(topk_candidates) >= TOPK_EVAL_LIMIT:
+            break
 
     malignant_truth = is_malignant_label(
         ground_truth_canonical,
@@ -69,6 +74,8 @@ def evaluate_diagnosis_output(
         "ground_truth_canonical": ground_truth_canonical,
         "final_canonical_label": final_label,
         "differential_canonical_labels": differential_labels,
+        "topk_canonical_labels": topk_candidates[:TOPK_EVAL_LIMIT],
+        "topk_k": TOPK_EVAL_LIMIT,
         "correct": (
             labels_match(
                 final_label or diagnosis_output.get("final_diagnosis"),
@@ -89,7 +96,7 @@ def evaluate_diagnosis_output(
                     label_space_id=label_space_id,
                     metadata=metadata,
                 )
-                for candidate in (topk_candidates or [diagnosis_output.get("final_diagnosis")])
+                for candidate in (topk_candidates[:TOPK_EVAL_LIMIT] or [diagnosis_output.get("final_diagnosis")])
             )
             if ground_truth_canonical
             else None

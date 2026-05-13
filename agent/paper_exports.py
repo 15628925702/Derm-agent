@@ -1160,6 +1160,8 @@ def _canonical_topk_labels(
         )
         if canonical and canonical not in labels:
             labels.append(canonical)
+        if len(labels) >= 3:
+            break
     return labels
 
 

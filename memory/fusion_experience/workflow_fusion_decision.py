@@ -374,6 +374,17 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("hulumed_isic_guarded_consensus_override")
+        elif hulumed_isic_archive_promotion := _hulumed_isic_archive_first_label_promotion(
+            workflow_context=workflow_context,
+            initial_ddx=initial_ddx,
+            selected_evidence_present=selected_evidence_present,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = hulumed_isic_archive_promotion[0]
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append(hulumed_isic_archive_promotion[1])
         elif hulumed_isic_topk_promotion := _hulumed_isic_topk_promotion_label_and_reason(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
@@ -1457,6 +1468,8 @@ def decide_conservative_agent_fusion(
         "hulumed_scin_crusted_impetigo_grouped_promotion",
         "hulumed_scin_herpetic_cluster_grouped_promotion",
         "hulumed_scin_elderly_hand_actinic_grouped_promotion",
+        "hulumed_isic_archive_first_top1_promotion",
+        "hulumed_isic_archive_malignant_rescue_promotion",
         "dermatollama_sd198_actinic_scaly_papulosquamous_topk_promotion",
         "dermatollama_sd198_crowe_sign_pigmentary_rescue",
     }
@@ -5442,6 +5455,58 @@ def _hulumed_isic_topk_promotion_label_and_reason(
     return None
 
 
+def _hulumed_isic_archive_first_label_promotion(
+    *,
+    workflow_context: dict[str, Any],
+    initial_ddx: list[str],
+    selected_evidence_present: bool,
+    label_space_id: str,
+    dataset_name: str,
+) -> tuple[str, str] | None:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "hulumed__isic2019__archive_guard_v1":
+        return None
+    if not selected_evidence_present or not initial_ddx:
+        return None
+
+    initial_canonicals = [
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in initial_ddx[:3]
+    ]
+    initial_canonicals = [label for label in initial_canonicals if label]
+    if not initial_canonicals:
+        return None
+
+    display_labels = {
+        "MEL": "Malignant Melanoma",
+        "NV": "Nevus",
+        "BCC": "Basal Cell Carcinoma",
+        "AK": "Actinic Keratosis",
+        "BKL": "Seborrheic Keratosis",
+        "DF": "Dermatofibroma",
+        "VASC": "Vascular Lesion",
+        "SCC": "Squamous Cell Carcinoma",
+    }
+    first_label = initial_canonicals[0]
+
+    # Hulu-Med on ISIC2019 has a strong NV anchoring failure mode.  The archive
+    # first-pass differential is more balanced than the final answer, so use it
+    # as a guarded tie-breaker for the high-yield labels that improved
+    # historical ISIC validation without broadening this rule to other routes.
+    if first_label in {"AK", "SCC", "MEL", "VASC", "NV"}:
+        return (display_labels[first_label], "hulumed_isic_archive_first_top1_promotion")
+
+    # If the first-pass label is a low-precision benign/keratosis label but a
+    # malignant or premalignant ISIC class is still in the top-3 archive
+    # differential, preserve safety by promoting the highest-priority malignant
+    # candidate instead of falling back to the NV-biased final answer.
+    for canonical_label in ("MEL", "BCC", "AK", "SCC"):
+        if canonical_label in initial_canonicals:
+            return (display_labels[canonical_label], "hulumed_isic_archive_malignant_rescue_promotion")
+
+    return None
+
+
 def _hulumed_pad20_consensus_override_label(
     *,
     workflow_context: dict[str, Any],
@@ -5481,6 +5546,56 @@ def _hulumed_pad20_consensus_override_label(
     ]
     initial_first = initial_canonicals[0] if initial_canonicals else ""
     summary = str(baseline_preview.get("image_summary", "")).strip().lower()
+    metadata = _workflow_clinical_metadata(workflow_context)
+    age = _safe_float(metadata.get("age"))
+    region = str(metadata.get("region", "")).strip().upper()
+
+    has_scc = _contains_canonical_label(
+        agent_differentials,
+        canonical_label="SCC",
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    ) or "SCC" in initial_canonicals
+    if has_scc:
+        scc_surface_signal = any(
+            marker in summary
+            for marker in (
+                "ulcer",
+                "crust",
+                "erosion",
+                "necrosis",
+                "keratin",
+                "scal",
+                "exudate",
+            )
+        )
+        classic_bcc_surface_guard = any(
+            marker in summary
+            for marker in (
+                "translucent",
+                "visible blood vessels",
+                "pearly",
+                "rolled edge",
+                "central depression",
+            )
+        )
+        scc_first_or_ka = initial_first == "SCC" or any("keratoacanthoma" in str(label).lower() for label in initial_ddx)
+        high_risk_bcc_first = (
+            initial_first == "BCC"
+            and age >= 75.0
+            and any(marker in summary for marker in ("ulcer", "necrosis", "sun-damaged", "sun damaged"))
+        )
+        high_risk_site = region == "LIP" or " lip" in summary
+        if (
+            scc_surface_signal
+            and not classic_bcc_surface_guard
+            and (
+                (scc_first_or_ka and age >= 70.0)
+                or high_risk_bcc_first
+                or (high_risk_site and age >= 60.0)
+            )
+        ):
+            return "Squamous Cell Carcinoma"
 
     has_ack = _contains_canonical_label(
         agent_differentials,

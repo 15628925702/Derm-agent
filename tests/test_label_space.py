@@ -100,6 +100,25 @@ def test_scin_label_families_allow_name_granularity_matches() -> None:
     assert evaluation["topk_hit"] is True
 
 
+def test_evaluation_topk_is_fixed_to_top3() -> None:
+    evaluation = evaluate_diagnosis_output(
+        {
+            "final_diagnosis": "Nevus",
+            "differential_diagnoses": [
+                "Basal Cell Carcinoma",
+                "Squamous Cell Carcinoma",
+                "Malignant Melanoma",
+            ],
+        },
+        "MEL",
+        dataset_name="pad_ufes_20",
+    )
+
+    assert evaluation["topk_k"] == 3
+    assert evaluation["topk_canonical_labels"] == ["NEV", "BCC", "SCC"]
+    assert evaluation["topk_hit"] is False
+
+
 def test_scin_grouped_label_space_maps_broad_model_outputs() -> None:
     assert canonicalize_label("Contact Dermatitis", dataset_name="scin", label_space_id="scin_grouped") == "DERMATITIS_ECZEMA"
     assert canonicalize_label("Herpes Zoster", dataset_name="scin", label_space_id="scin_grouped") == "INFECTION_VIRAL_FUNGAL"
