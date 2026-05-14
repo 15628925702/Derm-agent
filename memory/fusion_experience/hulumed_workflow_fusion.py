@@ -1422,6 +1422,8 @@ def _hulumed_scin_grouped_differential_expansions(
     *,
     workflow_context: dict[str, Any],
     primary_label: str,
+    existing_differentials: list[str],
+    preferred_labels: list[str] | None = None,
     label_space_id: str,
     dataset_name: str,
 ) -> list[str]:
@@ -1433,9 +1435,28 @@ def _hulumed_scin_grouped_differential_expansions(
         label_space_id=label_space_id,
         dataset_name=dataset_name,
     )
+    existing_canonicals = [
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in existing_differentials
+    ]
+    existing_top3 = {canonical for canonical in existing_canonicals[:2] if canonical}
+    preferred_canonicals = [
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in (preferred_labels or [])
+    ]
+    preferred_canonicals = [canonical for canonical in preferred_canonicals if canonical]
+    preferred = preferred_canonicals[0] if preferred_canonicals else ""
+    if primary_canonical == "URTICARIA_BITE_FOLLICULITIS":
+        second = "INFECTION_VIRAL_FUNGAL" if "INFECTION_VIRAL_FUNGAL" in existing_top3 else preferred
+        if not second or second == "DERMATITIS_ECZEMA":
+            second = "OTHER"
+        return ["DERMATITIS_ECZEMA", second]
+    if primary_canonical == "DERMATITIS_ECZEMA":
+        second = "INFECTION_VIRAL_FUNGAL" if "INFECTION_VIRAL_FUNGAL" in existing_top3 else preferred
+        if not second or second == "URTICARIA_BITE_FOLLICULITIS":
+            second = "OTHER"
+        return ["URTICARIA_BITE_FOLLICULITIS", second]
     expansions = {
-        "DERMATITIS_ECZEMA": ["URTICARIA_BITE_FOLLICULITIS", "OTHER"],
-        "URTICARIA_BITE_FOLLICULITIS": ["DERMATITIS_ECZEMA", "OTHER"],
         "INFECTION_VIRAL_FUNGAL": ["DERMATITIS_ECZEMA", "URTICARIA_BITE_FOLLICULITIS"],
         "OTHER": ["DERMATITIS_ECZEMA", "URTICARIA_BITE_FOLLICULITIS"],
         "VASCULAR_PURPURIC": ["DERMATITIS_ECZEMA", "URTICARIA_BITE_FOLLICULITIS"],

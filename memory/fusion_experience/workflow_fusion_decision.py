@@ -1560,17 +1560,22 @@ def decide_conservative_agent_fusion(
     if hulumed_scin_topk_promotion:
         hulumed_scin_priority_promotions.append(hulumed_scin_topk_promotion[0])
         reasons.append(hulumed_scin_topk_promotion[1])
+    chosen_differentials_for_expansion = agent_differentials if use_agent_output else baseline_differentials
     hulumed_scin_differential_promotions = _hulumed_scin_grouped_differential_expansions(
         workflow_context=workflow_context,
         primary_label=consensus_override_label or (agent_label if use_agent_output else baseline_label),
+        existing_differentials=list(chosen_differentials_for_expansion),
+        preferred_labels=list(hulumed_scin_priority_promotions),
         label_space_id=label_space_id,
         dataset_name=dataset_name,
     )
+    hulumed_scin_ordered_promotions: list[str] = []
     if hulumed_scin_differential_promotions:
-        hulumed_scin_priority_promotions.extend(hulumed_scin_differential_promotions)
+        hulumed_scin_ordered_promotions.extend(hulumed_scin_differential_promotions)
         reasons.append("hulumed_scin_grouped_differential_expansion")
-    if hulumed_scin_priority_promotions:
-        differential_promotions = list(differential_promotions) + hulumed_scin_priority_promotions
+    hulumed_scin_ordered_promotions.extend(hulumed_scin_priority_promotions)
+    if hulumed_scin_ordered_promotions:
+        differential_promotions = list(differential_promotions) + hulumed_scin_ordered_promotions
 
     return {
         "use_agent_output": bool(use_agent_output),
