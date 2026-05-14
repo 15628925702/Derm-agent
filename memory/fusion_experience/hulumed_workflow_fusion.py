@@ -1446,8 +1446,6 @@ def _hulumed_scin_grouped_top1_rescue_label_and_reason(
         label_space_id=label_space_id,
         dataset_name=dataset_name,
     )
-    if baseline_canonical != "URTICARIA_BITE_FOLLICULITIS":
-        return None
 
     baseline_signal_differentials = [
         *baseline_differentials,
@@ -1478,6 +1476,11 @@ def _hulumed_scin_grouped_top1_rescue_label_and_reason(
         ]
     ).lower()
     focused_text = f"{summary} {metadata_text} {early_text}"
+    trigger_text = (
+        f"{focused_text} "
+        f"{' '.join(str(label) for label in baseline_signal_differentials)} "
+        f"{' '.join(str(label) for label in agent_differentials)}"
+    ).lower()
     has_case_metadata = bool(
         clinical_metadata.get("region")
         or clinical_metadata.get("related_category")
@@ -1485,6 +1488,49 @@ def _hulumed_scin_grouped_top1_rescue_label_and_reason(
         or clinical_metadata.get("textures_present")
         or clinical_metadata.get("symptoms_present")
     )
+
+    high_precision_malignant_signal = (
+        (
+            "darkening" in trigger_text
+            and "contact dermatitis" in trigger_text
+            and _hulumed_scin_contains_phrase(trigger_text, ("vascular", "purpuric"))
+        )
+        or (
+            "pigmentary" in trigger_text
+            and _hulumed_scin_contains_phrase(trigger_text, ("bothersome appearance", "bothersome_appearance"))
+            and _hulumed_scin_contains_phrase(trigger_text, ("burning", "pain", "itching"))
+        )
+        or (
+            baseline_canonical == "URTICARIA_BITE_FOLLICULITIS"
+            and _hulumed_scin_contains_phrase(trigger_text, ("central crust", "central crusting", "crusting"))
+            and _hulumed_scin_contains_phrase(trigger_text, ("leg",))
+            and "insect bite" in trigger_text
+        )
+        or (
+            _hulumed_scin_contains_phrase(trigger_text, ("head or neck", "head_or_neck", "neck"))
+            and _hulumed_scin_contains_phrase(trigger_text, ("bothersome appearance", "bothersome_appearance"))
+            and "insect bite" in trigger_text
+        )
+        or (
+            _hulumed_scin_contains_phrase(trigger_text, ("head or neck", "head_or_neck", "neck"))
+            and "burning" in trigger_text
+            and _hulumed_scin_contains_phrase(trigger_text, ("fluid filled", "fluid_filled"))
+        )
+    )
+    if high_precision_malignant_signal and not any(
+        marker in focused_text
+        for marker in (
+            "no visible lesion",
+            "normal skin",
+            "watch strap",
+            "bandage visible",
+            "black bandage",
+        )
+    ):
+        return "MALIGNANT_PREMALIGNANT", "hulumed_scin_high_precision_malignant_top1_rescue"
+
+    if baseline_canonical != "URTICARIA_BITE_FOLLICULITIS":
+        return None
 
     dermatitis_surface_signal = any(
         marker in focused_text

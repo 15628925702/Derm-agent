@@ -3808,6 +3808,94 @@ def test_hulumed_scin_promotes_elderly_back_hand_actinic_pattern() -> None:
     assert "hulumed_scin_elderly_hand_actinic_grouped_promotion" in result["fusion_decision"]["reasons"]
 
 
+def test_hulumed_scin_high_precision_malignant_rescue_overrides_dark_vascular_pattern() -> None:
+    baseline_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS", "VASCULAR_PURPURIC"],
+    }
+    agent_output = {
+        "final_diagnosis": "ACNE_ROSACEA_FOLLICULAR",
+        "differential_diagnoses": ["ACNE_ROSACEA_FOLLICULAR", "DERMATITIS_ECZEMA"],
+    }
+    evidence_bundle = _hulumed_scin_evidence_bundle(
+        early_ddx_candidates=["contact dermatitis", "allergic reaction", "insect bite"],
+        image_summary="Multiple dark red to brown macules and papules on the arm with central clearing.",
+        clinical_metadata={
+            "body_sites": ["arm"],
+            "textures_present": ["raised_or_bumpy"],
+            "symptoms_present": ["darkening", "itching"],
+        },
+        selected_evidence_text="visual_summary_skill: vascular purpuric differential remains plausible.",
+        support_margin=41.0,
+        subtype_support_margin=2.8,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "MALIGNANT_PREMALIGNANT"
+    assert "hulumed_scin_high_precision_malignant_top1_rescue" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_scin_high_precision_malignant_rescue_overrides_crusted_leg_bite_pattern() -> None:
+    baseline_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS"],
+    }
+    agent_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS", "DERMATITIS_ECZEMA"],
+    }
+    evidence_bundle = _hulumed_scin_evidence_bundle(
+        early_ddx_candidates=["insect bite", "contact dermatitis", "fungal infection"],
+        image_summary="Erythematous, slightly raised lesion with central crusting on leg.",
+        clinical_metadata={"body_sites": ["leg"]},
+        selected_evidence_text="visual_summary_skill: focal crusted leg lesion should keep keratinocyte malignancy in play.",
+        support_margin=38.0,
+        subtype_support_margin=2.3,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "MALIGNANT_PREMALIGNANT"
+    assert "hulumed_scin_high_precision_malignant_top1_rescue" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_scin_high_precision_malignant_rescue_blocks_bandage_artifact() -> None:
+    baseline_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS"],
+    }
+    agent_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS", "DERMATITIS_ECZEMA"],
+    }
+    evidence_bundle = _hulumed_scin_evidence_bundle(
+        early_ddx_candidates=["contact dermatitis", "insect bite"],
+        image_summary="Multiple small, raised, reddish bumps on the arm with a black bandage visible.",
+        clinical_metadata={"body_sites": ["arm"], "symptoms_present": ["darkening"]},
+        selected_evidence_text="visual_summary_skill: bandage artifact explains dark area.",
+        support_margin=41.0,
+        subtype_support_margin=2.8,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "URTICARIA_BITE_FOLLICULITIS"
+    assert "hulumed_scin_high_precision_malignant_top1_rescue" not in result["fusion_decision"]["reasons"]
+
+
 def test_hulumed_scin_promotes_low_margin_keratinocyte_malignant_pattern() -> None:
     baseline_output = {"final_diagnosis": "Contact Dermatitis", "differential_diagnoses": ["Contact Dermatitis"]}
     agent_output = {
