@@ -28,6 +28,7 @@ if not PYTHON.exists():
 
 from scripts.build_final_dataset_splits import dataset_specs as final_dataset_specs
 from scripts.build_final_dataset_splits import load_cases as load_final_split_cases
+from dataio.case_loader import load_case_by_index
 
 
 MODELS: dict[str, dict[str, str]] = {
@@ -139,6 +140,7 @@ class Runner:
         if not self.args.skip_bootstrap:
             bootstrap_tasks = self.build_bootstrap_tasks(combos)
             self.run_stage("bootstrap", bootstrap_tasks, self.parse_gpus(self.args.bootstrap_gpus))
+            self.abort_if_stage_incomplete("bootstrap")
             for model, dataset in combos:
                 self.merge_bootstrap(model, dataset)
         if not self.args.skip_compare:
@@ -147,13 +149,23 @@ class Runner:
             compare_tasks = self.build_compare_tasks(combos)
             compare_gpus = self.parse_gpus(self.args.compare_gpus)
             self.run_stage("compare", compare_tasks, compare_gpus)
+            self.abort_if_stage_incomplete("compare")
             for model, dataset in combos:
                 self.merge_compare(model, dataset)
             if self.args.enable_physician_evidence_summary:
                 doctor_tasks = self.build_doctor_tasks(combos)
                 self.run_doctor_stage(doctor_tasks, self.parse_gpus(self.args.doctor_gpus))
+                self.abort_if_stage_incomplete("doctor")
         self.write_run_manifest()
         if self.failures:
+            raise SystemExit(2)
+
+    def abort_if_stage_incomplete(self, phase: str) -> None:
+        if self.stop_event.is_set():
+            self.log(f"{phase}: stop requested; aborting before downstream merge")
+            raise SystemExit(130)
+        if self.failures:
+            self.log(f"{phase}: failures present; aborting before downstream merge")
             raise SystemExit(2)
 
     def assigned_combos(self) -> list[tuple[str, str]]:
@@ -559,7 +571,15 @@ class Runner:
         (shard_root / "case_indices.json").write_text(json.dumps(list(task.case_indices), indent=2) + "\n", encoding="utf-8")
         env = self.base_env(task.model, task.dataset, port, policy_root, split_state_root)
         env.pop("DERMAGENT_ENABLE_PHYSICIAN_EVIDENCE_SUMMARY", None)
+        completed_indices = self.completed_bootstrap_case_indices(task=task, output_dir=output_dir) if self.args.resume else set()
+        if completed_indices:
+            skipped = sum(1 for case_index in task.case_indices if int(case_index) in completed_indices)
+            if skipped:
+                self.log(f"bootstrap resume: skipping {skipped}/{len(task.case_indices)} completed cases in {task.model}/{task.dataset} shard {task.shard_id:05d}")
+        failed_cases = 0
         for case_index in task.case_indices:
+            if int(case_index) in completed_indices:
+                continue
             cmd = [
                 str(PYTHON),
                 str(PROJECT_ROOT / "scripts/debug_single_case.py"),
@@ -585,7 +605,42 @@ class Runner:
                 "--client-max-retries",
                 str(self.args.client_max_retries),
             ]
-            self.run_logged(cmd, env, self.logs_root / f"{task.model}_{task.dataset}_bootstrap_{task.shard_id:05d}.log")
+            try:
+                self.run_logged(cmd, env, self.logs_root / f"{task.model}_{task.dataset}_bootstrap_{task.shard_id:05d}.log")
+            except Exception as exc:
+                failed_cases += 1
+                self.record_bootstrap_case_failure(task=task, case_index=int(case_index), error=str(exc), shard_root=shard_root)
+                self.log(
+                    f"bootstrap case failed {task.model}/{task.dataset} shard {task.shard_id:05d} "
+                    f"case_index={case_index}: {exc}"
+                )
+                if failed_cases > int(self.args.bootstrap_case_max_failures):
+                    raise
+
+    def completed_bootstrap_case_indices(self, *, task: Task, output_dir: Path) -> set[int]:
+        completed: set[int] = set()
+        data_root = PROJECT_ROOT / DATASETS[task.dataset]["data_root"]
+        for case_index in task.case_indices:
+            try:
+                case_input = load_case_by_index(int(case_index), data_root)
+            except Exception:
+                continue
+            record_path = output_dir / str(case_input.case_id) / "case_execution_record.json"
+            if record_path.exists():
+                completed.add(int(case_index))
+        return completed
+
+    def record_bootstrap_case_failure(self, *, task: Task, case_index: int, error: str, shard_root: Path) -> None:
+        payload = {
+            "model": task.model,
+            "dataset": task.dataset,
+            "shard_id": task.shard_id,
+            "case_index": case_index,
+            "error": error,
+            "failed_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        }
+        with (shard_root / "failed_cases.jsonl").open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(payload, ensure_ascii=False) + "\n")
 
     def run_compare_task(self, task: Task, port: int) -> None:
         output_dir = self.combo_root(task.model, task.dataset) / "compare_shards" / f"shard_{task.shard_id:05d}"
@@ -776,6 +831,7 @@ def parse_args() -> argparse.Namespace:
         help="If set, bootstrap only the first N train cases equivalent to this many tenths of the full split population; compare still uses the full test split.",
     )
     parser.add_argument("--bootstrap-shard-size", type=int, default=64)
+    parser.add_argument("--bootstrap-case-max-failures", type=int, default=8)
     parser.add_argument("--compare-shard-size", type=int, default=32)
     parser.add_argument("--client-timeout", type=float, default=240.0)
     parser.add_argument("--client-max-retries", type=int, default=4)
