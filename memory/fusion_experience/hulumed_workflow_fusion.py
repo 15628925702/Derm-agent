@@ -805,6 +805,7 @@ def _hulumed_sd198_consensus_override_label(
     initial_first = initial_canonicals[0] if initial_canonicals else ""
     summary = str(baseline_preview.get("image_summary", "")).strip().lower()
     baseline_label_text = str(baseline_label or "").strip().lower()
+    preview_baseline_differentials = list(baseline_preview.get("baseline_differential_diagnoses", []) or [])
     baseline_pigmented_keratosis_anchor = (
         baseline_canonical == "PIGMENTARY_NEVUS_KERATOSIS"
         and _hulumed_scin_contains_phrase(
@@ -816,13 +817,31 @@ def _hulumed_sd198_consensus_override_label(
             ),
         )
     )
+    baseline_dermatitis_anchor = (
+        baseline_canonical == "DERMATITIS_ECZEMA"
+        or _contains_canonical_label(
+            preview_baseline_differentials,
+            canonical_label="DERMATITIS_ECZEMA",
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+    )
+    baseline_papulosquamous_anchor = (
+        baseline_canonical == "PAPULOSQUAMOUS_KERATOTIC"
+        or _contains_canonical_label(
+            preview_baseline_differentials,
+            canonical_label="PAPULOSQUAMOUS_KERATOTIC",
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+    )
     diagnostic_text = " ".join(
         str(item).strip().lower()
         for item in [
             summary,
             *initial_ddx,
             *agent_differentials,
-            *(baseline_preview.get("baseline_differential_diagnoses", []) or []),
+            *preview_baseline_differentials,
         ]
         if str(item).strip()
     )
@@ -948,7 +967,7 @@ def _hulumed_sd198_consensus_override_label(
         return "ACNE_FOLLICULITIS_ROSACEA"
 
     has_baseline_acne = _contains_canonical_label(
-        list(baseline_preview.get("baseline_differential_diagnoses", []) or []),
+        preview_baseline_differentials,
         canonical_label="ACNE_FOLLICULITIS_ROSACEA",
         label_space_id=label_space_id,
         dataset_name=dataset_name,
@@ -957,6 +976,15 @@ def _hulumed_sd198_consensus_override_label(
         has_baseline_acne
         and "lower extremities" in summary
         and "follicular" in diagnostic_text
+        and _hulumed_scin_contains_phrase(summary, ("papules", "papular"))
+        and support_margin >= 45.0
+        and subtype_support_margin >= 8.0
+    ):
+        return "ACNE_FOLLICULITIS_ROSACEA"
+
+    if (
+        has_baseline_acne
+        and "lower legs" in summary
         and _hulumed_scin_contains_phrase(summary, ("papules", "papular"))
         and support_margin >= 45.0
         and subtype_support_margin >= 8.0
@@ -1053,6 +1081,8 @@ def _hulumed_sd198_consensus_override_label(
         initial_first == "SUN_DAMAGE_ACTINIC"
         and baseline_canonical != "SUN_DAMAGE_ACTINIC"
         and not baseline_pigmented_keratosis_anchor
+        and not baseline_dermatitis_anchor
+        and not baseline_papulosquamous_anchor
         and _hulumed_scin_contains_phrase(
             diagnostic_text,
             (
@@ -1121,6 +1151,8 @@ def _hulumed_sd198_consensus_override_label(
         if (
             baseline_canonical != "SUN_DAMAGE_ACTINIC"
             and not baseline_pigmented_keratosis_anchor
+            and not baseline_dermatitis_anchor
+            and not baseline_papulosquamous_anchor
             and (sun_signal or lower_leg_scaling)
         ):
             return "SUN_DAMAGE_ACTINIC"
