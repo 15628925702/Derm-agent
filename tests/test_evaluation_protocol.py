@@ -142,12 +142,12 @@ def test_case_specific_model_overlay_is_merged_from_target_model_name() -> None:
     assert merged_execution_overrides["force_conservative_fusion"] is True
 
 
-def test_baseline_target_applies_model_label_space_overlay(tmp_path: Path) -> None:
+def test_baseline_target_does_not_apply_model_label_space_overlay(tmp_path: Path) -> None:
     class FakeClient:
         def baseline_diagnosis(self, case_input: CaseInput) -> dict[str, object]:
             return {
                 "final_diagnosis": str(case_input.label_space_id),
-                "differential_diagnoses": [str(case_input.workflow_context.get("label_space_id"))],
+                "differential_diagnoses": [str(case_input.workflow_context.get("workflow_profile"))],
                 "rationale": "Test output.",
                 "confidence": "medium",
                 "follow_up_considerations": [],
@@ -182,6 +182,6 @@ def test_baseline_target_applies_model_label_space_overlay(tmp_path: Path) -> No
         data_split="test",
     )
 
-    assert records[0]["input_summary"]["label_space_id"] == "scin_grouped"
-    assert records[0]["qwen_final"]["final_diagnosis"] == "scin_grouped"
-    assert records[0]["qwen_final"]["differential_diagnoses"] == ["scin_grouped"]
+    assert records[0]["input_summary"]["label_space_id"] == "scin_full"
+    assert records[0]["qwen_final"]["final_diagnosis"] == "scin_full"
+    assert records[0]["qwen_final"]["differential_diagnoses"] == ["default_workflow"]

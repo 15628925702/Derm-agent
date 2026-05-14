@@ -1418,6 +1418,34 @@ def _hulumed_scin_grouped_promotion_label_and_reason(
     return None
 
 
+def _hulumed_scin_grouped_differential_expansions(
+    *,
+    workflow_context: dict[str, Any],
+    primary_label: str,
+    label_space_id: str,
+    dataset_name: str,
+) -> list[str]:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "hulumed__scin__grouped_guard_v1":
+        return []
+    primary_canonical = canonicalize_label(
+        primary_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    expansions = {
+        "DERMATITIS_ECZEMA": ["URTICARIA_BITE_FOLLICULITIS", "OTHER"],
+        "URTICARIA_BITE_FOLLICULITIS": ["DERMATITIS_ECZEMA", "OTHER"],
+        "INFECTION_VIRAL_FUNGAL": ["DERMATITIS_ECZEMA", "URTICARIA_BITE_FOLLICULITIS"],
+        "OTHER": ["DERMATITIS_ECZEMA", "URTICARIA_BITE_FOLLICULITIS"],
+        "VASCULAR_PURPURIC": ["DERMATITIS_ECZEMA", "URTICARIA_BITE_FOLLICULITIS"],
+        "ACNE_ROSACEA_FOLLICULAR": ["URTICARIA_BITE_FOLLICULITIS", "DERMATITIS_ECZEMA"],
+        "PIGMENT_KERATOSIS_NEVUS": ["MALIGNANT_PREMALIGNANT", "DERMATITIS_ECZEMA"],
+        "MALIGNANT_PREMALIGNANT": ["DERMATITIS_ECZEMA", "PIGMENT_KERATOSIS_NEVUS"],
+    }
+    return list(expansions.get(primary_canonical or "", []))
+
+
 def _hulumed_scin_contains_phrase(text: str, phrases: tuple[str, ...]) -> bool:
     normalized = str(text or "").lower().replace("_", " ").replace("-", " ")
     normalized = "".join(ch if ch.isalnum() or ch.isspace() else " " for ch in normalized)

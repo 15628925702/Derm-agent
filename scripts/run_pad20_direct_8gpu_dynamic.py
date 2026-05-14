@@ -349,7 +349,6 @@ target = EvaluationTargetSpec(
     target_type='baseline',
     mode='baseline',
     description={f"Direct model baseline on {self.args.dataset} final 30 percent test split; no DermAgent workflow."!r},
-    execution_overrides={{'model_name': {task.model!r}}},
 )
 suite = run_evaluation_suite(
     output_root=Path({str(output_root)!r}),

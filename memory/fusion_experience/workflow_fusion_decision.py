@@ -13,6 +13,7 @@ from memory.fusion_experience.hulumed_workflow_fusion import (
     _hulumed_isic_topk_promotion_label_and_reason,
     _hulumed_pad20_consensus_override_label,
     _hulumed_scin_consensus_override_label,
+    _hulumed_scin_grouped_differential_expansions,
     _hulumed_scin_grouped_promotion_label_and_reason,
     _hulumed_sd198_consensus_override_label,
 )
@@ -70,8 +71,8 @@ def apply_conservative_agent_fusion(
         )
     if decision.get("differential_promotions"):
         chosen["differential_diagnoses"] = _merge_differentials(
-            primary=list(chosen.get("differential_diagnoses", []) or []),
-            baseline=list(decision.get("differential_promotions", []) or []),
+            primary=list(decision.get("differential_promotions", []) or []),
+            baseline=list(chosen.get("differential_diagnoses", []) or []),
             final_label=str(chosen.get("final_diagnosis", "")).strip(),
         )
     rationale = str(chosen.get("rationale", "")).strip()
@@ -453,40 +454,6 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("hulumed_sd198_grouped_guarded_override")
-        elif hulumed_scin_topk_promotion := _hulumed_scin_grouped_promotion_label_and_reason(
-            workflow_context=workflow_context,
-            baseline_label=baseline_label,
-            baseline_differentials=baseline_differentials,
-            agent_differentials=agent_differentials,
-            initial_ddx=initial_ddx,
-            baseline_preview=baseline_preview,
-            selected_evidence=selected_evidence,
-            selected_evidence_present=selected_evidence_present,
-            support_margin=support_margin,
-            subtype_support_margin=subtype_support_margin,
-            label_space_id=label_space_id,
-            dataset_name=dataset_name,
-        ):
-            consensus_override_label = hulumed_scin_topk_promotion[0]
-            use_agent_output = True
-            merge_baseline_differentials = True
-            reasons.append(hulumed_scin_topk_promotion[1])
-        elif hulumed_scin_override_label := _hulumed_scin_consensus_override_label(
-            workflow_context=workflow_context,
-            baseline_label=baseline_label,
-            agent_differentials=agent_differentials,
-            initial_ddx=initial_ddx,
-            baseline_preview=baseline_preview,
-            selected_evidence_present=selected_evidence_present,
-            support_margin=support_margin,
-            subtype_support_margin=subtype_support_margin,
-            label_space_id=label_space_id,
-            dataset_name=dataset_name,
-        ):
-            consensus_override_label = hulumed_scin_override_label
-            use_agent_output = True
-            merge_baseline_differentials = True
-            reasons.append("hulumed_scin_grouped_guarded_override")
         elif dermatollama_scin_topk_promotion := _dermatollama_scin_grouped_topk_promotion(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
@@ -1560,6 +1527,50 @@ def decide_conservative_agent_fusion(
     if dermatollama_ham10000_promotions:
         differential_promotions = list(differential_promotions) + dermatollama_ham10000_promotions
         reasons.append("dermatollama_ham10000_raw_agent_differential_expansion")
+    hulumed_scin_priority_promotions: list[str] = []
+    hulumed_scin_consensus_promotion = _hulumed_scin_consensus_override_label(
+        workflow_context=workflow_context,
+        baseline_label=baseline_label,
+        agent_differentials=agent_differentials,
+        initial_ddx=initial_ddx,
+        baseline_preview=baseline_preview,
+        selected_evidence_present=selected_evidence_present,
+        support_margin=support_margin,
+        subtype_support_margin=subtype_support_margin,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if hulumed_scin_consensus_promotion:
+        hulumed_scin_priority_promotions.append(hulumed_scin_consensus_promotion)
+        reasons.append("hulumed_scin_grouped_guarded_differential")
+    hulumed_scin_topk_promotion = _hulumed_scin_grouped_promotion_label_and_reason(
+        workflow_context=workflow_context,
+        baseline_label=baseline_label,
+        baseline_differentials=baseline_differentials,
+        agent_differentials=agent_differentials,
+        initial_ddx=initial_ddx,
+        baseline_preview=baseline_preview,
+        selected_evidence=selected_evidence,
+        selected_evidence_present=selected_evidence_present,
+        support_margin=support_margin,
+        subtype_support_margin=subtype_support_margin,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if hulumed_scin_topk_promotion:
+        hulumed_scin_priority_promotions.append(hulumed_scin_topk_promotion[0])
+        reasons.append(hulumed_scin_topk_promotion[1])
+    hulumed_scin_differential_promotions = _hulumed_scin_grouped_differential_expansions(
+        workflow_context=workflow_context,
+        primary_label=consensus_override_label or (agent_label if use_agent_output else baseline_label),
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if hulumed_scin_differential_promotions:
+        hulumed_scin_priority_promotions.extend(hulumed_scin_differential_promotions)
+        reasons.append("hulumed_scin_grouped_differential_expansion")
+    if hulumed_scin_priority_promotions:
+        differential_promotions = list(differential_promotions) + hulumed_scin_priority_promotions
 
     return {
         "use_agent_output": bool(use_agent_output),

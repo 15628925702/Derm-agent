@@ -721,20 +721,12 @@ def run_baseline_target(
             f"[progress baseline {index}/{total_cases} ({percent:.1f}%)] case_id={case_input.case_id}",
             flush=True,
         )
-        baseline_case_input = deepcopy(case_input)
-        model_workflow_model = str(
-            target_spec.execution_overrides.get("model_name", "")
-            or target_spec.execution_overrides.get("model_workflow_profile", "")
-        ).strip()
-        if model_workflow_model:
-            apply_model_workflow_to_case(
-                baseline_case_input,
-                model_workflow_model,
-                dataset_name=baseline_case_input.dataset_name,
-            )
-        baseline_qwen = client.baseline_diagnosis(baseline_case_input)
+        # Direct/baseline targets must remain model-only.  Model workflow
+        # routing is reserved for agent targets, otherwise "direct" baselines
+        # inherit agent label-space hints and stop being pure direct runs.
+        baseline_qwen = client.baseline_diagnosis(case_input)
         record = build_baseline_case_execution_record(
-            case_input=baseline_case_input,
+            case_input=case_input,
             baseline_qwen=baseline_qwen,
             policy_snapshot=baseline_policy_snapshot,
             evaluation_context={
