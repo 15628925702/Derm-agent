@@ -806,9 +806,34 @@ def _hulumed_sd198_consensus_override_label(
     summary = str(baseline_preview.get("image_summary", "")).strip().lower()
     diagnostic_text = " ".join(
         str(item).strip().lower()
-        for item in [summary, *initial_ddx, *agent_differentials]
+        for item in [
+            summary,
+            *initial_ddx,
+            *agent_differentials,
+            *(baseline_preview.get("baseline_differential_diagnoses", []) or []),
+        ]
         if str(item).strip()
     )
+
+    if (
+        initial_first == "MALIGNANT_SKIN_CANCER"
+        and support_margin >= 34.0
+        and subtype_support_margin >= 8.0
+        and _hulumed_scin_contains_phrase(
+            diagnostic_text,
+            (
+                "basal cell carcinoma",
+                "bowen",
+                "carcinoma",
+                "cutaneous t-cell",
+                "lymphoma",
+                "lymphomatoid",
+                "malignant",
+                "squamous cell",
+            ),
+        )
+    ):
+        return "MALIGNANT_SKIN_CANCER"
 
     if initial_first == "BENIGN_TUMOR_CYST" and _hulumed_scin_contains_phrase(
         diagnostic_text,
@@ -880,6 +905,56 @@ def _hulumed_sd198_consensus_override_label(
         ),
     ):
         return "ACNE_FOLLICULITIS_ROSACEA"
+
+    has_baseline_acne = _contains_canonical_label(
+        list(baseline_preview.get("baseline_differential_diagnoses", []) or []),
+        canonical_label="ACNE_FOLLICULITIS_ROSACEA",
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if (
+        has_baseline_acne
+        and "lower extremities" in summary
+        and "follicular" in diagnostic_text
+        and _hulumed_scin_contains_phrase(summary, ("papules", "papular"))
+        and support_margin >= 45.0
+        and subtype_support_margin >= 8.0
+    ):
+        return "ACNE_FOLLICULITIS_ROSACEA"
+
+    if (
+        baseline_canonical == "HAIR_NAIL_APPENDAGE"
+        and initial_first == "INFECTION_INFESTATION"
+        and _hulumed_scin_contains_phrase(
+            diagnostic_text,
+            (
+                "nail",
+                "fingernail",
+                "toenail",
+                "subungual",
+                "onych",
+                "nail dystrophy",
+                "psoriatic nail",
+            ),
+        )
+        and not _hulumed_scin_contains_phrase(
+            diagnostic_text,
+            (
+                "green nail",
+                "pseudomonas",
+                "candidiasis",
+                "tinea",
+                "cellulitis",
+                "impetigo",
+                "herpes",
+                "larva",
+                "molluscum",
+                "wound infection",
+                "necrot",
+            ),
+        )
+    ):
+        return "HAIR_NAIL_APPENDAGE"
 
     if initial_first == "INFECTION_INFESTATION" and _hulumed_scin_contains_phrase(
         diagnostic_text,
