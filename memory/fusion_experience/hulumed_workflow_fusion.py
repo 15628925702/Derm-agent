@@ -804,6 +804,18 @@ def _hulumed_sd198_consensus_override_label(
     ]
     initial_first = initial_canonicals[0] if initial_canonicals else ""
     summary = str(baseline_preview.get("image_summary", "")).strip().lower()
+    baseline_label_text = str(baseline_label or "").strip().lower()
+    baseline_pigmented_keratosis_anchor = (
+        baseline_canonical == "PIGMENTARY_NEVUS_KERATOSIS"
+        and _hulumed_scin_contains_phrase(
+            baseline_label_text,
+            (
+                "benign keratosis",
+                "benign keratotic papule",
+                "seborrheic keratosis",
+            ),
+        )
+    )
     diagnostic_text = " ".join(
         str(item).strip().lower()
         for item in [
@@ -819,13 +831,25 @@ def _hulumed_sd198_consensus_override_label(
         initial_first == "MALIGNANT_SKIN_CANCER"
         and support_margin >= 34.0
         and subtype_support_margin >= 8.0
+        and (
+            baseline_canonical != "PIGMENTARY_NEVUS_KERATOSIS"
+            or _hulumed_scin_contains_phrase(
+                diagnostic_text,
+                (
+                    "bowen",
+                    "cutaneous t cell",
+                    "lymphomatoid",
+                    "squamous cell",
+                ),
+            )
+        )
         and _hulumed_scin_contains_phrase(
             diagnostic_text,
             (
                 "basal cell carcinoma",
                 "bowen",
                 "carcinoma",
-                "cutaneous t-cell",
+                "cutaneous t cell",
                 "lymphoma",
                 "lymphomatoid",
                 "malignant",
@@ -881,6 +905,23 @@ def _hulumed_sd198_consensus_override_label(
                 "racquet nail",
                 "half white",
                 "half and half",
+            ),
+        )
+        and not _hulumed_scin_contains_phrase(diagnostic_text, ("green nail", "pseudomonas"))
+    ):
+        return "HAIR_NAIL_APPENDAGE"
+
+    if (
+        _hulumed_scin_contains_phrase(diagnostic_text, ("nail", "fingernail", "toenail", "onych", "subungual"))
+        and _hulumed_scin_contains_phrase(
+            diagnostic_text,
+            (
+                "pitting",
+                "onycholysis",
+                "subungual hyperkeratosis",
+                "nail dystrophy",
+                "psoriatic nail",
+                "trauma induced nail",
             ),
         )
         and not _hulumed_scin_contains_phrase(diagnostic_text, ("green nail", "pseudomonas"))
@@ -1010,6 +1051,8 @@ def _hulumed_sd198_consensus_override_label(
 
     if (
         initial_first == "SUN_DAMAGE_ACTINIC"
+        and baseline_canonical != "SUN_DAMAGE_ACTINIC"
+        and not baseline_pigmented_keratosis_anchor
         and _hulumed_scin_contains_phrase(
             diagnostic_text,
             (
@@ -1075,7 +1118,11 @@ def _hulumed_sd198_consensus_override_label(
     if initial_first == "SUN_DAMAGE_ACTINIC" and has_sun_damage:
         sun_signal = any(marker in summary for marker in ("sun-damaged", "sun damaged", "actinic"))
         lower_leg_scaling = "lower legs" in summary and "scaly texture" in summary
-        if sun_signal or lower_leg_scaling:
+        if (
+            baseline_canonical != "SUN_DAMAGE_ACTINIC"
+            and not baseline_pigmented_keratosis_anchor
+            and (sun_signal or lower_leg_scaling)
+        ):
             return "SUN_DAMAGE_ACTINIC"
 
     has_papulosquamous = _contains_canonical_label(
