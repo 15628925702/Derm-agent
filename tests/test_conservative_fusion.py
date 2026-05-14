@@ -3724,8 +3724,9 @@ def test_hulumed_scin_promotes_crusted_impetigo_pattern() -> None:
         evidence_bundle=evidence_bundle,
     )
 
-    assert result["final_diagnosis"] == "URTICARIA_BITE_FOLLICULITIS"
+    assert result["final_diagnosis"] == "INFECTION_VIRAL_FUNGAL"
     assert "INFECTION_VIRAL_FUNGAL" in result["differential_diagnoses"][:3]
+    assert "hulumed_scin_infection_pattern_top1_rescue" in result["fusion_decision"]["reasons"]
     assert "hulumed_scin_crusted_impetigo_grouped_promotion" in result["fusion_decision"]["reasons"]
 
 
@@ -3750,8 +3751,9 @@ def test_hulumed_scin_uses_baseline_topk_for_crusted_impetigo_signal() -> None:
         evidence_bundle=evidence_bundle,
     )
 
-    assert result["final_diagnosis"] == "URTICARIA_BITE_FOLLICULITIS"
+    assert result["final_diagnosis"] == "INFECTION_VIRAL_FUNGAL"
     assert "INFECTION_VIRAL_FUNGAL" in result["differential_diagnoses"][:3]
+    assert "hulumed_scin_infection_pattern_top1_rescue" in result["fusion_decision"]["reasons"]
     assert "hulumed_scin_crusted_impetigo_grouped_promotion" in result["fusion_decision"]["reasons"]
 
 
@@ -3773,8 +3775,9 @@ def test_hulumed_scin_promotes_herpetic_cluster_from_dermatitis_anchor() -> None
         evidence_bundle=evidence_bundle,
     )
 
-    assert result["final_diagnosis"] == "Contact Dermatitis"
+    assert result["final_diagnosis"] == "INFECTION_VIRAL_FUNGAL"
     assert "INFECTION_VIRAL_FUNGAL" in result["differential_diagnoses"][:3]
+    assert "hulumed_scin_infection_pattern_top1_rescue" in result["fusion_decision"]["reasons"]
     assert "hulumed_scin_herpetic_cluster_grouped_promotion" in result["fusion_decision"]["reasons"]
 
 
@@ -3894,6 +3897,90 @@ def test_hulumed_scin_high_precision_malignant_rescue_blocks_bandage_artifact() 
 
     assert result["final_diagnosis"] == "URTICARIA_BITE_FOLLICULITIS"
     assert "hulumed_scin_high_precision_malignant_top1_rescue" not in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_scin_infection_pattern_rescue_overrides_crusted_impetigo_like_case() -> None:
+    baseline_output = {
+        "final_diagnosis": "DERMATITIS_ECZEMA",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS", "INFECTION_VIRAL_FUNGAL"],
+    }
+    agent_output = {
+        "final_diagnosis": "DERMATITIS_ECZEMA",
+        "differential_diagnoses": ["DERMATITIS_ECZEMA", "URTICARIA_BITE_FOLLICULITIS"],
+    }
+    evidence_bundle = _hulumed_scin_evidence_bundle(
+        early_ddx_candidates=["eczema", "contact dermatitis", "psoriasis"],
+        image_summary="Erythematous, scaly patch on cheek with central crusting and surrounding inflammation.",
+        clinical_metadata={"body_sites": ["head_or_neck"], "textures_present": ["raised_or_bumpy"]},
+        selected_evidence_text="visual_summary_skill: central crusting with surrounding inflammation keeps infection in play.",
+        support_margin=43.9,
+        subtype_support_margin=4.2,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "INFECTION_VIRAL_FUNGAL"
+    assert "hulumed_scin_infection_pattern_top1_rescue" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_scin_infection_pattern_rescue_blocks_pigmented_malignant_like_case() -> None:
+    baseline_output = {
+        "final_diagnosis": "MALIGNANT_PREMALIGNANT",
+        "differential_diagnoses": ["MALIGNANT_PREMALIGNANT", "INFECTION_VIRAL_FUNGAL"],
+    }
+    agent_output = {
+        "final_diagnosis": "DERMATITIS_ECZEMA",
+        "differential_diagnoses": ["DERMATITIS_ECZEMA", "INFECTION_VIRAL_FUNGAL"],
+    }
+    evidence_bundle = _hulumed_scin_evidence_bundle(
+        early_ddx_candidates=["pigmentary disorders", "traumatic injury", "infectious etiology"],
+        image_summary="Multiple irregularly shaped, dark brown to black lesions with surrounding erythema and possible crusting on the arm.",
+        clinical_metadata={"body_sites": ["arm"], "textures_present": ["fluid_filled"]},
+        selected_evidence_text="visual_summary_skill: pigmented malignant mimic remains plausible.",
+        support_margin=39.3,
+        subtype_support_margin=2.9,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] != "INFECTION_VIRAL_FUNGAL"
+    assert "hulumed_scin_infection_pattern_top1_rescue" not in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_scin_other_pattern_rescue_overrides_nail_problem() -> None:
+    baseline_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["DERMATITIS_ECZEMA", "INFECTION_VIRAL_FUNGAL"],
+    }
+    agent_output = {
+        "final_diagnosis": "URTICARIA_BITE_FOLLICULITIS",
+        "differential_diagnoses": ["URTICARIA_BITE_FOLLICULITIS", "DERMATITIS_ECZEMA"],
+    }
+    evidence_bundle = _hulumed_scin_evidence_bundle(
+        early_ddx_candidates=["nail dystrophy", "fungal infection"],
+        image_summary="Nail abnormalities with black, green, and yellow bands on multiple fingers. Possible nail dystrophy or fungal infection.",
+        clinical_metadata={"related_category": "NAIL_PROBLEM", "body_sites": ["palm", "other"]},
+        selected_evidence_text="visual_summary_skill: nail dystrophy pattern is outside the grouped rash families.",
+        support_margin=40.7,
+        subtype_support_margin=3.2,
+    )
+
+    result = apply_conservative_agent_fusion(
+        baseline_output=baseline_output,
+        agent_output=agent_output,
+        evidence_bundle=evidence_bundle,
+    )
+
+    assert result["final_diagnosis"] == "OTHER"
+    assert "hulumed_scin_other_pattern_top1_rescue" in result["fusion_decision"]["reasons"]
 
 
 def test_hulumed_scin_promotes_low_margin_keratinocyte_malignant_pattern() -> None:

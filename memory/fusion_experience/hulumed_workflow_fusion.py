@@ -1529,6 +1529,91 @@ def _hulumed_scin_grouped_top1_rescue_label_and_reason(
     ):
         return "MALIGNANT_PREMALIGNANT", "hulumed_scin_high_precision_malignant_top1_rescue"
 
+    has_infection_candidate = "INFECTION_VIRAL_FUNGAL" in candidate_canonicals or _hulumed_scin_contains_phrase(
+        trigger_text,
+        ("infection viral fungal", "infection viral fungal", "fungal infection", "viral infection"),
+    )
+    infection_blocker = _hulumed_scin_contains_phrase(
+        trigger_text,
+        (
+            "dark brown to black",
+            "red purple",
+            "pigmentary disorders",
+            "traumatic injury",
+            "acne vulgaris",
+            "acne rosacea",
+        ),
+    )
+    crusted_infection_signal = (
+        has_infection_candidate
+        and _hulumed_scin_contains_phrase(trigger_text, ("central crusting", "central erosion", "possible crusting", "crusting"))
+        and _hulumed_scin_contains_phrase(trigger_text, ("surrounding inflammation", "surrounding erythema"))
+        and not _hulumed_scin_contains_phrase(early_text, ("insect bite reaction",))
+    )
+    torso_fungal_signal = (
+        has_infection_candidate
+        and _hulumed_scin_contains_phrase(metadata_text, ("torso front", "torso back"))
+        and "patches" in trigger_text
+        and _hulumed_scin_contains_phrase(trigger_text, ("chest", "abdomen", "upper back", "neck"))
+        and _hulumed_scin_contains_phrase(
+            trigger_text,
+            ("irregular borders", "central clearing", "peripheral scaling", "scaly patches"),
+        )
+        and not _hulumed_scin_contains_phrase(trigger_text, ("papules", "raised lesions of varying"))
+    )
+    foot_fungal_signal = (
+        has_infection_candidate
+        and _hulumed_scin_contains_phrase(metadata_text, ("foot top or side", "foot sole"))
+        and _hulumed_scin_contains_phrase(trigger_text, ("scaly patch", "scaly patches", "dorsal foot"))
+        and _hulumed_scin_contains_phrase(
+            trigger_text,
+            ("nail changes", "superficial skin changes", "mild inflammation"),
+        )
+    )
+    herpes_signal = (
+        _hulumed_scin_contains_phrase(early_text, ("herpes zoster", "herpes simplex"))
+        and _hulumed_scin_contains_phrase(trigger_text, ("fluid filled", "vesicle", "vesicular", "pustule"))
+    )
+    if (
+        not infection_blocker
+        and support_margin >= 37.0
+        and subtype_support_margin >= 2.6
+        and (crusted_infection_signal or torso_fungal_signal or foot_fungal_signal or herpes_signal)
+    ):
+        return "INFECTION_VIRAL_FUNGAL", "hulumed_scin_infection_pattern_top1_rescue"
+
+    nail_other_signal = (
+        "nail_problem" in str(clinical_metadata.get("related_category", "")).strip().lower()
+        and _hulumed_scin_contains_phrase(
+            trigger_text,
+            ("fingernail", "nail abnormalities", "nail dystrophy", "multiple fingers"),
+        )
+        and not _hulumed_scin_contains_phrase(
+            trigger_text,
+            ("black nail polish", "red nail polish", "normal skin and nails"),
+        )
+    )
+    wound_other_signal = _hulumed_scin_contains_phrase(
+        trigger_text,
+        ("open wound", "exposed subcutaneous", "yellowish fluid"),
+    ) and _hulumed_scin_contains_phrase(early_text, ("trauma", "infection"))
+    nonspecific_other_signal = (
+        (
+            _hulumed_scin_contains_phrase(
+                trigger_text,
+                ("no visible lesions or rashes", "no visible lesion or rash"),
+            )
+            and not _hulumed_scin_contains_phrase(trigger_text, ("normal skin and nails",))
+        )
+        or (
+            _hulumed_scin_contains_phrase(trigger_text, ("no visible lesions or abnormalities",))
+            and _hulumed_scin_contains_phrase(trigger_text, ("raised or bumpy texture",))
+            and not _hulumed_scin_contains_phrase(trigger_text, ("normal hand",))
+        )
+    )
+    if support_margin >= 36.0 and (nail_other_signal or wound_other_signal or nonspecific_other_signal):
+        return "OTHER", "hulumed_scin_other_pattern_top1_rescue"
+
     if baseline_canonical != "URTICARIA_BITE_FOLLICULITIS":
         return None
 

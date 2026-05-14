@@ -1472,6 +1472,8 @@ def decide_conservative_agent_fusion(
         "hulumed_scin_acne_top1_rescue",
         "hulumed_scin_actinic_malignant_top1_rescue",
         "hulumed_scin_high_precision_malignant_top1_rescue",
+        "hulumed_scin_infection_pattern_top1_rescue",
+        "hulumed_scin_other_pattern_top1_rescue",
         "hulumed_isic_archive_first_top1_promotion",
         "hulumed_isic_archive_malignant_rescue_promotion",
         "hulumed_isic_anterior_central_red_vascular_promotion",
