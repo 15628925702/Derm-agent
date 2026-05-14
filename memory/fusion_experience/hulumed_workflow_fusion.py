@@ -1418,6 +1418,120 @@ def _hulumed_scin_grouped_promotion_label_and_reason(
     return None
 
 
+def _hulumed_scin_grouped_top1_rescue_label_and_reason(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    baseline_differentials: list[str],
+    agent_differentials: list[str],
+    initial_ddx: list[str],
+    baseline_preview: dict[str, Any],
+    selected_evidence: list[Any],
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    label_space_id: str,
+    dataset_name: str,
+) -> tuple[str, str] | None:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "hulumed__scin__grouped_guard_v1":
+        return None
+    if not selected_evidence_present:
+        return None
+    if support_margin < 35.0 or subtype_support_margin < 2.0:
+        return None
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if baseline_canonical != "URTICARIA_BITE_FOLLICULITIS":
+        return None
+
+    baseline_signal_differentials = [
+        *baseline_differentials,
+        *(baseline_preview.get("baseline_differential_diagnoses", []) or []),
+    ]
+    candidate_canonicals = {
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in [*baseline_signal_differentials, *agent_differentials]
+    }
+    early_candidates = list(baseline_preview.get("early_ddx_candidates", []) or initial_ddx)
+    early_first = canonicalize_label(
+        early_candidates[0] if early_candidates else "",
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    early_text = " ".join(str(label) for label in early_candidates).lower()
+    summary = str(baseline_preview.get("image_summary", "")).strip().lower()
+    clinical_metadata = workflow_context.get("clinical_metadata", {})
+    if not isinstance(clinical_metadata, dict):
+        clinical_metadata = {}
+    metadata_text = " ".join(
+        [
+            str(clinical_metadata.get("region", "")),
+            str(clinical_metadata.get("related_category", "")),
+            " ".join(str(item) for item in clinical_metadata.get("body_sites", []) or []),
+            " ".join(str(item) for item in clinical_metadata.get("textures_present", []) or []),
+            " ".join(str(item) for item in clinical_metadata.get("symptoms_present", []) or []),
+        ]
+    ).lower()
+    focused_text = f"{summary} {metadata_text} {early_text}"
+    has_case_metadata = bool(
+        clinical_metadata.get("region")
+        or clinical_metadata.get("related_category")
+        or clinical_metadata.get("body_sites")
+        or clinical_metadata.get("textures_present")
+        or clinical_metadata.get("symptoms_present")
+    )
+
+    dermatitis_surface_signal = any(
+        marker in focused_text
+        for marker in (
+            "patch",
+            "plaque",
+            "flaky",
+            "scaling",
+            "scale",
+            "palm",
+            "hand",
+            "neck",
+            "flat",
+        )
+    )
+    if (
+        early_first == "DERMATITIS_ECZEMA"
+        and "DERMATITIS_ECZEMA" in candidate_canonicals
+        and has_case_metadata
+        and dermatitis_surface_signal
+        and not any(marker in focused_text for marker in ("wheal", "hive"))
+        and ("insect bite reaction" not in focused_text or "contact dermatitis" in str(early_candidates[0]).lower())
+    ):
+        return "DERMATITIS_ECZEMA", "hulumed_scin_eczema_first_top1_rescue"
+
+    if (
+        support_margin >= 40.0
+        and subtype_support_margin >= 4.0
+        and "ACNE_ROSACEA_FOLLICULAR" in candidate_canonicals
+        and _hulumed_scin_contains_phrase(focused_text, ("chest", "shoulder", "face", "cheek", "forehead"))
+        and any(marker in focused_text for marker in ("papule", "pustule", "follicular", "acne"))
+        and "watch strap" not in focused_text
+    ):
+        return "ACNE_ROSACEA_FOLLICULAR", "hulumed_scin_acne_top1_rescue"
+
+    if (
+        subtype_support_margin >= 2.0
+        and _hulumed_scin_contains_phrase(focused_text, ("back of hand", "back_of_hand", "hand"))
+        and any(marker in focused_text for marker in ("rough", "flaky", "scale", "scaly"))
+        and any(marker in focused_text for marker in ("dark spot", "small, dark", "actinic keratosis", "elderly"))
+        and not any(marker in focused_text for marker in ("insect bite", "urticaria"))
+    ):
+        return "MALIGNANT_PREMALIGNANT", "hulumed_scin_actinic_malignant_top1_rescue"
+
+    return None
+
+
 def _hulumed_scin_grouped_differential_expansions(
     *,
     workflow_context: dict[str, Any],

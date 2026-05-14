@@ -15,6 +15,7 @@ from memory.fusion_experience.hulumed_workflow_fusion import (
     _hulumed_scin_consensus_override_label,
     _hulumed_scin_grouped_differential_expansions,
     _hulumed_scin_grouped_promotion_label_and_reason,
+    _hulumed_scin_grouped_top1_rescue_label_and_reason,
     _hulumed_sd198_consensus_override_label,
 )
 
@@ -454,6 +455,24 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append("hulumed_sd198_grouped_guarded_override")
+        elif hulumed_scin_top1_rescue := _hulumed_scin_grouped_top1_rescue_label_and_reason(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            baseline_differentials=baseline_differentials,
+            agent_differentials=agent_differentials,
+            initial_ddx=initial_ddx,
+            baseline_preview=baseline_preview,
+            selected_evidence=selected_evidence,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = hulumed_scin_top1_rescue[0]
+            use_agent_output = True
+            merge_baseline_differentials = True
+            reasons.append(hulumed_scin_top1_rescue[1])
         elif dermatollama_scin_topk_promotion := _dermatollama_scin_grouped_topk_promotion(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
@@ -1449,6 +1468,9 @@ def decide_conservative_agent_fusion(
         "hulumed_scin_crusted_impetigo_grouped_promotion",
         "hulumed_scin_herpetic_cluster_grouped_promotion",
         "hulumed_scin_elderly_hand_actinic_grouped_promotion",
+        "hulumed_scin_eczema_first_top1_rescue",
+        "hulumed_scin_acne_top1_rescue",
+        "hulumed_scin_actinic_malignant_top1_rescue",
         "hulumed_isic_archive_first_top1_promotion",
         "hulumed_isic_archive_malignant_rescue_promotion",
         "hulumed_isic_anterior_central_red_vascular_promotion",

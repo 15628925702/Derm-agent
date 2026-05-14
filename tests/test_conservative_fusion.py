@@ -3524,8 +3524,8 @@ def test_hulumed_scin_promotes_face_chest_acne_topk_pattern() -> None:
         evidence_bundle=evidence_bundle,
     )
 
-    assert result["final_diagnosis"] == "URTICARIA_BITE_FOLLICULITIS"
-    assert "ACNE_ROSACEA_FOLLICULAR" in result["differential_diagnoses"][:3]
+    assert result["final_diagnosis"] == "ACNE_ROSACEA_FOLLICULAR"
+    assert "hulumed_scin_acne_top1_rescue" in result["fusion_decision"]["reasons"]
     assert "hulumed_scin_face_chest_acne_grouped_promotion" in result["fusion_decision"]["reasons"]
 
 
