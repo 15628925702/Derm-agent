@@ -1,0 +1,252 @@
+
+COMMAND: /home/zhongnan/miniconda3/envs/dermagent-6x6/bin/python scripts/run_pad20_direct_8gpu_dynamic.py --run-id isic2019_direct_6models_30test_20260513T073628Z --dataset isic2019 --data-root /data/gh/DermAgent/data/isic2019 --split-json /data/gh/DermAgent/paper_data/final_dataset_splits_20260509/splits/isic2019_final_30_70_split.json --models qwen,llama,skinvl,hulumed,medgemma,dermatollama --gpus 0,1,2,3,4,5,6,7 --port-base 8900 --shard-size 32 --retries 1 --client-timeout 300.0 --client-max-retries 4 --service-timeout 900 --resume
+[2026-05-13T16:24:10Z] qwen: 0 pending shards on GPUs [0, 1, 2, 3, 4, 5, 6, 7]
+[2026-05-13T16:24:10Z] qwen: no pending shards; skipping service startup
+[2026-05-13T16:24:13Z] merged qwen: cases=7599 top1=0.49480194762468743 topk=0.685748124753257 malignant=0.25057927838464084
+[2026-05-13T16:24:13Z] llama: 0 pending shards on GPUs [0, 1, 2, 3, 4, 5, 6, 7]
+[2026-05-13T16:24:13Z] llama: no pending shards; skipping service startup
+[2026-05-13T16:24:15Z] merged llama: cases=7599 top1=0.36583761021187 topk=0.5284905908672194 malignant=0.42667990731545846
+[2026-05-13T16:24:15Z] skinvl: 0 pending shards on GPUs [0, 1, 2, 3, 4, 5, 6, 7]
+[2026-05-13T16:24:15Z] skinvl: no pending shards; skipping service startup
+[2026-05-13T16:24:18Z] merged skinvl: cases=7599 top1=0.045400710619818395 topk=0.04553230688248454 malignant=0.9933796756041046
+[2026-05-13T16:24:18Z] hulumed: 0 pending shards on GPUs [0, 1, 2, 3, 4, 5, 6, 7]
+[2026-05-13T16:24:18Z] hulumed: no pending shards; skipping service startup
+[2026-05-13T16:24:20Z] merged hulumed: cases=7599 top1=0.5041452822739834 topk=0.7458876167916831 malignant=0.16650115855676928
+[2026-05-13T16:24:20Z] medgemma: 0 pending shards on GPUs [0, 1, 2, 3, 4, 5, 6, 7]
+[2026-05-13T16:24:20Z] medgemma: no pending shards; skipping service startup
+[2026-05-13T16:24:23Z] merged medgemma: cases=7599 top1=0.4629556520594815 topk=0.5932359520989604 malignant=0.03773584905660377
+[2026-05-13T16:24:23Z] dermatollama: 222 pending shards on GPUs [0, 1, 2, 3, 4, 5, 6, 7]
+[2026-05-13T16:24:23Z] starting dermatollama on GPU0 port 8900
+[2026-05-13T16:24:23Z] starting dermatollama on GPU1 port 8901
+[2026-05-13T16:24:23Z] starting dermatollama on GPU2 port 8902
+[2026-05-13T16:24:23Z] starting dermatollama on GPU3 port 8903
+[2026-05-13T16:24:23Z] starting dermatollama on GPU4 port 8904
+[2026-05-13T16:24:23Z] starting dermatollama on GPU5 port 8905
+[2026-05-13T16:24:23Z] starting dermatollama on GPU6 port 8906
+[2026-05-13T16:24:23Z] starting dermatollama on GPU7 port 8907
+[2026-05-13T16:27:01Z] DONE dermatollama shard 00021 offset=672 limit=32 on GPU2
+[2026-05-13T16:27:02Z] DONE dermatollama shard 00019 offset=608 limit=32 on GPU3
+[2026-05-13T16:27:03Z] DONE dermatollama shard 00023 offset=736 limit=32 on GPU7
+[2026-05-13T16:27:07Z] DONE dermatollama shard 00020 offset=640 limit=32 on GPU0
+[2026-05-13T16:27:08Z] DONE dermatollama shard 00016 offset=512 limit=32 on GPU6
+[2026-05-13T16:27:09Z] DONE dermatollama shard 00018 offset=576 limit=32 on GPU4
+[2026-05-13T16:27:11Z] DONE dermatollama shard 00017 offset=544 limit=32 on GPU1
+[2026-05-13T16:27:14Z] DONE dermatollama shard 00022 offset=704 limit=32 on GPU5
+[2026-05-13T16:29:20Z] DONE dermatollama shard 00024 offset=768 limit=32 on GPU2
+[2026-05-13T16:29:22Z] DONE dermatollama shard 00025 offset=800 limit=32 on GPU3
+[2026-05-13T16:29:24Z] DONE dermatollama shard 00027 offset=864 limit=32 on GPU0
+[2026-05-13T16:29:28Z] DONE dermatollama shard 00026 offset=832 limit=32 on GPU7
+[2026-05-13T16:29:28Z] DONE dermatollama shard 00029 offset=928 limit=32 on GPU4
+[2026-05-13T16:29:31Z] DONE dermatollama shard 00031 offset=992 limit=32 on GPU5
+[2026-05-13T16:29:33Z] DONE dermatollama shard 00028 offset=896 limit=32 on GPU6
+[2026-05-13T16:29:52Z] DONE dermatollama shard 00030 offset=960 limit=32 on GPU1
+[2026-05-13T16:31:34Z] DONE dermatollama shard 00032 offset=1024 limit=32 on GPU2
+[2026-05-13T16:31:42Z] DONE dermatollama shard 00033 offset=1056 limit=32 on GPU3
+[2026-05-13T16:31:42Z] DONE dermatollama shard 00035 offset=1120 limit=32 on GPU7
+[2026-05-13T16:31:51Z] DONE dermatollama shard 00037 offset=1184 limit=32 on GPU5
+[2026-05-13T16:31:51Z] DONE dermatollama shard 00034 offset=1088 limit=32 on GPU0
+[2026-05-13T16:31:55Z] DONE dermatollama shard 00036 offset=1152 limit=32 on GPU4
+[2026-05-13T16:32:04Z] DONE dermatollama shard 00038 offset=1216 limit=32 on GPU6
+[2026-05-13T16:32:25Z] DONE dermatollama shard 00039 offset=1248 limit=32 on GPU1
+[2026-05-13T16:33:49Z] DONE dermatollama shard 00040 offset=1280 limit=32 on GPU2
+[2026-05-13T16:33:58Z] DONE dermatollama shard 00042 offset=1344 limit=32 on GPU7
+[2026-05-13T16:34:03Z] DONE dermatollama shard 00041 offset=1312 limit=32 on GPU3
+[2026-05-13T16:34:09Z] DONE dermatollama shard 00044 offset=1408 limit=32 on GPU0
+[2026-05-13T16:34:13Z] DONE dermatollama shard 00045 offset=1440 limit=32 on GPU4
+[2026-05-13T16:34:16Z] DONE dermatollama shard 00043 offset=1376 limit=32 on GPU5
+[2026-05-13T16:34:22Z] DONE dermatollama shard 00046 offset=1472 limit=32 on GPU6
+[2026-05-13T16:34:57Z] DONE dermatollama shard 00047 offset=1504 limit=32 on GPU1
+[2026-05-13T16:36:12Z] DONE dermatollama shard 00048 offset=1536 limit=32 on GPU2
+[2026-05-13T16:36:22Z] DONE dermatollama shard 00049 offset=1568 limit=32 on GPU7
+[2026-05-13T16:36:25Z] DONE dermatollama shard 00051 offset=1632 limit=32 on GPU0
+[2026-05-13T16:36:27Z] DONE dermatollama shard 00050 offset=1600 limit=32 on GPU3
+[2026-05-13T16:36:39Z] DONE dermatollama shard 00052 offset=1664 limit=32 on GPU4
+[2026-05-13T16:36:43Z] DONE dermatollama shard 00053 offset=1696 limit=32 on GPU5
+[2026-05-13T16:36:46Z] DONE dermatollama shard 00054 offset=1728 limit=32 on GPU6
+[2026-05-13T16:37:33Z] DONE dermatollama shard 00055 offset=1760 limit=32 on GPU1
+[2026-05-13T16:38:26Z] DONE dermatollama shard 00056 offset=1792 limit=32 on GPU2
+[2026-05-13T16:38:46Z] DONE dermatollama shard 00059 offset=1888 limit=32 on GPU3
+[2026-05-13T16:38:49Z] DONE dermatollama shard 00058 offset=1856 limit=32 on GPU0
+[2026-05-13T16:38:52Z] DONE dermatollama shard 00057 offset=1824 limit=32 on GPU7
+[2026-05-13T16:39:02Z] DONE dermatollama shard 00062 offset=1984 limit=32 on GPU6
+[2026-05-13T16:39:07Z] DONE dermatollama shard 00061 offset=1952 limit=32 on GPU5
+[2026-05-13T16:39:12Z] DONE dermatollama shard 00060 offset=1920 limit=32 on GPU4
+[2026-05-13T16:40:02Z] DONE dermatollama shard 00063 offset=2016 limit=32 on GPU1
+[2026-05-13T16:40:44Z] DONE dermatollama shard 00064 offset=2048 limit=32 on GPU2
+[2026-05-13T16:41:06Z] DONE dermatollama shard 00065 offset=2080 limit=32 on GPU3
+[2026-05-13T16:41:07Z] DONE dermatollama shard 00067 offset=2144 limit=32 on GPU7
+[2026-05-13T16:41:13Z] DONE dermatollama shard 00066 offset=2112 limit=32 on GPU0
+[2026-05-13T16:41:24Z] DONE dermatollama shard 00068 offset=2176 limit=32 on GPU6
+[2026-05-13T16:41:30Z] DONE dermatollama shard 00069 offset=2208 limit=32 on GPU5
+[2026-05-13T16:41:36Z] DONE dermatollama shard 00070 offset=2240 limit=32 on GPU4
+[2026-05-13T16:42:37Z] DONE dermatollama shard 00071 offset=2272 limit=32 on GPU1
+[2026-05-13T16:43:00Z] DONE dermatollama shard 00072 offset=2304 limit=32 on GPU2
+[2026-05-13T16:43:18Z] DONE dermatollama shard 00073 offset=2336 limit=32 on GPU3
+[2026-05-13T16:43:26Z] DONE dermatollama shard 00075 offset=2400 limit=32 on GPU0
+[2026-05-13T16:43:32Z] DONE dermatollama shard 00074 offset=2368 limit=32 on GPU7
+[2026-05-13T16:43:38Z] DONE dermatollama shard 00076 offset=2432 limit=32 on GPU6
+[2026-05-13T16:43:45Z] DONE dermatollama shard 00077 offset=2464 limit=32 on GPU5
+[2026-05-13T16:43:49Z] DONE dermatollama shard 00078 offset=2496 limit=32 on GPU4
+[2026-05-13T16:45:04Z] DONE dermatollama shard 00079 offset=2528 limit=32 on GPU1
+[2026-05-13T16:45:15Z] DONE dermatollama shard 00080 offset=2560 limit=32 on GPU2
+[2026-05-13T16:45:37Z] DONE dermatollama shard 00081 offset=2592 limit=32 on GPU3
+[2026-05-13T16:45:43Z] DONE dermatollama shard 00083 offset=2656 limit=32 on GPU7
+[2026-05-13T16:45:45Z] DONE dermatollama shard 00082 offset=2624 limit=32 on GPU0
+[2026-05-13T16:45:55Z] DONE dermatollama shard 00084 offset=2688 limit=32 on GPU6
+[2026-05-13T16:46:08Z] DONE dermatollama shard 00086 offset=2752 limit=32 on GPU4
+[2026-05-13T16:46:13Z] DONE dermatollama shard 00085 offset=2720 limit=32 on GPU5
+[2026-05-13T16:47:25Z] DONE dermatollama shard 00087 offset=2784 limit=32 on GPU1
+[2026-05-13T16:47:39Z] DONE dermatollama shard 00088 offset=2816 limit=32 on GPU2
+[2026-05-13T16:47:54Z] DONE dermatollama shard 00089 offset=2848 limit=32 on GPU3
+[2026-05-13T16:48:04Z] DONE dermatollama shard 00091 offset=2912 limit=32 on GPU0
+[2026-05-13T16:48:10Z] DONE dermatollama shard 00092 offset=2944 limit=32 on GPU6
+[2026-05-13T16:48:10Z] DONE dermatollama shard 00090 offset=2880 limit=32 on GPU7
+[2026-05-13T16:48:20Z] DONE dermatollama shard 00093 offset=2976 limit=32 on GPU4
+[2026-05-13T16:48:41Z] DONE dermatollama shard 00094 offset=3008 limit=32 on GPU5
+[2026-05-13T16:49:53Z] DONE dermatollama shard 00095 offset=3040 limit=32 on GPU1
+[2026-05-13T16:50:00Z] DONE dermatollama shard 00096 offset=3072 limit=32 on GPU2
+[2026-05-13T16:50:19Z] DONE dermatollama shard 00098 offset=3136 limit=32 on GPU0
+[2026-05-13T16:50:19Z] DONE dermatollama shard 00097 offset=3104 limit=32 on GPU3
+[2026-05-13T16:50:25Z] DONE dermatollama shard 00099 offset=3168 limit=32 on GPU6
+[2026-05-13T16:50:28Z] DONE dermatollama shard 00100 offset=3200 limit=32 on GPU7
+[2026-05-13T16:50:43Z] DONE dermatollama shard 00101 offset=3232 limit=32 on GPU4
+[2026-05-13T16:50:51Z] DONE dermatollama shard 00102 offset=3264 limit=32 on GPU5
+[2026-05-13T16:52:23Z] DONE dermatollama shard 00104 offset=3328 limit=32 on GPU2
+[2026-05-13T16:52:24Z] DONE dermatollama shard 00103 offset=3296 limit=32 on GPU1
+[2026-05-13T16:52:34Z] DONE dermatollama shard 00105 offset=3360 limit=32 on GPU0
+[2026-05-13T16:52:43Z] DONE dermatollama shard 00106 offset=3392 limit=32 on GPU3
+[2026-05-13T16:52:46Z] DONE dermatollama shard 00108 offset=3456 limit=32 on GPU7
+[2026-05-13T16:52:48Z] DONE dermatollama shard 00107 offset=3424 limit=32 on GPU6
+[2026-05-13T16:53:00Z] DONE dermatollama shard 00109 offset=3488 limit=32 on GPU4
+[2026-05-13T16:53:11Z] DONE dermatollama shard 00110 offset=3520 limit=32 on GPU5
+[2026-05-13T16:54:46Z] DONE dermatollama shard 00111 offset=3552 limit=32 on GPU2
+[2026-05-13T16:54:52Z] DONE dermatollama shard 00112 offset=3584 limit=32 on GPU1
+[2026-05-13T16:54:59Z] DONE dermatollama shard 00113 offset=3616 limit=32 on GPU0
+[2026-05-13T16:55:02Z] DONE dermatollama shard 00114 offset=3648 limit=32 on GPU3
+[2026-05-13T16:55:06Z] DONE dermatollama shard 00115 offset=3680 limit=32 on GPU7
+[2026-05-13T16:55:18Z] DONE dermatollama shard 00116 offset=3712 limit=32 on GPU6
+[2026-05-13T16:55:21Z] DONE dermatollama shard 00117 offset=3744 limit=32 on GPU4
+[2026-05-13T16:55:33Z] DONE dermatollama shard 00118 offset=3776 limit=32 on GPU5
+[2026-05-13T16:57:01Z] DONE dermatollama shard 00119 offset=3808 limit=32 on GPU2
+[2026-05-13T16:57:14Z] DONE dermatollama shard 00121 offset=3872 limit=32 on GPU0
+[2026-05-13T16:57:21Z] DONE dermatollama shard 00120 offset=3840 limit=32 on GPU1
+[2026-05-13T16:57:21Z] DONE dermatollama shard 00123 offset=3936 limit=32 on GPU7
+[2026-05-13T16:57:27Z] DONE dermatollama shard 00122 offset=3904 limit=32 on GPU3
+[2026-05-13T16:57:32Z] DONE dermatollama shard 00125 offset=4000 limit=32 on GPU4
+[2026-05-13T16:57:46Z] DONE dermatollama shard 00124 offset=3968 limit=32 on GPU6
+[2026-05-13T16:57:54Z] DONE dermatollama shard 00126 offset=4032 limit=32 on GPU5
+[2026-05-13T16:59:19Z] DONE dermatollama shard 00127 offset=4064 limit=32 on GPU2
+[2026-05-13T16:59:31Z] DONE dermatollama shard 00128 offset=4096 limit=32 on GPU0
+[2026-05-13T16:59:41Z] DONE dermatollama shard 00130 offset=4160 limit=32 on GPU7
+[2026-05-13T16:59:45Z] DONE dermatollama shard 00129 offset=4128 limit=32 on GPU1
+[2026-05-13T16:59:47Z] DONE dermatollama shard 00131 offset=4192 limit=32 on GPU3
+[2026-05-13T16:59:56Z] DONE dermatollama shard 00132 offset=4224 limit=32 on GPU4
+[2026-05-13T17:00:08Z] DONE dermatollama shard 00133 offset=4256 limit=32 on GPU6
+[2026-05-13T17:00:16Z] DONE dermatollama shard 00134 offset=4288 limit=32 on GPU5
+[2026-05-13T17:01:45Z] DONE dermatollama shard 00135 offset=4320 limit=32 on GPU2
+[2026-05-13T17:01:50Z] DONE dermatollama shard 00136 offset=4352 limit=32 on GPU0
+[2026-05-13T17:02:03Z] DONE dermatollama shard 00137 offset=4384 limit=32 on GPU7
+[2026-05-13T17:02:05Z] DONE dermatollama shard 00139 offset=4448 limit=32 on GPU3
+[2026-05-13T17:02:08Z] DONE dermatollama shard 00138 offset=4416 limit=32 on GPU1
+[2026-05-13T17:02:22Z] DONE dermatollama shard 00140 offset=4480 limit=32 on GPU4
+[2026-05-13T17:02:30Z] DONE dermatollama shard 00141 offset=4512 limit=32 on GPU6
+[2026-05-13T17:02:33Z] DONE dermatollama shard 00142 offset=4544 limit=32 on GPU5
+[2026-05-13T17:04:01Z] DONE dermatollama shard 00143 offset=4576 limit=32 on GPU2
+[2026-05-13T17:04:10Z] DONE dermatollama shard 00144 offset=4608 limit=32 on GPU0
+[2026-05-13T17:04:25Z] DONE dermatollama shard 00146 offset=4672 limit=32 on GPU3
+[2026-05-13T17:04:27Z] DONE dermatollama shard 00145 offset=4640 limit=32 on GPU7
+[2026-05-13T17:04:43Z] DONE dermatollama shard 00147 offset=4704 limit=32 on GPU1
+[2026-05-13T17:04:52Z] DONE dermatollama shard 00148 offset=4736 limit=32 on GPU4
+[2026-05-13T17:04:52Z] DONE dermatollama shard 00149 offset=4768 limit=32 on GPU6
+[2026-05-13T17:04:59Z] DONE dermatollama shard 00150 offset=4800 limit=32 on GPU5
+[2026-05-13T17:06:19Z] DONE dermatollama shard 00151 offset=4832 limit=32 on GPU2
+[2026-05-13T17:06:32Z] DONE dermatollama shard 00152 offset=4864 limit=32 on GPU0
+[2026-05-13T17:06:43Z] DONE dermatollama shard 00153 offset=4896 limit=32 on GPU3
+[2026-05-13T17:06:47Z] DONE dermatollama shard 00154 offset=4928 limit=32 on GPU7
+[2026-05-13T17:07:09Z] DONE dermatollama shard 00156 offset=4992 limit=32 on GPU4
+[2026-05-13T17:07:19Z] DONE dermatollama shard 00155 offset=4960 limit=32 on GPU1
+[2026-05-13T17:07:19Z] DONE dermatollama shard 00157 offset=5024 limit=32 on GPU6
+[2026-05-13T17:07:19Z] DONE dermatollama shard 00158 offset=5056 limit=32 on GPU5
+[2026-05-13T17:08:44Z] DONE dermatollama shard 00159 offset=5088 limit=32 on GPU2
+[2026-05-13T17:08:51Z] DONE dermatollama shard 00160 offset=5120 limit=32 on GPU0
+[2026-05-13T17:08:59Z] DONE dermatollama shard 00161 offset=5152 limit=32 on GPU3
+[2026-05-13T17:09:08Z] DONE dermatollama shard 00162 offset=5184 limit=32 on GPU7
+[2026-05-13T17:09:33Z] DONE dermatollama shard 00163 offset=5216 limit=32 on GPU4
+[2026-05-13T17:09:35Z] DONE dermatollama shard 00166 offset=5312 limit=32 on GPU5
+[2026-05-13T17:09:36Z] DONE dermatollama shard 00165 offset=5280 limit=32 on GPU6
+[2026-05-13T17:09:49Z] DONE dermatollama shard 00164 offset=5248 limit=32 on GPU1
+[2026-05-13T17:11:04Z] DONE dermatollama shard 00167 offset=5344 limit=32 on GPU2
+[2026-05-13T17:11:18Z] DONE dermatollama shard 00168 offset=5376 limit=32 on GPU0
+[2026-05-13T17:11:19Z] DONE dermatollama shard 00169 offset=5408 limit=32 on GPU3
+[2026-05-13T17:11:30Z] DONE dermatollama shard 00170 offset=5440 limit=32 on GPU7
+[2026-05-13T17:11:55Z] DONE dermatollama shard 00172 offset=5504 limit=32 on GPU5
+[2026-05-13T17:11:56Z] DONE dermatollama shard 00171 offset=5472 limit=32 on GPU4
+[2026-05-13T17:12:00Z] DONE dermatollama shard 00173 offset=5536 limit=32 on GPU6
+[2026-05-13T17:12:11Z] DONE dermatollama shard 00174 offset=5568 limit=32 on GPU1
+[2026-05-13T17:13:24Z] DONE dermatollama shard 00175 offset=5600 limit=32 on GPU2
+[2026-05-13T17:13:35Z] DONE dermatollama shard 00176 offset=5632 limit=32 on GPU0
+[2026-05-13T17:13:40Z] DONE dermatollama shard 00177 offset=5664 limit=32 on GPU3
+[2026-05-13T17:13:47Z] DONE dermatollama shard 00178 offset=5696 limit=32 on GPU7
+[2026-05-13T17:14:17Z] DONE dermatollama shard 00179 offset=5728 limit=32 on GPU5
+[2026-05-13T17:14:20Z] DONE dermatollama shard 00181 offset=5792 limit=32 on GPU6
+[2026-05-13T17:14:21Z] DONE dermatollama shard 00180 offset=5760 limit=32 on GPU4
+[2026-05-13T17:14:38Z] DONE dermatollama shard 00182 offset=5824 limit=32 on GPU1
+[2026-05-13T17:15:41Z] DONE dermatollama shard 00183 offset=5856 limit=32 on GPU2
+[2026-05-13T17:16:00Z] DONE dermatollama shard 00184 offset=5888 limit=32 on GPU0
+[2026-05-13T17:16:06Z] DONE dermatollama shard 00185 offset=5920 limit=32 on GPU3
+[2026-05-13T17:16:15Z] DONE dermatollama shard 00186 offset=5952 limit=32 on GPU7
+[2026-05-13T17:16:34Z] DONE dermatollama shard 00187 offset=5984 limit=32 on GPU5
+[2026-05-13T17:16:43Z] DONE dermatollama shard 00188 offset=6016 limit=32 on GPU6
+[2026-05-13T17:16:53Z] DONE dermatollama shard 00189 offset=6048 limit=32 on GPU4
+[2026-05-13T17:17:13Z] DONE dermatollama shard 00190 offset=6080 limit=32 on GPU1
+[2026-05-13T17:17:55Z] DONE dermatollama shard 00191 offset=6112 limit=32 on GPU2
+[2026-05-13T17:18:21Z] DONE dermatollama shard 00192 offset=6144 limit=32 on GPU0
+[2026-05-13T17:18:32Z] DONE dermatollama shard 00193 offset=6176 limit=32 on GPU3
+[2026-05-13T17:18:37Z] DONE dermatollama shard 00194 offset=6208 limit=32 on GPU7
+[2026-05-13T17:18:52Z] DONE dermatollama shard 00195 offset=6240 limit=32 on GPU5
+[2026-05-13T17:19:06Z] DONE dermatollama shard 00196 offset=6272 limit=32 on GPU6
+[2026-05-13T17:19:15Z] DONE dermatollama shard 00197 offset=6304 limit=32 on GPU4
+[2026-05-13T17:19:42Z] DONE dermatollama shard 00198 offset=6336 limit=32 on GPU1
+[2026-05-13T17:20:12Z] DONE dermatollama shard 00199 offset=6368 limit=32 on GPU2
+[2026-05-13T17:20:42Z] DONE dermatollama shard 00200 offset=6400 limit=32 on GPU0
+[2026-05-13T17:20:52Z] DONE dermatollama shard 00201 offset=6432 limit=32 on GPU3
+[2026-05-13T17:20:55Z] DONE dermatollama shard 00202 offset=6464 limit=32 on GPU7
+[2026-05-13T17:21:09Z] DONE dermatollama shard 00203 offset=6496 limit=32 on GPU5
+[2026-05-13T17:21:26Z] DONE dermatollama shard 00204 offset=6528 limit=32 on GPU6
+[2026-05-13T17:21:37Z] DONE dermatollama shard 00205 offset=6560 limit=32 on GPU4
+[2026-05-13T17:22:13Z] DONE dermatollama shard 00206 offset=6592 limit=32 on GPU1
+[2026-05-13T17:22:26Z] DONE dermatollama shard 00207 offset=6624 limit=32 on GPU2
+[2026-05-13T17:22:52Z] DONE dermatollama shard 00208 offset=6656 limit=32 on GPU0
+[2026-05-13T17:23:15Z] DONE dermatollama shard 00210 offset=6720 limit=32 on GPU7
+[2026-05-13T17:23:20Z] DONE dermatollama shard 00209 offset=6688 limit=32 on GPU3
+[2026-05-13T17:23:29Z] DONE dermatollama shard 00211 offset=6752 limit=32 on GPU5
+[2026-05-13T17:23:43Z] DONE dermatollama shard 00212 offset=6784 limit=32 on GPU6
+[2026-05-13T17:24:03Z] DONE dermatollama shard 00213 offset=6816 limit=32 on GPU4
+[2026-05-13T17:24:45Z] DONE dermatollama shard 00215 offset=6880 limit=32 on GPU2
+[2026-05-13T17:24:47Z] DONE dermatollama shard 00214 offset=6848 limit=32 on GPU1
+[2026-05-13T17:25:20Z] DONE dermatollama shard 00216 offset=6912 limit=32 on GPU0
+[2026-05-13T17:25:33Z] DONE dermatollama shard 00217 offset=6944 limit=32 on GPU7
+[2026-05-13T17:25:43Z] DONE dermatollama shard 00218 offset=6976 limit=32 on GPU3
+[2026-05-13T17:25:47Z] DONE dermatollama shard 00219 offset=7008 limit=32 on GPU5
+[2026-05-13T17:26:01Z] DONE dermatollama shard 00220 offset=7040 limit=32 on GPU6
+[2026-05-13T17:26:23Z] DONE dermatollama shard 00221 offset=7072 limit=32 on GPU4
+[2026-05-13T17:27:08Z] DONE dermatollama shard 00222 offset=7104 limit=32 on GPU2
+[2026-05-13T17:27:19Z] DONE dermatollama shard 00223 offset=7136 limit=32 on GPU1
+[2026-05-13T17:27:37Z] DONE dermatollama shard 00224 offset=7168 limit=32 on GPU0
+[2026-05-13T17:27:53Z] DONE dermatollama shard 00225 offset=7200 limit=32 on GPU7
+[2026-05-13T17:28:04Z] DONE dermatollama shard 00227 offset=7264 limit=32 on GPU5
+[2026-05-13T17:28:09Z] DONE dermatollama shard 00226 offset=7232 limit=32 on GPU3
+[2026-05-13T17:28:28Z] DONE dermatollama shard 00228 offset=7296 limit=32 on GPU6
+[2026-05-13T17:28:47Z] DONE dermatollama shard 00229 offset=7328 limit=32 on GPU4
+[2026-05-13T17:29:23Z] DONE dermatollama shard 00230 offset=7360 limit=32 on GPU2
+[2026-05-13T17:29:49Z] DONE dermatollama shard 00237 offset=7584 limit=15 on GPU4
+[2026-05-13T17:29:51Z] DONE dermatollama shard 00231 offset=7392 limit=32 on GPU1
+[2026-05-13T17:30:01Z] DONE dermatollama shard 00232 offset=7424 limit=32 on GPU0
+[2026-05-13T17:30:15Z] DONE dermatollama shard 00234 offset=7488 limit=32 on GPU5
+[2026-05-13T17:30:18Z] DONE dermatollama shard 00233 offset=7456 limit=32 on GPU7
+[2026-05-13T17:30:27Z] DONE dermatollama shard 00235 offset=7520 limit=32 on GPU3
+[2026-05-13T17:30:48Z] DONE dermatollama shard 00236 offset=7552 limit=32 on GPU6
+[2026-05-13T17:30:54Z] dermatollama: stage complete
+[2026-05-13T17:30:57Z] merged dermatollama: cases=7599 top1=0.5286221871298855 topk=0.7397025924463745 malignant=0.19993379675604103
+
+RETURN_CODE: 0

@@ -1,0 +1,10 @@
+[2026-05-12T17:51:51Z] pipeline started
+[2026-05-12T17:52:56Z] pipeline started
+[2026-05-12T17:52:57Z] direct stage already running; waiting (1 process)
+[2026-05-12T17:53:57Z] direct stage already running; waiting (1 process)
+[2026-05-12T17:54:57Z] RUN /home/zhongnan/miniconda3/envs/dermagent-6x6/bin/python scripts/run_pad20_direct_8gpu_dynamic.py --run-id pad20_direct_8gpu_full_20260512T173402Z --models qwen,llama,skinvl,hulumed,medgemma,dermatollama --gpus 0,1,2,3,4,5,6,7 --port-base 8900 --shard-size 32 --retries 1 --resume
+[2026-05-12T18:12:17Z] DONE rc=0 log=/data/gh/DermAgent/paper_data/pad20_pipeline_runs/pad20_direct_then_hulumed_agent_20260512T_backend/direct_resume_attempt1.log
+[2026-05-12T18:12:17Z] direct summary written: /data/gh/DermAgent/paper_data/pad20_pipeline_runs/pad20_direct_then_hulumed_agent_20260512T_backend/direct_6model_summary.json
+[2026-05-12T18:12:17Z] RUN /home/zhongnan/miniconda3/envs/dermagent-6x6/bin/python scripts/run_final_30_70_6x5_dynamic.py --run-id pad20_hulumed_agent_30_70_20260512T_backend --machine-count 1 --machine-id 0 --models hulumed --datasets pad20 --bootstrap-gpus 0,1,2,3,4,5,6,7 --compare-gpus 0,1,2,3,4,5,6,7 --doctor-gpus 0,1,2,3,4,5,6,7 --bootstrap-shard-size 64 --compare-shard-size 32 --client-timeout 240.0 --client-max-retries 4 --service-timeout 720 --disable-physician-evidence-summary --resume
+[2026-05-13T00:27:48Z] DONE rc=0 log=/data/gh/DermAgent/paper_data/pad20_pipeline_runs/pad20_direct_then_hulumed_agent_20260512T_backend/hulumed_agent_attempt1.log
+[2026-05-13T00:27:50Z] pipeline complete

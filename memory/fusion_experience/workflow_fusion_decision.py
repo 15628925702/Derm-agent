@@ -440,6 +440,7 @@ def decide_conservative_agent_fusion(
         elif hulumed_sd198_override_label := _hulumed_sd198_consensus_override_label(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
+            agent_label=agent_label,
             agent_differentials=agent_differentials,
             initial_ddx=initial_ddx,
             baseline_preview=baseline_preview,
@@ -2085,6 +2086,7 @@ def _route_specific_fallback_reason(
         if baseline_label != agent_label and not _hulumed_sd198_consensus_override_label(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
+            agent_label=agent_label,
             agent_differentials=agent_differentials,
             initial_ddx=initial_ddx,
             baseline_preview=baseline_preview,

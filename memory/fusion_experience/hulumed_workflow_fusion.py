@@ -769,6 +769,7 @@ def _hulumed_sd198_consensus_override_label(
     *,
     workflow_context: dict[str, Any],
     baseline_label: str,
+    agent_label: str = "",
     agent_differentials: list[str],
     initial_ddx: list[str],
     baseline_preview: dict[str, Any],
@@ -795,6 +796,11 @@ def _hulumed_sd198_consensus_override_label(
         label_space_id=label_space_id,
         dataset_name=dataset_name,
     )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
     if baseline_canonical == "MALIGNANT_SKIN_CANCER":
         return ""
 
@@ -805,6 +811,7 @@ def _hulumed_sd198_consensus_override_label(
     initial_first = initial_canonicals[0] if initial_canonicals else ""
     summary = str(baseline_preview.get("image_summary", "")).strip().lower()
     baseline_label_text = str(baseline_label or "").strip().lower()
+    agent_label_text = str(agent_label or "").strip().lower()
     preview_baseline_differentials = list(baseline_preview.get("baseline_differential_diagnoses", []) or [])
     baseline_pigmented_keratosis_anchor = (
         baseline_canonical == "PIGMENTARY_NEVUS_KERATOSIS"
@@ -839,12 +846,44 @@ def _hulumed_sd198_consensus_override_label(
         str(item).strip().lower()
         for item in [
             summary,
+            agent_label_text,
             *initial_ddx,
             *agent_differentials,
             *preview_baseline_differentials,
         ]
         if str(item).strip()
     )
+
+    stable_same_group_anchor = (
+        baseline_canonical
+        and baseline_canonical == agent_canonical
+        and baseline_canonical not in {"PAPULOSQUAMOUS_KERATOTIC", "PIGMENTARY_NEVUS_KERATOSIS"}
+    )
+    if stable_same_group_anchor:
+        return ""
+
+    structural_appendage_anchor = (
+        baseline_canonical == "HAIR_NAIL_APPENDAGE"
+        and _hulumed_scin_contains_phrase(
+            baseline_label_text,
+            (
+                "hypertrichosis",
+                "toe deformity",
+                "nail dystrophy",
+                "leukonychia",
+            ),
+        )
+    )
+    if structural_appendage_anchor and agent_canonical in {
+        "ACNE_FOLLICULITIS_ROSACEA",
+        "INFECTION_INFESTATION",
+        "PAPULOSQUAMOUS_KERATOTIC",
+        "SUN_DAMAGE_ACTINIC",
+    }:
+        return ""
+
+    if baseline_canonical == "OTHER" and "scar" in baseline_label_text:
+        return ""
 
     if (
         initial_first == "MALIGNANT_SKIN_CANCER"

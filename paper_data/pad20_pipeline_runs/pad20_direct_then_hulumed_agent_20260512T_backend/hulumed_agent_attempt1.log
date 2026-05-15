@@ -1,0 +1,67 @@
+
+COMMAND: /home/zhongnan/miniconda3/envs/dermagent-6x6/bin/python scripts/run_final_30_70_6x5_dynamic.py --run-id pad20_hulumed_agent_30_70_20260512T_backend --machine-count 1 --machine-id 0 --models hulumed --datasets pad20 --bootstrap-gpus 0,1,2,3,4,5,6,7 --compare-gpus 0,1,2,3,4,5,6,7 --doctor-gpus 0,1,2,3,4,5,6,7 --bootstrap-shard-size 64 --compare-shard-size 32 --client-timeout 240.0 --client-max-retries 4 --service-timeout 720 --disable-physician-evidence-summary --resume
+[2026-05-12T18:12:17Z] assigned combos: hulumed/pad20
+{
+  "experiment_id": "pad20_hulumed_agent_30_70_20260512T_backend_hulumed_pad20",
+  "asset_root": "/data/gh/DermAgent/paper_data/final_30_70_large_runs/pad20_hulumed_agent_30_70_20260512T_backend/machine_0/assets/pad20_hulumed_agent_30_70_20260512T_backend_hulumed_pad20",
+  "policy_root": "/data/gh/DermAgent/paper_data/final_30_70_large_runs/pad20_hulumed_agent_30_70_20260512T_backend/machine_0/assets/pad20_hulumed_agent_30_70_20260512T_backend_hulumed_pad20/policy",
+  "split_state_root": "/data/gh/DermAgent/paper_data/final_30_70_large_runs/pad20_hulumed_agent_30_70_20260512T_backend/machine_0/assets/pad20_hulumed_agent_30_70_20260512T_backend_hulumed_pad20/split_states",
+  "output_root": "/data/gh/DermAgent/paper_data/final_30_70_large_runs/pad20_hulumed_agent_30_70_20260512T_backend/machine_0/hulumed/pad20/asset_outputs/pad20_hulumed_agent_30_70_20260512T_backend_hulumed_pad20",
+  "checkpoint_root": "/data/gh/DermAgent/outputs/checkpoints/dataset_adaptation/pad20_hulumed_agent_30_70_20260512T_backend_hulumed_pad20",
+  "env_path": "/data/gh/DermAgent/paper_data/final_30_70_large_runs/pad20_hulumed_agent_30_70_20260512T_backend/machine_0/assets/pad20_hulumed_agent_30_70_20260512T_backend_hulumed_pad20/experiment.env",
+  "seed_policy_id": "stable_default_policy",
+  "seed_policy_version": 1
+}
+[2026-05-12T18:12:17Z] bootstrap: 26 pending shards on GPUs [0, 1, 2, 3, 4, 5, 6, 7]
+[2026-05-12T18:12:17Z] starting hulumed on GPU0 port 8300
+[2026-05-12T18:12:17Z] starting hulumed on GPU1 port 8301
+[2026-05-12T18:12:17Z] starting hulumed on GPU2 port 8302
+[2026-05-12T18:12:17Z] starting hulumed on GPU3 port 8303
+[2026-05-12T18:12:17Z] starting hulumed on GPU4 port 8304
+[2026-05-12T18:12:17Z] starting hulumed on GPU5 port 8305
+[2026-05-12T18:12:17Z] starting hulumed on GPU6 port 8306
+[2026-05-12T18:12:17Z] starting hulumed on GPU7 port 8307
+[2026-05-12T22:23:48Z] bootstrap: stage complete
+[2026-05-12T22:23:48Z] merging bootstrap state for hulumed/pad20
+{
+  "shard_root": "/data/gh/DermAgent/paper_data/final_30_70_large_runs/pad20_hulumed_agent_30_70_20260512T_backend/machine_0/hulumed/pad20/bootstrap_shards",
+  "output_split_state_root": "/data/gh/DermAgent/paper_data/final_30_70_large_runs/pad20_hulumed_agent_30_70_20260512T_backend/machine_0/assets/pad20_hulumed_agent_30_70_20260512T_backend_hulumed_pad20/split_states",
+  "source_split": "train",
+  "shard_count": 26,
+  "raw_case_records": 1390,
+  "tactical_records": 17377,
+  "abstract_records": 612,
+  "shards": []
+}
+[2026-05-12T22:23:53Z] promoting train state to test for hulumed/pad20
+{
+  "split_state_root": "/data/gh/DermAgent/paper_data/final_30_70_large_runs/pad20_hulumed_agent_30_70_20260512T_backend/machine_0/assets/pad20_hulumed_agent_30_70_20260512T_backend_hulumed_pad20/split_states",
+  "source_split": "train",
+  "target_splits": [
+    "test"
+  ],
+  "promotions": [
+    {
+      "source_split": "train",
+      "target_split": "test",
+      "target_experience_root": "/data/gh/DermAgent/paper_data/final_30_70_large_runs/pad20_hulumed_agent_30_70_20260512T_backend/machine_0/assets/pad20_hulumed_agent_30_70_20260512T_backend_hulumed_pad20/split_states/test/experience",
+      "target_cognition_path": "/data/gh/DermAgent/paper_data/final_30_70_large_runs/pad20_hulumed_agent_30_70_20260512T_backend/machine_0/assets/pad20_hulumed_agent_30_70_20260512T_backend_hulumed_pad20/split_states/test/cognition_state.json"
+    }
+  ]
+}
+[2026-05-12T22:23:54Z] compare: 22 pending shards on GPUs [0, 1, 2, 3, 4, 5, 6, 7]
+[2026-05-12T22:23:54Z] starting hulumed on GPU0 port 8300
+[2026-05-12T22:23:54Z] starting hulumed on GPU1 port 8301
+[2026-05-12T22:23:54Z] starting hulumed on GPU2 port 8302
+[2026-05-12T22:23:54Z] starting hulumed on GPU3 port 8303
+[2026-05-12T22:23:55Z] starting hulumed on GPU4 port 8304
+[2026-05-12T22:23:55Z] starting hulumed on GPU5 port 8305
+[2026-05-12T22:23:55Z] starting hulumed on GPU6 port 8306
+[2026-05-12T22:23:55Z] starting hulumed on GPU7 port 8307
+[2026-05-13T00:27:37Z] compare: stage complete
+{
+  "output_report": "/data/gh/DermAgent/paper_data/final_30_70_large_runs/pad20_hulumed_agent_30_70_20260512T_backend/machine_0/reports/hulumed/pad20/compare_agent_vs_qwen_final_compare_test_merged.json",
+  "cases": 689
+}
+
+RETURN_CODE: 0
