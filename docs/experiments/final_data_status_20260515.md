@@ -9,6 +9,16 @@ The curated final outputs are stored outside this git repository at:
 
 - `/data/gh/final-data`
 
+They have also been uploaded to a private Hugging Face dataset repository:
+
+- `https://huggingface.co/datasets/Guaogua/dermagent-final-data-20260515`
+
+Upload verification on 2026-05-15:
+
+- Remote files: `19727` total (`19726` final-data files plus Hugging Face `.gitattributes`)
+- Top-level remote entries: `README.md`, `pad`, `scin`, `sd198`
+- Upload cache was not included in the repository.
+
 Current completed final datasets:
 
 | Dataset | Status | Directory |
