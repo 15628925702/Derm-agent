@@ -63,6 +63,8 @@ SKILL_SECTION_MAP = {
     "mel_nev_specialist_skill": "comparison",
     "ack_scc_specialist_skill": "comparison",
     "benign_mimic_specialist_skill": "comparison",
+    "xiangya_acne_disambiguation_skill": "comparison",
+    "xiangya_eczema_atopic_disambiguation_skill": "comparison",
     "malignancy_risk_assessment_skill": "risk",
     "contradiction_check_skill": "conflict_uncertainty",
     "uncertainty_assessment_skill": "conflict_uncertainty",
@@ -83,6 +85,8 @@ SKILL_BASE_WEIGHT = {
     "mel_nev_specialist_skill": 3.2,
     "ack_scc_specialist_skill": 3.8,
     "benign_mimic_specialist_skill": 4.1,
+    "xiangya_acne_disambiguation_skill": 5.2,
+    "xiangya_eczema_atopic_disambiguation_skill": 5.1,
     "malignancy_risk_assessment_skill": 4.5,
     "contradiction_check_skill": 4.0,
     "uncertainty_assessment_skill": 3.8,
@@ -691,13 +695,23 @@ def _score_skill_output(
         "information_gap_detection_skill",
     }:
         score += 0.8
-    if skill_name in {"ack_scc_specialist_skill", "mel_nev_specialist_skill", "exclusion_reasoning_skill"}:
+    if skill_name in {"ack_scc_specialist_skill", "mel_nev_specialist_skill", "xiangya_acne_disambiguation_skill", "xiangya_eczema_atopic_disambiguation_skill", "exclusion_reasoning_skill"}:
         if _output_contains_terms(output, ("confusion", "opposing", "counterexample", "unlikely", "exclude")):
             score += 0.7
         if contradiction_count > 0 and _output_contains_terms(output, ("opposing_evidence", "exclusion_evidence", "counterexample")):
             score += 0.4
         if risk_flags and _output_contains_terms(output, ("bcc", "scc", "mel", "nev", "actinic", "seborrheic")):
             score += 0.3
+    if skill_name == "xiangya_acne_disambiguation_skill":
+        if str(output.get("canonical_label_recommendation", "")).strip().upper() == "COMMON_ACNE":
+            score += 2.5
+        if _output_contains_terms(output, ("comedone", "pustule", "follicular", "against_dermatitis", "against_vitiligo")):
+            score += 1.2
+    if skill_name == "xiangya_eczema_atopic_disambiguation_skill":
+        if str(output.get("canonical_label_recommendation", "")).strip().upper() == "ECZEMA_DERMATITIS":
+            score += 2.2
+        if _output_contains_terms(output, ("against_direct_atopic", "retrieval_confusion_support", "generic_eczematous", "flexural", "xerosis")):
+            score += 1.1
     if risk_flags and skill_name in {"malignancy_risk_assessment_skill", "escalation_recommendation_skill"}:
         score += 0.9
     category = _infer_item_category(skill_name=skill_name, output=output)
@@ -894,7 +908,7 @@ def _infer_item_category(*, skill_name: str, output: dict[str, Any]) -> str:
         return "description"
     if skill_name in {"exclusion_reasoning_skill"} or _has_negative_evidence(output):
         return "exclusion_opposing"
-    if skill_name in {"differential_compare_skill", "metadata_consistency_skill", "ack_scc_specialist_skill", "mel_nev_specialist_skill", "benign_mimic_specialist_skill"}:
+    if skill_name in {"differential_compare_skill", "metadata_consistency_skill", "ack_scc_specialist_skill", "mel_nev_specialist_skill", "benign_mimic_specialist_skill", "xiangya_acne_disambiguation_skill", "xiangya_eczema_atopic_disambiguation_skill"}:
         return "differential_support"
     if skill_name == "malignancy_risk_assessment_skill":
         return "risk"

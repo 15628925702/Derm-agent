@@ -21,6 +21,8 @@ from skills.mel_nev_specialist import MelNevSpecialistSkill
 from skills.morphology import MorphologyAnalysisSkill
 from skills.temporal_evolution import TemporalEvolutionSkill
 from skills.uncertainty import UncertaintyAssessmentSkill
+from skills.xiangya_acne_disambiguation import XiangyaAcneDisambiguationSkill
+from skills.xiangya_eczema_atopic_disambiguation import XiangyaEczemaAtopicDisambiguationSkill
 
 
 class SkillRegistry:
@@ -89,6 +91,8 @@ def build_default_registry() -> SkillRegistry:
         MelNevSpecialistSkill(),
         AckSccSpecialistSkill(),
         BenignMimicSpecialistSkill(),
+        XiangyaAcneDisambiguationSkill(),
+        XiangyaEczemaAtopicDisambiguationSkill(),
         MalignancyRiskAssessmentSkill(),
         UncertaintyAssessmentSkill(),
         EscalationRecommendationSkill(),

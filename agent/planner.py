@@ -44,6 +44,8 @@ ORDERING_HINTS = {
     "mel_nev_specialist_skill": 90,
     "ack_scc_specialist_skill": 91,
     "benign_mimic_specialist_skill": 92,
+    "xiangya_acne_disambiguation_skill": 93,
+    "xiangya_eczema_atopic_disambiguation_skill": 94,
     "uncertainty_assessment_skill": 100,
     "contradiction_check_skill": 110,
     "escalation_recommendation_skill": 120,
@@ -59,6 +61,8 @@ SIGNAL_KEYWORD_MAP = {
     "ack_scc_confusion": ("ack", "scc", "specialist", "compare", "confusion"),
     "ack_sek_confusion": ("ack", "seborrheic", "sek", "waxy", "stuck-on", "compare", "confusion"),
     "keratinocyte_bcc_confusion": ("bcc", "basal cell", "scc", "ack", "actinic", "seborrheic", "keratin"),
+    "xiangya_acne_confusion": ("xiangya", "common_acne", "acne", "comedone", "pustule", "follicular", "dermatitis", "eczema", "vitiligo"),
+    "xiangya_eczema_atopic_confusion": ("xiangya", "eczema_dermatitis", "atopic_dermatitis", "eczema", "atopic", "dermatitis", "flexural", "xerosis", "lichenification"),
     "experience_compare_pattern": ("compare", "differential", "confusion", "specialist"),
     "experience_risk_pattern": ("risk", "alarm", "uncertainty"),
     "experience_gap_pattern": ("missing", "gap", "underdetermined", "what information", "uncertainty"),
@@ -470,6 +474,8 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
             "uncertainty_assessment_skill",
             "mel_nev_specialist_skill",
             "ack_scc_specialist_skill",
+            "xiangya_acne_disambiguation_skill",
+            "xiangya_eczema_atopic_disambiguation_skill",
         }:
             score += int(policy.get("known_confusion_bonus", 2))
             reasons.append("Boosted by cognition.known_confusion_patterns matching the current case.")
@@ -481,6 +487,8 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
             "uncertainty_assessment_skill",
             "mel_nev_specialist_skill",
             "ack_scc_specialist_skill",
+            "xiangya_acne_disambiguation_skill",
+            "xiangya_eczema_atopic_disambiguation_skill",
         }:
             score += int(policy.get("experience_compare_bonus", 2))
             reasons.append("Boosted by retrieved experience summary favoring compare/uncertainty style control.")
@@ -818,6 +826,24 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
                 decision.matched_fields = dedupe_reasons(
                     decision.matched_fields + ["workflow_context.benign_mimic_guard"]
                 )
+        if str(workflow_context.get("workflow_cell_id", "")).strip().lower() == "hulumed__xiangya_7class__retrieval_open_v1":
+            for decision in decisions:
+                if decision.skill_name not in {
+                    "xiangya_acne_disambiguation_skill",
+                    "xiangya_eczema_atopic_disambiguation_skill",
+                }:
+                    continue
+                decision.selected = True
+                decision.score = max(int(decision.score), 10)
+                decision.ordering_hint = min(decision.ordering_hint, ORDERING_HINTS.get(decision.skill_name, 94))
+                decision.adaptive_budget_retain = True
+                decision.adaptive_budget_reason = "Retained by Hulu-Med Xiangya specialist disambiguation workflow."
+                decision.reasons = dedupe_reasons(
+                    decision.reasons + ["Forced selected by Hulu-Med Xiangya specialist disambiguation workflow."]
+                )
+                decision.matched_fields = dedupe_reasons(
+                    decision.matched_fields + ["workflow_context.hulumed_xiangya_specialist"]
+                )
 
     def _apply_case_budget_gate(
         self,
@@ -904,6 +930,10 @@ class RuleBasedSkillPlanner(BaseSkillPlanner):
                 signals.get("ham_benign_mimic_confusion", False)
                 or (signals.get("known_confusion_match", False) and score >= max(2, min_score - 1))
             )
+        if skill_name == "xiangya_acne_disambiguation_skill":
+            return bool(signals.get("xiangya_acne_confusion", False)) or score >= min_score
+        if skill_name == "xiangya_eczema_atopic_disambiguation_skill":
+            return bool(signals.get("xiangya_eczema_atopic_confusion", False)) or score >= min_score
         if skill_name == "uncertainty_assessment_skill":
             return signals["high_uncertainty"] or score >= min_score
         if skill_name == "contradiction_check_skill":
@@ -1005,6 +1035,23 @@ def _build_signal_profile(planner_input: PlannerInput) -> dict[str, Any]:
         or has_confusion_pair(ddx_candidates, ("vasc", "vascular"), ("mel", "melanoma", "nv", "nevus"))
         or benign_mimic_signature
     )
+    xiangya_acne_confusion = _has_xiangya_acne_confusion(
+        dataset_name=planner_input.dataset_name,
+        workflow_context=workflow_context,
+        ddx_candidates=ddx_candidates,
+        image_summary=str(perception.get("image_summary", "")),
+        notes=" ".join(str(item) for item in perception.get("notes", [])),
+        metadata=metadata,
+    )
+    xiangya_eczema_atopic_confusion = _has_xiangya_eczema_atopic_confusion(
+        dataset_name=planner_input.dataset_name,
+        workflow_context=workflow_context,
+        ddx_candidates=ddx_candidates,
+        image_summary=str(perception.get("image_summary", "")),
+        notes=" ".join(str(item) for item in perception.get("notes", [])),
+        metadata=metadata,
+        retrieved_text=retrieved_text,
+    )
 
     return {
         "high_uncertainty": uncertainty_level == "high",
@@ -1021,6 +1068,8 @@ def _build_signal_profile(planner_input: PlannerInput) -> dict[str, Any]:
         "ack_sek_confusion": "ack_sek" in active_confusion_clusters,
         "keratinocyte_bcc_confusion": keratinocyte_bcc_confusion,
         "ham_benign_mimic_confusion": ham_benign_mimic_confusion,
+        "xiangya_acne_confusion": xiangya_acne_confusion,
+        "xiangya_eczema_atopic_confusion": xiangya_eczema_atopic_confusion,
         "experience_compare_pattern": any(
             pattern in retrieved_text for pattern in ("compare_then_audit_uncertainty", "confusion_memory", "differential")
         ),
@@ -1091,6 +1140,72 @@ def _has_ham_benign_mimic_signature(
     benign_context_hits = sum(1 for term in benign_surface_terms if term in combined)
     malignant_context_hits = sum(1 for term in ambiguous_malignant_terms if term in combined)
     return benign_context_hits >= 2 and malignant_context_hits >= 1
+
+
+def _has_xiangya_acne_confusion(
+    *,
+    dataset_name: str | None,
+    workflow_context: dict[str, Any],
+    ddx_candidates: list[str],
+    image_summary: str,
+    notes: str,
+    metadata: dict[str, Any],
+) -> bool:
+    dataset_key = str(dataset_name or "").strip().lower()
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    label_space_id = str(
+        workflow_context.get("label_space_id") or metadata.get("label_space_id") or ""
+    ).strip().lower()
+    if dataset_key != "xiangya_7class" and label_space_id != "xiangya_7class":
+        return False
+    if workflow_cell_id and workflow_cell_id != "hulumed__xiangya_7class__retrieval_open_v1":
+        return False
+    combined = " ".join(
+        [
+            " ".join(ddx_candidates),
+            str(image_summary or "").lower(),
+            str(notes or "").lower(),
+            str(metadata.get("related_category", "")).lower(),
+            str(metadata.get("presentation_mode_hint", "")).lower(),
+        ]
+    )
+    acne_terms = ("acne", "common_acne", "comedone", "comedonal", "pustule", "follicular", "papule")
+    confusion_terms = ("dermatitis", "eczema", "atopic", "vitiligo", "depigment", "hypopigment", "rash")
+    return any(term in combined for term in acne_terms) or any(term in combined for term in confusion_terms)
+
+
+def _has_xiangya_eczema_atopic_confusion(
+    *,
+    dataset_name: str | None,
+    workflow_context: dict[str, Any],
+    ddx_candidates: list[str],
+    image_summary: str,
+    notes: str,
+    metadata: dict[str, Any],
+    retrieved_text: str,
+) -> bool:
+    dataset_key = str(dataset_name or "").strip().lower()
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    label_space_id = str(
+        workflow_context.get("label_space_id") or metadata.get("label_space_id") or ""
+    ).strip().lower()
+    if dataset_key != "xiangya_7class" and label_space_id != "xiangya_7class":
+        return False
+    if workflow_cell_id and workflow_cell_id != "hulumed__xiangya_7class__retrieval_open_v1":
+        return False
+    combined = " ".join(
+        [
+            " ".join(ddx_candidates),
+            str(image_summary or "").lower(),
+            str(notes or "").lower(),
+            str(metadata.get("related_category", "")).lower(),
+            str(metadata.get("presentation_mode_hint", "")).lower(),
+            str(retrieved_text or "").lower(),
+        ]
+    )
+    eczema_terms = ("eczema", "eczema_dermatitis", "eczematous", "dermatitis", "rash", "scale", "scaling", "erythema")
+    atopic_terms = ("atopic", "atopic_dermatitis", "flexural", "xerosis", "lichenif", "chronic", "recurrent", "pruritus")
+    return any(term in combined for term in eczema_terms) and any(term in combined for term in atopic_terms)
 
 
 def _extract_morphology_clues(image_summary: str, metadata: dict[str, Any], notes: str) -> list[str]:

@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from PIL import Image
+from PIL import ImageFile
 
 try:
     from openai import APIConnectionError
@@ -116,6 +117,21 @@ def _build_label_space_prompt_hint(case_input: CaseInput) -> str:
             "- `PERIORAL_DERMATITIS`: concentrated around the mouth/nasolabial/perioral region.\n"
             "- `HERPETIC_ECZEMA`: acute erosive/crusted painful monomorphic eruption on top of eczematous skin.\n"
             "When evidence is mixed between contact and atopic/eczema, prefer `ECZEMA_DERMATITIS` rather than defaulting to `CONTACT_DERMATITIS`."
+        )
+    if dataset_name == "xiangya_7class" or str(ls.label_space_id).strip().lower() == "xiangya_7class":
+        return (
+            "Xiangya 7-class note: return exactly one label from "
+            "`COMMON_ACNE`, `ATOPIC_DERMATITIS`, `ECZEMA_DERMATITIS`, `PSORIASIS`, "
+            "`VITILIGO`, `CONDYLOMA_ACUMINATUM`, or `SKIN_TUMOR`.\n"
+            "Keep these distinctions visible:\n"
+            "- `ATOPIC_DERMATITIS`: chronic/recurrent eczematous process, xerosis, flexural or symmetric pattern.\n"
+            "- `ECZEMA_DERMATITIS`: eczema-like inflammatory dermatitis when atopic specificity is not clearly established.\n"
+            "- `PSORIASIS`: sharply demarcated erythematous plaques with silvery scale.\n"
+            "- `VITILIGO`: depigmented or hypopigmented patches with loss of pigment rather than erythematous inflammation.\n"
+            "- `COMMON_ACNE`: acneiform papules/pustules/comedones.\n"
+            "- `CONDYLOMA_ACUMINATUM`: verrucous or papillomatous wart-like growths.\n"
+            "- `SKIN_TUMOR`: tumorous/neoplastic lesion when the lesion is better explained by cutaneous tumor than inflammatory disease.\n"
+            "Strict canonicalization note: never output the open-set label `Acne`; output `COMMON_ACNE` exactly when acne is supported."
         )
     if workflow_profile == "image_archive_full_taxonomy_lesion_workflow":
         return (
@@ -1115,6 +1131,23 @@ class DermOpenAIClient:
                 f"Allowed labels: {allowed_text}.\n"
                 "The field `differential_diagnoses` must be a short list containing only labels from the same set.\n"
             )
+        if DermOpenAIClient._skinvl_effective_label_space_id(case_input).strip().lower() == "xiangya_7class":
+            return (
+                "The field `final_diagnosis` must be exactly one canonical label ID from the allowed label set.\n"
+                f"Allowed canonical label IDs: {allowed_text}.\n"
+                "Do not output image descriptions, generic morphology words, or broad non-diagnostic phrases in diagnosis fields.\n"
+                "Never output phrases like `rash`, `skin lesion`, `white patch`, `papules`, `possible psoriasis`, or `skin cancer` as the diagnosis.\n"
+                "You must always choose exactly one canonical label ID.\n"
+                "Examples:\n"
+                "- COMMON_ACNE\n"
+                "- ATOPIC_DERMATITIS\n"
+                "- ECZEMA_DERMATITIS\n"
+                "- PSORIASIS\n"
+                "- VITILIGO\n"
+                "- CONDYLOMA_ACUMINATUM\n"
+                "- SKIN_TUMOR\n"
+                "If uncertain, still output the closest canonical label ID and keep uncertainty only in `rationale`.\n"
+            )
         return (
             "The field `final_diagnosis` must be exactly one canonical label ID from the allowed label set.\n"
             f"Allowed canonical label IDs: {allowed_text}.\n"
@@ -1743,8 +1776,33 @@ class DermOpenAIClient:
                 )
                 return "image/jpeg", base64.b64encode(buffer.getvalue()).decode("utf-8")
         except Exception as exc:
-            LOGGER.warning("Falling back to raw image bytes for %s after preprocessing failure: %s", path, exc)
-            return detected_mime_type, base64.b64encode(path.read_bytes()).decode("utf-8")
+            try:
+                ImageFile.LOAD_TRUNCATED_IMAGES = True
+                with Image.open(path) as image:
+                    image.load()
+                    converted = image.convert("RGB")
+                    converted.thumbnail((MAX_INLINE_IMAGE_EDGE, MAX_INLINE_IMAGE_EDGE), Image.Resampling.LANCZOS)
+                    buffer = io.BytesIO()
+                    converted.save(
+                        buffer,
+                        format="JPEG",
+                        quality=INLINE_IMAGE_JPEG_QUALITY,
+                        optimize=True,
+                    )
+                    LOGGER.warning(
+                        "Re-encoded tolerant image payload for %s after preprocessing failure: %s",
+                        path,
+                        exc,
+                    )
+                    return "image/jpeg", base64.b64encode(buffer.getvalue()).decode("utf-8")
+            except Exception as fallback_exc:
+                LOGGER.warning(
+                    "Falling back to raw image bytes for %s after tolerant re-encoding failed: %s; original error: %s",
+                    path,
+                    fallback_exc,
+                    exc,
+                )
+                return detected_mime_type, base64.b64encode(path.read_bytes()).decode("utf-8")
 
     @staticmethod
     def _parse_json_response(content: str | None) -> dict[str, Any]:
@@ -1996,12 +2054,39 @@ class DermOpenAIClient:
                 return canonical.upper()
             return None
 
+        def xiangya7_fallback_label(text: str) -> str | None:
+            if str(label_space_id).strip().lower() != "xiangya_7class":
+                return None
+            normalized = " ".join(str(text or "").strip().lower().split())
+            if not normalized:
+                return None
+            if any(token in normalized for token in ("acne vulgaris", "acneiform", "comedone", "comedones", "pustule", "pustules")):
+                return "COMMON_ACNE"
+            if any(token in normalized for token in ("atopic dermatitis", "atopic eczema", "flexural", "xerosis", "lichenification")):
+                return "ATOPIC_DERMATITIS"
+            if any(token in normalized for token in ("psoriasis", "psoriatic", "silvery scale", "plaques", "plaque")):
+                return "PSORIASIS"
+            if any(token in normalized for token in ("vitiligo", "depigmented", "hypopigmented", "loss of pigment")):
+                return "VITILIGO"
+            if any(token in normalized for token in ("condyloma", "genital wart", "anogenital wart")):
+                return "CONDYLOMA_ACUMINATUM"
+            if any(token in normalized for token in ("skin cancer", "melanoma", "basal cell carcinoma", "bcc", "squamous cell carcinoma", "scc", "neoplasm", "tumor")):
+                return "SKIN_TUMOR"
+            if any(token in normalized for token in ("eczema", "eczematous", "dermatitis")):
+                return "ECZEMA_DERMATITIS"
+            return None
+
         final_text = str(payload.get("final_diagnosis", "")).strip()
         differentials = payload.get("differential_diagnoses", [])
         if not isinstance(differentials, list):
             differentials = []
-        candidates = [final_text] + [str(item).strip() for item in differentials if str(item).strip()]
+        rationale = str(payload.get("rationale", "")).strip()
+        candidates = [final_text] + [str(item).strip() for item in differentials if str(item).strip()] + [rationale]
         selected = next((mapped for item in candidates if (mapped := canonical_candidate(item))), "")
+        selected_from_fallback = False
+        if not selected:
+            selected = next((mapped for item in candidates if (mapped := xiangya7_fallback_label(item))), "")
+            selected_from_fallback = bool(selected)
         if not selected:
             return DermOpenAIClient._skinvl_unparsed_payload(
                 payload,
@@ -2011,11 +2096,17 @@ class DermOpenAIClient:
         filtered_differentials: list[str] = []
         for item in candidates:
             mapped = canonical_candidate(item)
+            if not mapped:
+                mapped = xiangya7_fallback_label(item)
             if mapped and mapped not in filtered_differentials:
                 filtered_differentials.append(mapped)
 
         refined = dict(payload)
-        refined["raw_final_diagnosis"] = final_text or refined.get("raw_final_diagnosis", "")
+        if str(label_space_id).strip().lower() == "xiangya_7class" and (selected_from_fallback or not canonical_candidate(final_text)):
+            refined["raw_final_diagnosis"] = selected
+            refined["parse_warning"] = "skinvl_xiangya7_selector_repaired"
+        else:
+            refined["raw_final_diagnosis"] = final_text or refined.get("raw_final_diagnosis", "")
         refined["final_diagnosis"] = selected
         refined["differential_diagnoses"] = filtered_differentials[:5] or [selected]
         return refined

@@ -17,10 +17,30 @@ def _workflow_clinical_metadata(workflow_context: dict[str, Any]) -> dict[str, A
     return dict(metadata) if isinstance(metadata, dict) else {}
 
 
+def _workflow_has_hidden_histopathology(workflow_context: dict[str, Any]) -> bool:
+    available_tests = workflow_context.get("available_tests", [])
+    if not isinstance(available_tests, list):
+        return False
+    normalized = {str(item).strip().lower() for item in available_tests}
+    return "histopathology_reference_hidden" in normalized
+
+
 def _selected_evidence_text(selected_evidence: list[Any]) -> str:
     return " ".join(
         str(item.get("summary", "")) for item in selected_evidence if isinstance(item, dict)
     ).lower()
+
+
+def _skill_text(output: dict[str, Any]) -> str:
+    chunks: list[str] = []
+    for value in output.values():
+        if isinstance(value, list):
+            chunks.extend(str(item) for item in value)
+        elif isinstance(value, dict):
+            chunks.append(_skill_text(value))
+        else:
+            chunks.append(str(value))
+    return " ".join(chunks).lower()
 
 
 def _contains_canonical_label(
@@ -581,6 +601,28 @@ def _hulumed_isic_archive_first_label_promotion(
         return None
     if first_label == "MEL" and any(marker in summary for marker in ("blue", "purple")):
         return None
+    if first_label == "BCC":
+        bcc_archive_surface_signal = any(
+            marker in summary
+            for marker in (
+                "pinkish",
+                "erythema",
+                "erythematous",
+                "telangiect",
+                "vascular",
+                "central depression",
+                "ulcer",
+                "crust",
+                "erosion",
+            )
+        )
+        if (
+            baseline_canonical in {"NV", "BKL"}
+            and agent_canonical in {"NV", "BKL"}
+            and bcc_archive_surface_signal
+        ):
+            return (display_labels["BCC"], "hulumed_isic_archive_first_top1_promotion")
+        return None
     if first_label in {"AK", "SCC", "MEL", "VASC", "NV"}:
         return (display_labels[first_label], "hulumed_isic_archive_first_top1_promotion")
 
@@ -761,6 +803,96 @@ def _hulumed_pad20_consensus_override_label(
     )
     if has_sek and any(marker in summary for marker in ("multiple", "yellowish", "waxy", "stuck")):
         return "Seborrheic Keratosis"
+
+    return ""
+
+
+def _hulumed_xiangya7_consensus_override_label(
+    *,
+    workflow_context: dict[str, Any],
+    baseline_label: str,
+    agent_label: str,
+    initial_ddx: list[str],
+    baseline_preview: dict[str, Any],
+    skill_outputs: dict[str, Any] | None = None,
+    selected_evidence: list[Any] | None = None,
+    selected_evidence_present: bool,
+    support_margin: float,
+    subtype_support_margin: float,
+    uncertainty_level: str,
+    contradiction_count: int,
+    label_space_id: str,
+    dataset_name: str,
+) -> str:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id != "hulumed__xiangya_7class__retrieval_open_v1":
+        return ""
+    if not selected_evidence_present:
+        return ""
+    if contradiction_count > 3:
+        return ""
+
+    baseline_canonical = canonicalize_label(
+        baseline_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    agent_canonical = canonicalize_label(
+        agent_label,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    baseline_text = str(baseline_label or "").strip().lower()
+    acne_skill = dict((skill_outputs or {}).get("xiangya_acne_disambiguation_skill", {}) or {})
+    acne_skill_recommends_common = (
+        str(acne_skill.get("canonical_label_recommendation", "")).strip().upper() == "COMMON_ACNE"
+    )
+    acne_positive = any(
+        str(acne_skill.get(field, "")).strip().lower() == "present"
+        for field in ("comedone_presence", "pustule_presence", "follicular_centered_papules_presence")
+    )
+    not_vitiligo = str(acne_skill.get("true_depigmentation_presence", "")).strip().lower() in {"absent", "uncertain"}
+    not_diffuse_eczema = str(acne_skill.get("diffuse_eczematous_morphology_presence", "")).strip().lower() in {"absent", "uncertain"}
+    if (
+        baseline_text == "acne"
+        and not baseline_canonical
+        and (not acne_skill or (acne_skill_recommends_common and acne_positive and not_vitiligo and not_diffuse_eczema))
+    ):
+        return "COMMON_ACNE"
+    eczema_skill = dict((skill_outputs or {}).get("xiangya_eczema_atopic_disambiguation_skill", {}) or {})
+    eczema_recommends = str(eczema_skill.get("canonical_label_recommendation", "")).strip().upper()
+    eczema_text = _skill_text(eczema_skill)
+    selected_text = _selected_evidence_text(list(selected_evidence or []))
+    baseline_diff_text = " ".join(str(item) for item in baseline_preview.get("baseline_differential_diagnoses", []) or []).lower()
+    has_memory_agreement = (
+        "atopic" in selected_text
+        and "eczema" in selected_text
+        and any(marker in selected_text for marker in ("confusion", "preserve", "avoid", "memory", "abstract"))
+    )
+    eczema_skill_supports_rescue = (
+        eczema_recommends == "ECZEMA_DERMATITIS"
+        and str(eczema_skill.get("generic_eczematous_morphology_presence", "")).strip().lower() == "present"
+        and str(eczema_skill.get("atopic_specific_pattern_presence", "")).strip().lower() == "absent"
+        and str(eczema_skill.get("retrieval_confusion_support", "")).strip().lower() == "present"
+        and "flexural pattern mentioned" not in eczema_text
+        and "lichenification mentioned" not in eczema_text
+    )
+    # Keep the eczema-vs-atopic specialist as evidence/top-k support rather than
+    # a top-1 override. Directly changing AD to eczema was too aggressive on
+    # small probes and can make the workflow look unrealistically strong.
+    _ = (
+        baseline_canonical,
+        baseline_diff_text,
+        eczema_skill_supports_rescue,
+        has_memory_agreement,
+    )
+
+    if not agent_canonical or baseline_canonical == agent_canonical:
+        return ""
+
+    if agent_canonical == "COMMON_ACNE":
+        if support_margin >= 12.0 and subtype_support_margin >= 5.0:
+            return "COMMON_ACNE"
 
     return ""
 
@@ -1311,6 +1443,37 @@ def _hulumed_ham10000_topk_to_top1_promotion_label(
         label_space_id=label_space_id,
         dataset_name=dataset_name,
     )
+
+    # Reduce MEL over-diagnosis: promote differential diagnoses when MEL is baseline
+    # Strategy: search in top-3 differentials with adjusted priority
+    # Priority: malignant/high-risk first to maintain safety, then benign
+    if baseline_canonical == "MEL" and not _workflow_has_hidden_histopathology(workflow_context):
+        # Get top-3 differential candidates (canonicalized)
+        top3_candidates = []
+        for diff_label in agent_differentials[:3]:
+            canonical = canonicalize_label(
+                diff_label,
+                label_space_id=label_space_id,
+                dataset_name=dataset_name,
+            )
+            if canonical and canonical != "MEL":
+                top3_candidates.append(canonical)
+
+        # Priority order: BCC > AKIEC > NV > BKL > DF > VASC
+        # Malignant/high-risk first to preserve safety (avoid false negatives)
+        mel_demotion_priority = [
+            ("BCC", "Basal Cell Carcinoma"),
+            ("AKIEC", "Actinic Keratosis"),
+            ("NV", "Nevus"),
+            ("BKL", "Seborrheic Keratosis"),
+            ("DF", "Dermatofibroma"),
+            ("VASC", "Vascular Lesion"),
+        ]
+
+        for canonical_label, diagnosis_label in mel_demotion_priority:
+            if canonical_label in top3_candidates:
+                return diagnosis_label
+
     if baseline_canonical != "BCC":
         return ""
 
@@ -1327,6 +1490,128 @@ def _hulumed_ham10000_topk_to_top1_promotion_label(
         ):
             return diagnosis_label
     return ""
+
+
+def _hulumed_ham10000_differential_promotions(
+    *,
+    workflow_context: dict[str, Any],
+    primary_label: str,
+    baseline_label: str = "",
+    agent_label: str = "",
+    agent_differentials: list[str],
+    baseline_preview: dict[str, Any],
+    selected_evidence_present: bool,
+    label_space_id: str,
+    dataset_name: str,
+) -> list[str]:
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    if workflow_cell_id == "hulumed__isic2019__archive_guard_v1":
+        if not selected_evidence_present:
+            return []
+
+        baseline_canonical = canonicalize_label(
+            baseline_label,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+        primary_canonical = canonicalize_label(
+            primary_label,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+        if (
+            baseline_canonical == "NV"
+            and primary_canonical in {"MEL", "BCC"}
+            and not _contains_canonical_label(
+                agent_differentials,
+                canonical_label="NV",
+                label_space_id=label_space_id,
+                dataset_name=dataset_name,
+            )
+        ):
+            return ["Nevus"]
+        return []
+    if workflow_cell_id != "hulumed__ham10000__akiec_guard_v1":
+        return []
+    if not selected_evidence_present:
+        return []
+
+    primary_canonicals = {
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in (primary_label, baseline_label, agent_label)
+        if str(label or "").strip()
+    }
+    differential_canonicals = [
+        canonicalize_label(label, label_space_id=label_space_id, dataset_name=dataset_name)
+        for label in agent_differentials
+    ]
+    summary = str(baseline_preview.get("image_summary", "")).strip().lower()
+    metadata = _workflow_clinical_metadata(workflow_context)
+    region = str(metadata.get("region") or metadata.get("localization") or "").strip().lower()
+    has_hidden_histopathology = _workflow_has_hidden_histopathology(workflow_context)
+
+    promotions: list[str] = []
+    keratotic_markers = (
+        "scal",
+        "kerat",
+        "crust",
+        "rough",
+        "waxy",
+        "stuck",
+        "milia",
+        "white structures",
+        "yellowish",
+    )
+    if (
+        bool(primary_canonicals & {"MEL", "AKIEC"})
+        and "BKL" in differential_canonicals
+        and any(marker in summary for marker in keratotic_markers)
+    ):
+        promotions.append("Seborrheic Keratosis")
+
+    sun_damage_regions = {"face", "scalp", "ear", "neck", "upper extremity", "lower extremity"}
+    akiec_markers = ("scal", "kerat", "crust", "rough", "white structures", "ulcer")
+    if (
+        "MEL" in primary_canonicals
+        and region in sun_damage_regions
+        and any(marker in summary for marker in akiec_markers)
+    ):
+        promotions.append("Actinic Keratosis")
+
+    if (
+        "MEL" in primary_canonicals
+        and canonicalize_label(
+            baseline_label,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        )
+        == "BCC"
+    ):
+        promotions.append("Basal Cell Carcinoma")
+
+    dermatofibroma_markers = (
+        "central white",
+        "white area",
+        "hair follic",
+        "small, irregular",
+        "pinkish area",
+    )
+    if (
+        not has_hidden_histopathology
+        and region == "lower extremity"
+        and "DF" in differential_canonicals
+        and any(marker in summary for marker in dermatofibroma_markers)
+    ):
+        promotions.append("Dermatofibroma")
+
+    if "VASC" in differential_canonicals and ("ulcerated" in summary or "necrosis" in summary):
+        promotions.append("Vascular Lesion")
+
+    ordered: list[str] = []
+    for label in promotions:
+        if label not in ordered:
+            ordered.append(label)
+    return ordered
 
 
 def _hulumed_scin_consensus_override_label(

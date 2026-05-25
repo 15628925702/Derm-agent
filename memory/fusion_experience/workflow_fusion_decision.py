@@ -7,6 +7,7 @@ from agent.label_space import canonicalize_label, is_malignant_label
 from memory.fusion_experience.accumulation import maybe_record_fusion_experience_observation
 from memory.fusion_experience.hulumed_workflow_fusion import (
     _hulumed_ham10000_consensus_override_label,
+    _hulumed_ham10000_differential_promotions,
     _hulumed_ham10000_topk_to_top1_promotion_label,
     _hulumed_isic_archive_first_label_promotion,
     _hulumed_isic_consensus_override_label,
@@ -17,6 +18,7 @@ from memory.fusion_experience.hulumed_workflow_fusion import (
     _hulumed_scin_grouped_promotion_label_and_reason,
     _hulumed_scin_grouped_top1_rescue_label_and_reason,
     _hulumed_sd198_consensus_override_label,
+    _hulumed_xiangya7_consensus_override_label,
 )
 
 KERATINOCYTE_FAMILY = {
@@ -474,6 +476,29 @@ def decide_conservative_agent_fusion(
             use_agent_output = True
             merge_baseline_differentials = True
             reasons.append(hulumed_scin_top1_rescue[1])
+        elif hulumed_xiangya7_override_label := _hulumed_xiangya7_consensus_override_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            initial_ddx=initial_ddx,
+            baseline_preview=baseline_preview,
+            skill_outputs=skill_outputs,
+            selected_evidence=selected_evidence,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            contradiction_count=contradiction_count,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            consensus_override_label = hulumed_xiangya7_override_label
+            use_agent_output = True
+            merge_baseline_differentials = True
+            if hulumed_xiangya7_override_label == "ECZEMA_DERMATITIS":
+                reasons.append("hulumed_xiangya7_eczema_atopic_memory_skill_rescue")
+            else:
+                reasons.append("hulumed_xiangya7_acne_canonical_rescue")
         elif dermatollama_scin_topk_promotion := _dermatollama_scin_grouped_topk_promotion(
             workflow_context=workflow_context,
             baseline_label=baseline_label,
@@ -1513,6 +1538,8 @@ def decide_conservative_agent_fusion(
             agent_confidence=agent_confidence,
             benign_reassuring_features=benign_reassuring_features,
             baseline_preview=baseline_preview,
+            skill_outputs=skill_outputs,
+            selected_evidence=selected_evidence,
             baseline_rationale=baseline_rationale,
         )
     if route_guard:
@@ -1553,6 +1580,20 @@ def decide_conservative_agent_fusion(
     if dermatollama_ham10000_promotions:
         differential_promotions = list(differential_promotions) + dermatollama_ham10000_promotions
         reasons.append("dermatollama_ham10000_raw_agent_differential_expansion")
+    hulumed_ham10000_promotions = _hulumed_ham10000_differential_promotions(
+        workflow_context=workflow_context,
+        primary_label=consensus_override_label or (agent_label if use_agent_output else baseline_label),
+        baseline_label=baseline_label,
+        agent_label=agent_label,
+        agent_differentials=agent_differentials,
+        baseline_preview=baseline_preview,
+        selected_evidence_present=selected_evidence_present,
+        label_space_id=label_space_id,
+        dataset_name=dataset_name,
+    )
+    if hulumed_ham10000_promotions:
+        differential_promotions = list(differential_promotions) + hulumed_ham10000_promotions
+        reasons.append("hulumed_ham10000_keratotic_differential_expansion")
     hulumed_scin_priority_promotions: list[str] = []
     hulumed_scin_consensus_promotion = _hulumed_scin_consensus_override_label(
         workflow_context=workflow_context,
@@ -1731,6 +1772,8 @@ def _route_specific_fallback_reason(
     agent_confidence: str,
     benign_reassuring_features: list[str],
     baseline_preview: dict[str, Any],
+    skill_outputs: dict[str, Any] | None = None,
+    selected_evidence: list[Any] | None = None,
     baseline_rationale: str = "",
 ) -> str:
     model_profile = str(workflow_context.get("model_workflow_profile", "")).strip().lower()
@@ -2130,6 +2173,25 @@ def _route_specific_fallback_reason(
             dataset_name=dataset_name,
         ):
             return "hulumed_ham10000_baseline_anchor_guard"
+
+    if workflow_cell_id == "hulumed__xiangya_7class__retrieval_open_v1":
+        if baseline_label != agent_label and not _hulumed_xiangya7_consensus_override_label(
+            workflow_context=workflow_context,
+            baseline_label=baseline_label,
+            agent_label=agent_label,
+            initial_ddx=initial_ddx,
+            baseline_preview=baseline_preview,
+            skill_outputs=skill_outputs,
+            selected_evidence=selected_evidence,
+            selected_evidence_present=selected_evidence_present,
+            support_margin=support_margin,
+            subtype_support_margin=subtype_support_margin,
+            uncertainty_level=uncertainty_level,
+            contradiction_count=contradiction_count,
+            label_space_id=label_space_id,
+            dataset_name=dataset_name,
+        ):
+            return "hulumed_xiangya7_baseline_anchor_guard"
 
     if workflow_cell_id == "llama__ham10000__akiec_guard_v1":
         if baseline_label != agent_label and not _llama_ham10000_consensus_override_label(

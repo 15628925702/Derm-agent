@@ -213,6 +213,128 @@ def _hulumed_isic_archive_evidence_bundle(
     }
 
 
+def _hulumed_xiangya7_evidence_bundle(
+    *,
+    workflow_cell_id: str = "hulumed__xiangya_7class__retrieval_open_v1",
+    support_margin: float = 12.0,
+    subtype_support_margin: float = 5.0,
+    uncertainty_level: str = "medium",
+    contradiction_count: int = 0,
+    image_summary: str = "close-up skin lesion with papules and raised bumps",
+    ) -> dict:
+    return {
+        "selected_evidence": [
+            {
+                "source_name": "morphology_analysis_skill",
+                "summary": "papules with acneiform morphology and clustered raised bumps",
+                "score": 6.0,
+                "source_type": "skill_output",
+                "skill_name": "morphology_analysis_skill",
+            },
+            {
+                "source_name": "distribution_analysis_skill",
+                "summary": "localized focal lesion rather than diffuse dermatitis",
+                "score": 4.0,
+                "source_type": "skill_output",
+                "skill_name": "distribution_analysis_skill",
+            },
+        ],
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": ["Acne", "Eczema"],
+                    "image_summary": image_summary,
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": workflow_cell_id,
+                    "workflow_profile": "full_taxonomy_lesion_workflow",
+                    "dataset_workflow_profile": "full_taxonomy_lesion_workflow",
+                    "label_space_id": "xiangya_7class",
+                    "dataset_name": "xiangya_7class",
+                    "presentation_mode": "focal_lesion",
+                    "clinical_metadata": {"body_site_hint": "face"},
+                },
+                "selected_evidence_present": True,
+                "support_margin": support_margin,
+                "subtype_support_margin": subtype_support_margin,
+                "uncertainty_level": uncertainty_level,
+                "contradiction_count": contradiction_count,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+
+def _hulumed_xiangya7_eczema_evidence_bundle(
+    *,
+    include_memory: bool = True,
+    skill_recommendation: str = "ECZEMA_DERMATITIS",
+) -> dict:
+    selected_evidence = [
+        {
+            "source_name": "xiangya_eczema_atopic_disambiguation_skill",
+            "summary": "generic eczematous morphology present; no flexural or lichenified atopic pattern; retrieval_confusion_support=present",
+            "score": 9.0,
+            "source_type": "skill_output",
+            "skill_name": "xiangya_eczema_atopic_disambiguation_skill",
+            "category": "differential_support",
+        },
+    ]
+    if include_memory:
+        selected_evidence.append(
+            {
+                "source_name": "abs_confusion_atopic_eczema",
+                "summary": "atopic_dermatitis->eczema_dermatitis confusion memory: preserve differential openness and avoid direct AD promotion when atopic anchors are absent",
+                "score": 5.0,
+                "source_type": "abstract_experience",
+                "category": "experience_hint",
+            }
+        )
+    return {
+        "selected_evidence": selected_evidence,
+        "skill_outputs": {
+            "xiangya_eczema_atopic_disambiguation_skill": {
+                "generic_eczematous_morphology_presence": "present",
+                "atopic_specific_pattern_presence": "absent",
+                "chronic_recurrent_proxy": "absent",
+                "flexural_or_symmetric_pattern": "absent",
+                "xerosis_or_lichenification": "absent",
+                "retrieval_confusion_support": "present" if include_memory else "absent",
+                "canonical_label_recommendation": skill_recommendation,
+                "evidence_strength": "high",
+                "recommendation_type": "comparative_support",
+            }
+        },
+        "evidence_decision_policy": {
+            "risk_layer": {
+                "baseline_preview": {
+                    "early_ddx_candidates": ["ATOPIC_DERMATITIS", "ECZEMA_DERMATITIS"],
+                    "image_summary": "erythematous scaling rough dermatitis patch",
+                    "baseline_differential_diagnoses": ["ECZEMA_DERMATITIS", "VITILIGO"],
+                }
+            },
+            "diagnosis_override_layer": {
+                "workflow_context": {
+                    "workflow_cell_id": "hulumed__xiangya_7class__retrieval_open_v1",
+                    "workflow_profile": "family_routing_workflow",
+                    "dataset_workflow_profile": "family_routing_workflow",
+                    "label_space_id": "xiangya_7class",
+                    "dataset_name": "xiangya_7class",
+                    "presentation_mode": "diffuse_rash",
+                },
+                "selected_evidence_present": True,
+                "support_margin": 30.0,
+                "subtype_support_margin": 8.0,
+                "uncertainty_level": "medium",
+                "contradiction_count": 0,
+            },
+        },
+        "evidence_calibration_debug": {"policy": {"conservative_fusion_mode": "soft"}},
+    }
+
+
 def test_hulumed_isic_archive_first_label_promotes_melanoma_from_nevus_anchor() -> None:
     result = apply_conservative_agent_fusion(
         baseline_output={
@@ -233,6 +355,76 @@ def test_hulumed_isic_archive_first_label_promotes_melanoma_from_nevus_anchor() 
 
     assert result["final_diagnosis"] == "Malignant Melanoma"
     assert "hulumed_isic_archive_first_top1_promotion" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_xiangya7_relaxed_override_allows_acne_promotion() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "ECZEMA_DERMATITIS",
+            "differential_diagnoses": ["ECZEMA_DERMATITIS", "ATOPIC_DERMATITIS"],
+            "confidence": "high",
+            "rationale": "Baseline favored diffuse dermatitis.",
+            "follow_up_considerations": [],
+        },
+        agent_output={
+            "final_diagnosis": "COMMON_ACNE",
+            "differential_diagnoses": ["COMMON_ACNE", "ECZEMA_DERMATITIS"],
+            "confidence": "medium",
+            "rationale": "Agent favored acneiform morphology.",
+            "follow_up_considerations": [],
+        },
+        evidence_bundle=_hulumed_xiangya7_evidence_bundle(),
+    )
+
+    assert result["final_diagnosis"] == "COMMON_ACNE"
+    assert "hulumed_xiangya7_acne_canonical_rescue" in result["fusion_decision"]["reasons"]
+    assert "hulumed_xiangya7_baseline_anchor_guard" not in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_xiangya7_eczema_atopic_memory_skill_rescue() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "ATOPIC_DERMATITIS",
+            "differential_diagnoses": ["ECZEMA_DERMATITIS", "VITILIGO"],
+            "confidence": "high",
+            "rationale": "Baseline favored atopic dermatitis.",
+            "follow_up_considerations": [],
+        },
+        agent_output={
+            "final_diagnosis": "ATOPIC_DERMATITIS",
+            "differential_diagnoses": ["ECZEMA_DERMATITIS", "VITILIGO"],
+            "confidence": "medium",
+            "rationale": "Agent also favored atopic dermatitis.",
+            "follow_up_considerations": [],
+        },
+        evidence_bundle=_hulumed_xiangya7_eczema_evidence_bundle(),
+    )
+
+    assert result["final_diagnosis"] == "ECZEMA_DERMATITIS"
+    assert "hulumed_xiangya7_eczema_atopic_memory_skill_rescue" in result["fusion_decision"]["reasons"]
+
+
+def test_hulumed_xiangya7_eczema_atopic_rescue_requires_memory_agreement() -> None:
+    result = apply_conservative_agent_fusion(
+        baseline_output={
+            "final_diagnosis": "ATOPIC_DERMATITIS",
+            "differential_diagnoses": ["ECZEMA_DERMATITIS", "VITILIGO"],
+            "confidence": "high",
+            "rationale": "Baseline favored atopic dermatitis.",
+            "follow_up_considerations": [],
+        },
+        agent_output={
+            "final_diagnosis": "ATOPIC_DERMATITIS",
+            "differential_diagnoses": ["ECZEMA_DERMATITIS", "VITILIGO"],
+            "confidence": "medium",
+            "rationale": "Agent also favored atopic dermatitis.",
+            "follow_up_considerations": [],
+        },
+        evidence_bundle=_hulumed_xiangya7_eczema_evidence_bundle(include_memory=False),
+    )
+
+    assert result["final_diagnosis"] == "ATOPIC_DERMATITIS"
+    assert "hulumed_xiangya7_eczema_atopic_memory_skill_rescue" not in result["fusion_decision"]["reasons"]
 
 
 def test_hulumed_isic_archive_malignant_rescue_promotes_bcc_from_bkl_first_pass() -> None:

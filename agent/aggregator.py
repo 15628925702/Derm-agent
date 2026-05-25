@@ -23,6 +23,9 @@ COMPARISON_SKILLS = (
     "exclusion_reasoning_skill",
     "mel_nev_specialist_skill",
     "ack_scc_specialist_skill",
+    "benign_mimic_specialist_skill",
+    "xiangya_acne_disambiguation_skill",
+    "xiangya_eczema_atopic_disambiguation_skill",
 )
 
 RISK_SKILLS = ("malignancy_risk_assessment_skill",)
@@ -93,6 +96,8 @@ def build_evidence_bundle(state: CaseState) -> dict[str, Any]:
     if not selected_evidence:
         selected_evidence = _sparse_lesion_fallback_selected_evidence(state)
     selected_evidence = _ensure_sparse_lesion_specialist_evidence(state, selected_evidence)
+    selected_evidence = _ensure_xiangya_acne_evidence(state, selected_evidence)
+    selected_evidence = _ensure_xiangya_eczema_atopic_evidence(state, selected_evidence)
 
     # 根据 workflow_context 调整证据排序
     selected_evidence = _reorder_evidence_by_workflow(selected_evidence, workflow_context)
@@ -884,6 +889,8 @@ def _subtype_supporting_items(selected_evidence: list[dict[str, Any]]) -> list[d
         "ack_scc_specialist_skill",
         "mel_nev_specialist_skill",
         "benign_mimic_specialist_skill",
+        "xiangya_acne_disambiguation_skill",
+        "xiangya_eczema_atopic_disambiguation_skill",
         "differential_compare_skill",
     }
     for item in selected_evidence:
@@ -1024,6 +1031,72 @@ def _ensure_sparse_lesion_specialist_evidence(
         "score": 6.6,
         "rank": max([int(item.get("rank", 0) or 0) for item in selected_evidence] + [0]) + 1,
         "keep_reason": "sparse_lesion_specialist_injected",
+    }
+    return [*selected_evidence, injected]
+
+
+def _ensure_xiangya_acne_evidence(
+    state: CaseState,
+    selected_evidence: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    workflow_context = state.case_input.workflow_context or {}
+    if str(workflow_context.get("workflow_cell_id", "")).strip().lower() != "hulumed__xiangya_7class__retrieval_open_v1":
+        return selected_evidence
+    skill_name = "xiangya_acne_disambiguation_skill"
+    output = state.skill_outputs.get(skill_name, {})
+    if not output:
+        return selected_evidence
+    if any(str(item.get("skill_name", "")).strip() == skill_name for item in selected_evidence):
+        return selected_evidence
+    recommendation = str(output.get("canonical_label_recommendation", "")).strip().upper()
+    if recommendation != "COMMON_ACNE":
+        return selected_evidence
+    injected = {
+        "item_id": skill_name,
+        "item_type": "skill_output",
+        "source_type": "skill_output",
+        "source_name": skill_name,
+        "skill_name": skill_name,
+        "retrieval_type": "",
+        "section": "comparison",
+        "category": "differential_support",
+        "summary": _summarize_skill_evidence(skill_name, output),
+        "score": 9.2,
+        "rank": max([int(item.get("rank", 0) or 0) for item in selected_evidence] + [0]) + 1,
+        "keep_reason": "hulumed_xiangya_acne_canonical_rescue",
+    }
+    return [*selected_evidence, injected]
+
+
+def _ensure_xiangya_eczema_atopic_evidence(
+    state: CaseState,
+    selected_evidence: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    workflow_context = state.case_input.workflow_context or {}
+    if str(workflow_context.get("workflow_cell_id", "")).strip().lower() != "hulumed__xiangya_7class__retrieval_open_v1":
+        return selected_evidence
+    skill_name = "xiangya_eczema_atopic_disambiguation_skill"
+    output = state.skill_outputs.get(skill_name, {})
+    if not output:
+        return selected_evidence
+    if any(str(item.get("skill_name", "")).strip() == skill_name for item in selected_evidence):
+        return selected_evidence
+    recommendation = str(output.get("canonical_label_recommendation", "")).strip().upper()
+    if recommendation != "ECZEMA_DERMATITIS":
+        return selected_evidence
+    injected = {
+        "item_id": skill_name,
+        "item_type": "skill_output",
+        "source_type": "skill_output",
+        "source_name": skill_name,
+        "skill_name": skill_name,
+        "retrieval_type": "",
+        "section": "comparison",
+        "category": "differential_support",
+        "summary": _summarize_skill_evidence(skill_name, output),
+        "score": 9.0,
+        "rank": max([int(item.get("rank", 0) or 0) for item in selected_evidence] + [0]) + 1,
+        "keep_reason": "hulumed_xiangya_eczema_atopic_rescue",
     }
     return [*selected_evidence, injected]
 

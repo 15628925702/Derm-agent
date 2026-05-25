@@ -44,6 +44,8 @@ SIGNAL_KEYWORD_MAP = {
     "ack_sek_confusion": ("ack", "seborrheic", "sek", "waxy", "stuck-on", "compare", "confusion"),
     "keratinocyte_bcc_confusion": ("bcc", "basal cell", "scc", "ack", "actinic", "seborrheic", "keratin"),
     "ham_benign_mimic_confusion": ("bkl", "benign keratosis", "nevus", "vascular", "dermatofibroma", "compare", "mimic"),
+    "xiangya_acne_confusion": ("xiangya", "common_acne", "acne", "comedone", "pustule", "follicular", "dermatitis", "eczema", "vitiligo"),
+    "xiangya_eczema_atopic_confusion": ("xiangya", "eczema_dermatitis", "atopic_dermatitis", "eczema", "atopic", "dermatitis", "flexural", "xerosis", "lichenification"),
     "contradiction_rich": ("contradiction", "conflict", "audit", "inconsisten"),
     "information_gap": ("missing", "gap", "underdetermined", "need more information"),
     "escalation_needed": ("escalat", "dermoscopy", "biopsy", "further check", "closer exam"),
@@ -114,6 +116,8 @@ class RuleMetadataHybridSkillRetriever(BaseSkillRetriever):
         query_text = _build_query_text(query, signal_profile)
         decisions = [self._evaluate_skill(skill, query, signal_profile, query_text) for skill in skills]
         self._apply_workflow_benign_mimic_guard(decisions=decisions, signal_profile=signal_profile)
+        self._apply_xiangya_acne_guard(decisions=decisions, signal_profile=signal_profile)
+        self._apply_xiangya_eczema_atopic_guard(decisions=decisions, signal_profile=signal_profile)
 
         selected = [decision for decision in decisions if decision.selected]
         if not selected:
@@ -159,6 +163,46 @@ class RuleMetadataHybridSkillRetriever(BaseSkillRetriever):
             + ["Retained by sparse_lesion_workflow benign-mimic guard from morphology signature."]
         )
         target.matched_fields = _dedupe(list(target.matched_fields) + ["workflow_guard.benign_mimic"])
+
+    @staticmethod
+    def _apply_xiangya_acne_guard(
+        *,
+        decisions: list[SkillRetrievalDecision],
+        signal_profile: dict[str, Any],
+    ) -> None:
+        if not signal_profile.get("xiangya_acne_confusion", False):
+            return
+        target = next((item for item in decisions if item.skill_name == "xiangya_acne_disambiguation_skill"), None)
+        if target is None:
+            return
+        target.selected = True
+        target.score = max(float(target.score), 10.0)
+        target.trigger_hits = _dedupe(list(target.trigger_hits) + ["xiangya_acne_confusion"])
+        target.reasons = _dedupe(
+            list(target.reasons)
+            + ["Forced by Hulu-Med Xiangya acne-vs-dermatitis/vitiligo workflow guard."]
+        )
+        target.matched_fields = _dedupe(list(target.matched_fields) + ["workflow_guard.xiangya_acne"])
+
+    @staticmethod
+    def _apply_xiangya_eczema_atopic_guard(
+        *,
+        decisions: list[SkillRetrievalDecision],
+        signal_profile: dict[str, Any],
+    ) -> None:
+        if not signal_profile.get("xiangya_eczema_atopic_confusion", False):
+            return
+        target = next((item for item in decisions if item.skill_name == "xiangya_eczema_atopic_disambiguation_skill"), None)
+        if target is None:
+            return
+        target.selected = True
+        target.score = max(float(target.score), 10.0)
+        target.trigger_hits = _dedupe(list(target.trigger_hits) + ["xiangya_eczema_atopic_confusion"])
+        target.reasons = _dedupe(
+            list(target.reasons)
+            + ["Forced by Hulu-Med Xiangya eczema-vs-atopic workflow guard."]
+        )
+        target.matched_fields = _dedupe(list(target.matched_fields) + ["workflow_guard.xiangya_eczema_atopic"])
 
     def _evaluate_skill(
         self,
@@ -342,6 +386,23 @@ def _build_signal_profile(query: SkillRetrievalQuery) -> dict[str, Any]:
         or has_confusion_pair(ddx_candidates, ("vasc", "vascular"), ("mel", "melanoma", "nv", "nevus"))
         or benign_mimic_signature
     )
+    xiangya_acne_confusion = _has_xiangya_acne_confusion(
+        dataset_name=query.dataset_name,
+        workflow_context=workflow_context,
+        ddx_candidates=ddx_candidates,
+        image_summary=image_summary,
+        notes=notes,
+        metadata=metadata,
+    )
+    xiangya_eczema_atopic_confusion = _has_xiangya_eczema_atopic_confusion(
+        dataset_name=query.dataset_name,
+        workflow_context=workflow_context,
+        ddx_candidates=ddx_candidates,
+        image_summary=image_summary,
+        notes=notes,
+        metadata=metadata,
+        retrieved_text=known_confusion_text,
+    )
 
     contradiction_rich = any(term in image_summary for term in ("contradict", "conflict", "irregular", "asymmetry"))
     information_gap = any(term in notes.lower() for term in ("missing", "unknown", "not available")) or uncertainty_level in {"medium", "high"}
@@ -369,6 +430,8 @@ def _build_signal_profile(query: SkillRetrievalQuery) -> dict[str, Any]:
         "ack_sek_confusion": "ack_sek" in active_confusion_clusters,
         "keratinocyte_bcc_confusion": keratinocyte_bcc_confusion,
         "ham_benign_mimic_confusion": ham_benign_mimic_confusion,
+        "xiangya_acne_confusion": xiangya_acne_confusion,
+        "xiangya_eczema_atopic_confusion": xiangya_eczema_atopic_confusion,
         "contradiction_rich": contradiction_rich,
         "information_gap": information_gap,
         "escalation_needed": escalation_needed,
@@ -497,6 +560,72 @@ def _has_ham_benign_mimic_signature(
     benign_context_hits = sum(1 for term in benign_surface_terms if term in combined)
     malignant_context_hits = sum(1 for term in ambiguous_malignant_terms if term in combined)
     return benign_context_hits >= 2 and malignant_context_hits >= 1
+
+
+def _has_xiangya_acne_confusion(
+    *,
+    dataset_name: str | None,
+    workflow_context: dict[str, Any],
+    ddx_candidates: list[str],
+    image_summary: str,
+    notes: str,
+    metadata: dict[str, Any],
+) -> bool:
+    dataset_key = str(dataset_name or "").strip().lower()
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    label_space_id = str(
+        workflow_context.get("label_space_id") or metadata.get("label_space_id") or ""
+    ).strip().lower()
+    if dataset_key != "xiangya_7class" and label_space_id != "xiangya_7class":
+        return False
+    if workflow_cell_id and workflow_cell_id != "hulumed__xiangya_7class__retrieval_open_v1":
+        return False
+    combined = " ".join(
+        [
+            " ".join(ddx_candidates),
+            str(image_summary or "").lower(),
+            str(notes or "").lower(),
+            str(metadata.get("related_category", "")).lower(),
+            str(metadata.get("presentation_mode_hint", "")).lower(),
+        ]
+    )
+    acne_terms = ("acne", "common_acne", "comedone", "comedonal", "pustule", "follicular", "papule")
+    confusion_terms = ("dermatitis", "eczema", "atopic", "vitiligo", "depigment", "hypopigment", "rash")
+    return any(term in combined for term in acne_terms) or any(term in combined for term in confusion_terms)
+
+
+def _has_xiangya_eczema_atopic_confusion(
+    *,
+    dataset_name: str | None,
+    workflow_context: dict[str, Any],
+    ddx_candidates: list[str],
+    image_summary: str,
+    notes: str,
+    metadata: dict[str, Any],
+    retrieved_text: str,
+) -> bool:
+    dataset_key = str(dataset_name or "").strip().lower()
+    workflow_cell_id = str(workflow_context.get("workflow_cell_id", "")).strip().lower()
+    label_space_id = str(
+        workflow_context.get("label_space_id") or metadata.get("label_space_id") or ""
+    ).strip().lower()
+    if dataset_key != "xiangya_7class" and label_space_id != "xiangya_7class":
+        return False
+    if workflow_cell_id and workflow_cell_id != "hulumed__xiangya_7class__retrieval_open_v1":
+        return False
+    combined = " ".join(
+        [
+            " ".join(ddx_candidates),
+            str(image_summary or "").lower(),
+            str(notes or "").lower(),
+            str(metadata.get("related_category", "")).lower(),
+            str(metadata.get("presentation_mode_hint", "")).lower(),
+            str(retrieved_text or "").lower(),
+        ]
+    )
+    eczema_terms = ("eczema", "eczema_dermatitis", "eczematous", "dermatitis", "rash", "scale", "scaling", "erythema")
+    atopic_terms = ("atopic", "atopic_dermatitis", "flexural", "xerosis", "lichenif", "chronic", "recurrent", "pruritus")
+    return any(term in combined for term in eczema_terms) and any(term in combined for term in atopic_terms)
 
 
 def _metadata_match_count(skill_text: str, metadata: dict[str, Any]) -> int:
