@@ -20,8 +20,9 @@ POLICY_ROOT = PROJECT_ROOT / "state" / "dataset_adaptation" / "xiangya_7class_hu
 SPLIT_STATE_ROOT = PROJECT_ROOT / "state" / "dataset_adaptation" / "xiangya_7class_hulumed_relaxed50_v1" / "split_states"
 POLICY_CONFIG = POLICY_ROOT / "current_stable_policy.json"
 SPLIT_JSON = PROJECT_ROOT / "outputs" / "dataset_adaptation" / "xiangya_7class_hulumed_relaxed50_v1" / "xiangya_7class_split.json"
+AGENT_WORKFLOW = "hulumed__xiangya_7class__retrieval_open_v1"
 
-OUTPUT_ROOT = PROJECT_ROOT / "outputs" / "xiangya7_hulumed_tuned_v3" / "compare902_8gpu_restart"
+OUTPUT_ROOT = PROJECT_ROOT / "outputs" / "xiangya7_hulumed_tuned_v3" / "compare902_8gpu_correct_workflow"
 COMPARE_SHARDS_ROOT = OUTPUT_ROOT / "compare_shards"
 
 PORTS = [8013, 8014, 8015, 8016, 8017, 8018, 8019, 8020]
@@ -45,6 +46,7 @@ def launch_shard(shard_id: int, offset: int, limit: int, port: int) -> subproces
         "--output-dir", str(shard_output),
         "--policy-config", str(POLICY_CONFIG),
         "--policy-label", "xiangya_7class_hulumed_tuned_v3",
+        "--agent-workflow", AGENT_WORKFLOW,
         "--agent-base-url", f"http://127.0.0.1:{port}/v1",
         "--baseline-base-url", f"http://127.0.0.1:{port}/v1",
     ]
@@ -98,10 +100,12 @@ def main():
                 "out_dir": str(COMPARE_SHARDS_ROOT / f"shard_{s['shard_id']:05d}"),
                 "limit": s["limit"],
                 "offset": s["offset"],
+                "agent_workflow": AGENT_WORKFLOW,
             }
             for s in shards
         ],
         "shards": [str(COMPARE_SHARDS_ROOT / f"shard_{s['shard_id']:05d}") for s in shards],
+        "agent_workflow": AGENT_WORKFLOW,
     }
 
     manifest_path = OUTPUT_ROOT / "compare_manifest.started.json"

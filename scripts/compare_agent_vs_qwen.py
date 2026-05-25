@@ -15,6 +15,7 @@ from agent.evaluation_protocol import DEFAULT_EVAL_OUTPUT_ROOT, EvaluationTarget
 from agent.model_workflow_router import (
     dataset_environment_overrides_for_model_dataset,
     execution_overrides_for_run_agent,
+    get_model_dataset_workflow_profile,
     get_model_workflow_overrides,
     merge_model_workflow_policy_overrides,
 )
@@ -43,6 +44,8 @@ def infer_dataset_name_from_data_root(data_root: Path) -> str:
         return "ham10000"
     if "sft数据" in parts or "xiangya_sft" in parts:
         return "xiangya_sft"
+    if "xiangya_selected_7class_3000" in parts:
+        return "xiangya_7class"
     return ""
 
 
@@ -61,6 +64,37 @@ def _redact_execution_overrides(overrides: dict[str, object]) -> dict[str, objec
     return redacted
 
 
+def _infer_model_name_from_workflow_cell(workflow_cell_id: str) -> str:
+    prefix = str(workflow_cell_id or "").strip().lower().split("__", 1)[0]
+    return {
+        "hulumed": "Hulu-Med-7B",
+        "qwen": "Qwen2.5-VL-7B-Instruct",
+        "medgemma": "medgemma-4b-it",
+        "dermatollama": "DermatoLlama-full",
+        "llama": "Llama-3.2-11B-Vision-Instruct",
+        "skinvl": "SkinVL-MM",
+    }.get(prefix, "")
+
+
+def _workflow_overrides_for_cell(
+    workflow_cell_id: str,
+    *,
+    dataset_name: str,
+    fallback_model_name: str,
+) -> dict[str, object]:
+    cell_id = str(workflow_cell_id or "").strip()
+    if not cell_id:
+        return {}
+    model_name = _infer_model_name_from_workflow_cell(cell_id) or fallback_model_name
+    cell = get_model_dataset_workflow_profile(model_name, dataset_name)
+    if str(cell.get("workflow_cell_id", "")).strip() != cell_id:
+        raise ValueError(
+            f"--agent-workflow {cell_id!r} is not registered for model {model_name!r} "
+            f"and dataset {dataset_name!r}."
+        )
+    return {"model_name": model_name, **cell}
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Compare a direct model baseline against full DermAgent under frozen evaluation mode.")
     parser.add_argument("--data-root", type=Path, default=DEFAULT_DATA_ROOT, help="Dataset root directory.")
@@ -73,6 +107,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--agent-base-url", type=str, default=None, help="Optional OpenAI-compatible base URL for the DermAgent path.")
     parser.add_argument("--agent-api-key", type=str, default=None, help="Optional API key for the DermAgent path.")
     parser.add_argument("--agent-model", type=str, default=None, help="Optional model name for the DermAgent path.")
+    parser.add_argument(
+        "--agent-workflow",
+        type=str,
+        default="",
+        help="Optional explicit model-dataset workflow cell id for the DermAgent path.",
+    )
     parser.add_argument("--agent-label", type=str, default="Full DermAgent", help="Human-readable label for the DermAgent target.")
     parser.add_argument(
         "--agent-description",
@@ -206,11 +246,26 @@ def main() -> int:
         model_workflow_overrides = {}
         agent_execution_overrides = {}
     else:
-        model_workflow_overrides = get_model_workflow_overrides(
-            agent_model_name,
+        explicit_workflow_overrides = _workflow_overrides_for_cell(
+            args.agent_workflow,
             dataset_name=inferred_dataset_name,
-            base_workflow_context=None,
+            fallback_model_name=agent_model_name,
         )
+        if explicit_workflow_overrides:
+            agent_model_name = str(explicit_workflow_overrides.get("model_name", "")).strip() or agent_model_name
+            model_workflow_overrides = get_model_workflow_overrides(
+                agent_model_name,
+                dataset_name=inferred_dataset_name,
+                base_workflow_context=None,
+            )
+            model_workflow_overrides.update(explicit_workflow_overrides)
+            model_workflow_overrides.setdefault("workflow_routing_priority", "explicit_agent_workflow")
+        else:
+            model_workflow_overrides = get_model_workflow_overrides(
+                agent_model_name,
+                dataset_name=inferred_dataset_name,
+                base_workflow_context=None,
+            )
         agent_execution_overrides = execution_overrides_for_run_agent(model_workflow_overrides)
         if model_workflow_overrides:
             policy = merge_model_workflow_policy_overrides(policy, model_workflow_overrides)
@@ -322,6 +377,7 @@ def main() -> int:
             "strict_frozen_eval": not args.non_strict_frozen_eval,
             "evaluation_protocol_version": result_manifest.get("protocol_version"),
             "agent_model_name": agent_model_name,
+            "agent_workflow": args.agent_workflow,
             "inferred_dataset_name": inferred_dataset_name,
             "disable_model_workflow_routing": disable_model_workflow_routing,
             "model_workflow_overrides": model_workflow_overrides,
