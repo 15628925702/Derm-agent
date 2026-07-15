@@ -1,0 +1,281 @@
+schema_version: "trainable_components_v1"
+created_for_stage: "stage4_step1"
+
+protocol:
+  qwen_final_diagnosis_only: true
+  no_qwen_weight_training: true
+  no_end_to_end_qwen_training: true
+  require_frozen_fair_eval: true
+  require_auditable_execution_evidence: true
+  require_rollback_for_policy_like_updates: true
+
+frozen_components:
+  - component_id: qwen_backbone
+    frozen: true
+    freeze_scope:
+      - model_weights
+      - final_diagnosis_responsibility
+    enforcement:
+      - "training jobs must not include qwen parameters"
+      - "all runs keep qwen as only final diagnosis maker"
+
+  - component_id: qwen_service_runtime
+    frozen: true
+    freeze_scope:
+      - served_model_name
+      - base_url
+      - runtime_generation_profile
+    enforcement:
+      - "record in evaluation manifest and compare across targets"
+
+  - component_id: skill_semantic_definitions
+    frozen: true
+    freeze_scope:
+      - workflow_text
+      - output_schema
+      - skill_text_specs
+    enforcement:
+      - "pin skill_bank_version in evaluation manifest"
+      - "no semantic edits within one experiment id"
+
+  - component_id: dataset_case_list_in_eval
+    frozen: true
+    freeze_scope:
+      - case_ids
+      - case_order
+    enforcement:
+      - "baseline/full/ablations share the same case list"
+
+training_data_sources:
+  execution_records: "outputs/**/records/case_execution_records.jsonl"
+  hard_cases: "outputs/hard_case_mining/hard_cases.jsonl"
+  skill_helpfulness_reports: "outputs/skill_helpfulness/skill_helpfulness_reports.jsonl"
+  skill_refinement_candidates: "outputs/skill_refinement_candidates/skill_refinement_candidates.jsonl"
+  consolidated_abstract_experiences: "outputs/experience_consolidation/consolidated_abstract_experiences.jsonl"
+  policy_evaluations: "state/policy/evaluations/*.json"
+
+trainable_components:
+  - component_id: controller_planner_scorer
+    trainable: true
+    role: "learned scorer for planner skill ranking"
+    input_contract:
+      primary:
+        - controller_training_example.state_features
+        - controller_training_example.available_skill_candidates
+        - controller_training_example.selection_reasons
+      optional:
+        - cognition.skill_statistics
+        - skill_retrieval_bundle
+    output_contract:
+      outputs:
+        - skill_scores
+        - ranked_skill_candidates
+        - scorer_confidence
+      cannot_output:
+        - final_diagnosis
+        - disease_label
+    training_signal:
+      from:
+        - evaluation.correct
+        - evaluation.agent_vs_baseline_delta
+        - reflection_summary.skill_assessments
+      objective: "maximize outcome reward while reducing harmful skill selections"
+    versioning:
+      state_root: "state/trainable_components/controller_planner_scorer"
+      stable_pointer: "state/trainable_components/controller_planner_scorer/stable.json"
+      candidates_dir: "state/trainable_components/controller_planner_scorer/candidates"
+      eval_records_dir: "state/trainable_components/controller_planner_scorer/evaluations"
+      version_id_pattern: "controller_planner_scorer_v{major}.{minor}.{patch}+{data_hash}"
+      parent_version_field: "parent_version"
+      rollback_target: "stable_pointer"
+
+  - component_id: retrieval_reranker
+    trainable: true
+    role: "rerank experience and/or skill retrieval candidates"
+    input_contract:
+      primary:
+        - retrieval_query
+        - candidate_packets_with_heuristic_scores
+      optional:
+        - cognition.known_confusion_patterns
+        - planner_decision_trace
+    output_contract:
+      outputs:
+        - reranked_candidate_ids
+        - relevance_scores
+      cannot_output:
+        - final_diagnosis
+    training_signal:
+      from:
+        - evaluation.correct
+        - uncertainty_summary
+        - contradiction_summary
+        - skill_helpfulness_reports
+      objective: "improve retrieval utility for planner and skill execution"
+    versioning:
+      state_root: "state/trainable_components/retrieval_reranker"
+      stable_pointer: "state/trainable_components/retrieval_reranker/stable.json"
+      candidates_dir: "state/trainable_components/retrieval_reranker/candidates"
+      eval_records_dir: "state/trainable_components/retrieval_reranker/evaluations"
+      version_id_pattern: "retrieval_reranker_v{major}.{minor}.{patch}+{feature_hash}"
+      parent_version_field: "parent_version"
+      rollback_target: "stable_pointer"
+
+  - component_id: skill_selection_policy_optimizer
+    trainable: true
+    role: "optimize policy-level planner parameters without changing skill semantics"
+    input_contract:
+      primary:
+        - policy_config.planner_policy
+        - policy_config.retrieval_policy
+        - execution_records
+      optional:
+        - hard_case_mining_summary
+    output_contract:
+      outputs:
+        - policy_delta_patch
+        - candidate_policy_config
+      cannot_output:
+        - final_diagnosis
+    training_signal:
+      from:
+        - policy_eval.top1
+        - policy_eval.topk
+        - policy_eval.malignant_recall
+        - policy_eval.error_rate
+        - policy_eval.key_confusion_subsets
+      objective: "improve policy metrics under conservative gate constraints"
+    versioning:
+      state_root: "state/policy"
+      stable_pointer: "state/policy/current_stable_policy.json"
+      candidates_dir: "state/policy/versions"
+      eval_records_dir: "state/policy/evaluations"
+      version_id_pattern: "policy_{policy_id}_v{version}"
+      parent_version_field: "parent_policy_id"
+      rollback_target: "current_stable_policy"
+
+  - component_id: evidence_calibrator
+    trainable: true
+    role: "calibrate evidence strength and aggregation weighting"
+    input_contract:
+      primary:
+        - skill_outputs.evidence_strength
+        - skill_outputs.recommendation_type
+        - evidence_bundle
+      optional:
+        - referenced_experiences
+    output_contract:
+      outputs:
+        - calibrated_evidence_scores
+        - uncertainty_weight_hint
+        - contradiction_weight_hint
+      cannot_output:
+        - final_diagnosis
+        - disease_label
+    training_signal:
+      from:
+        - reflection_summary.case_outcome.status
+        - reflection_summary.skill_assessments
+        - evaluation.correct
+      objective: "increase evidence usefulness for final qwen reasoning"
+    versioning:
+      state_root: "state/trainable_components/evidence_calibrator"
+      stable_pointer: "state/trainable_components/evidence_calibrator/stable.json"
+      candidates_dir: "state/trainable_components/evidence_calibrator/candidates"
+      eval_records_dir: "state/trainable_components/evidence_calibrator/evaluations"
+      version_id_pattern: "evidence_calibrator_v{major}.{minor}.{patch}+{schema_hash}"
+      parent_version_field: "parent_version"
+      rollback_target: "stable_pointer"
+
+  - component_id: skill_helpfulness_predictor
+    trainable: true
+    role: "predict helpful/partially_helpful/harmful probability for a skill under current case state"
+    input_contract:
+      primary:
+        - execution_record.state_features
+        - selected_skill_name
+        - retrieval_summary
+      optional:
+        - cognition.skill_statistics
+    output_contract:
+      outputs:
+        - helpful_probability
+        - partially_helpful_probability
+        - harmful_probability
+        - expected_utility
+      cannot_output:
+        - final_diagnosis
+    training_signal:
+      from:
+        - skill_helpfulness_reports
+        - reflection_summary.skill_assessments
+      objective: "reduce harmful skill activations and improve selection quality"
+    versioning:
+      state_root: "state/trainable_components/skill_helpfulness_predictor"
+      stable_pointer: "state/trainable_components/skill_helpfulness_predictor/stable.json"
+      candidates_dir: "state/trainable_components/skill_helpfulness_predictor/candidates"
+      eval_records_dir: "state/trainable_components/skill_helpfulness_predictor/evaluations"
+      version_id_pattern: "skill_helpfulness_predictor_v{major}.{minor}.{patch}+{label_hash}"
+      parent_version_field: "parent_version"
+      rollback_target: "stable_pointer"
+
+  - component_id: hard_case_prioritization_scorer
+    trainable: true
+    role: "score hard cases for refinement/consolidation priority"
+    input_contract:
+      primary:
+        - hard_case_candidate.failure_type
+        - hard_case_candidate.hardness_reason
+        - hard_case_candidate.contradiction_uncertainty_signals
+      optional:
+        - repeated_failure_statistics
+        - confusion_tags
+    output_contract:
+      outputs:
+        - priority_score
+        - queue_tier
+      cannot_output:
+        - final_diagnosis
+    training_signal:
+      from:
+        - hard_case_mining_outputs
+        - downstream_refinement_yield
+      objective: "prioritize cases that produce high-value refinement signals"
+    versioning:
+      state_root: "state/trainable_components/hard_case_prioritization_scorer"
+      stable_pointer: "state/trainable_components/hard_case_prioritization_scorer/stable.json"
+      candidates_dir: "state/trainable_components/hard_case_prioritization_scorer/candidates"
+      eval_records_dir: "state/trainable_components/hard_case_prioritization_scorer/evaluations"
+      version_id_pattern: "hard_case_prioritization_scorer_v{major}.{minor}.{patch}+{signal_hash}"
+      parent_version_field: "parent_version"
+      rollback_target: "stable_pointer"
+
+version_registry:
+  require_candidate_then_gate_then_promote: true
+  require_frozen_eval_for_promotion: true
+  require_manifest_linking:
+    - evaluation_manifest_path
+    - result_manifest_path
+    - training_data_snapshot_refs
+    - parent_version
+  rollback_rule:
+    trigger_if:
+      - "top1_drop_vs_stable"
+      - "malignant_recall_drop_vs_stable"
+      - "error_rate_increase_vs_stable"
+      - "key_confusion_subset_degradation"
+    action: "revert_to_stable_pointer"
+
+experiment_modes:
+  offline_train:
+    allow_writeback: false
+    require_frozen_model: true
+  frozen_eval:
+    allow_writeback: false
+    require_same_case_list: true
+    require_same_model: true
+  ablation_eval:
+    allow_writeback: false
+    compare_against:
+      - direct_baseline
+      - full_dermagent

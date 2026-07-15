@@ -1,0 +1,47 @@
+{
+  "proposal_id": "hulumed4b_xiangya_contact_atopic_demo_v1",
+  "proposal_type": "workflow_evolution_candidate",
+  "model_name": "Hulu-Med-4B",
+  "dataset_name": "xiangya_sft",
+  "created_at": "2026-07-15T00:00:00Z",
+  "review_status": "approved",
+  "reviewed_by": "codex_demo",
+  "reviewed_at": "2026-07-15T00:00:00Z",
+  "default_enabled": false,
+  "activation": {
+    "enabled": true,
+    "runtime_env_required": "DERMAGENT_ENABLE_WORKFLOW_EVOLUTION=1"
+  },
+  "summary": {
+    "goal": "Demonstrate a post-evolution same-case rerun where a newly added inflammatory-family specialist is explicitly called.",
+    "evidence_basis": [
+      "Repeated CONTACT_DERMATITIS -> ATOPIC_DERMATITIS confusion in Xiangya cases.",
+      "Foundational skills repeatedly produced low-information outputs, so a pairwise inflammatory specialist is promoted."
+    ]
+  },
+  "proposed_workflow_cell": {
+    "workflow_cell_id": "hulumed4b__xiangya_sft__contact_atopic_evolved_demo_v1",
+    "inherit_dataset_workflow": true,
+    "workflow_capabilities": [
+      "family_routing",
+      "grouped_label_reasoning",
+      "rash_reasoning",
+      "eczematous_family_reasoning",
+      "post_evolution_specialist_reasoning"
+    ],
+    "enable_skill_retrieval": false,
+    "allowed_skills": [
+      "morphology_analysis_skill",
+      "color_pattern_analysis_skill",
+      "distribution_analysis_skill",
+      "lesion_description_structuring_skill",
+      "metadata_consistency_skill",
+      "contact_atopic_specialist_skill",
+      "uncertainty_assessment_skill"
+    ],
+    "force_enable_skills": [
+      "contact_atopic_specialist_skill",
+      "uncertainty_assessment_skill"
+    ]
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "policy_id": "controller_sparse_candidate_template",
+  "version": 1,
+  "status": "candidate",
+  "description": "Template sparse-hybrid learned controller policy. Fill in controller_checkpoint_path after training a sparse controller candidate.",
+  "parent_policy_id": "stable_default_policy",
+  "planner_policy": {
+    "controller_family": "learned_supervised",
+    "controller_checkpoint_path": "",
+    "learned_controller_select_threshold": 0.52,
+    "learned_controller_top_k": 3,
+    "learned_controller_force_top_k": 0,
+    "learned_controller_mode": "sparse_hybrid",
+    "learned_controller_sparse_rule_floor": 9,
+    "learned_controller_protected_min_score": 7,
+    "learned_controller_weight": 4.0,
+    "learned_controller_rank_bonus": 3,
+    "score_threshold_default": 4,
+    "retrieval_score_cap": 3,
+    "foundational_bonus": 6,
+    "preferred_skill_bonus": 3,
+    "helpful_rate_bonus": 2,
+    "failure_rate_penalty": 2,
+    "signal_match_bonus": 2,
+    "known_confusion_bonus": 2,
+    "experience_compare_bonus": 2,
+    "experience_risk_bonus": 2,
+    "experience_gap_bonus": 2,
+    "experience_conflict_bonus": 2,
+    "experience_escalation_bonus": 2,
+    "enable_signals": {
+      "experience_compare_pattern": true,
+      "experience_risk_pattern": true,
+      "experience_gap_pattern": true,
+      "experience_conflict_pattern": true,
+      "experience_escalation_pattern": true
+    },
+    "force_select_skills": [],
+    "force_disable_skills": [],
+    "skill_overrides": {}
+  }
+}
