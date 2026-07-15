@@ -1,16 +1,32 @@
 # Python cache
 __pycache__/
 *.py[cod]
+.Python
+.venv/
+venv/
+env/
 
 # Test cache
 .pytest_cache/
+.coverage
+.mypy_cache/
+.ruff_cache/
 
 # Local datasets to exclude from Git
 data/
 
+# Local temp / scratch
+.tmp/
+.offload/
+tmp/
+temp/
+
 # Generated outputs
 outputs/*
 !outputs/.gitkeep
+
+# Local logs
+*.log
 
 # Large evaluation bundles are managed outside the main GitHub repo
 final-score/final_runs/
@@ -27,6 +43,7 @@ logs/*
 !logs/.gitkeep
 
 # Runtime and process state
+state/
 state/*.pid
 state/run_launchers/
 state/runtime/
@@ -38,6 +55,11 @@ state/split_states/
 state/cognition_state.json
 state_medgemma/
 state_skinvl/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
 
 # LaTeX build artifacts
 paper/*.aux
